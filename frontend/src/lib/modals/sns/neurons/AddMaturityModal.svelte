@@ -6,10 +6,10 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
-  export let neuronId: SnsNeuronId;
+  export let neuronId: SnsGovernanceDid.NeuronId;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 

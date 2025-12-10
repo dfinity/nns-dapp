@@ -7,10 +7,10 @@ import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposa
 import type { SnsProposalsStoreData } from "$lib/stores/sns-proposals.store";
 import { snsProposalId } from "$lib/utils/sns-proposals.utils";
 import { mapEntries } from "$lib/utils/utils";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { derived, type Readable } from "svelte/store";
 
-export type SnsProposalActionableData = SnsProposalData & {
+export type SnsProposalActionableData = SnsGovernanceDid.ProposalData & {
   isActionable: boolean | undefined;
 };
 

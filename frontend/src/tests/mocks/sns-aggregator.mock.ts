@@ -15,7 +15,7 @@ import { fromNullable, nonNullish } from "@dfinity/utils";
 import { IcrcMetadataResponseEntries } from "@icp-sdk/canisters/ledger/icrc";
 import {
   SnsSwapLifecycle,
-  type SnsNervousSystemFunction,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 
 export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
@@ -40,7 +40,7 @@ const convertToNervousFunctionDto = ({
   id,
   name,
   description,
-}: SnsNervousSystemFunction): CachedNervousFunctionDto => ({
+}: SnsGovernanceDid.NervousSystemFunction): CachedNervousFunctionDto => ({
   id: Number(id),
   name,
   description: fromNullable(description),
@@ -116,7 +116,7 @@ export const aggregatorSnsMockWith = ({
   projectName?: string;
   tokenMetadata?: Partial<IcrcTokenMetadata>;
   index?: number;
-  nervousFunctions?: SnsNervousSystemFunction[];
+  nervousFunctions?: SnsGovernanceDid.NervousSystemFunction[];
   swapOpenTimestampSeconds?: number;
   swapDueTimestampSeconds?: number;
   nnsProposalId?: number;

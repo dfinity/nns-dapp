@@ -28,11 +28,7 @@ import {
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type {
-  SnsNervousSystemFunction,
-  SnsNeuron,
-  SnsTopic,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
@@ -48,14 +44,14 @@ describe("sns-topics utils", () => {
   const method = "method";
   const targetMethod = "target_method_name";
   const nativeNsFunctionId = 1n;
-  const nativeNsFunction: SnsNervousSystemFunction = {
+  const nativeNsFunction: SnsGovernanceDid.NervousSystemFunction = {
     id: nativeNsFunctionId,
     name: "Native Function",
     description: ["Description 1"],
     function_type: [{ NativeNervousSystemFunction: {} }],
   };
   const genericNsFunctionId = 1001n;
-  const genericNsFunction: SnsNervousSystemFunction = {
+  const genericNsFunction: SnsGovernanceDid.NervousSystemFunction = {
     id: genericNsFunctionId,
     name: "Custom Function",
     description: ["Description 3"],
@@ -93,7 +89,7 @@ describe("sns-topics utils", () => {
     topic: [
       {
         CompletelyUnknownTopic: null,
-      } as unknown as SnsTopic,
+      } as unknown as SnsGovernanceDid.Topic,
     ],
     is_critical: [true],
     name: ["Unknown topic name"],
@@ -180,7 +176,9 @@ describe("sns-topics utils", () => {
     });
 
     it("should return UnknownTopic if topic is unknown", () => {
-      expect(snsTopicToTopicKey({} as SnsTopic)).toBe("UnknownTopic");
+      expect(snsTopicToTopicKey({} as SnsGovernanceDid.Topic)).toBe(
+        "UnknownTopic"
+      );
     });
   });
 
@@ -486,22 +484,22 @@ describe("sns-topics utils", () => {
 
   describe("getLegacyFolloweesByTopics", () => {
     const nativeNsFunctionId1 = 1n;
-    const nativeNsFunction1: SnsNervousSystemFunction = {
+    const nativeNsFunction1: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNsFunction,
       id: nativeNsFunctionId1,
     };
     const nativeNsFunctionId2 = 2n;
-    const nativeNsFunction2: SnsNervousSystemFunction = {
+    const nativeNsFunction2: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNsFunction,
       id: nativeNsFunctionId2,
     };
     const genericNsFunctionId1 = 1001n;
-    const genericNsFunction1: SnsNervousSystemFunction = {
+    const genericNsFunction1: SnsGovernanceDid.NervousSystemFunction = {
       ...genericNsFunction,
       id: genericNsFunctionId1,
     };
     const genericNsFunctionId2 = 1002n;
-    const genericNsFunction2: SnsNervousSystemFunction = {
+    const genericNsFunction2: SnsGovernanceDid.NervousSystemFunction = {
       ...genericNsFunction,
       id: genericNsFunctionId2,
     };
@@ -517,7 +515,7 @@ describe("sns-topics utils", () => {
     };
 
     it("returns all ns-function-based followees by topics", () => {
-      const testNeuron: SnsNeuron = {
+      const testNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [
           [nativeNsFunctionId1, { followees: [neuronId1] }],
@@ -585,7 +583,7 @@ describe("sns-topics utils", () => {
     });
 
     it("return empty array when no followees", () => {
-      const testNeuron: SnsNeuron = {
+      const testNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [],
       };
@@ -599,7 +597,7 @@ describe("sns-topics utils", () => {
     });
 
     it("return empty array when no topic infos", () => {
-      const testNeuron: SnsNeuron = {
+      const testNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [
           [nativeNsFunctionId1, { followees: [neuronId1] }],
@@ -620,23 +618,23 @@ describe("sns-topics utils", () => {
 
   describe("getCatchAllSnsLegacyFollowings", () => {
     const catchAllNativeNsFunctionId = 0n;
-    const catchAllNativeNsFunction: SnsNervousSystemFunction = {
+    const catchAllNativeNsFunction: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNsFunction,
       id: catchAllNativeNsFunctionId,
     };
     const nativeNsFunctionId1 = 1n;
-    const nativeNsFunction1: SnsNervousSystemFunction = {
+    const nativeNsFunction1: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNsFunction,
       id: nativeNsFunctionId1,
     };
     const nativeNsFunctionId2 = 2n;
-    const nativeNsFunction2: SnsNervousSystemFunction = {
+    const nativeNsFunction2: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNsFunction,
       id: nativeNsFunctionId2,
     };
 
     it("returns catch all followings", () => {
-      const testNeuron: SnsNeuron = {
+      const testNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [
           [nativeNsFunctionId1, { followees: [neuronId1] }],
@@ -661,7 +659,7 @@ describe("sns-topics utils", () => {
     });
 
     it("return undefined when no catch-all followees", () => {
-      const testNeuron: SnsNeuron = {
+      const testNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [
           [nativeNsFunctionId1, { followees: [neuronId1] }],
@@ -682,7 +680,7 @@ describe("sns-topics utils", () => {
     });
 
     it("return undefined when no catch-all ns function", () => {
-      const testNeuron: SnsNeuron = {
+      const testNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [
           [nativeNsFunctionId1, { followees: [neuronId1] }],

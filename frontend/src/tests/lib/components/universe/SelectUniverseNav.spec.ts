@@ -17,7 +17,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
@@ -51,14 +51,16 @@ describe("SelectUniverseNav", () => {
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
     };
-    const votableSnsProposal1: SnsProposalData = createSnsProposal({
-      ...votableSnsProposalProps,
-      proposalId: 0n,
-    });
-    const votableSnsProposal2: SnsProposalData = createSnsProposal({
-      ...votableSnsProposalProps,
-      proposalId: 1n,
-    });
+    const votableSnsProposal1: SnsGovernanceDid.ProposalData =
+      createSnsProposal({
+        ...votableSnsProposalProps,
+        proposalId: 0n,
+      });
+    const votableSnsProposal2: SnsGovernanceDid.ProposalData =
+      createSnsProposal({
+        ...votableSnsProposalProps,
+        proposalId: 1n,
+      });
 
     actionableNnsProposalsStore.setProposals([
       {

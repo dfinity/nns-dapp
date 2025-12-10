@@ -4,13 +4,10 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsActiveDisbursementsModalPo } from "$tests/page-objects/SnsActiveDisbursementsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type {
-  SnsDisburseMaturityInProgress,
-  SnsNeuron,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
 describe("SnsActiveDisbursementsModal", () => {
-  const testActiveDisbursement: SnsDisburseMaturityInProgress = {
+  const testActiveDisbursement: SnsGovernanceDid.DisburseMaturityInProgress = {
     timestamp_of_disbursement_seconds: 10000n,
     amount_e8s: 100_000_000n,
     account_to_disburse_to: [
@@ -22,7 +19,7 @@ describe("SnsActiveDisbursementsModal", () => {
     finalize_disbursement_timestamp_seconds: [],
   };
 
-  const renderComponent = async (neuron: SnsNeuron) => {
+  const renderComponent = async (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = await renderModal({
       component: SnsActiveDisbursementsModal,
       props: {

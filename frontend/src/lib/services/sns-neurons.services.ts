@@ -62,7 +62,7 @@ import {
 } from "@dfinity/utils";
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type { E8s } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
@@ -77,7 +77,7 @@ import { get } from "svelte/store";
 export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
-  return queryAndUpdate<SnsNeuron[], unknown>({
+  return queryAndUpdate<SnsGovernanceDid.Neuron[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsNeurons({
@@ -144,7 +144,7 @@ const getNeuronFromStoreByIdHex = ({
 }: {
   neuronIdHex: string;
   rootCanisterId: Principal;
-}): { neuron?: SnsNeuron; certified: boolean } => {
+}): { neuron?: SnsGovernanceDid.Neuron; certified: boolean } => {
   const projectData = getSnsNeuronsFromStoreByProject(rootCanisterId);
   const neuron = getSnsNeuronByHexId({
     neuronIdHex,
@@ -171,7 +171,7 @@ export const getSnsNeuron = async ({
     neuron,
   }: {
     certified: boolean;
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
   }) => void;
   onError?: ({
     certified,
@@ -195,7 +195,7 @@ export const getSnsNeuron = async ({
     }
   }
   const neuronId = arrayOfNumberToUint8Array(hexStringToBytes(neuronIdHex));
-  return queryAndUpdate<SnsNeuron, Error>({
+  return queryAndUpdate<SnsGovernanceDid.Neuron, Error>({
     request: ({ certified, identity }) =>
       getSnsNeuronApi({
         rootCanisterId,
@@ -222,7 +222,7 @@ export const addHotkey = async ({
   hotkey,
   rootCanisterId,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   hotkey: Principal;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
@@ -250,7 +250,7 @@ export const removeHotkey = async ({
   hotkey,
   rootCanisterId,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   hotkey: string;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
@@ -281,7 +281,7 @@ export const splitNeuron = async ({
   neuronMinimumStake,
 }: {
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   amount: number;
   neuronMinimumStake: E8s;
 }): Promise<{ success: boolean }> => {
@@ -323,7 +323,7 @@ export const splitNeuron = async ({
       certified: true,
     });
     const neurons = get(snsNeuronsStore)[rootCanisterId.toText()]
-      .neurons as SnsNeuron[];
+      .neurons as SnsGovernanceDid.Neuron[];
     // User can try to split and stake at the same time for a single principal id.
     // The call would fail but client could just try again after displaying the error to the user.
     // `memo` parameter may become optional in the future.
@@ -355,7 +355,7 @@ export const disburse = async ({
   neuronId,
 }: {
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
@@ -381,7 +381,7 @@ export const startDissolving = async ({
   neuronId,
 }: {
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
@@ -407,7 +407,7 @@ export const stopDissolving = async ({
   neuronId,
 }: {
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
@@ -434,7 +434,7 @@ export const updateDelay = async ({
   dissolveDelaySeconds,
 }: {
   rootCanisterId: Principal;
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   dissolveDelaySeconds: number;
 }): Promise<{ success: boolean }> => {
   try {
@@ -474,7 +474,7 @@ export const increaseStakeNeuron = async ({
   rootCanisterId: Principal;
   amount: number;
   account: Account;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<{ success: boolean }> => {
   try {
     // TODO: Get identity depending on account to support HW accounts
@@ -587,13 +587,13 @@ export const addFollowee = async ({
   followeeHex,
   rootCanisterId,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   functionId: bigint;
   followeeHex: string;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   const identity = await getSnsNeuronIdentity();
-  const followee: SnsNeuronId = {
+  const followee: SnsGovernanceDid.NeuronId = {
     id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
   };
 
@@ -626,14 +626,14 @@ export const addFollowee = async ({
       return { success: false };
     }
 
-    const newFollowees: SnsNeuronId[] =
+    const newFollowees: SnsGovernanceDid.NeuronId[] =
       topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
 
     await setFollowees({
       rootCanisterId,
       identity,
       // We can cast it because we already checked that the neuron id is not undefined
-      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      neuronId: fromNullable(neuron.id) as SnsGovernanceDid.NeuronId,
       functionId,
       followees: newFollowees,
     });
@@ -657,14 +657,14 @@ export const setFollowing = async ({
   followings,
 }: {
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   followings: SnsTopicFollowing[];
 }): Promise<{ success: boolean; error?: unknown }> => {
   const identity = await getSnsNeuronIdentity();
 
   try {
     const topicFollowing = followings.map(({ topic, followees }) => ({
-      topic: snsTopicKeyToTopic(topic) as SnsTopic,
+      topic: snsTopicKeyToTopic(topic) as SnsGovernanceDid.Topic,
       followees,
     }));
     await setFollowingApi({
@@ -702,9 +702,9 @@ export const removeFollowee = async ({
   followee,
   rootCanisterId,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   functionId: bigint;
-  followee: SnsNeuronId;
+  followee: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   const identity = await getSnsNeuronIdentity();
@@ -723,7 +723,7 @@ export const removeFollowee = async ({
     return { success: false };
   }
   try {
-    const newFollowees: SnsNeuronId[] = topicFollowees?.filter(
+    const newFollowees: SnsGovernanceDid.NeuronId[] = topicFollowees?.filter(
       ({ id }) => subaccountToHexString(id) !== followeeHex
     );
 
@@ -731,7 +731,7 @@ export const removeFollowee = async ({
       rootCanisterId,
       identity,
       // We can cast it because we already checked that the neuron id is not undefined
-      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      neuronId: fromNullable(neuron.id) as SnsGovernanceDid.NeuronId,
       functionId,
       followees: newFollowees,
     });
@@ -751,7 +751,7 @@ export const removeNsFunctionFollowees = async ({
   functionId,
   rootCanisterId,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   functionId: bigint;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
@@ -781,7 +781,7 @@ export const stakeMaturity = async ({
   rootCanisterId,
   percentageToStake,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   percentageToStake: number;
 }): Promise<{ success: boolean }> => {
@@ -812,7 +812,7 @@ export const disburseMaturity = async ({
   percentageToDisburse,
   toAccountAddress,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   percentageToDisburse: number;
   toAccountAddress?: string;
@@ -848,8 +848,8 @@ export const toggleAutoStakeMaturity = async ({
   neuronId,
   rootCanisterId,
 }: {
-  neuron: SnsNeuron;
-  neuronId: SnsNeuronId;
+  neuron: SnsGovernanceDid.Neuron;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean; err?: string }> => {
   try {
@@ -877,7 +877,7 @@ export const makeDummyProposals = async ({
   neuronId,
   rootCanisterId,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
 }): Promise<void> => {
   try {

@@ -3,7 +3,7 @@ import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuronVestingPeriodRemaining.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronVestingPeriodRemaining", () => {
@@ -16,7 +16,7 @@ describe("SnsNeuronVestingPeriodRemaining", () => {
     vi.useFakeTimers().setSystemTime(now);
   });
 
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = render(SnsNeuronVestingPeriodRemaining, {
       props: { neuron },
     });
@@ -27,7 +27,7 @@ describe("SnsNeuronVestingPeriodRemaining", () => {
   };
 
   it("should render vesting period if still vesting", async () => {
-    const neuronVesting: SnsNeuron = {
+    const neuronVesting: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       created_timestamp_seconds: yesterday,
       vesting_period_seconds: [BigInt(SECONDS_IN_MONTH)],
@@ -39,7 +39,7 @@ describe("SnsNeuronVestingPeriodRemaining", () => {
   });
 
   it("should not render vesting period if no vesting value", async () => {
-    const neuronNoVesting: SnsNeuron = {
+    const neuronNoVesting: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       created_timestamp_seconds: yesterday,
       vesting_period_seconds: [],
@@ -51,7 +51,7 @@ describe("SnsNeuronVestingPeriodRemaining", () => {
   });
 
   it("should not render vesting period if vesting passed", async () => {
-    const neuronFinishedVesting: SnsNeuron = {
+    const neuronFinishedVesting: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       created_timestamp_seconds: monthAgo,
       vesting_period_seconds: [oneWeek],

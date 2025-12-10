@@ -12,7 +12,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import {
   SnsProposalDecisionStatus,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 
 describe("SnsProposalsList", () => {
@@ -21,15 +21,15 @@ describe("SnsProposalsList", () => {
     await runResolvedPromises();
     return SnsProposalListPo.under(new JestPageObjectElement(container));
   };
-  const proposal1: SnsProposalData = {
+  const proposal1: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 1n }],
   };
-  const proposal2: SnsProposalData = {
+  const proposal2: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const proposal3: SnsProposalData = {
+  const proposal3: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 3n }],
   };

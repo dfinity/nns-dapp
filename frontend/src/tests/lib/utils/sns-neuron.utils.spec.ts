@@ -80,17 +80,11 @@ import {
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { NeuronState, Vote, type NeuronInfo } from "@icp-sdk/canisters/nns";
-import type {
-  SnsNervousSystemParameters,
-  SnsNeuronPermission,
-} from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
   neuronSubaccount,
-  type SnsNervousSystemFunction,
-  type SnsNeuron,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -108,7 +102,7 @@ const appendPermissions = ({
   identity,
   permissions,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity;
   permissions: SnsNeuronPermissionType[];
 }) =>
@@ -126,9 +120,9 @@ const permissionsWithTypeVote = [
     permission_type: Int32Array.from([
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
     ]),
-  } as SnsNeuronPermission,
+  } as SnsGovernanceDid.NeuronPermission,
 ];
-const testSnsNeuronA: SnsNeuron = {
+const testSnsNeuronA: SnsGovernanceDid.Neuron = {
   ...mockSnsNeuron,
   id: [
     {
@@ -137,7 +131,7 @@ const testSnsNeuronA: SnsNeuron = {
   ],
   permissions: permissionsWithTypeVote,
 };
-const testSnsNeuronB: SnsNeuron = {
+const testSnsNeuronB: SnsGovernanceDid.Neuron = {
   ...mockSnsNeuron,
   id: [
     {
@@ -146,7 +140,7 @@ const testSnsNeuronB: SnsNeuron = {
   ],
   permissions: permissionsWithTypeVote,
 };
-const testVotedNeuronA: SnsNeuron = {
+const testVotedNeuronA: SnsGovernanceDid.Neuron = {
   ...mockSnsNeuron,
   id: [
     {
@@ -155,7 +149,7 @@ const testVotedNeuronA: SnsNeuron = {
   ],
   permissions: permissionsWithTypeVote,
 };
-const testVotedNeuronB: SnsNeuron = {
+const testVotedNeuronB: SnsGovernanceDid.Neuron = {
   ...mockSnsNeuron,
   id: [
     {
@@ -164,7 +158,7 @@ const testVotedNeuronB: SnsNeuron = {
   ],
   permissions: permissionsWithTypeVote,
 };
-const testNotVotedNeuron: SnsNeuron = {
+const testNotVotedNeuron: SnsGovernanceDid.Neuron = {
   ...mockSnsNeuron,
   id: [
     {
@@ -287,7 +281,7 @@ describe("sns-neuron utils", () => {
     it("returns dissolve date", () => {
       const todayInSeconds = BigInt(nowSeconds);
       const dissolveDate = todayInSeconds + BigInt(SECONDS_IN_YEAR);
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         dissolve_state: [{ WhenDissolvedTimestampSeconds: dissolveDate }],
       };
@@ -307,7 +301,7 @@ describe("sns-neuron utils", () => {
     it("returns time in seconds until dissolve", () => {
       const todayInSeconds = BigInt(nowSeconds);
       const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         dissolve_state: [{ WhenDissolvedTimestampSeconds: delayInSeconds }],
       };
@@ -327,7 +321,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns time in seconds until dissolve", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         dissolve_state: [{ DissolveDelaySeconds: BigInt(SECONDS_IN_YEAR) }],
       };
@@ -341,12 +335,12 @@ describe("sns-neuron utils", () => {
       const stake2 = 200n;
       const fees1 = 10n;
       const fees2 = 0n;
-      const neuron1: SnsNeuron = {
+      const neuron1: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: stake1,
         neuron_fees_e8s: fees1,
       };
-      const neuron2: SnsNeuron = {
+      const neuron2: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: stake2,
         neuron_fees_e8s: fees2,
@@ -359,7 +353,7 @@ describe("sns-neuron utils", () => {
   describe("getSnsNeuronAvailableMaturity", () => {
     it("returns available maturity", () => {
       const maturity = 1234n;
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: maturity,
       };
@@ -370,7 +364,7 @@ describe("sns-neuron utils", () => {
   describe("getSnsNeuronStakedMaturity", () => {
     it("returns staked maturity", () => {
       const maturity = 5432n;
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         staked_maturity_e8s_equivalent: [maturity],
       };
@@ -378,7 +372,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns 0 when absent", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         staked_maturity_e8s_equivalent: [],
       };
@@ -392,7 +386,7 @@ describe("sns-neuron utils", () => {
         154, 174, 251, 49, 236, 17, 214, 189, 195, 140, 58, 89, 61, 29, 138,
         113, 79, 48, 136, 37, 96, 61, 215, 50, 182, 65, 198, 97, 8, 19, 238, 36,
       ];
-      const neuron: SnsNeuron = createMockSnsNeuron({
+      const neuron: SnsGovernanceDid.Neuron = createMockSnsNeuron({
         id,
       });
       expect(getSnsNeuronIdAsHexString(neuron)).toBe(
@@ -426,7 +420,7 @@ describe("sns-neuron utils", () => {
         }),
       ];
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsGovernanceDid.Neuron
       );
       const memo = nextMemo({
         neurons,
@@ -452,7 +446,7 @@ describe("sns-neuron utils", () => {
           })
       );
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsGovernanceDid.Neuron
       );
 
       expect(() =>
@@ -526,7 +520,7 @@ describe("sns-neuron utils", () => {
     ];
 
     it("returns true when user has voting and submit proposal rights", () => {
-      const controlledNeuron: SnsNeuron = {
+      const controlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
           hotkeyPermission(MANAGE_HOTKEY_PERMISSIONS)
@@ -547,7 +541,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has no hotkey permissions", () => {
-      const unControlledNeuron: SnsNeuron = {
+      const unControlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: hotkeys.map(hotkeyPermission(HOTKEY_PERMISSIONS)),
       };
@@ -558,7 +552,7 @@ describe("sns-neuron utils", () => {
           parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
-      const otherPermissionNeuron: SnsNeuron = {
+      const otherPermissionNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -580,7 +574,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has only voting but no submit proposal rights", () => {
-      const unControlledNeuron: SnsNeuron = {
+      const unControlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -617,7 +611,7 @@ describe("sns-neuron utils", () => {
     };
 
     it("returns array of principal ids", () => {
-      const controlledNeuron: SnsNeuron = {
+      const controlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: hotkeys
           .map(addVoteProposalPermission)
@@ -627,7 +621,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("doesn't return the controller", () => {
-      const controlledNeuron: SnsNeuron = {
+      const controlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: hotkeys
           .map(addVoteProposalPermission)
@@ -644,7 +638,7 @@ describe("sns-neuron utils", () => {
         "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
       const hotkey =
         "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
-      const controlledNeuron: SnsNeuron = {
+      const controlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -670,7 +664,7 @@ describe("sns-neuron utils", () => {
         "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
       const hotkey =
         "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
-      const controlledNeuron: SnsNeuron = {
+      const controlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -717,7 +711,7 @@ describe("sns-neuron utils", () => {
         "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
       const hotkey =
         "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
-      const controlledNeuron: SnsNeuron = {
+      const controlledNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -742,7 +736,7 @@ describe("sns-neuron utils", () => {
 
   describe("isUserHotkey", () => {
     it("returns true if user onl has voting and proposal permissions but not all permissions", () => {
-      const hotkeyneuron: SnsNeuron = {
+      const hotkeyneuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -759,7 +753,7 @@ describe("sns-neuron utils", () => {
       ).toBe(true);
     });
     it("returns false if user has voting and proposal permissions but not all permissions", () => {
-      const hotkeyneuron: SnsNeuron = {
+      const hotkeyneuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -781,7 +775,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false if user has all the permissions", () => {
-      const hotkeyneuron: SnsNeuron = {
+      const hotkeyneuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -800,7 +794,7 @@ describe("sns-neuron utils", () => {
       ).toBe(false);
     });
     it("returns false if user has voting but not proposal permissions", () => {
-      const hotkeyneuron: SnsNeuron = {
+      const hotkeyneuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -822,7 +816,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false if user is not in the permissions", () => {
-      const hotkeyneuron: SnsNeuron = {
+      const hotkeyneuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -842,7 +836,7 @@ describe("sns-neuron utils", () => {
       ).toBe(false);
     });
     it("returns false if user is has empty permissions", () => {
-      const hotkeyneuron: SnsNeuron = {
+      const hotkeyneuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -862,7 +856,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasPermissionToDisburse", () => {
     it("returns true when user has disburse rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -881,7 +878,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has no disburse rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -902,7 +902,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasPermissionToDissolve", () => {
     it("returns true when user has disburse rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -921,7 +924,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has no disburse rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -942,7 +948,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasPermissionToSplit", () => {
     it("returns true when user has split rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -958,7 +967,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has no split rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -979,7 +991,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasPermissionToVote", () => {
     it("returns true when user has voting rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -995,7 +1010,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has no voting rights", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -1016,7 +1034,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasPermissionToStakeMaturity", () => {
     it("returns true when user has stake maturity permissions", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -1034,7 +1055,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has no staking maturity permissions", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -1055,7 +1079,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasPermissionToDisburseMaturity", () => {
     it("returns true when user has disburse maturity permissions", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -1073,7 +1100,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user has no disburse maturity permissions", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       appendPermissions({
         neuron,
         identity: mockIdentity,
@@ -1094,7 +1124,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasPermissions", () => {
     it("returns true when user has one selected permission", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
       appendPermissions({
         neuron,
@@ -1112,7 +1145,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user doesn't have selected permission", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       const permissions = [];
       appendPermissions({
         neuron,
@@ -1130,7 +1166,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false when user doesn't have selected permission for selected identity", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       const permissions = [];
       appendPermissions({
         neuron,
@@ -1154,7 +1193,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns true when user has multiple selected permission", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       const permissions = [
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MERGE_MATURITY,
@@ -1179,7 +1221,10 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns true when user has multiple selected permission", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [],
+      };
       const permissions = [
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MERGE_MATURITY,
@@ -1220,7 +1265,7 @@ describe("sns-neuron utils", () => {
 
   describe("isSnsNeuron", () => {
     it("returns true for snsNeuron", () => {
-      const neuron: SnsNeuron = { ...mockSnsNeuron };
+      const neuron: SnsGovernanceDid.Neuron = { ...mockSnsNeuron };
       expect(isSnsNeuron(neuron)).toBeTruthy();
     });
 
@@ -1232,7 +1277,7 @@ describe("sns-neuron utils", () => {
 
   describe("hasValidStake", () => {
     it("returns true if neuron has stake greater than 0", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 10_000_000n,
         maturity_e8s_equivalent: 0n,
@@ -1242,7 +1287,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns true if neuron has maturity greater than 0", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 0n,
         maturity_e8s_equivalent: 10_000_000n,
@@ -1252,7 +1297,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns true if neuron has maturity and stake greater than 0", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 10_000_000n,
         maturity_e8s_equivalent: 10_000_000n,
@@ -1262,7 +1307,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns true if neuron has staked maturity greater than 0", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 0n,
         maturity_e8s_equivalent: 0n,
@@ -1272,7 +1317,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns false if neuron has no maturity and no stake", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 0n,
         maturity_e8s_equivalent: 0n,
@@ -1402,7 +1447,7 @@ describe("sns-neuron utils", () => {
         ...mockActiveDisbursement,
         amount_e8s: 200_000_000n,
       };
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: 200_000_000n,
         staked_maturity_e8s_equivalent: [200_000_000n] as [] | [bigint],
@@ -1533,7 +1578,7 @@ describe("sns-neuron utils", () => {
 
   describe("isCommunityFund", () => {
     it("returns true if the neurons is from the community fund", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         source_nns_neuron_id: [2n],
         staked_maturity_e8s_equivalent: [] as [] | [bigint],
@@ -1541,7 +1586,7 @@ describe("sns-neuron utils", () => {
       expect(isCommunityFund(neuron)).toBeTruthy();
     });
     it("returns true if the neurons is from the community fund", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         source_nns_neuron_id: [],
       };
@@ -1560,7 +1605,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("should return hotkey tag", () => {
-      const hotkeyNeuron: SnsNeuron = {
+      const hotkeyNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -1578,7 +1623,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("should return NF tag", () => {
-      const fundNeuron: SnsNeuron = {
+      const fundNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         permissions: [
           {
@@ -1600,7 +1645,7 @@ describe("sns-neuron utils", () => {
 
   describe("needsRefresh", () => {
     it("returns true when neuron stake does not match the balance", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 2n,
       };
@@ -1612,7 +1657,7 @@ describe("sns-neuron utils", () => {
       ).toBeTruthy();
     });
     it("returns false when the neuron stake matches the balance", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 2n,
       };
@@ -1626,15 +1671,15 @@ describe("sns-neuron utils", () => {
   });
 
   describe("followeesByNeuronId", () => {
-    const function0: SnsNervousSystemFunction = {
+    const function0: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 0n,
     };
-    const function1: SnsNervousSystemFunction = {
+    const function1: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 1n,
     };
-    const function2: SnsNervousSystemFunction = {
+    const function2: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 2n,
     };
@@ -1646,7 +1691,7 @@ describe("sns-neuron utils", () => {
       id: [5, 6, 7, 8],
     });
     it("returns empty array if no followees", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [],
       };
@@ -1654,7 +1699,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns empty array if no nsFunctions", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[function0.id, { followees: [neuron1.id[0]] }]],
       };
@@ -1662,7 +1707,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns multiple followees with multiple topics each", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [
           [function0.id, { followees: [neuron1.id[0]] }],
@@ -1686,15 +1731,15 @@ describe("sns-neuron utils", () => {
   });
 
   describe("followeesByFunction", () => {
-    const function0: SnsNervousSystemFunction = {
+    const function0: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 0n,
     };
-    const function1: SnsNervousSystemFunction = {
+    const function1: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 1n,
     };
-    const function2: SnsNervousSystemFunction = {
+    const function2: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 2n,
     };
@@ -1705,7 +1750,7 @@ describe("sns-neuron utils", () => {
       id: [5, 6, 7, 8],
     });
     it("returns empty if no followees", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [],
       };
@@ -1713,7 +1758,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns empty if no followees for that function", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[function1.id, { followees: [neuron1.id[0]] }]],
       };
@@ -1724,7 +1769,7 @@ describe("sns-neuron utils", () => {
 
     it("returns followees for the ns function", () => {
       const followees = [neuron1.id[0], neuron2.id[0]];
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [
           [function1.id, { followees }],
@@ -1738,7 +1783,7 @@ describe("sns-neuron utils", () => {
   });
 
   describe("snsNeuronVotingPower", () => {
-    const votingPowerNeuron: SnsNeuron = {
+    const votingPowerNeuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       staked_maturity_e8s_equivalent: [],
       maturity_e8s_equivalent: 0n,
@@ -1750,7 +1795,7 @@ describe("sns-neuron utils", () => {
 
     it("should use the neuron dissolve delay", () => {
       const baseStake = 100n;
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...votingPowerNeuron,
         cached_neuron_stake_e8s: baseStake,
       };
@@ -1762,7 +1807,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as SnsNervousSystemParameters,
+        } as unknown as SnsGovernanceDid.NervousSystemParameters,
       });
 
       expect(votingPower).toEqual(
@@ -1776,7 +1821,7 @@ describe("sns-neuron utils", () => {
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/d621f8f05b8c6302ce0b9a007ed4aeec7e7b2f51/rs/sns/governance/src/neuron.rs#L727
     it("should calculate fully boosted voting power", () => {
       const baseStake = 100n;
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...votingPowerNeuron,
         cached_neuron_stake_e8s: baseStake,
       };
@@ -1789,7 +1834,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as SnsNervousSystemParameters,
+        } as unknown as SnsGovernanceDid.NervousSystemParameters,
       });
 
       expect(votingPower).toEqual(
@@ -1804,7 +1849,7 @@ describe("sns-neuron utils", () => {
     it("should calculate fully boosted voting power with staked maturity", () => {
       const baseStake = 100n;
       const stakedMaturity = 100n;
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...votingPowerNeuron,
         staked_maturity_e8s_equivalent: [stakedMaturity],
         cached_neuron_stake_e8s: baseStake,
@@ -1818,7 +1863,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as SnsNervousSystemParameters,
+        } as unknown as SnsGovernanceDid.NervousSystemParameters,
       });
 
       expect(votingPower).toEqual(
@@ -1831,7 +1876,7 @@ describe("sns-neuron utils", () => {
 
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L747
     it("should calculate voting power with bonus thresholds zero", () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...votingPowerNeuron,
         cached_neuron_stake_e8s: 100n,
         dissolve_state: [{ DissolveDelaySeconds: 100n }],
@@ -1847,7 +1892,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as SnsNervousSystemParameters,
+        } as unknown as SnsGovernanceDid.NervousSystemParameters,
       });
 
       expect(votingPower).toEqual(100);
@@ -1857,7 +1902,7 @@ describe("sns-neuron utils", () => {
   describe("dissolveDelayMultiplier", () => {
     const maxDissolveDelay = 400n;
     const dissolveDelayToVote = 200n;
-    const snsParameters: SnsNervousSystemParameters = {
+    const snsParameters: SnsGovernanceDid.NervousSystemParameters = {
       ...snsNervousSystemParametersMock,
       neuron_minimum_dissolve_delay_to_vote_seconds: [dissolveDelayToVote],
       max_dissolve_delay_seconds: [maxDissolveDelay],
@@ -1931,7 +1976,7 @@ describe("sns-neuron utils", () => {
 
   describe("ageMultiplier", () => {
     const maxNeuronAge = 400n;
-    const snsParameters: SnsNervousSystemParameters = {
+    const snsParameters: SnsGovernanceDid.NervousSystemParameters = {
       ...snsNervousSystemParametersMock,
       max_neuron_age_for_age_bonus: [maxNeuronAge],
       max_age_bonus_percentage: [25n],
@@ -1980,7 +2025,7 @@ describe("sns-neuron utils", () => {
   });
 
   describe("snsNeuronsIneligibilityReasons", () => {
-    const testProposal: SnsProposalData = {
+    const testProposal: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       proposal_creation_timestamp_seconds: 50n,
       ballots: [
@@ -2038,7 +2083,7 @@ describe("sns-neuron utils", () => {
 
   describe("ineligibleSnsNeurons", () => {
     it("should filter by created since proposal neurons", () => {
-      const testNeurons: SnsNeuron[] = [
+      const testNeurons: SnsGovernanceDid.Neuron[] = [
         {
           ...testSnsNeuronA,
           created_timestamp_seconds: 100n,
@@ -2048,7 +2093,7 @@ describe("sns-neuron utils", () => {
           created_timestamp_seconds: 50n,
         },
       ];
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         proposal_creation_timestamp_seconds: 50n,
         ballots: [
@@ -2081,7 +2126,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("should filter by ballots", () => {
-      const testNeurons: SnsNeuron[] = [
+      const testNeurons: SnsGovernanceDid.Neuron[] = [
         {
           ...testSnsNeuronA,
           id: [
@@ -2101,7 +2146,7 @@ describe("sns-neuron utils", () => {
           created_timestamp_seconds: 50n,
         },
       ];
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         proposal_creation_timestamp_seconds: 100n,
         ballots: [
@@ -2128,7 +2173,7 @@ describe("sns-neuron utils", () => {
 
   describe("votableSnsNeurons", () => {
     it("should filter out ineligible neurons", () => {
-      const testNeurons: SnsNeuron[] = [
+      const testNeurons: SnsGovernanceDid.Neuron[] = [
         {
           ...testSnsNeuronA,
           // created after
@@ -2139,7 +2184,7 @@ describe("sns-neuron utils", () => {
           created_timestamp_seconds: 50n,
         },
       ];
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         proposal_creation_timestamp_seconds: 50n,
         ballots: [
@@ -2172,7 +2217,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("should filter out by voting state", () => {
-      const testNeurons: SnsNeuron[] = [
+      const testNeurons: SnsGovernanceDid.Neuron[] = [
         {
           ...testSnsNeuronA,
           id: [
@@ -2193,7 +2238,7 @@ describe("sns-neuron utils", () => {
           created_timestamp_seconds: 50n,
         },
       ];
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         proposal_creation_timestamp_seconds: 100n,
         ballots: [
@@ -2226,7 +2271,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("should filter out by permissions", () => {
-      const testNeurons: SnsNeuron[] = [
+      const testNeurons: SnsGovernanceDid.Neuron[] = [
         {
           ...testSnsNeuronA,
           created_timestamp_seconds: 50n,
@@ -2238,7 +2283,7 @@ describe("sns-neuron utils", () => {
           permissions: [],
         },
       ];
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         proposal_creation_timestamp_seconds: 100n,
         ballots: [
@@ -2272,7 +2317,7 @@ describe("sns-neuron utils", () => {
   });
 
   describe("getSnsNeuronVote", () => {
-    const testProposal: SnsProposalData = {
+    const testProposal: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       proposal_creation_timestamp_seconds: 100n,
       ballots: [
@@ -2286,7 +2331,7 @@ describe("sns-neuron utils", () => {
         ],
       ],
     };
-    const testVotedNeuron: SnsNeuron = {
+    const testVotedNeuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       id: [
         {
@@ -2294,7 +2339,7 @@ describe("sns-neuron utils", () => {
         },
       ],
     };
-    const testNotVotedNeuron: SnsNeuron = {
+    const testNotVotedNeuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       id: [
         {
@@ -2323,7 +2368,7 @@ describe("sns-neuron utils", () => {
   });
 
   describe("votedSnsNeurons", () => {
-    const testProposal: SnsProposalData = {
+    const testProposal: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       proposal_creation_timestamp_seconds: 100n,
       ballots: [
@@ -2345,7 +2390,7 @@ describe("sns-neuron utils", () => {
         ],
       ],
     };
-    const testNeurons: SnsNeuron[] = [
+    const testNeurons: SnsGovernanceDid.Neuron[] = [
       {
         ...mockSnsNeuron,
         id: [
@@ -2391,7 +2436,7 @@ describe("sns-neuron utils", () => {
   });
 
   describe("votedSnsNeuronDetails", () => {
-    const testProposal: SnsProposalData = {
+    const testProposal: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       proposal_creation_timestamp_seconds: 100n,
       ballots: [
@@ -2437,7 +2482,7 @@ describe("sns-neuron utils", () => {
 
   describe("snsNeuronsToIneligibleNeuronData", () => {
     it("should return stringified ids", () => {
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         proposal_creation_timestamp_seconds: 100n,
       };
@@ -2455,7 +2500,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("should return correct reasons", () => {
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         proposal_creation_timestamp_seconds: 100n,
       };

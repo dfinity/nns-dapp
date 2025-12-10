@@ -17,7 +17,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemParameters } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     fromNullable,
     nonNullish,
@@ -47,7 +47,7 @@
       ? stakeNeuronText
       : $i18n.accounts.review_transaction;
 
-  let parameters: SnsNervousSystemParameters | undefined;
+  let parameters: SnsGovernanceDid.NervousSystemParameters | undefined;
   $: parameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
   let minimumStakeE8s: bigint | undefined;
   $: minimumStakeE8s = fromNullable(parameters?.neuron_minimum_stake_e8s ?? []);

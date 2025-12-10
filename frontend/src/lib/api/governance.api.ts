@@ -21,7 +21,7 @@ import type {
 import {
   GovernanceCanister,
   NeuronVisibility,
-  type RewardEvent,
+  type NnsGovernanceDid,
 } from "@icp-sdk/canisters/nns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -573,7 +573,7 @@ export const registerVote = async ({
 export const queryLastestRewardEvent = async ({
   identity,
   certified,
-}: ApiQueryParams): Promise<RewardEvent> => {
+}: ApiQueryParams): Promise<NnsGovernanceDid.RewardEvent> => {
   logWithTimestamp(
     `Getting latest reward event call certified: ${certified}...`
   );

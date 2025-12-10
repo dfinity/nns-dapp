@@ -20,7 +20,7 @@ import { snsDecisionStatus } from "$lib/utils/sns-proposals.utils";
 import { snsTopicToTopicKey } from "$lib/utils/sns-topics.utils";
 import { isSnsGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
 import { fromNullable, isNullish } from "@dfinity/utils";
-import type { SnsTopic } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { derived, get, type Readable } from "svelte/store";
 
 export const snsFilteredProposalsStore = derived<
@@ -66,7 +66,7 @@ export const snsFilteredProposalsStore = derived<
             const topic = fromNullable(proposal.topic);
             const proposalTopic = isNullish(topic)
               ? ALL_SNS_PROPOSALS_WITHOUT_TOPIC
-              : snsTopicToTopicKey(topic as SnsTopic);
+              : snsTopicToTopicKey(topic as SnsGovernanceDid.Topic);
 
             const proposalTopicMatch =
               projectSelectedFilters.topics.length === 0 ||

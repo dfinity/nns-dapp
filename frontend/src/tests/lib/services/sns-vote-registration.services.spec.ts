@@ -20,7 +20,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { NeuronState } from "@icp-sdk/canisters/nns";
-import type { SnsBallot, SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalRewardStatus,
@@ -68,14 +68,14 @@ describe("sns-vote-registration-services", () => {
       cast_timestamp_seconds: 456n,
       voting_power: 98441n,
     },
-  ]) as [string, SnsBallot][];
-  const proposal1: SnsProposalData = {
+  ]) as [string, SnsGovernanceDid.Ballot][];
+  const proposal1: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 123n }],
     action: nervousSystemFunctionMock.id,
     ballots: testBallots,
   };
-  const proposal2: SnsProposalData = {
+  const proposal2: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 321n }],
     action: nervousSystemFunctionMock.id,
@@ -89,7 +89,7 @@ describe("sns-vote-registration-services", () => {
     reloadProposalCallback,
   }: {
     vote: SnsVote;
-    reloadProposalCallback: (proposal: SnsProposalData) => void;
+    reloadProposalCallback: (proposal: SnsGovernanceDid.ProposalData) => void;
   }) =>
     await registerSnsVotes({
       universeCanisterId: rootCanisterId,

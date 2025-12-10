@@ -3,7 +3,7 @@ import { SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronAgePo } from "$tests/page-objects/SnsNeuronAge.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronAge", () => {
@@ -13,14 +13,14 @@ describe("SnsNeuronAge", () => {
     vi.useFakeTimers().setSystemTime(now);
   });
 
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = render(SnsNeuronAge, { props: { neuron } });
 
     return SnsNeuronAgePo.under(new JestPageObjectElement(container));
   };
 
   it("should render neuron age if greater than 0", async () => {
-    const neuronWithPositiveAge: SnsNeuron = {
+    const neuronWithPositiveAge: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       aging_since_timestamp_seconds: BigInt(nowSeconds - SECONDS_IN_MONTH),
     };
@@ -31,7 +31,7 @@ describe("SnsNeuronAge", () => {
   });
 
   it("should render not neuron age if lower than 0", async () => {
-    const neuronWithAge0: SnsNeuron = {
+    const neuronWithAge0: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       aging_since_timestamp_seconds: BigInt(nowSeconds + SECONDS_IN_MONTH),
     };

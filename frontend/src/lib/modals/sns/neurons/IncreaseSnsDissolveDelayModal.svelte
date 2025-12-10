@@ -15,12 +15,12 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
   export let token: Token;
   export let reloadNeuron: () => Promise<void>;
 

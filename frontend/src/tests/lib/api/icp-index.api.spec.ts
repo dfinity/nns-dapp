@@ -3,10 +3,7 @@ import { getTransactions } from "$lib/api/icp-index.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
-import {
-  IndexCanister,
-  type GetAccountIdentifierTransactionsResponse,
-} from "@icp-sdk/canisters/ledger/icp";
+import { IndexCanister, type IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
@@ -17,11 +14,12 @@ describe("icp-index.api", () => {
 
   describe("icp-index api", () => {
     const { identifier: accountIdentifier } = mockMainAccount;
-    const defaultResponse: GetAccountIdentifierTransactionsResponse = {
-      transactions: [mockTransactionWithId],
-      oldest_tx_id: [1234n],
-      balance: 200_000_000n,
-    };
+    const defaultResponse: IcpIndexDid.GetAccountIdentifierTransactionsResponse =
+      {
+        transactions: [mockTransactionWithId],
+        oldest_tx_id: [1234n],
+        balance: 200_000_000n,
+      };
     let currentResponse = defaultResponse;
     const indexCanisterMock = mock<IndexCanister>();
 

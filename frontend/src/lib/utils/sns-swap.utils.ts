@@ -1,6 +1,6 @@
 import type { SnsSwapMetricsStoreData } from "$lib/stores/sns-swap-metrics.store";
 import { fromNullable, nonNullish } from "@dfinity/utils";
-import type { SnsSwapDerivedState } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const swapSaleBuyerCount = ({
@@ -10,7 +10,7 @@ export const swapSaleBuyerCount = ({
 }: {
   swapMetrics: SnsSwapMetricsStoreData;
   rootCanisterId: Principal | undefined;
-  derivedState: SnsSwapDerivedState;
+  derivedState: SnsSwapDid.DerivedState;
 }): number | undefined => {
   if (nonNullish(fromNullable(direct_participant_count))) {
     return Number(fromNullable(direct_participant_count));
@@ -29,7 +29,7 @@ export const swapSaleBuyerCount = ({
  * Therefore, we don't want to return `false` while the derived state is not present.
  */
 export const hasBuyersCount = (
-  derived: SnsSwapDerivedState | undefined | null
+  derived: SnsSwapDid.DerivedState | undefined | null
 ): undefined | boolean => {
   if (derived === undefined || derived === null) {
     return undefined;

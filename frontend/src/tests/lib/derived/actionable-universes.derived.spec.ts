@@ -14,13 +14,13 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("actionable universes derived stores", () => {
-  const createProposal = (proposalId: bigint): SnsProposalData =>
+  const createProposal = (proposalId: bigint): SnsGovernanceDid.ProposalData =>
     createSnsProposal({
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,

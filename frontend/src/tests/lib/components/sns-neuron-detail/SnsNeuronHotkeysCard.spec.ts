@@ -12,7 +12,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import {
   SnsNeuronPermissionType,
-  type SnsNeuron,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { fireEvent, waitFor } from "@testing-library/svelte";
@@ -29,7 +29,7 @@ describe("SnsNeuronHotkeysCard", () => {
     "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
     "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
   ];
-  const controlledNeuron: SnsNeuron = {
+  const controlledNeuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     permissions: [
       ...[...hotkeys].map(addHotkeyPermissions),
@@ -40,13 +40,13 @@ describe("SnsNeuronHotkeysCard", () => {
     ],
   };
 
-  const unControlledNeuron: SnsNeuron = {
+  const unControlledNeuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     permissions: hotkeys.map(addHotkeyPermissions),
   };
 
   const reload = vi.fn();
-  const renderCard = (neuron: SnsNeuron) =>
+  const renderCard = (neuron: SnsGovernanceDid.Neuron) =>
     renderSelectedSnsNeuronContext({
       reload,
       Component: SnsNeuronHotkeysCard,
@@ -106,7 +106,7 @@ describe("SnsNeuronHotkeysCard", () => {
   });
 
   it("shows confirmation modal if hotkey is the current user", async () => {
-    const hotkeyNeuron: SnsNeuron = {
+    const hotkeyNeuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       permissions: [mockIdentity.getPrincipal().toText()].map(
         addHotkeyPermissions

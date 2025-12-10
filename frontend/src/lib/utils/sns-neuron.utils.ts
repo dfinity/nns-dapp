@@ -30,20 +30,18 @@ import {
   type E8s,
   type NeuronInfo,
 } from "@icp-sdk/canisters/nns";
-import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
   neuronSubaccount,
-  type SnsNervousSystemFunction,
-  type SnsNervousSystemParameters,
-  type SnsNeuron,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
-export const sortSnsNeuronsByStake = (neurons: SnsNeuron[]): SnsNeuron[] =>
+export const sortSnsNeuronsByStake = (
+  neurons: SnsGovernanceDid.Neuron[]
+): SnsGovernanceDid.Neuron[] =>
   [...neurons].sort((a, b) =>
     Number(getSnsNeuronStake(b) - getSnsNeuronStake(a))
   );
@@ -51,7 +49,7 @@ export const sortSnsNeuronsByStake = (neurons: SnsNeuron[]): SnsNeuron[] =>
 // For now, both nns neurons and sns neurons have the same states.
 export const getSnsNeuronState = ({
   dissolve_state,
-}: SnsNeuron): NeuronState => {
+}: SnsGovernanceDid.Neuron): NeuronState => {
   const dissolveState = fromNullable(dissolve_state);
   if (dissolveState === undefined) {
     return NeuronState.Dissolved;
@@ -73,7 +71,7 @@ export const getSnsNeuronState = ({
 };
 
 export const getSnsDissolvingTimestampSeconds = (
-  neuron: SnsNeuron
+  neuron: SnsGovernanceDid.Neuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
   const dissolveState = fromNullable(neuron.dissolve_state);
@@ -87,7 +85,7 @@ export const getSnsDissolvingTimestampSeconds = (
 };
 
 export const getSnsDissolvingTimeInSeconds = (
-  neuron: SnsNeuron,
+  neuron: SnsGovernanceDid.Neuron,
   referenceDate?: Date
 ): bigint | undefined => {
   const dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
@@ -102,7 +100,7 @@ export const getSnsDissolvingTimeInSeconds = (
 };
 
 export const getSnsLockedTimeInSeconds = (
-  neuron: SnsNeuron
+  neuron: SnsGovernanceDid.Neuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
   const dissolveState = fromNullable(neuron.dissolve_state);
@@ -118,7 +116,7 @@ export const getSnsLockedTimeInSeconds = (
 // Delay from now. Source depends on the neuron state.
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/f6c4a37e2fd23ed83e6f7126ab0112a3a48cf54f/rs/sns/governance/src/neuron.rs#L428
 export const getSnsDissolveDelaySeconds = (
-  neuron: SnsNeuron
+  neuron: SnsGovernanceDid.Neuron
 ): bigint | undefined => {
   const delay =
     getSnsDissolvingTimeInSeconds(neuron) ??
@@ -130,21 +128,24 @@ export const getSnsDissolveDelaySeconds = (
 export const getSnsNeuronStake = ({
   cached_neuron_stake_e8s,
   neuron_fees_e8s,
-}: SnsNeuron): bigint => cached_neuron_stake_e8s - neuron_fees_e8s;
+}: SnsGovernanceDid.Neuron): bigint =>
+  cached_neuron_stake_e8s - neuron_fees_e8s;
 
-export const getSnsNeuronAvailableMaturity = (neuron: SnsNeuron): bigint =>
-  neuron.maturity_e8s_equivalent;
+export const getSnsNeuronAvailableMaturity = (
+  neuron: SnsGovernanceDid.Neuron
+): bigint => neuron.maturity_e8s_equivalent;
 
-export const getSnsNeuronStakedMaturity = (neuron: SnsNeuron): bigint =>
-  fromNullable(neuron.staked_maturity_e8s_equivalent) ?? 0n;
+export const getSnsNeuronStakedMaturity = (
+  neuron: SnsGovernanceDid.Neuron
+): bigint => fromNullable(neuron.staked_maturity_e8s_equivalent) ?? 0n;
 
 export const getSnsNeuronByHexId = ({
   neuronIdHex,
   neurons,
 }: {
   neuronIdHex: string;
-  neurons: SnsNeuron[] | undefined;
-}): SnsNeuron | undefined =>
+  neurons: SnsGovernanceDid.Neuron[] | undefined;
+}): SnsGovernanceDid.Neuron | undefined =>
   neurons?.find((neuron) => getSnsNeuronIdAsHexString(neuron) === neuronIdHex);
 
 /**
@@ -155,12 +156,12 @@ export const getSnsNeuronByHexId = ({
  */
 export const getSnsNeuronIdAsHexString = ({
   id: neuronId,
-}: SnsNeuron): string =>
+}: SnsGovernanceDid.Neuron): string =>
   subaccountToHexString(fromNullable(neuronId)?.id ?? new Uint8Array());
 
 /**
  * Convert a subaccount to a hex string.
- * SnsNeuron id is a subaccount.
+ * SnsGovernanceDid.Neuron id is a subaccount.
  *
  * @param {Uint8Array} subaccount
  * @returns {string} hex string
@@ -182,7 +183,7 @@ export const nextMemo = ({
   neurons,
 }: {
   identity: Identity;
-  neurons: SnsNeuron[];
+  neurons: SnsGovernanceDid.Neuron[];
 }): bigint => {
   const controller = identity.getPrincipal();
   for (let index = 0; index < MAX_NEURONS_SUBACCOUNTS; index++) {
@@ -211,16 +212,16 @@ export const nextMemo = ({
  * @param {Object} params
  * @param {SnsNeuron} params.neuron
  * @param {Identity | undefined | null} params.identity
- * @param {SnsNervousSystemParameters} params.parameters
+ * @param { SnsGovernanceDid.NervousSystemParameters} params.parameters
  */
 export const canIdentityManageHotkeys = ({
   neuron,
   identity,
   parameters,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
-  parameters: SnsNervousSystemParameters;
+  parameters: SnsGovernanceDid.NervousSystemParameters;
 }): boolean => {
   const neuron_grantable_permissions = Array.from(
     fromDefinedNullable(parameters.neuron_grantable_permissions).permissions
@@ -242,7 +243,7 @@ export const hasPermissionToDisburse = ({
   neuron,
   identity,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
 }): boolean =>
   hasPermissions({
@@ -255,7 +256,7 @@ export const hasPermissionToDissolve = ({
   neuron,
   identity,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
 }): boolean =>
   hasPermissions({
@@ -270,7 +271,7 @@ export const hasPermissionToVote = ({
   neuron,
   identity,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
 }): boolean =>
   hasPermissions({
@@ -283,7 +284,7 @@ export const hasPermissionToStakeMaturity = ({
   neuron,
   identity,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
 }): boolean =>
   hasPermissions({
@@ -298,7 +299,7 @@ export const hasPermissionToDisburseMaturity = ({
   neuron,
   identity,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
 }): boolean =>
   hasPermissions({
@@ -313,7 +314,7 @@ export const hasPermissionToSplit = ({
   neuron,
   identity,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
 }): boolean =>
   hasPermissions({
@@ -339,7 +340,7 @@ export const hasPermissions = ({
   permissions,
   options,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
   permissions: SnsNeuronPermissionType[];
   options?: { anyPermission: boolean };
@@ -391,7 +392,9 @@ const comparePermissions = ({
  * @param {SnsNeuron}
  * @returns {string[]} principals that are hotkeys
  */
-export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] => {
+export const getSnsNeuronHotkeys = ({
+  permissions,
+}: SnsGovernanceDid.Neuron): string[] => {
   // only those combinations define a hotkey
   const hotkeyPermissions = [
     HOTKEY_PERMISSIONS,
@@ -421,7 +424,7 @@ export const isUserHotkey = ({
   neuron,
   identity,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | null | undefined;
 }) =>
   identity === null || identity === undefined
@@ -429,14 +432,14 @@ export const isUserHotkey = ({
     : getSnsNeuronHotkeys(neuron).includes(identity.getPrincipal().toText());
 
 /**
- * A type guard that performs a runtime check that the argument is a type SnsNeuron.
+ * A type guard that performs a runtime check that the argument is a type SnsGovernanceDid.Neuron.
  * @param neuron
  */
 export const isSnsNeuron = (
-  neuron: SnsNeuron | NeuronInfo
-): neuron is SnsNeuron =>
-  Array.isArray((neuron as SnsNeuron).id) &&
-  Array.isArray((neuron as SnsNeuron).permissions);
+  neuron: SnsGovernanceDid.Neuron | NeuronInfo
+): neuron is SnsGovernanceDid.Neuron =>
+  Array.isArray((neuron as SnsGovernanceDid.Neuron).id) &&
+  Array.isArray((neuron as SnsGovernanceDid.Neuron).permissions);
 
 /**
  * Checks whether the neuron has either stake or maturity greater than zero.
@@ -444,7 +447,7 @@ export const isSnsNeuron = (
  * @param {SnsNeuron} neuron
  * @returns {boolean}
  */
-export const hasValidStake = (neuron: SnsNeuron): boolean =>
+export const hasValidStake = (neuron: SnsGovernanceDid.Neuron): boolean =>
   neuron.cached_neuron_stake_e8s +
     getSnsNeuronAvailableMaturity(neuron) +
     getSnsNeuronStakedMaturity(neuron) >
@@ -477,7 +480,7 @@ export const hasEnoughStakeToSplit = ({
   fee,
   neuronMinimumStake,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   fee: E8s;
   neuronMinimumStake: E8s;
 }): boolean =>
@@ -489,7 +492,7 @@ export const hasEnoughStakeToSplit = ({
  * @returns {boolean}
  */
 export const hasAutoStakeMaturityOn = (
-  neuron: SnsNeuron | null | undefined
+  neuron: SnsGovernanceDid.Neuron | null | undefined
 ): boolean => Boolean(fromNullable(neuron?.auto_stake_maturity ?? []));
 
 /**
@@ -497,7 +500,7 @@ export const hasAutoStakeMaturityOn = (
  * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` that will be formatted
  */
 export const formattedMaturity = (
-  neuron: SnsNeuron | null | undefined
+  neuron: SnsGovernanceDid.Neuron | null | undefined
 ): string =>
   formatTokenE8s({
     value: neuron?.maturity_e8s_equivalent ?? 0n,
@@ -507,7 +510,9 @@ export const formattedMaturity = (
  * Format the sum of the maturity in a value (token "currency") way.
  * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` and `staked_maturity_e8s_equivalent` which will be summed and formatted
  */
-export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
+export const formattedTotalMaturity = (
+  neuron: SnsGovernanceDid.Neuron
+): string =>
   formatTokenE8s({
     value:
       neuron.maturity_e8s_equivalent +
@@ -520,7 +525,7 @@ export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
  * @param {SnsNeuron} neuron
  */
 export const hasEnoughMaturityToStake = (
-  neuron: SnsNeuron | null | undefined
+  neuron: SnsGovernanceDid.Neuron | null | undefined
 ): boolean => (neuron?.maturity_e8s_equivalent ?? 0n) > 0n;
 
 /**
@@ -533,7 +538,7 @@ export const hasEnoughMaturityToDisburse = ({
   feeE8s,
 }: {
   feeE8s: bigint;
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
 }): boolean =>
   maturity_e8s_equivalent >= minimumAmountToDisburseMaturity(feeE8s);
 
@@ -542,7 +547,7 @@ export const hasEnoughMaturityToDisburse = ({
  * @param neuron
  */
 export const hasStakedMaturity = (
-  neuron: SnsNeuron | null | undefined
+  neuron: SnsGovernanceDid.Neuron | null | undefined
 ): boolean =>
   nonNullish(fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []));
 
@@ -551,7 +556,7 @@ export const hasStakedMaturity = (
  * @param {SnsNeuron} neuron The neuron that contains the `staked_maturity_e8s_equivalent` that will be formatted
  */
 export const formattedStakedMaturity = (
-  neuron: SnsNeuron | null | undefined
+  neuron: SnsGovernanceDid.Neuron | null | undefined
 ): string =>
   formatTokenE8s({
     value: fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? 0n,
@@ -566,7 +571,9 @@ export const formattedStakedMaturity = (
  * @param {SnsNeuron} neuron
  * @returns {boolean}
  */
-export const isCommunityFund = ({ source_nns_neuron_id }: SnsNeuron): boolean =>
+export const isCommunityFund = ({
+  source_nns_neuron_id,
+}: SnsGovernanceDid.Neuron): boolean =>
   nonNullish(fromNullable(source_nns_neuron_id));
 
 export const getSnsNeuronTags = ({
@@ -574,7 +581,7 @@ export const getSnsNeuronTags = ({
   identity,
   i18n,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity | undefined | null;
   i18n: I18n;
 }): NeuronTagData[] => {
@@ -601,7 +608,7 @@ export const needsRefresh = ({
   neuron,
   balanceE8s,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   balanceE8s: bigint;
 }): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
 
@@ -617,10 +624,10 @@ export const followeesByFunction = ({
   neuron,
   functionId,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   functionId: bigint;
-}): SnsNeuronId[] =>
-  neuron.followees.reduce<SnsNeuronId[]>(
+}): SnsGovernanceDid.NeuronId[] =>
+  neuron.followees.reduce<SnsGovernanceDid.NeuronId[]>(
     (functionFollowees, [currentFunctionId, followeesData]) =>
       currentFunctionId === functionId
         ? followeesData.followees
@@ -630,7 +637,7 @@ export const followeesByFunction = ({
 
 export interface SnsFolloweesByNeuron {
   neuronIdHex: string;
-  nsFunctions: SnsNervousSystemFunction[];
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
 }
 
 /**
@@ -640,18 +647,18 @@ export interface SnsFolloweesByNeuron {
  *
  * @param {Object} params
  * @param {SnsNeuron} params.neuron
- * @param {SnsNervousSystemFunction[]} params.nsFunctions
+ * @param { SnsGovernanceDid.NervousSystemFunction[]} params.nsFunctions
  * @returns {SnsFolloweesByNeuron[]}
  */
 export const followeesByNeuronId = ({
   neuron,
   nsFunctions,
 }: {
-  neuron: SnsNeuron;
-  nsFunctions: SnsNervousSystemFunction[];
+  neuron: SnsGovernanceDid.Neuron;
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
 }): SnsFolloweesByNeuron[] => {
   const followeesDictionary = neuron.followees.reduce<{
-    [key: string]: SnsNervousSystemFunction[];
+    [key: string]: SnsGovernanceDid.NervousSystemFunction[];
   }>((acc, [functionId, followeesData]) => {
     const nsFunction = nsFunctions.find(({ id }) => id === functionId);
     // Edge case, all ns functions in followees should also be in the nervous system.
@@ -689,7 +696,7 @@ export const followeesByNeuronId = ({
  */
 export const neuronAge = ({
   aging_since_timestamp_seconds,
-}: SnsNeuron): bigint =>
+}: SnsGovernanceDid.Neuron): bigint =>
   BigInt(Math.max(nowInSeconds() - Number(aging_since_timestamp_seconds), 0));
 
 /**
@@ -700,7 +707,7 @@ export const neuronAge = ({
  * Returns 0 if the neuron is not eligible to vote.
  *
  * @param {SnsNeuron} neuron
- * @param {SnsNervousSystemParameters} neuron.snsParameters
+ * @param { SnsGovernanceDid.NervousSystemParameters} neuron.snsParameters
  * @param {number} neuron.newDissolveDelayInSeconds
  */
 export const snsNeuronVotingPower = ({
@@ -708,8 +715,8 @@ export const snsNeuronVotingPower = ({
   snsParameters,
   newDissolveDelayInSeconds,
 }: {
-  neuron: SnsNeuron;
-  snsParameters: SnsNervousSystemParameters;
+  neuron: SnsGovernanceDid.Neuron;
+  snsParameters: SnsGovernanceDid.NervousSystemParameters;
   newDissolveDelayInSeconds?: bigint;
 }): number => {
   const dissolveDelayInSeconds =
@@ -785,8 +792,8 @@ export const dissolveDelayMultiplier = ({
     max_dissolve_delay_bonus_percentage,
   },
 }: {
-  neuron: SnsNeuron;
-  snsParameters: SnsNervousSystemParameters;
+  neuron: SnsGovernanceDid.Neuron;
+  snsParameters: SnsGovernanceDid.NervousSystemParameters;
 }): number => {
   const neuronMinimumDissolveDelayToVoteSeconds = fromDefinedNullable(
     neuron_minimum_dissolve_delay_to_vote_seconds
@@ -818,8 +825,8 @@ export const ageMultiplier = ({
   neuron,
   snsParameters: { max_neuron_age_for_age_bonus, max_age_bonus_percentage },
 }: {
-  neuron: SnsNeuron;
-  snsParameters: SnsNervousSystemParameters;
+  neuron: SnsGovernanceDid.Neuron;
+  snsParameters: SnsGovernanceDid.NervousSystemParameters;
 }): number => {
   const maxAgeBonusPercentage = fromDefinedNullable(max_age_bonus_percentage);
   const maxNeuronAgeForAgeBonus = fromDefinedNullable(
@@ -839,8 +846,8 @@ export const snsNeuronsIneligibilityReasons = ({
   proposal,
   identity,
 }: {
-  neuron: SnsNeuron;
-  proposal: SnsProposalData;
+  neuron: SnsGovernanceDid.Neuron;
+  proposal: SnsGovernanceDid.ProposalData;
   identity: Identity;
 }): NeuronIneligibilityReason | undefined => {
   const { ballots, proposal_creation_timestamp_seconds } = proposal;
@@ -869,10 +876,10 @@ export const ineligibleSnsNeurons = ({
   proposal,
   identity,
 }: {
-  neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  neurons: SnsGovernanceDid.Neuron[];
+  proposal: SnsGovernanceDid.ProposalData;
   identity: Identity;
-}): SnsNeuron[] =>
+}): SnsGovernanceDid.Neuron[] =>
   neurons.filter(
     (neuron) =>
       snsNeuronsIneligibilityReasons({
@@ -887,10 +894,10 @@ export const votableSnsNeurons = ({
   proposal,
   identity,
 }: {
-  neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  neurons: SnsGovernanceDid.Neuron[];
+  proposal: SnsGovernanceDid.ProposalData;
   identity: Identity;
-}): SnsNeuron[] => {
+}): SnsGovernanceDid.Neuron[] => {
   return neurons.filter((neuron) => {
     const ineligibleReason = snsNeuronsIneligibilityReasons({
       neuron,
@@ -913,9 +920,9 @@ export const votedSnsNeurons = ({
   neurons,
   proposal,
 }: {
-  neurons: SnsNeuron[];
-  proposal: SnsProposalData;
-}): SnsNeuron[] => {
+  neurons: SnsGovernanceDid.Neuron[];
+  proposal: SnsGovernanceDid.ProposalData;
+}): SnsGovernanceDid.Neuron[] => {
   const votedNeuronIds = new Set(
     proposal.ballots
       // filter out the unspecified votes or the ballots that are not presented in ballots
@@ -931,8 +938,8 @@ export const votedSnsNeuronDetails = ({
   neurons,
   proposal,
 }: {
-  neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  neurons: SnsGovernanceDid.Neuron[];
+  proposal: SnsGovernanceDid.ProposalData;
 }): CompactNeuronInfo[] =>
   votedSnsNeurons({
     neurons,
@@ -951,8 +958,8 @@ export const getSnsNeuronVote = ({
   neuron,
   proposal,
 }: {
-  neuron: SnsNeuron;
-  proposal: SnsProposalData;
+  neuron: SnsGovernanceDid.Neuron;
+  proposal: SnsGovernanceDid.ProposalData;
 }): Vote | undefined =>
   proposal.ballots.find(
     ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
@@ -963,8 +970,8 @@ export const snsNeuronsToIneligibleNeuronData = ({
   proposal,
   identity,
 }: {
-  neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  neurons: SnsGovernanceDid.Neuron[];
+  proposal: SnsGovernanceDid.ProposalData;
   identity: Identity;
 }): IneligibleNeuronData[] =>
   neurons.map((neuron) => ({
@@ -984,7 +991,7 @@ export const snsNeuronsToIneligibleNeuronData = ({
 export const vestingInSeconds = ({
   created_timestamp_seconds,
   vesting_period_seconds,
-}: SnsNeuron): bigint =>
+}: SnsGovernanceDid.Neuron): bigint =>
   BigInt(
     Math.max(
       Number(created_timestamp_seconds) +
@@ -997,14 +1004,14 @@ export const vestingInSeconds = ({
 /**
  * Returns whether the neuron is still vesting.
  */
-export const isVesting = (neuron: SnsNeuron): boolean =>
+export const isVesting = (neuron: SnsGovernanceDid.Neuron): boolean =>
   vestingInSeconds(neuron) > 0n;
 
 export const neuronDashboardUrl = ({
   neuron,
   rootCanisterId,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   rootCanisterId: Principal;
 }) =>
   `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
@@ -1013,7 +1020,7 @@ export const neuronDashboardUrl = ({
 
 export const totalDisbursingMaturity = ({
   disburse_maturity_in_progress,
-}: SnsNeuron): bigint =>
+}: SnsGovernanceDid.Neuron): bigint =>
   disburse_maturity_in_progress.reduce(
     (acc, disbursement) => acc + disbursement.amount_e8s,
     0n

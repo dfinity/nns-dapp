@@ -48,8 +48,7 @@ import { NeuronState } from "@icp-sdk/canisters/nns";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
-  type SnsNeuron,
-  type SnsNeuronId,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { tick } from "svelte";
@@ -80,10 +79,10 @@ describe("sns-neurons-services", () => {
     controller: mockIdentity.getPrincipal(),
     index: 0,
   });
-  const neuronId: SnsNeuronId = { id: subaccount };
-  const neuron: SnsNeuron = {
+  const neuronId: SnsGovernanceDid.NeuronId = { id: subaccount };
+  const neuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
-    id: [neuronId] as [SnsNeuronId],
+    id: [neuronId] as [SnsGovernanceDid.NeuronId],
     permissions: [
       {
         principal: [mockIdentity.getPrincipal()],
@@ -193,10 +192,10 @@ describe("sns-neurons-services", () => {
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
-        const neuronId: SnsNeuronId = { id: subaccount };
+        const neuronId: SnsGovernanceDid.NeuronId = { id: subaccount };
         const neuron = {
           ...mockSnsNeuron,
-          id: [neuronId] as [SnsNeuronId],
+          id: [neuronId] as [SnsGovernanceDid.NeuronId],
         };
         const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
@@ -205,7 +204,7 @@ describe("sns-neurons-services", () => {
           neuron: neuronToLoad,
           certified,
         }: {
-          neuron: SnsNeuron;
+          neuron: SnsGovernanceDid.Neuron;
           certified: boolean;
         }) => {
           expect(spyQuery).toBeCalled();
@@ -237,7 +236,7 @@ describe("sns-neurons-services", () => {
           neuron,
           certified,
         }: {
-          neuron: SnsNeuron;
+          neuron: SnsGovernanceDid.Neuron;
           certified: boolean;
         }) => {
           expect(spyQuery).not.toBeCalled();
@@ -269,7 +268,7 @@ describe("sns-neurons-services", () => {
           neuron,
           certified,
         }: {
-          neuron: SnsNeuron;
+          neuron: SnsGovernanceDid.Neuron;
           certified: boolean;
         }) => {
           expect(spyQuery).toBeCalled();
@@ -319,13 +318,13 @@ describe("sns-neurons-services", () => {
         .mockImplementation(() => Promise.resolve());
       const hotkey = Principal.fromText("aaaaa-aa");
       const { success } = await addHotkey({
-        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         hotkey,
         rootCanisterId: mockPrincipal,
       });
       expect(success).toBeTruthy();
       expect(spyAdd).toBeCalledWith({
-        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         identity: mockIdentity,
         principal: hotkey,
         rootCanisterId: mockPrincipal,
@@ -341,13 +340,13 @@ describe("sns-neurons-services", () => {
         .mockImplementation(() => Promise.resolve());
       const hotkey = "aaaaa-aa";
       const { success } = await removeHotkey({
-        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         hotkey,
         rootCanisterId: mockPrincipal,
       });
       expect(success).toBeTruthy();
       expect(spyAdd).toBeCalledWith({
-        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         identity: mockIdentity,
         principal: Principal.fromText(hotkey),
         rootCanisterId: mockPrincipal,
@@ -358,7 +357,7 @@ describe("sns-neurons-services", () => {
 
   describe("disburse", () => {
     it("should call api.disburse", async () => {
-      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
 
@@ -383,7 +382,7 @@ describe("sns-neurons-services", () => {
 
   describe("start dissolving", () => {
     it("should call sns api startDissolving", async () => {
-      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
 
@@ -408,7 +407,7 @@ describe("sns-neurons-services", () => {
 
   describe("stop dissolving", () => {
     it("should call sns api stopDissolving", async () => {
-      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
 
@@ -587,7 +586,7 @@ describe("sns-neurons-services", () => {
       const rootCanisterId = mockPrincipal;
       const amount = 2;
       const identity = mockIdentity;
-      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
       const account = mockSnsMainAccount;
       const identifier = decodeIcrcAccount(account.identifier);
 
@@ -613,7 +612,7 @@ describe("sns-neurons-services", () => {
 
   describe("stakeMaturity", () => {
     it("should call api.stakeMaturity", async () => {
-      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
       const percentageToStake = 60;
@@ -641,7 +640,7 @@ describe("sns-neurons-services", () => {
 
   describe("disburseMaturity", () => {
     const rootCanisterId = mockPrincipal;
-    const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+    const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
     const identity = mockIdentity;
     const percentageToDisburse = 75;
     const ownerText =
@@ -724,10 +723,10 @@ describe("sns-neurons-services", () => {
   describe("addFollowee ", () => {
     let setFolloweesSpy;
 
-    const followee1: SnsNeuronId = {
+    const followee1: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
     };
-    const followee2: SnsNeuronId = {
+    const followee2: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 4]),
     };
     const followeeHex2 = subaccountToHexString(followee2.id);
@@ -744,7 +743,7 @@ describe("sns-neurons-services", () => {
       const queryNeuronSpy = vi
         .spyOn(governanceApi, "querySnsNeuron")
         .mockResolvedValue(mockSnsNeuron);
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee1] }]],
       };
@@ -769,7 +768,7 @@ describe("sns-neurons-services", () => {
       vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(
         mockSnsNeuron
       );
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[4n, { followees: [followee1] }]],
       };
@@ -794,7 +793,7 @@ describe("sns-neurons-services", () => {
         mockSnsNeuron
       );
       expect(get(toastsStore)).toEqual([]);
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
       };
@@ -830,7 +829,7 @@ describe("sns-neurons-services", () => {
         neuronId: fromNullable(mockSnsNeuron.id),
         identity: mockIdentity,
         rootCanisterId,
-        followees: [mockSnsNeuron.id[0] as SnsNeuronId],
+        followees: [mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId],
         functionId,
       });
       expect(setFolloweesSpy).toBeCalledTimes(1);
@@ -858,10 +857,10 @@ describe("sns-neurons-services", () => {
   });
 
   describe("setFollowing ", () => {
-    const followee1: SnsNeuronId = {
+    const followee1: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
     };
-    const followee2: SnsNeuronId = {
+    const followee2: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 4]),
     };
     const rootCanisterId = mockPrincipal;
@@ -948,10 +947,10 @@ describe("sns-neurons-services", () => {
   describe("removeFollowee ", () => {
     let setFolloweesSpy;
 
-    const followee1: SnsNeuronId = {
+    const followee1: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
     };
-    const followee2: SnsNeuronId = {
+    const followee2: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 4]),
     };
     const rootCanisterId = mockPrincipal;
@@ -964,7 +963,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api setFollowees with followee removed from list", async () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee1, followee2] }]],
       };
@@ -985,7 +984,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api setFollowees with empty list if followee is the last followee", async () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee1] }]],
       };
@@ -1010,7 +1009,7 @@ describe("sns-neurons-services", () => {
         mockSnsNeuron
       );
       expect(get(toastsStore)).toEqual([]);
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
       };
@@ -1034,10 +1033,10 @@ describe("sns-neurons-services", () => {
   describe("removeNsFunctionFollowees ", () => {
     let setFolloweesSpy;
 
-    const followee1: SnsNeuronId = {
+    const followee1: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
     };
-    const followee2: SnsNeuronId = {
+    const followee2: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 4]),
     };
     const rootCanisterId = mockPrincipal;
@@ -1050,7 +1049,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api setFollowees with empty followee list to remove them all", async () => {
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee1, followee2] }]],
       };
@@ -1077,7 +1076,7 @@ describe("sns-neurons-services", () => {
       setFolloweesSpy = vi
         .spyOn(governanceApi, "setFollowees")
         .mockImplementation(() => Promise.reject(testError));
-      const neuron: SnsNeuron = {
+      const neuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee1, followee2] }]],
       };
@@ -1102,7 +1101,7 @@ describe("sns-neurons-services", () => {
 
   describe("stakeMaturity", () => {
     it("should call api.stakeMaturity", async () => {
-      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
       const percentageToStake = 60;
@@ -1154,7 +1153,7 @@ describe("sns-neurons-services", () => {
       });
     };
 
-    const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+    const neuronId = mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId;
     const identity = mockIdentity;
     const rootCanisterId = mockPrincipal;
 
@@ -1244,7 +1243,7 @@ describe("sns-neurons-services", () => {
 
       const neuronMinimumStake = 1_000n;
       const { success } = await splitNeuron({
-        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         rootCanisterId: mockPrincipal,
         amount,
         neuronMinimumStake,
@@ -1252,7 +1251,7 @@ describe("sns-neurons-services", () => {
       expect(success).toBeTruthy();
       expect(spyQuery).toBeCalled();
       expect(spySplitNeuron).toBeCalledWith({
-        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         identity: mockIdentity,
         rootCanisterId: mockPrincipal,
         amount: numberToUlps({ amount, token: mockSnsToken }) + transactionFee,
@@ -1269,7 +1268,7 @@ describe("sns-neurons-services", () => {
       const neuronMinimumStake = 2_000n;
       expect(get(toastsStore)).toEqual([]);
       const { success } = await splitNeuron({
-        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         rootCanisterId: mockPrincipal,
         amount,
         neuronMinimumStake,

@@ -29,7 +29,7 @@ import {
   type Followees,
   type NeuronInfo,
 } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("neurons-table.utils", () => {
@@ -483,7 +483,7 @@ describe("neurons-table.utils", () => {
       voteDelegationState: "none",
     };
 
-    const convert = (snsNeurons: SnsNeuron[]) =>
+    const convert = (snsNeurons: SnsGovernanceDid.Neuron[]) =>
       tableNeuronsFromSnsNeurons({
         snsNeurons: snsNeurons,
         universe: snsUniverseIdText,
@@ -587,7 +587,7 @@ describe("neurons-table.utils", () => {
     });
 
     it("should convert hotkey SnsNeuron", () => {
-      const snsNeurons: SnsNeuron[] = [
+      const snsNeurons: SnsGovernanceDid.Neuron[] = [
         {
           ...snsNeuron,
           permissions: [

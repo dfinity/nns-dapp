@@ -4,7 +4,7 @@ import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { TokenAmountV2 } from "@dfinity/utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronMaturitySection", () => {
@@ -20,7 +20,7 @@ describe("SnsNeuronMaturitySection", () => {
     maturity: 214_000_000n,
     activeDisbursementsE8s: [200_000_000n],
   });
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = render(SnsNeuronMaturitySection, {
       props: {
         neuron,

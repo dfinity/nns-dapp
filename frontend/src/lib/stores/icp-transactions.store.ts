@@ -1,7 +1,7 @@
 import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { getUniqueTransactions } from "$lib/utils/transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
-import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import { writable, type Readable } from "svelte/store";
 
 // Each ICP Account is an entry in this store.
@@ -9,7 +9,7 @@ import { writable, type Readable } from "svelte/store";
 export type IcpTransactionsStoreData = Record<
   IcpAccountIdentifierText,
   {
-    transactions: TransactionWithId[];
+    transactions: IcpIndexDid.TransactionWithId[];
     oldestTxId?: bigint;
     completed: boolean;
   }
@@ -19,7 +19,7 @@ export interface IcpTransactionsStore
   extends Readable<IcpTransactionsStoreData> {
   addTransactions: (data: {
     accountIdentifier: string;
-    transactions: TransactionWithId[];
+    transactions: IcpIndexDid.TransactionWithId[];
     oldestTxId?: bigint;
     completed: boolean;
   }) => void;
@@ -47,7 +47,7 @@ const initIcpTransactionsStore = (): IcpTransactionsStore => {
       completed,
     }: {
       accountIdentifier: string;
-      transactions: TransactionWithId[];
+      transactions: IcpIndexDid.TransactionWithId[];
       oldestTxId?: bigint;
       completed: boolean;
     }) {

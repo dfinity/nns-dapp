@@ -7,7 +7,7 @@ import { FollowSnsNeuronsModalPo } from "$tests/page-objects/FollowSnsNeuronsMod
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { nonNullish } from "@dfinity/utils";
-import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
 describe("FollowSnsNeuronsModal", () => {
   const neuron = {
@@ -53,15 +53,15 @@ describe("FollowSnsNeuronsModal", () => {
   });
 
   it("displays the functions to follow", async () => {
-    const function0: SnsNervousSystemFunction = {
+    const function0: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 0n,
     };
-    const function1: SnsNervousSystemFunction = {
+    const function1: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 1n,
     };
-    const function2: SnsNervousSystemFunction = {
+    const function2: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 2n,
     };

@@ -2,10 +2,10 @@ import type {
   CachedNervousFunctionDto,
   TopicInfoDto,
 } from "$lib/types/sns-aggregator";
-import type { SnsTopic, SnsTopicInfo } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
 export const topicTypeMock = "DaoCommunitySettings";
-export const topicMock: SnsTopic = {
+export const topicMock: SnsGovernanceDid.Topic = {
   [topicTypeMock]: null,
 };
 
@@ -56,7 +56,7 @@ export const topicInfoDtoMock = ({
   is_critical: isCritical,
 });
 
-export const topicInfoMock: SnsTopicInfo = {
+export const topicInfoMock: SnsGovernanceDid.TopicInfo = {
   native_functions: [],
   topic: [{ DaoCommunitySettings: null }],
   is_critical: [true],

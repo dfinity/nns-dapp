@@ -3,7 +3,7 @@ import type { UiTransaction } from "$lib/types/transaction";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { TokenAmount } from "@dfinity/utils";
-import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 
 export const createMockUiTransaction = ({
   domKey = "123-1",
@@ -26,7 +26,7 @@ export const createMockUiTransaction = ({
   timestamp,
 });
 
-export const mockTransactionWithId: TransactionWithId = {
+export const mockTransactionWithId: IcpIndexDid.TransactionWithId = {
   id: 1234n,
   transaction: {
     memo: 0n,
@@ -55,7 +55,7 @@ export const createMockSendTransactionWithId = ({
   fee?: bigint;
   to?: string;
   memo?: bigint;
-}): TransactionWithId => {
+}): IcpIndexDid.TransactionWithId => {
   const transfer = {
     ...mockTransactionWithId.transaction["Transfer"],
     to,

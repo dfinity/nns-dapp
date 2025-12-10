@@ -21,11 +21,7 @@ import {
   convertNervousSystemParameters,
 } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
-import type {
-  SnsNervousSystemParameters,
-  SnsRewardEvent,
-  SnsTopicInfo,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("sns aggregator converters utils", () => {
@@ -869,49 +865,50 @@ describe("sns aggregator converters utils", () => {
         max_number_of_principals_per_neuron: 5,
       };
 
-      const expectedSnsNervousSystemParameters: SnsNervousSystemParameters = {
-        default_followees: [
-          {
-            followees: [
-              [2n, { followees: [neuronId1, neuronId2] }],
-              [5n, { followees: [neuronId2, neuronId3] }],
-            ],
-          },
-        ],
-        automatically_advance_target_version: [],
-        max_dissolve_delay_seconds: [252460800n],
-        max_dissolve_delay_bonus_percentage: [100n],
-        max_followees_per_function: [15n],
-        neuron_claimer_permissions: [
-          {
-            permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
-          },
-        ],
-        neuron_minimum_stake_e8s: [100000000000n],
-        max_neuron_age_for_age_bonus: [252460800n],
-        initial_voting_period_seconds: [345600n],
-        neuron_minimum_dissolve_delay_to_vote_seconds: [2629800n],
-        reject_cost_e8s: [5000000000000n],
-        max_proposals_to_keep_per_action: [150],
-        wait_for_quiet_deadline_increase_seconds: [86400n],
-        max_number_of_neurons: [200000n],
-        transaction_fee_e8s: [100000n],
-        max_number_of_proposals_with_ballots: [700n],
-        max_age_bonus_percentage: [25n],
-        neuron_grantable_permissions: [
-          { permissions: Int32Array.from([0, 1, 2, 3, 4]) },
-        ],
-        voting_rewards_parameters: [
-          {
-            final_reward_rate_basis_points: [75n],
-            initial_reward_rate_basis_points: [20n],
-            reward_rate_transition_duration_seconds: [31557600n],
-            round_duration_seconds: [86400n],
-          },
-        ],
-        maturity_modulation_disabled: [true],
-        max_number_of_principals_per_neuron: [5n],
-      };
+      const expectedSnsNervousSystemParameters: SnsGovernanceDid.NervousSystemParameters =
+        {
+          default_followees: [
+            {
+              followees: [
+                [2n, { followees: [neuronId1, neuronId2] }],
+                [5n, { followees: [neuronId2, neuronId3] }],
+              ],
+            },
+          ],
+          automatically_advance_target_version: [],
+          max_dissolve_delay_seconds: [252460800n],
+          max_dissolve_delay_bonus_percentage: [100n],
+          max_followees_per_function: [15n],
+          neuron_claimer_permissions: [
+            {
+              permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+            },
+          ],
+          neuron_minimum_stake_e8s: [100000000000n],
+          max_neuron_age_for_age_bonus: [252460800n],
+          initial_voting_period_seconds: [345600n],
+          neuron_minimum_dissolve_delay_to_vote_seconds: [2629800n],
+          reject_cost_e8s: [5000000000000n],
+          max_proposals_to_keep_per_action: [150],
+          wait_for_quiet_deadline_increase_seconds: [86400n],
+          max_number_of_neurons: [200000n],
+          transaction_fee_e8s: [100000n],
+          max_number_of_proposals_with_ballots: [700n],
+          max_age_bonus_percentage: [25n],
+          neuron_grantable_permissions: [
+            { permissions: Int32Array.from([0, 1, 2, 3, 4]) },
+          ],
+          voting_rewards_parameters: [
+            {
+              final_reward_rate_basis_points: [75n],
+              initial_reward_rate_basis_points: [20n],
+              reward_rate_transition_duration_seconds: [31557600n],
+              round_duration_seconds: [86400n],
+            },
+          ],
+          maturity_modulation_disabled: [true],
+          max_number_of_principals_per_neuron: [5n],
+        };
 
       expect(
         convertNervousSystemParameters(nervousSystemParameterData)
@@ -942,29 +939,30 @@ describe("sns aggregator converters utils", () => {
         max_number_of_principals_per_neuron: null,
       };
 
-      const expectedSnsNervousSystemParameters: SnsNervousSystemParameters = {
-        automatically_advance_target_version: [],
-        default_followees: [],
-        max_dissolve_delay_seconds: [],
-        max_dissolve_delay_bonus_percentage: [],
-        max_followees_per_function: [],
-        neuron_claimer_permissions: [],
-        neuron_minimum_stake_e8s: [],
-        max_neuron_age_for_age_bonus: [],
-        initial_voting_period_seconds: [],
-        neuron_minimum_dissolve_delay_to_vote_seconds: [],
-        reject_cost_e8s: [],
-        max_proposals_to_keep_per_action: [],
-        wait_for_quiet_deadline_increase_seconds: [],
-        max_number_of_neurons: [],
-        transaction_fee_e8s: [],
-        max_number_of_proposals_with_ballots: [],
-        max_age_bonus_percentage: [],
-        neuron_grantable_permissions: [],
-        voting_rewards_parameters: [],
-        maturity_modulation_disabled: [],
-        max_number_of_principals_per_neuron: [],
-      };
+      const expectedSnsNervousSystemParameters: SnsGovernanceDid.NervousSystemParameters =
+        {
+          automatically_advance_target_version: [],
+          default_followees: [],
+          max_dissolve_delay_seconds: [],
+          max_dissolve_delay_bonus_percentage: [],
+          max_followees_per_function: [],
+          neuron_claimer_permissions: [],
+          neuron_minimum_stake_e8s: [],
+          max_neuron_age_for_age_bonus: [],
+          initial_voting_period_seconds: [],
+          neuron_minimum_dissolve_delay_to_vote_seconds: [],
+          reject_cost_e8s: [],
+          max_proposals_to_keep_per_action: [],
+          wait_for_quiet_deadline_increase_seconds: [],
+          max_number_of_neurons: [],
+          transaction_fee_e8s: [],
+          max_number_of_proposals_with_ballots: [],
+          max_age_bonus_percentage: [],
+          neuron_grantable_permissions: [],
+          voting_rewards_parameters: [],
+          maturity_modulation_disabled: [],
+          max_number_of_principals_per_neuron: [],
+        };
 
       expect(
         convertNervousSystemParameters(nervousSystemParameterData)
@@ -1053,7 +1051,7 @@ describe("sns aggregator converters utils", () => {
 
     describe("convertDtoTopicInfo", () => {
       it("converts aggregator topic info to ic-js types", () => {
-        const expectedTopicInfo: SnsTopicInfo = {
+        const expectedTopicInfo: SnsGovernanceDid.TopicInfo = {
           native_functions: [
             [
               {
@@ -1232,7 +1230,7 @@ describe("sns aggregator converters utils", () => {
 
     describe("convertDtoRewardEvent", () => {
       it("converts RewardEvent to ic-js type", () => {
-        const expectedTopicsResponse: SnsRewardEvent = {
+        const expectedTopicsResponse: SnsGovernanceDid.RewardEvent = {
           rounds_since_last_distribution: [1n],
           actual_timestamp_seconds: 1752160922n,
           end_timestamp_seconds: [1752160920n],

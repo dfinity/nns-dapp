@@ -6,11 +6,11 @@ import { SnsProposalVotingSectionPo } from "$tests/page-objects/SnsProposalVotin
 import type { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fromDefinedNullable } from "@dfinity/utils";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalVotingSection", () => {
-  const proposal: SnsProposalData = {
+  const proposal: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     latest_tally: [
       {

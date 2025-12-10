@@ -1,4 +1,4 @@
-import type { SnsAction } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 const motionProposal1 = {
@@ -9,7 +9,7 @@ const motionProposal1 = {
     {
       Motion: { motion_text: "This is a dummy motion." },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 const motionProposal2 = {
@@ -20,7 +20,7 @@ const motionProposal2 = {
     {
       Motion: { motion_text: "This is the second dummy motion." },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 const manageSnsMetadataproposal = {
@@ -36,7 +36,7 @@ const manageSnsMetadataproposal = {
         description: ["Description changed by proposal"],
       },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 const nsFunctionProposal1 = {
@@ -66,7 +66,7 @@ const nsFunctionProposal1 = {
         ],
       },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 const nsFunctionProposal2 = {
@@ -96,7 +96,7 @@ const nsFunctionProposal2 = {
         ],
       },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 // We need to pass a proposal to add a function to the nervous system first
@@ -113,7 +113,7 @@ const executeNSFunctionProposal = {
         payload: new Uint8Array(),
       },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 // We need to pass a proposal to add a function to the nervous system first
@@ -126,7 +126,7 @@ const executeNSFunctionProposal = {
 //     {
 //       RemoveGenericNervousSystemFunction: 1_002n,
 //     },
-//   ] as [SnsAction],
+//   ] as [SnsGovernanceDid.Action],
 // };
 
 // We need to deploy new version of the SNS canisters first.
@@ -139,7 +139,7 @@ const executeNSFunctionProposal = {
 //     {
 //       UpgradeSnsToNextVersion: {},
 //     },
-//   ] as [SnsAction],
+//   ] as [SnsGovernanceDid.Action],
 // };
 
 const registerDappCanisterProposal = {
@@ -153,7 +153,7 @@ const registerDappCanisterProposal = {
         canister_ids: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
       },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 const transferFundsProposal = {
@@ -170,7 +170,7 @@ const transferFundsProposal = {
         amount_e8s: 10_000_000_000n,
       },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 // TODO: Find a valid new_canister_wasm
@@ -186,7 +186,7 @@ const transferFundsProposal = {
 //         canister_upgrade_arg: [],
 //       },
 //     },
-//   ] as [SnsAction],
+//   ] as [SnsGovernanceDid.Action],
 // };
 
 const deregisterCanisterProposal = {
@@ -205,7 +205,7 @@ const deregisterCanisterProposal = {
         ],
       },
     },
-  ] as [SnsAction],
+  ] as [SnsGovernanceDid.Action],
 };
 
 export const snsProposals = [

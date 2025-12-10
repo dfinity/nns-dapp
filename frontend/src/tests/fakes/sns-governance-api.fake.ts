@@ -12,20 +12,11 @@ import {
 } from "$tests/utils/module.test-utils";
 import { fromNullable, isNullish, toNullable } from "@dfinity/utils";
 import type {
+  SnsGovernanceDid,
   SnsListProposalsParams,
-  SnsNervousSystemFunction,
-  SnsNervousSystemParameters,
-  SnsNeuronId,
   SnsNeuronPermissionType,
-  SnsProposalData,
-  SnsProposalId,
 } from "@icp-sdk/canisters/sns";
-import {
-  SnsGovernanceError,
-  neuronSubaccount,
-  type SnsListProposalsResponse,
-  type SnsNeuron,
-} from "@icp-sdk/canisters/sns";
+import { SnsGovernanceError, neuronSubaccount } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
@@ -49,11 +40,13 @@ const fakeFunctions = {
 //////////////////////////////////////////////
 
 // Maps a key representing identity + rootCanisterId (`mapKey` function) to a list of neurons
-const neurons: Map<string, SnsNeuron[]> = new Map();
+const neurons: Map<string, SnsGovernanceDid.Neuron[]> = new Map();
 // Maps a key representing identity + rootCanisterId (`mapKey` function) to a list of proposals
-const proposals: Map<string, SnsListProposalsResponse> = new Map();
+const proposals: Map<string, SnsGovernanceDid.ListProposalsResponse> =
+  new Map();
 // Maps a key representing rootCanisterId to a list of nervous system functions
-const nervousFunctions: Map<string, SnsNervousSystemFunction[]> = new Map();
+const nervousFunctions: Map<string, SnsGovernanceDid.NervousSystemFunction[]> =
+  new Map();
 
 type KeyParams = {
   identity: Identity;
@@ -73,7 +66,7 @@ const getNeurons = (keyParams: KeyParams) => {
   return neuronList;
 };
 
-const snsNeuronIdToHexString = (id: SnsNeuronId): string =>
+const snsNeuronIdToHexString = (id: SnsGovernanceDid.NeuronId): string =>
   getSnsNeuronIdAsHexString({ ...mockSnsNeuron, id: [id] });
 
 const getNeuron = ({
@@ -82,8 +75,8 @@ const getNeuron = ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
-}): SnsNeuron | undefined => {
+  neuronId: SnsGovernanceDid.NeuronId;
+}): SnsGovernanceDid.Neuron | undefined => {
   const neuronIdText = snsNeuronIdToHexString(neuronId);
   return getNeurons(keyParams).find(
     (neuron) => getSnsNeuronIdAsHexString(neuron) === neuronIdText
@@ -93,8 +86,8 @@ const getNeuron = ({
 const getNeuronOrThrow = (params: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
-}): SnsNeuron => {
+  neuronId: SnsGovernanceDid.NeuronId;
+}): SnsGovernanceDid.Neuron => {
   const neuron = getNeuron(params);
   if (isNullish(neuron)) {
     throw new SnsGovernanceError("No neuron for given NeuronId.");
@@ -104,13 +97,15 @@ const getNeuronOrThrow = (params: {
 
 // We update neuron permissions in place, so we need to copy the neurons when
 // responding to API queries.
-const copyNeuron = (neuron: SnsNeuron): SnsNeuron =>
+const copyNeuron = (neuron: SnsGovernanceDid.Neuron): SnsGovernanceDid.Neuron =>
   neuron && {
     ...neuron,
     permissions: neuron.permissions.map((entry) => ({ ...entry })),
   };
 
-const getProposals = (keyParams: KeyParams): SnsListProposalsResponse => {
+const getProposals = (
+  keyParams: KeyParams
+): SnsGovernanceDid.ListProposalsResponse => {
   const key = mapKey(keyParams);
 
   if (isNullish(proposals.get(key))) {
@@ -141,7 +136,7 @@ const getOrCreateNeuronPrincipalPermissionEntry = ({
   identity: Identity;
   rootCanisterId: Principal;
   principal: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): { permission_type: Int32Array | number[] } => {
   const neuron = getNeuronOrThrow({ ...keyParams, neuronId });
   let permissionEntry = neuron.permissions.find(
@@ -161,7 +156,7 @@ const getNeuronPrincipalPermissions = (entryParams: {
   identity: Identity;
   rootCanisterId: Principal;
   principal: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): SnsNeuronPermissionType[] => {
   const entry = getOrCreateNeuronPrincipalPermissionEntry(entryParams);
   return Array.from(entry.permission_type);
@@ -175,7 +170,7 @@ const setNeuronPrincipalPermissions = ({
   rootCanisterId: Principal;
   permissions: SnsNeuronPermissionType[];
   principal: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }) => {
   const entry = getOrCreateNeuronPrincipalPermissionEntry(entryParams);
   entry.permission_type = Int32Array.from(permissions);
@@ -193,7 +188,7 @@ async function nervousSystemParameters({
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-}): Promise<SnsNervousSystemParameters> {
+}): Promise<SnsGovernanceDid.NervousSystemParameters> {
   return snsNervousSystemParametersMock;
 }
 
@@ -203,7 +198,7 @@ async function getNeuronBalance({
   certified,
   identity,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   certified: boolean;
   identity: Identity;
@@ -227,7 +222,7 @@ async function getNeuronBalance({
 async function refreshNeuron(params: {
   rootCanisterId: Principal;
   identity: Identity;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> {
   getNeuronOrThrow(params);
 }
@@ -244,7 +239,7 @@ async function claimNeuron({
   memo: bigint;
   controller: Principal;
   subaccount: Uint8Array;
-}): Promise<SnsNeuronId> {
+}): Promise<SnsGovernanceDid.NeuronId> {
   return { id: subaccount };
 }
 
@@ -256,7 +251,7 @@ async function querySnsNeurons({
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-}): Promise<SnsNeuron[]> {
+}): Promise<SnsGovernanceDid.Neuron[]> {
   return (neurons.get(mapKey({ identity, rootCanisterId })) || []).map(
     copyNeuron
   );
@@ -270,8 +265,8 @@ async function querySnsNeuron({
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-  neuronId: SnsNeuronId;
-}): Promise<SnsNeuron | undefined> {
+  neuronId: SnsGovernanceDid.NeuronId;
+}): Promise<SnsGovernanceDid.Neuron | undefined> {
   return copyNeuron(getNeuron({ ...keyParams, neuronId }));
 }
 
@@ -283,8 +278,8 @@ async function getSnsNeuron({
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-  neuronId: SnsNeuronId;
-}): Promise<SnsNeuron> {
+  neuronId: SnsGovernanceDid.NeuronId;
+}): Promise<SnsGovernanceDid.Neuron> {
   return copyNeuron(getNeuronOrThrow({ ...keyParams, neuronId }));
 }
 
@@ -298,7 +293,7 @@ async function queryProposals({
   identity: Identity;
   certified: boolean;
   params: SnsListProposalsParams;
-}): Promise<SnsListProposalsResponse> {
+}): Promise<SnsGovernanceDid.ListProposalsResponse> {
   return (
     proposals.get(mapKey({ identity, rootCanisterId })) || {
       proposals: [],
@@ -320,8 +315,8 @@ async function queryProposal({
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-  proposalId: SnsProposalId;
-}): Promise<SnsProposalData> {
+  proposalId: SnsGovernanceDid.ProposalId;
+}): Promise<SnsGovernanceDid.ProposalData> {
   const proposal = proposals
     .get(mapKey({ identity, rootCanisterId }))
     ?.proposals.find(({ id }) => fromNullable(id).id === proposalId.id);
@@ -341,7 +336,7 @@ async function addNeuronPermissions({
   rootCanisterId: Principal;
   permissions: SnsNeuronPermissionType[];
   principal: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> {
   const currentPermissions = getNeuronPrincipalPermissions(
     permissionEntryParams
@@ -363,7 +358,7 @@ async function removeNeuronPermissions({
   rootCanisterId: Principal;
   permissions: SnsNeuronPermissionType[];
   principal: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> {
   const currentPermissions = getNeuronPrincipalPermissions(
     permissionEntryParams
@@ -405,7 +400,7 @@ const createNeuronId = ({
 }: {
   identity: Identity;
   index: number;
-}): SnsNeuronId => {
+}): SnsGovernanceDid.NeuronId => {
   const controller = identity.getPrincipal();
   const subaccount = neuronSubaccount({
     controller,
@@ -426,11 +421,11 @@ const addNeuronToList = ({
   identity?: Identity;
   rootCanisterId: Principal;
   overrideById?: boolean;
-} & Partial<SnsNeuron>): SnsNeuron => {
+} & Partial<SnsGovernanceDid.Neuron>): SnsGovernanceDid.Neuron => {
   const currentNeurons = getNeurons({ identity, rootCanisterId });
   const index = currentNeurons.length;
   const defaultNeuronId = createNeuronId({ identity, index });
-  const neuron: SnsNeuron = {
+  const neuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     id: [defaultNeuronId],
     ...neuronParams,
@@ -457,7 +452,7 @@ export const addNeuronWith = ({
 }: {
   identity?: Identity;
   rootCanisterId: Principal;
-} & Partial<SnsNeuron>): SnsNeuron => {
+} & Partial<SnsGovernanceDid.Neuron>): SnsGovernanceDid.Neuron => {
   return addNeuronToList({
     identity,
     rootCanisterId,
@@ -473,7 +468,7 @@ export const setNeuronWith = ({
 }: {
   identity?: Identity;
   rootCanisterId: Principal;
-} & Partial<SnsNeuron>): SnsNeuron => {
+} & Partial<SnsGovernanceDid.Neuron>): SnsGovernanceDid.Neuron => {
   return addNeuronToList({
     identity,
     rootCanisterId,
@@ -491,7 +486,7 @@ export const addProposalWith = ({
   identity?: Identity;
   rootCanisterId: Principal;
   includeBallotsByCaller?: boolean;
-} & Partial<SnsProposalData>): SnsProposalData => {
+} & Partial<SnsGovernanceDid.ProposalData>): SnsGovernanceDid.ProposalData => {
   const response = getProposals({
     identity,
     rootCanisterId,
@@ -499,7 +494,7 @@ export const addProposalWith = ({
   const proposalsList = response.proposals;
   const index = proposalsList.length;
   const defaultProposalId = { id: BigInt(index + 1) };
-  const proposal: SnsProposalData = {
+  const proposal: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [defaultProposalId],
     ...proposalParams,
@@ -515,11 +510,11 @@ export const addNervousSystemFunctionWith = ({
   ...functionParams
 }: {
   rootCanisterId: Principal;
-} & Partial<SnsNervousSystemFunction>): SnsNervousSystemFunction => {
+} & Partial<SnsGovernanceDid.NervousSystemFunction>): SnsGovernanceDid.NervousSystemFunction => {
   const nervousFunctions = getNervousFunctions(rootCanisterId);
   const index = nervousFunctions.length;
   const defaultFunctionId = BigInt(index + 1);
-  const nervousFunction: SnsNervousSystemFunction = {
+  const nervousFunction: SnsGovernanceDid.NervousSystemFunction = {
     ...nervousSystemFunctionMock,
     id: defaultFunctionId,
     ...functionParams,

@@ -11,10 +11,7 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type {
-  SnsDisburseMaturityInProgress,
-  SnsNeuron,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/svelte";
@@ -41,7 +38,7 @@ describe("nonEmptySnsNeuronStore", () => {
   });
 
   it("should filter out neurons with no stake nor maturity", async () => {
-    const neurons: SnsNeuron[] = [
+    const neurons: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 0n,
@@ -78,7 +75,7 @@ describe("nonEmptySnsNeuronStore", () => {
   });
 
   it("should not filter out empty neurons with ongoing maturity disbursement", async () => {
-    const neurons: SnsNeuron[] = [
+    const neurons: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 0n,
@@ -89,7 +86,7 @@ describe("nonEmptySnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 1n,
-          } as SnsDisburseMaturityInProgress,
+          } as SnsGovernanceDid.DisburseMaturityInProgress,
         ],
       },
       {
@@ -102,7 +99,7 @@ describe("nonEmptySnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 0n,
-          } as SnsDisburseMaturityInProgress,
+          } as SnsGovernanceDid.DisburseMaturityInProgress,
         ],
       },
       {
@@ -130,7 +127,7 @@ describe("nonEmptySnsNeuronStore", () => {
   });
 
   it("should return the defined neurons of the selected project", async () => {
-    const neurons1: SnsNeuron[] = [
+    const neurons1: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 1_000_000_000n,
@@ -155,7 +152,7 @@ describe("nonEmptySnsNeuronStore", () => {
       neurons: neurons1,
       certified: true,
     });
-    const neurons2: SnsNeuron[] = [
+    const neurons2: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 2_000_000_000n,
@@ -220,7 +217,7 @@ describe("definedSnsNeuronStore", () => {
   });
 
   it("filters out empty neurons with disbursement in progress", async () => {
-    const neurons: SnsNeuron[] = [
+    const neurons: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 0n,
@@ -231,7 +228,7 @@ describe("definedSnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 500_000_000n,
-          } as SnsDisburseMaturityInProgress,
+          } as SnsGovernanceDid.DisburseMaturityInProgress,
         ],
       },
       {
@@ -244,7 +241,7 @@ describe("definedSnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 1_500_000_000n,
-          } as SnsDisburseMaturityInProgress,
+          } as SnsGovernanceDid.DisburseMaturityInProgress,
         ],
       },
       {
@@ -290,7 +287,7 @@ describe("sortedSnsNeuronStore", () => {
   });
 
   it("should sort neurons by stake", async () => {
-    const neurons: SnsNeuron[] = [
+    const neurons: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 1_000_000_000n,
@@ -328,7 +325,7 @@ describe("sortedSnsNeuronStore", () => {
   });
 
   it("should filter out neurons with no stake nor maturity", async () => {
-    const neurons: SnsNeuron[] = [
+    const neurons: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 0n,
@@ -365,7 +362,7 @@ describe("sortedSnsNeuronStore", () => {
   });
 
   it("should return the sorted neurons of the selected project", async () => {
-    const neurons1: SnsNeuron[] = [
+    const neurons1: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 1_000_000_000n,
@@ -390,7 +387,7 @@ describe("sortedSnsNeuronStore", () => {
       neurons: neurons1,
       certified: true,
     });
-    const neurons2: SnsNeuron[] = [
+    const neurons2: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 2_000_000_000n,
@@ -440,14 +437,14 @@ describe("sortedSnsNeuronStore", () => {
 
 describe("sortedSnsUserNeuronsStore", () => {
   it("should not return CF neurons", async () => {
-    const cfNeuron: SnsNeuron = {
+    const cfNeuron: SnsGovernanceDid.Neuron = {
       ...createMockSnsNeuron({
         stake: 10_000_000_000n,
         id: [1, 2, 2, 9, 9, 3, 2],
       }),
       source_nns_neuron_id: [2n],
     };
-    const neurons: SnsNeuron[] = [
+    const neurons: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 1_000_000_000n,
@@ -478,7 +475,7 @@ describe("sortedSnsUserNeuronsStore", () => {
 
 describe("sortedSnsCFNeuronsStore", () => {
   it("should not return CF neurons", async () => {
-    const cfNeuron1: SnsNeuron = {
+    const cfNeuron1: SnsGovernanceDid.Neuron = {
       ...createMockSnsNeuron({
         stake: 10_000_000_000n,
         id: [1, 2, 2, 9, 9, 3, 2],
@@ -486,7 +483,7 @@ describe("sortedSnsCFNeuronsStore", () => {
       source_nns_neuron_id: [2n],
       created_timestamp_seconds: 3n,
     };
-    const cfNeuron2: SnsNeuron = {
+    const cfNeuron2: SnsGovernanceDid.Neuron = {
       ...createMockSnsNeuron({
         stake: 2_000_000_000n,
         id: [1, 5, 3, 9, 9, 3, 2],
@@ -494,7 +491,7 @@ describe("sortedSnsCFNeuronsStore", () => {
       source_nns_neuron_id: [3n],
       created_timestamp_seconds: 2n,
     };
-    const neurons: SnsNeuron[] = [
+    const neurons: SnsGovernanceDid.Neuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 1_000_000_000n,

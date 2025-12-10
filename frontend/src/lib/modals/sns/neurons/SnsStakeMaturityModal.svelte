@@ -4,11 +4,11 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron, SnsNeuronId } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
-  export let neuron: SnsNeuron;
-  export let neuronId: SnsNeuronId;
+  export let neuron: SnsGovernanceDid.Neuron;
+  export let neuronId: SnsGovernanceDid.NeuronId;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 

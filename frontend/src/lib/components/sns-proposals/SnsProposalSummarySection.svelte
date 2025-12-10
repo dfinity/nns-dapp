@@ -1,9 +1,9 @@
 <script lang="ts">
   import ProposalSummarySection from "$lib/components/proposal-detail/ProposalSummarySection.svelte";
-  import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
 
-  export let proposal: SnsProposalData;
+  export let proposal: SnsGovernanceDid.ProposalData;
 
   // sns-js doesn't expose the type of the property `proposal` inside the `SnsProposalData` type.
   let proposalData = fromNullable(proposal.proposal);

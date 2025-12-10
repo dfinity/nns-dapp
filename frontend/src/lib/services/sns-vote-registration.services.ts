@@ -24,13 +24,7 @@ import {
   toSnsVote,
 } from "$lib/utils/sns-proposals.utils";
 import { fromDefinedNullable } from "@dfinity/utils";
-import type {
-  SnsBallot,
-  SnsNervousSystemFunction,
-  SnsNeuron,
-  SnsProposalData,
-  SnsVote,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid, SnsVote } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 /**
@@ -47,13 +41,14 @@ export const registerSnsVotes = async ({
   updateProposalCallback: updateProposalContext,
 }: {
   universeCanisterId: UniverseCanisterId;
-  neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  neurons: SnsGovernanceDid.Neuron[];
+  proposal: SnsGovernanceDid.ProposalData;
   vote: SnsVote;
-  updateProposalCallback: (proposal: SnsProposalData) => void;
+  updateProposalCallback: (proposal: SnsGovernanceDid.ProposalData) => void;
 }): Promise<void> => {
   const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
-  const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
+  const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] =
+    get(nsFunctionsStore) ?? [];
   const topics = get(createSnsTopicsProjectStore(universeCanisterId));
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions, topics }).type ?? "";
@@ -104,8 +99,8 @@ const snsNeuronRegistrationComplete = async ({
   toastId,
 }: {
   universeCanisterId: UniverseCanisterId;
-  neuron: SnsNeuron;
-  proposal: SnsProposalData;
+  neuron: SnsGovernanceDid.Neuron;
+  proposal: SnsGovernanceDid.ProposalData;
   toastId: symbol;
 }) => {
   const proposalIdString = fromDefinedNullable(proposal.id).id.toString();
@@ -114,7 +109,8 @@ const snsNeuronRegistrationComplete = async ({
     universeCanisterId,
   });
   const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
-  const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
+  const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] =
+    get(nsFunctionsStore) ?? [];
   const topics = get(createSnsTopicsProjectStore(universeCanisterId));
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions, topics }).type ?? "";
@@ -146,13 +142,13 @@ const proposalAfterVote = ({
   neurons,
   vote,
 }: {
-  proposal: SnsProposalData;
-  neurons: SnsNeuron[];
+  proposal: SnsGovernanceDid.ProposalData;
+  neurons: SnsGovernanceDid.Neuron[];
   vote: SnsVote;
-}): SnsProposalData => {
+}): SnsGovernanceDid.ProposalData => {
   // replace ballots of just voted neurons with optimistic ones
-  const optimisticBallots: Array<[string, SnsBallot]> = neurons.map(
-    (neuron) => [
+  const optimisticBallots: Array<[string, SnsGovernanceDid.Ballot]> =
+    neurons.map((neuron) => [
       // neuron id
       getSnsNeuronIdAsHexString(neuron),
       // optimistic ballot
@@ -160,9 +156,8 @@ const proposalAfterVote = ({
         vote,
         cast_timestamp_seconds: BigInt(Math.round(Date.now() / 1000)),
         voting_power: ballotVotingPower({ proposal, neuron }),
-      } as SnsBallot,
-    ]
-  );
+      } as SnsGovernanceDid.Ballot,
+    ]);
   const votedNeuronsIds = new Set(neurons.map(getSnsNeuronIdAsHexString));
 
   return {
@@ -188,21 +183,22 @@ const registerSnsNeuronsVote = async ({
   toastId,
 }: {
   universeCanisterId: UniverseCanisterId;
-  neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  neurons: SnsGovernanceDid.Neuron[];
+  proposal: SnsGovernanceDid.ProposalData;
   vote: SnsVote;
-  updateProposalContext: (proposal: SnsProposalData) => void;
+  updateProposalContext: (proposal: SnsGovernanceDid.ProposalData) => void;
   toastId: symbol;
 }) => {
   const identity = await getSnsNeuronIdentity();
   const proposalId = fromDefinedNullable(proposal.id);
   const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
-  const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
+  const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] =
+    get(nsFunctionsStore) ?? [];
   const topics = get(createSnsTopicsProjectStore(universeCanisterId));
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions, topics }).type ?? "";
-  const successfulVotedNeurons: SnsNeuron[] = [];
-  const onSuccessVote = async (neuron: SnsNeuron) => {
+  const successfulVotedNeurons: SnsGovernanceDid.Neuron[] = [];
+  const onSuccessVote = async (neuron: SnsGovernanceDid.Neuron) => {
     successfulVotedNeurons.push(neuron);
     snsNeuronRegistrationComplete({
       universeCanisterId: universeCanisterId,

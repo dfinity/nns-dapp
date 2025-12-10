@@ -40,19 +40,7 @@ import {
   toNullable,
 } from "@dfinity/utils";
 import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
-import type {
-  SnsDefaultFollowees,
-  SnsFunctionType,
-  SnsGetLifecycleResponse,
-  SnsNervousSystemFunction,
-  SnsNervousSystemParameters,
-  SnsNeuronsFundParticipationConstraints,
-  SnsParams,
-  SnsRewardEvent,
-  SnsSwapDerivedState,
-  SnsSwapInit,
-  SnsVotingRewardsParameters,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid, SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 export const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
@@ -72,7 +60,7 @@ const convertOptionalStringToOptionalPrincipal = (
 
 const convertFunctionType = (
   functionType: CachedFunctionTypeDto
-): SnsFunctionType => {
+): SnsGovernanceDid.FunctionType => {
   if ("NativeNervousSystemFunction" in functionType) {
     return { NativeNervousSystemFunction: {} };
   }
@@ -101,7 +89,7 @@ export const convertNervousFunction = ({
   name,
   description,
   function_type,
-}: CachedNervousFunctionDto): SnsNervousSystemFunction => ({
+}: CachedNervousFunctionDto): SnsGovernanceDid.NervousSystemFunction => ({
   id: BigInt(id),
   name: name,
   description: toNullable(description),
@@ -112,7 +100,7 @@ export const convertNervousFunction = ({
 
 const convertDefaultFollowees = (
   defaultFollowees: undefined | CachedDefaultFolloweesDto
-): [] | [SnsDefaultFollowees] => {
+): [] | [SnsGovernanceDid.DefaultFollowees] => {
   if (isNullish(defaultFollowees)) {
     return [];
   }
@@ -131,7 +119,7 @@ const numberToNullableBigInt = (num?: number | null): [] | [bigint] =>
 
 const convertVotingRewardsParameters = (
   votingRewardsParameters: undefined | CachedVotingRewardsParametersDto
-): [] | [SnsVotingRewardsParameters] => {
+): [] | [SnsGovernanceDid.VotingRewardsParameters] => {
   if (isNullish(votingRewardsParameters)) {
     return [];
   }
@@ -174,7 +162,7 @@ export const convertNervousSystemParameters = ({
   voting_rewards_parameters,
   maturity_modulation_disabled,
   max_number_of_principals_per_neuron,
-}: CachedNervousSystemParametersDto): SnsNervousSystemParameters => ({
+}: CachedNervousSystemParametersDto): SnsGovernanceDid.NervousSystemParameters => ({
   automatically_advance_target_version: [],
   default_followees: convertDefaultFollowees(default_followees),
   max_dissolve_delay_seconds: numberToNullableBigInt(
@@ -223,7 +211,7 @@ export const convertNervousSystemParameters = ({
 
 const convertNeuronsFundParticipationConstraints = (
   constraints: CachedNeuronsFundParticipationConstraints
-): SnsNeuronsFundParticipationConstraints => ({
+): SnsSwapDid.NeuronsFundParticipationConstraints => ({
   coefficient_intervals: constraints.coefficient_intervals.map(
     ({
       slope_numerator,
@@ -262,7 +250,7 @@ const convertNeuronsFundParticipationConstraints = (
 
 const convertSwapInitParams = (
   init: CachedSwapInitParamsDto | null
-): SnsSwapInit | undefined =>
+): SnsSwapDid.Init | undefined =>
   nonNullish(init)
     ? {
         nns_proposal_id: toNullable(
@@ -333,7 +321,7 @@ const convertSwapInitParams = (
       }
     : undefined;
 
-const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
+const convertSwapParams = (params: CachedSwapParamsDto): SnsSwapDid.Params => ({
   min_participant_icp_e8s: BigInt(params.min_participant_icp_e8s),
   max_icp_e8s: BigInt(params.max_icp_e8s),
   min_icp_e8s: BigInt(params.min_icp_e8s),
@@ -367,7 +355,7 @@ const convertDerived = ({
   cf_neuron_count,
   direct_participation_icp_e8s,
   neurons_fund_participation_icp_e8s,
-}: CachedSnsSwapDerivedDto): SnsSwapDerivedState => ({
+}: CachedSnsSwapDerivedDto): SnsSwapDid.DerivedState => ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s: BigInt(buyer_total_icp_e8s),
   cf_participant_count: nonNullish(cf_participant_count)
@@ -478,7 +466,7 @@ const convertDtoToSnsSummarySwap = (
 
 const convertDtoToLifecycle = (
   data: CachedLifecycleResponseDto | null
-): SnsGetLifecycleResponse | undefined => {
+): SnsSwapDid.GetLifecycleResponse | undefined => {
   if (isNullish(data)) {
     return undefined;
   }
@@ -501,9 +489,9 @@ type PartialSummary = Omit<
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
   swap?: SnsSummarySwap;
-  init?: SnsSwapInit;
-  swapParams?: SnsParams;
-  lifecycle?: SnsGetLifecycleResponse;
+  init?: SnsSwapDid.Init;
+  swapParams?: SnsSwapDid.Params;
+  lifecycle?: SnsSwapDid.GetLifecycleResponse;
 };
 
 const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
@@ -583,7 +571,7 @@ export const convertDtoToListTopicsResponse = ({
 
 export const convertDtoRewardEvent = (
   rewardEvent: RewardEventDto
-): SnsRewardEvent => ({
+): SnsGovernanceDid.RewardEvent => ({
   rounds_since_last_distribution: numberToNullableBigInt(
     rewardEvent.rounds_since_last_distribution
   ),

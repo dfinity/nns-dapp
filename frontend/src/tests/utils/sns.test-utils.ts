@@ -13,7 +13,7 @@ import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   SnsSwapLifecycle,
-  type SnsNervousSystemFunction,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
@@ -31,7 +31,7 @@ export const setSnsProjects = (
     buyerTotalIcpE8s?: number;
     projectName?: string;
     tokenMetadata?: Partial<IcrcTokenMetadata>;
-    nervousFunctions?: SnsNervousSystemFunction[];
+    nervousFunctions?: SnsGovernanceDid.NervousSystemFunction[];
     swapDueTimestampSeconds?: number;
     swapOpenTimestampSeconds?: number;
     nnsProposalId?: number;

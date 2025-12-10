@@ -29,15 +29,10 @@
     snsProposalIdString,
   } from "$lib/utils/sns-proposals.utils";
   import { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-    SnsProposalData,
-    SnsVote,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
-  export let proposal: SnsProposalData;
+  export let proposal: SnsGovernanceDid.ProposalData;
   export let reloadProposal: () => Promise<void>;
 
   let proposalIdString: string;
@@ -46,7 +41,7 @@
   let universeIdText: UniverseCanisterIdText | undefined;
   $: universeIdText = $snsOnlyProjectStore?.toText();
 
-  let snsParameters: SnsNervousSystemParameters | undefined;
+  let snsParameters: SnsGovernanceDid.NervousSystemParameters | undefined;
   $: if (nonNullish(universeIdText)) {
     snsParameters = $snsParametersStore[universeIdText]?.parameters;
   }
@@ -58,7 +53,7 @@
     ).find(({ proposalIdString: id }) => proposalIdString === id);
   }
 
-  let votableNeurons: SnsNeuron[];
+  let votableNeurons: SnsGovernanceDid.Neuron[];
   $: votableNeurons = nonNullish($authStore.identity)
     ? votableSnsNeurons({
         proposal,
@@ -77,7 +72,7 @@
     nonNullish(universeIdText) &&
     nonNullish($snsNeuronsStore[universeIdText]?.neurons);
 
-  const userSelectedNeurons = (): SnsNeuron[] =>
+  const userSelectedNeurons = (): SnsGovernanceDid.Neuron[] =>
     $votingNeuronSelectStore.selectedIds
       .map((id) =>
         votableNeurons.find(
@@ -107,14 +102,20 @@
 
   $: (votableNeurons, updateVotingNeuronSelectedStore());
 
-  const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
+  const vote = async ({
+    detail,
+  }: {
+    detail: { voteType: SnsGovernanceDid.Vote };
+  }) => {
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {
       await registerSnsVotes({
         universeCanisterId: Principal.from(universeIdText),
         neurons: userSelectedNeurons(),
         proposal,
         vote: detail.voteType,
-        updateProposalCallback: async (updatedProposal: SnsProposalData) => {
+        updateProposalCallback: async (
+          updatedProposal: SnsGovernanceDid.ProposalData
+        ) => {
           proposal = updatedProposal;
         },
       });

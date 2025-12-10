@@ -1,12 +1,12 @@
 import { principal } from "$tests/mocks/sns-projects.mock";
-import type { DeployedSns } from "@icp-sdk/canisters/nns";
-import type { SnsCanisterStatus } from "@icp-sdk/canisters/sns";
+import type { SnsWasmDid } from "@icp-sdk/canisters/nns";
+import type { SnsRootDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 export const mockSnsCanisterIdText = "pin7y-wyaaa-aaaaa-aacpa-cai";
 export const mockSnsCanisterId = Principal.fromText(mockSnsCanisterIdText);
 
-export const deployedSnsMock: DeployedSns[] = [
+export const deployedSnsMock: SnsWasmDid.DeployedSns[] = [
   {
     root_canister_id: [mockSnsCanisterId],
     governance_canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
@@ -41,9 +41,26 @@ export const indexCanisterIdMock: Principal = Principal.fromText(
   "pin7y-wyaaa-aaaaa-aacpa-cai"
 );
 
-export const snsMock: [string, Principal, SnsCanisterStatus][] = [
-  ["root", rootCanisterIdMock, {} as unknown as SnsCanisterStatus],
-  ["ledger", ledgerCanisterIdMock, {} as unknown as SnsCanisterStatus],
-  ["governance", governanceCanisterIdMock, {} as unknown as SnsCanisterStatus],
-  ["swap", swapCanisterIdMock, {} as unknown as SnsCanisterStatus],
-];
+export const snsMock: [string, Principal, SnsRootDid.CanisterStatusResultV2][] =
+  [
+    [
+      "root",
+      rootCanisterIdMock,
+      {} as unknown as SnsRootDid.CanisterStatusResultV2,
+    ],
+    [
+      "ledger",
+      ledgerCanisterIdMock,
+      {} as unknown as SnsRootDid.CanisterStatusResultV2,
+    ],
+    [
+      "governance",
+      governanceCanisterIdMock,
+      {} as unknown as SnsRootDid.CanisterStatusResultV2,
+    ],
+    [
+      "swap",
+      swapCanisterIdMock,
+      {} as unknown as SnsRootDid.CanisterStatusResultV2,
+    ],
+  ];

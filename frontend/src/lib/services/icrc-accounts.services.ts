@@ -36,7 +36,7 @@ import { isNullish, nonNullish } from "@dfinity/utils";
 import {
   decodeIcrcAccount,
   encodeIcrcAccount,
-  type IcrcBlockIndex,
+  type IcrcLedgerDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -275,7 +275,7 @@ export const transferTokens = async ({
   fee,
   ledgerCanisterId,
 }: IcrcTransferTokensUserParams): Promise<{
-  blockIndex: IcrcBlockIndex | undefined;
+  blockIndex: IcrcLedgerDid.BlockIndex | undefined;
 }> => {
   try {
     if (isNullish(fee)) {

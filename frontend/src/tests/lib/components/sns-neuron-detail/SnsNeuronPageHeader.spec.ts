@@ -13,12 +13,15 @@ import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.p
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle, type SnsNeuron } from "@icp-sdk/canisters/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsGovernanceDid,
+} from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("SnsNeuronPageHeader", () => {
   const rootCanisterId = mockPrincipal;
-  const testSnsNeurons: SnsNeuron[] = [
+  const testSnsNeurons: SnsGovernanceDid.Neuron[] = [
     createMockSnsNeuron({
       id: [1],
       stake: 400_000_000n,
@@ -43,7 +46,7 @@ describe("SnsNeuronPageHeader", () => {
 
   const projectName = "Tetris";
 
-  const renderSnsNeuronCmp = (neuron: SnsNeuron) => {
+  const renderSnsNeuronCmp = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronPageHeader,
       neuron,

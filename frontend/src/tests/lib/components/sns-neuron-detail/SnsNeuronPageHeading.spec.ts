@@ -18,7 +18,7 @@ import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setTickers } from "$tests/utils/tickers.test-utils";
 import { NeuronState } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
@@ -33,7 +33,7 @@ describe("SnsNeuronPageHeading", () => {
   const maxAgeBonusPercentage = 100 * (maxAgeBonusMultiplier - 1);
   const ledgerCanisterId = principal(555);
 
-  const renderSnsNeuronCmp = (neuron: SnsNeuron) => {
+  const renderSnsNeuronCmp = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = render(SnsNeuronPageHeading, {
       props: {
         neuron,

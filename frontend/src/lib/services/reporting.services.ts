@@ -11,10 +11,10 @@ import type {
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { mapPool } from "$lib/utils/reporting.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
-import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import type {
   IcrcAccount,
-  IcrcIndexNgTransactionWithId,
+  IcrcIndexNgDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { SignIdentity } from "@icp-sdk/core/agent";
@@ -102,10 +102,10 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   accountId: string;
   identity: SignIdentity;
   lastTransactionId?: bigint;
-  allTransactions?: TransactionWithId[];
+  allTransactions?: IcpIndexDid.TransactionWithId[];
   currentPageIndex?: number;
   range?: TransactionsDateRange;
-}): Promise<TransactionWithId[] | undefined> => {
+}): Promise<IcpIndexDid.TransactionWithId[] | undefined> => {
   // Based on
   //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/src/lib.rs#L50
   const pageSize = 50n;
@@ -172,9 +172,9 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
  * @returns Filtered array of transactions that fall within the specified range
  */
 const filterTransactionsByRange = (
-  transactions: TransactionWithId[],
+  transactions: IcpIndexDid.TransactionWithId[],
   range?: TransactionsDateRange
-): TransactionWithId[] => {
+): IcpIndexDid.TransactionWithId[] => {
   if (isNullish(range)) return transactions;
 
   return transactions.filter((tx) => {
@@ -195,7 +195,9 @@ const filterTransactionsByRange = (
   });
 };
 
-const getTimestampFromTransaction = (tx: TransactionWithId): bigint | null => {
+const getTimestampFromTransaction = (
+  tx: IcpIndexDid.TransactionWithId
+): bigint | null => {
   return tx.transaction.created_at_time?.[0]?.timestamp_nanos || null;
 };
 
@@ -213,12 +215,12 @@ export const getAllIcrcTransactionsFromAccountAndIdentity = async ({
   identity: SignIdentity;
   indexCanisterId: Principal;
   lastTransactionId?: bigint;
-  allTransactions?: IcrcIndexNgTransactionWithId[];
+  allTransactions?: IcrcIndexNgDid.TransactionWithId[];
   currentPageIndex?: number;
   range?: TransactionsDateRange;
   initialBalance?: bigint;
 }): Promise<{
-  transactions: IcrcIndexNgTransactionWithId[];
+  transactions: IcrcIndexNgDid.TransactionWithId[];
   balance: bigint;
 }> => {
   const pageSize = 50n;
@@ -293,9 +295,9 @@ export const getAllIcrcTransactionsFromAccountAndIdentity = async ({
 };
 
 const filterIcrcTransactionsByRange = (
-  transactions: IcrcIndexNgTransactionWithId[],
+  transactions: IcrcIndexNgDid.TransactionWithId[],
   range?: TransactionsDateRange
-): IcrcIndexNgTransactionWithId[] => {
+): IcrcIndexNgDid.TransactionWithId[] => {
   if (isNullish(range)) return transactions;
 
   return transactions.filter((tx) => {

@@ -3,22 +3,22 @@ import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { SnsTopicDefinitionsTopicPo } from "$tests/page-objects/SnsTopicDefinitionsTopic.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
 describe("SnsTopicDefinitionsTopic", () => {
-  const nativeNsFunction1: SnsNervousSystemFunction = {
+  const nativeNsFunction1: SnsGovernanceDid.NervousSystemFunction = {
     id: 1n,
     name: "Native Function 1",
     description: ["Native Function 1 Description"],
     function_type: [],
   };
-  const nativeNsFunction2: SnsNervousSystemFunction = {
+  const nativeNsFunction2: SnsGovernanceDid.NervousSystemFunction = {
     id: 2n,
     name: "Native Function 2",
     description: ["Native Function 2 Description"],
     function_type: [],
   };
-  const genericNsFunction: SnsNervousSystemFunction = {
+  const genericNsFunction: SnsGovernanceDid.NervousSystemFunction = {
     id: 1001n,
     name: "Custom Function",
     description: ["Custom Function Description"],

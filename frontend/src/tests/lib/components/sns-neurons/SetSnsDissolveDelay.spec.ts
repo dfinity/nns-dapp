@@ -16,12 +16,12 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { ICPToken, secondsToDuration } from "@dfinity/utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("ConfirmSnsDissolveDelay", () => {
   const delayInSeconds = Math.round(12.3 * SECONDS_IN_DAY);
-  const neuron: SnsNeuron = {
+  const neuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     dissolve_state: [
       {

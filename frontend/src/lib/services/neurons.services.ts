@@ -77,7 +77,7 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type {
   AccountIdentifierHex,
-  TransactionWithId,
+  IcpIndexDid,
 } from "@icp-sdk/canisters/ledger/icp";
 import {
   NeuronVisibility,
@@ -1240,7 +1240,7 @@ const getMemosFromStakingTransactions = ({
   transactions,
 }: {
   controller: Principal;
-  transactions: TransactionWithId[];
+  transactions: IcpIndexDid.TransactionWithId[];
 }): {
   memo: bigint;
   accountIdentifier: string;
@@ -1308,7 +1308,7 @@ export const claimNeuronsIfNeeded = async ({
   neuronAccounts,
 }: {
   controller: Principal;
-  transactions: TransactionWithId[];
+  transactions: IcpIndexDid.TransactionWithId[];
   neuronAccounts: Set<string>;
 }): Promise<void> => {
   const memos = getMemosFromStakingTransactions({

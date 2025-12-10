@@ -19,7 +19,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { extractHrefFromText } from "$tests/utils/utils.test-utils";
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -30,7 +30,7 @@ describe("SnsDisburseMaturityModal", () => {
   const ledgerCanisterId = principal(2);
 
   const renderSnsDisburseMaturityModal = async (
-    neuron: SnsNeuron = mockSnsNeuron
+    neuron: SnsGovernanceDid.Neuron = mockSnsNeuron
   ): Promise<DisburseMaturityModalPo> => {
     const { container } = await renderModal({
       component: SnsDisburseMaturityModal,
@@ -153,7 +153,7 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
   });
 
-  const disburse = async (neuron: SnsNeuron) => {
+  const disburse = async (neuron: SnsGovernanceDid.Neuron) => {
     const po = await renderSnsDisburseMaturityModal(neuron);
 
     await po.setPercentage(50);

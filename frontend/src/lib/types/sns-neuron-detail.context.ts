@@ -1,4 +1,4 @@
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { Readable } from "svelte/store";
 
@@ -15,7 +15,7 @@ export interface SelectedSnsNeuronStore {
         neuronIdHex: string;
       }
     | undefined;
-  neuron: SnsNeuron | undefined | null;
+  neuron: SnsGovernanceDid.Neuron | undefined | null;
 }
 
 export interface SelectedSnsNeuronContext {

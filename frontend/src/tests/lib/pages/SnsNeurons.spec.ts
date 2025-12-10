@@ -16,13 +16,11 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsDisburseMaturityInProgress } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
   neuronSubaccount,
-  type SnsNeuron,
-  type SnsNeuronId,
 } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -45,7 +43,7 @@ describe("SnsNeurons", () => {
     maturity: 0n,
     stakedMaturity: 0n,
   });
-  const neuronWithDisbursementInProgressOnly: SnsNeuron = {
+  const neuronWithDisbursementInProgressOnly: SnsGovernanceDid.Neuron = {
     ...createMockSnsNeuron({
       id: [4, 6, 8],
       stake: 0n,
@@ -55,11 +53,11 @@ describe("SnsNeurons", () => {
     disburse_maturity_in_progress: [
       {
         amount_e8s: 100_000_000n,
-      } as SnsDisburseMaturityInProgress,
+      } as SnsGovernanceDid.DisburseMaturityInProgress,
     ],
   };
   const neuronNFStake = 400_000_000n;
-  const neuronNF: SnsNeuron = {
+  const neuronNF: SnsGovernanceDid.Neuron = {
     ...createMockSnsNeuron({
       id: [1, 2, 6],
       stake: neuronNFStake,
@@ -182,10 +180,10 @@ describe("SnsNeurons", () => {
         controller: mockIdentity.getPrincipal(),
         index: unclaimedNeuronIndex2,
       });
-      const unclaimedNeuronId1: SnsNeuronId = {
+      const unclaimedNeuronId1: SnsGovernanceDid.NeuronId = {
         id: unclaimedNeuronSubaccount1,
       };
-      const unclaimedNeuronId2: SnsNeuronId = {
+      const unclaimedNeuronId2: SnsGovernanceDid.NeuronId = {
         id: unclaimedNeuronSubaccount2,
       };
       const unclaimedNeuron1 = createMockSnsNeuron({

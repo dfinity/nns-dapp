@@ -3,12 +3,15 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsDisburseMaturityButton", () => {
   const fee = TokenAmountV2.fromUlps({ amount: 10_000n, token: ICPToken });
-  const renderComponent = (neuron: SnsNeuron, fee: TokenAmountV2) => {
+  const renderComponent = (
+    neuron: SnsGovernanceDid.Neuron,
+    fee: TokenAmountV2
+  ) => {
     const { container } = render(SnsDisburseMaturityButton, {
       props: {
         neuron,

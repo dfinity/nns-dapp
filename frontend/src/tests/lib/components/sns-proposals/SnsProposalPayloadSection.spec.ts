@@ -4,7 +4,7 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalPayloadSectionPo } from "$tests/page-objects/SnsProposalPayloadSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
@@ -23,7 +23,7 @@ describe("SnsProposalPayloadSection", () => {
 
   describe("when payload is defined", () => {
     const payload = "Some Summary";
-    const proposal: SnsProposalData = {
+    const proposal: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       payload_text_rendering: [payload],
     };
@@ -46,7 +46,7 @@ describe("SnsProposalPayloadSection", () => {
   });
 
   describe("when payload is not defined", () => {
-    const proposal: SnsProposalData = {
+    const proposal: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       payload_text_rendering: [],
     };

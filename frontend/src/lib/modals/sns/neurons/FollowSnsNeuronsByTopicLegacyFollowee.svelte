@@ -1,13 +1,10 @@
 <script lang="ts">
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuronId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
 
   type Props = {
-    nsFunction: SnsNervousSystemFunction;
-    neuronId: SnsNeuronId;
+    nsFunction: SnsGovernanceDid.NervousSystemFunction;
+    neuronId: SnsGovernanceDid.NeuronId;
     onRemoveClick?: () => void;
   };
   const { nsFunction, neuronId, onRemoveClick }: Props = $props();

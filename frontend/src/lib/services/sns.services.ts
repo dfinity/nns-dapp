@@ -21,10 +21,7 @@ import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { nonNullish } from "@dfinity/utils";
 import type { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
-import type {
-  SnsGetDerivedStateResponse,
-  SnsGetLifecycleResponse,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
@@ -99,7 +96,7 @@ export const loadSnsDerivedState = async ({
   rootCanisterId: string;
   strategy?: QueryAndUpdateStrategy;
 }) =>
-  queryAndUpdate<SnsGetDerivedStateResponse | undefined, unknown>({
+  queryAndUpdate<SnsSwapDid.GetDerivedStateResponse | undefined, unknown>({
     strategy: strategy ?? FORCE_CALL_STRATEGY,
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -151,7 +148,7 @@ export const loadSnsLifecycle = async ({
 }: {
   rootCanisterId: string;
 }) =>
-  queryAndUpdate<SnsGetLifecycleResponse | undefined, unknown>({
+  queryAndUpdate<SnsSwapDid.GetLifecycleResponse | undefined, unknown>({
     request: ({ certified, identity }) =>
       querySnsLifecycle({
         rootCanisterId,

@@ -1,9 +1,9 @@
-import type { SnsGetDerivedStateResponse } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
 interface SnsDerivedStateProjectData {
-  derivedState: SnsGetDerivedStateResponse;
+  derivedState: SnsSwapDid.GetDerivedStateResponse;
   certified: boolean;
 }
 
@@ -14,7 +14,7 @@ export interface SnsDerivedStateData {
 export interface SnsDerivedStateStore extends Readable<SnsDerivedStateData> {
   setDerivedState: (params: {
     rootCanisterId: Principal;
-    data: SnsGetDerivedStateResponse;
+    data: SnsSwapDid.GetDerivedStateResponse;
     certified: boolean;
   }) => void;
   reset: () => void;
@@ -36,7 +36,7 @@ const initSnsDerivedStateStore = (): SnsDerivedStateStore => {
       certified,
       rootCanisterId,
     }: {
-      data: SnsGetDerivedStateResponse;
+      data: SnsSwapDid.GetDerivedStateResponse;
       certified: boolean;
       rootCanisterId: Principal;
     }) {

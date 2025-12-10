@@ -7,9 +7,9 @@
     getSnsNeuronIdAsHexString,
     isUserHotkey,
   } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
   export let tagName: "h3" | "p" = "h3";
 
   let neuronId: string;

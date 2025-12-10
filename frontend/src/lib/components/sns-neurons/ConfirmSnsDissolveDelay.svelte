@@ -14,7 +14,7 @@
   import { getUsdValue } from "$lib/utils/token.utils";
   import { busy } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     isNullish,
     nonNullish,
@@ -26,7 +26,7 @@
 
   type Props = {
     rootCanisterId: Principal;
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     token: Token;
     delayInSeconds: number;
   };

@@ -17,14 +17,7 @@ import {
   toIncludeTopicsParameter,
 } from "$lib/utils/sns-proposals.utils";
 import { fromNullable, isNullish } from "@dfinity/utils";
-import type {
-  SnsListProposalsResponse,
-  SnsNervousSystemFunction,
-  SnsNeuronId,
-  SnsProposalData,
-  SnsProposalId,
-  SnsVote,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid, SnsVote } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
@@ -34,9 +27,9 @@ export const registerVote = async ({
   proposalId,
   vote,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
-  proposalId: SnsProposalId;
+  proposalId: SnsGovernanceDid.ProposalId;
   vote: SnsVote;
 }): Promise<{ success: boolean }> => {
   try {
@@ -69,8 +62,8 @@ export const loadSnsProposals = async ({
   beforeProposalId,
 }: {
   rootCanisterId: Principal;
-  snsFunctions: SnsNervousSystemFunction[];
-  beforeProposalId?: SnsProposalId;
+  snsFunctions: SnsGovernanceDid.NervousSystemFunction[];
+  beforeProposalId?: SnsGovernanceDid.ProposalId;
 }): Promise<void> => {
   const {
     types = [],
@@ -93,7 +86,7 @@ export const loadSnsProposals = async ({
         snsFunctions,
       });
 
-  return queryAndUpdate<SnsListProposalsResponse, unknown>({
+  return queryAndUpdate<SnsGovernanceDid.ListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
       queryProposals({
@@ -154,14 +147,14 @@ export const getSnsProposalById = async ({
   handleError,
 }: {
   rootCanisterId: Principal;
-  proposalId: SnsProposalId;
+  proposalId: SnsGovernanceDid.ProposalId;
   setProposal: (params: {
-    proposal: SnsProposalData;
+    proposal: SnsGovernanceDid.ProposalData;
     certified: boolean;
   }) => void;
   handleError?: (err: unknown) => void;
 }): Promise<void> => {
-  return queryAndUpdate<SnsProposalData, unknown>({
+  return queryAndUpdate<SnsGovernanceDid.ProposalData, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
       queryProposal({

@@ -20,7 +20,7 @@ import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsSwapCanister,
   UnsupportedMethodError,
-  type SnsGetAutoFinalizationStatusResponse,
+  type SnsSwapDid,
 } from "@icp-sdk/canisters/sns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
@@ -134,7 +134,7 @@ describe("sns-sale.api", () => {
 
   describe("queryFinalizationStatus", () => {
     it("should return the finalization status", async () => {
-      const response: SnsGetAutoFinalizationStatusResponse = {
+      const response: SnsSwapDid.GetAutoFinalizationStatusResponse = {
         auto_finalize_swap_response: [],
         has_auto_finalize_been_attempted: [false],
         is_auto_finalize_enabled: [false],

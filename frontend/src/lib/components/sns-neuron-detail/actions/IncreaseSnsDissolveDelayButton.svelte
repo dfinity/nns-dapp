@@ -4,9 +4,9 @@
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { getSnsNeuronState, isVesting } from "$lib/utils/sns-neuron.utils";
   import { NeuronState } from "@icp-sdk/canisters/nns";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
 
   let isUnlocked: boolean;
   $: isUnlocked = getSnsNeuronState(neuron) === NeuronState.Dissolved;

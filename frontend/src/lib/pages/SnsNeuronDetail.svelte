@@ -41,10 +41,7 @@
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import { Island } from "@dfinity/gix-components";
   import { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     isNullish,
     nonNullish,
@@ -73,7 +70,7 @@
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = $selectedSnsNeuronStore.selected?.rootCanisterId;
 
-  let parameters: SnsNervousSystemParameters | undefined;
+  let parameters: SnsGovernanceDid.NervousSystemParameters | undefined;
   $: parameters =
     $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
 
@@ -106,7 +103,7 @@
           neuron: snsNeuron,
         }: {
           certified: boolean;
-          neuron: SnsNeuron;
+          neuron: SnsGovernanceDid.Neuron;
         }) => {
           mutableSnsNeuronStore.update({
             mutation: (store) => ({
@@ -168,7 +165,7 @@
     neuron,
   }: {
     rootCanisterId: Principal | undefined;
-    neuron: SnsNeuron | undefined | null;
+    neuron: SnsGovernanceDid.Neuron | undefined | null;
   }) => {
     if (
       await refreshNeuronIfNeeded({

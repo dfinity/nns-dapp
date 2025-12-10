@@ -17,8 +17,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@icp-sdk/canisters/nns";
 import {
   SnsNeuronPermissionType,
-  type SnsNervousSystemParameters,
-  type SnsNeuron,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -27,7 +26,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
   const nowInSeconds = 1689843195;
   const maxDissolveDelay = BigInt(SECONDS_IN_EIGHT_YEARS);
   const dissolveDelayToVote = BigInt(SECONDS_IN_HALF_YEAR);
-  const snsParameters: SnsNervousSystemParameters = {
+  const snsParameters: SnsGovernanceDid.NervousSystemParameters = {
     ...snsNervousSystemParametersMock,
     neuron_minimum_dissolve_delay_to_vote_seconds: [dissolveDelayToVote],
     max_dissolve_delay_seconds: [maxDissolveDelay],
@@ -39,8 +38,8 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
   };
 
   const renderComponent = (
-    neuron: SnsNeuron,
-    parameters: SnsNervousSystemParameters = snsParameters
+    neuron: SnsGovernanceDid.Neuron,
+    parameters: SnsGovernanceDid.NervousSystemParameters = snsParameters
   ) => {
     const { container } = render(SnsNeuronDissolveDelayItemAction, {
       props: {
@@ -111,7 +110,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
       permissions: [controllerPermissions],
       whenDissolvedTimestampSeconds: BigInt(nowInSeconds + SECONDS_IN_YEAR - 1),
     });
-    const parameters: SnsNervousSystemParameters = {
+    const parameters: SnsGovernanceDid.NervousSystemParameters = {
       ...snsParameters,
       neuron_minimum_dissolve_delay_to_vote_seconds: [BigInt(SECONDS_IN_YEAR)],
     };

@@ -4,14 +4,14 @@ import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposal
 import type { ProposalsNavigationId } from "$lib/types/proposals";
 import type { Universe } from "$lib/types/universe";
 import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { derived, type Readable } from "svelte/store";
 
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
 export interface ActionableSnsProposalsByUniverseData {
   universe: Universe;
-  proposals: SnsProposalData[];
+  proposals: SnsGovernanceDid.ProposalData[];
 }
 
 /** A store that contains sns universes with actionable support and their actionable proposals

@@ -9,32 +9,28 @@ import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { FollowSnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepTopics.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type {
-  SnsNervousSystemFunction,
-  SnsNeuron,
-  SnsNeuronId,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepTopics", () => {
   // legacy followees
   const legacyNsFunction1Name = "Legacy Function 1";
-  const legacyNsFunction1: SnsNervousSystemFunction = {
+  const legacyNsFunction1: SnsGovernanceDid.NervousSystemFunction = {
     ...nervousSystemFunctionMock,
     name: legacyNsFunction1Name,
     id: 0n,
   };
   const legacyNsFunction2Name = "Legacy Function 2";
-  const legacyNsFunction2: SnsNervousSystemFunction = {
+  const legacyNsFunction2: SnsGovernanceDid.NervousSystemFunction = {
     ...nervousSystemFunctionMock,
     name: legacyNsFunction2Name,
     id: 1n,
   };
-  const legacyFolloweeNeuronId1: SnsNeuronId = {
+  const legacyFolloweeNeuronId1: SnsGovernanceDid.NeuronId = {
     ...nervousSystemFunctionMock,
     id: Uint8Array.from([1, 2, 3, 4]),
   };
-  const legacyFolloweeNeuronId2: SnsNeuronId = {
+  const legacyFolloweeNeuronId2: SnsGovernanceDid.NeuronId = {
     id: Uint8Array.from([5, 6, 7, 8]),
   };
   // followings by topic
@@ -104,7 +100,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   };
 
   const renderComponent = (props: {
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     selectedTopics: SnsTopicKey[];
     topicInfos: TopicInfoWithUnknown[];
     followings: SnsTopicFollowing[];
@@ -113,11 +109,11 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     openNextStep: () => void;
     removeFollowing: (args: {
       topicKey: SnsTopicKey;
-      neuronId: SnsNeuronId;
+      neuronId: SnsGovernanceDid.NeuronId;
     }) => void;
     removeLegacyFollowing: (args: {
-      nsFunction: SnsNervousSystemFunction;
-      followee: SnsNeuronId;
+      nsFunction: SnsGovernanceDid.NervousSystemFunction;
+      followee: SnsGovernanceDid.NeuronId;
     }) => void;
     openDeactivateCatchAllStep: () => void;
   }) => {

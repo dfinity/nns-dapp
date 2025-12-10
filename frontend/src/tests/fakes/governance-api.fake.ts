@@ -17,7 +17,7 @@ import type {
   KnownNeuron,
   NeuronId,
   NeuronInfo,
-  RewardEvent,
+  NnsGovernanceDid,
 } from "@icp-sdk/canisters/nns";
 import { NeuronState, NeuronType } from "@icp-sdk/canisters/nns";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
@@ -43,7 +43,7 @@ const neurons: Map<string, NeuronInfo[]> = new Map();
 
 const mapKey = (identity: Identity) => identity.getPrincipal().toText();
 
-let latestRewardEvent: RewardEvent = mockRewardEvent;
+let latestRewardEvent: NnsGovernanceDid.RewardEvent = mockRewardEvent;
 
 const getNeurons = (identity: Identity) => {
   const key = mapKey(identity);
@@ -94,7 +94,7 @@ async function queryKnownNeurons({
 async function queryLastestRewardEvent({
   identity: _,
   certified: __,
-}: ApiQueryParams): Promise<RewardEvent> {
+}: ApiQueryParams): Promise<NnsGovernanceDid.RewardEvent> {
   return latestRewardEvent;
 }
 
@@ -252,7 +252,7 @@ export const addNeurons = ({
 };
 
 export const setLatestRewardEvent = (
-  latestRewardEventParams: Partial<RewardEvent>
+  latestRewardEventParams: Partial<NnsGovernanceDid.RewardEvent>
 ) => {
   latestRewardEvent = { ...latestRewardEvent, ...latestRewardEventParams };
 };

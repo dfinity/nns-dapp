@@ -35,7 +35,7 @@ import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,
   SnsVote,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { waitFor } from "@testing-library/svelte";
@@ -45,15 +45,15 @@ describe("sns-proposals services", () => {
   beforeEach(() => {
     vi.spyOn(console, "error").mockRestore();
   });
-  const proposal1: SnsProposalData = {
+  const proposal1: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 1n }],
   };
-  const proposal2: SnsProposalData = {
+  const proposal2: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const proposal3: SnsProposalData = {
+  const proposal3: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 3n }],
   };

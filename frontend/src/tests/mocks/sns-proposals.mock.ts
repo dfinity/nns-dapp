@@ -4,14 +4,11 @@ import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  type SnsBallot,
-  type SnsProposalData,
-  type SnsProposalId,
-  type SnsTally,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Subscriber } from "svelte/store";
 
-export const mockSnsProposal: SnsProposalData = {
+export const mockSnsProposal: SnsGovernanceDid.ProposalData = {
   id: [
     {
       id: 2n,
@@ -59,14 +56,14 @@ export const mockSnsProposal: SnsProposalData = {
   action_auxiliary: [],
 };
 
-const acceptedTally: SnsTally = {
+const acceptedTally: SnsGovernanceDid.Tally = {
   no: 1n,
   yes: 10n,
   total: 11n,
   timestamp_seconds: 123_455n,
 };
 
-const rejectedTally: SnsTally = {
+const rejectedTally: SnsGovernanceDid.Tally = {
   no: 10n,
   yes: 1n,
   total: 11n,
@@ -77,9 +74,9 @@ const addRewardStatusData = ({
   proposal,
   rewardStatus,
 }: {
-  proposal: SnsProposalData;
+  proposal: SnsGovernanceDid.ProposalData;
   rewardStatus?: SnsProposalRewardStatus;
-}): SnsProposalData => {
+}): SnsGovernanceDid.ProposalData => {
   const now = BigInt(nowInSeconds());
   switch (rewardStatus) {
     case undefined:
@@ -137,11 +134,11 @@ export const createSnsProposal = ({
   status: SnsProposalDecisionStatus;
   rewardStatus?: SnsProposalRewardStatus;
   proposalId: bigint;
-  ballots?: Array<[string, SnsBallot]>;
+  ballots?: Array<[string, SnsGovernanceDid.Ballot]>;
   createdAt?: bigint;
   action?: bigint;
-}): SnsProposalData => {
-  const id: [SnsProposalId] = [{ id: proposalId }];
+}): SnsGovernanceDid.ProposalData => {
+  const id: [SnsGovernanceDid.ProposalId] = [{ id: proposalId }];
   const snsProposal = {
     ...mockSnsProposal,
     id,
@@ -224,7 +221,7 @@ export const buildMockSnsProposalsStoreSubscribe =
     proposals,
   }: {
     universeIdText: string;
-    proposals: SnsProposalData[];
+    proposals: SnsGovernanceDid.ProposalData[];
   }) =>
   (
     run: Subscriber<{ [universeIdText: string]: ProjectProposalData }>

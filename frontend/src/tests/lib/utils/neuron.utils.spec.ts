@@ -112,8 +112,8 @@ import {
   Vote,
   type BallotInfo,
   type NeuronInfo,
+  type NnsGovernanceDid,
   type ProposalInfo,
-  type RewardEvent,
 } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
@@ -3144,7 +3144,7 @@ describe("neuron-utils", () => {
             id: 0n,
           },
         ],
-      } as RewardEvent;
+      } as NnsGovernanceDid.RewardEvent;
       expect(maturityLastDistribution(testRewardEvent)).toEqual(
         12_234_455_555n
       );
@@ -3156,7 +3156,7 @@ describe("neuron-utils", () => {
         actual_timestamp_seconds: 12_234_455_555n,
         rounds_since_last_distribution: [3n],
         settled_proposals: [],
-      } as RewardEvent;
+      } as NnsGovernanceDid.RewardEvent;
       const threeDays = BigInt(3 * SECONDS_IN_DAY);
       expect(maturityLastDistribution(testRewardEvent)).toEqual(
         12_234_455_555n - threeDays

@@ -22,10 +22,7 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { ProposalStatus, type ProposalInfo } from "@icp-sdk/canisters/nns";
-import type {
-  SnsGetDerivedStateResponse,
-  SnsSwapDerivedState,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { derived, writable, type Readable } from "svelte/store";
 
 // ************** Proposals for Launchpad **************
@@ -97,8 +94,8 @@ export const isLoadingSnsProjectsStore = derived<SnsAggregatorStore, boolean>(
  * The difference is in two fields that are optional in the get_derived_state response.
  */
 const convertToDerivedState = (
-  data: SnsGetDerivedStateResponse
-): SnsSwapDerivedState | undefined =>
+  data: SnsSwapDid.GetDerivedStateResponse
+): SnsSwapDid.DerivedState | undefined =>
   isNullish(fromNullable(data.sns_tokens_per_icp)) ||
   isNullish(data.buyer_total_icp_e8s)
     ? undefined

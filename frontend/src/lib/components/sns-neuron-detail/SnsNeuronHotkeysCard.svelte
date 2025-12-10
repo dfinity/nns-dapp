@@ -22,22 +22,18 @@
     getSnsNeuronHotkeys,
   } from "$lib/utils/sns-neuron.utils";
   import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
 
-  export let parameters: SnsNervousSystemParameters;
+  export let parameters: SnsGovernanceDid.NervousSystemParameters;
 
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let neuron: SnsNeuron | undefined | null;
+  let neuron: SnsGovernanceDid.Neuron | undefined | null;
   $: neuron = $store.neuron;
-  let neuronId: SnsNeuronId | undefined;
+  let neuronId: SnsGovernanceDid.NeuronId | undefined;
   $: neuronId =
     neuron?.id !== undefined ? fromDefinedNullable(neuron.id) : undefined;
 

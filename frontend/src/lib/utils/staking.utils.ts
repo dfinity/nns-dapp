@@ -41,7 +41,7 @@ import {
   type Token,
 } from "@dfinity/utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
 const getNnsNeuronAggregateInfo = (
   nnsNeurons: NeuronInfo[] | undefined
@@ -74,7 +74,9 @@ const getSnsNeuronAggregateInfo = ({
   snsNeurons,
 }: {
   universe: Universe;
-  snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
+  snsNeurons: {
+    [rootCanisterId: string]: { neurons: SnsGovernanceDid.Neuron[] };
+  };
 }): {
   neuronCount: number | undefined;
   stake: bigint | undefined;
@@ -115,7 +117,9 @@ const getNeuronAggregateInfo = ({
   universe: Universe;
   token: Token;
   nnsNeurons: NeuronInfo[] | undefined;
-  snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
+  snsNeurons: {
+    [rootCanisterId: string]: { neurons: SnsGovernanceDid.Neuron[] };
+  };
   failedActionableSnses: FailedActionableSnsesStoreData;
 }): {
   neuronCount: number | undefined;
@@ -175,7 +179,9 @@ export const getTableProjects = ({
   universes: Universe[];
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
-  snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
+  snsNeurons: {
+    [rootCanisterId: string]: { neurons: SnsGovernanceDid.Neuron[] };
+  };
   tickersStore: TickersStoreData;
   failedActionableSnses: FailedActionableSnsesStoreData;
   stakingRewardsResult: StakingRewardResult | undefined;

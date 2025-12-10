@@ -17,7 +17,7 @@ import {
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
 import { isNullish } from "@dfinity/utils";
-import type { SnsNeuron, SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { SnsProposalRewardStatus } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -82,7 +82,7 @@ const queryNeurons = async ({
   rootCanisterId,
 }: {
   rootCanisterId: Principal;
-}): Promise<SnsNeuron[]> => {
+}): Promise<SnsGovernanceDid.Neuron[]> => {
   const getStoreNeurons = () =>
     get(snsNeuronsStore)[rootCanisterId.toText()]?.neurons;
   if (isNullish(getStoreNeurons())) {
@@ -98,8 +98,8 @@ const querySnsProposals = async ({
 }: {
   rootCanisterId: string;
   identity: Identity;
-}): Promise<{ proposals: SnsProposalData[] }> => {
-  let sortedProposals: SnsProposalData[] = [];
+}): Promise<{ proposals: SnsGovernanceDid.ProposalData[] }> => {
+  let sortedProposals: SnsGovernanceDid.ProposalData[] = [];
   for (
     let pagesLoaded = 0;
     pagesLoaded < MAX_ACTIONABLE_REQUEST_COUNT;
@@ -123,7 +123,7 @@ const querySnsProposals = async ({
     sortedProposals = sortSnsProposalsById([
       ...sortedProposals,
       ...page,
-    ]) as SnsProposalData[];
+    ]) as SnsGovernanceDid.ProposalData[];
 
     // no more proposals available
     if (page.length !== DEFAULT_LIST_PAGINATION_LIMIT) {

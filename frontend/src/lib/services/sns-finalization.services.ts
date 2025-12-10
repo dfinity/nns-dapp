@@ -6,10 +6,7 @@ import { snsSummariesStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { swapEndedMoreThanOneWeekAgo } from "$lib/utils/sns.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
-import {
-  SnsSwapLifecycle,
-  type SnsGetAutoFinalizationStatusResponse,
-} from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
@@ -37,7 +34,7 @@ export const loadSnsFinalizationStatus = async ({
     return;
   }
   await queryAndUpdate<
-    SnsGetAutoFinalizationStatusResponse | undefined,
+    SnsSwapDid.GetAutoFinalizationStatusResponse | undefined,
     unknown
   >({
     strategy: FORCE_CALL_STRATEGY,

@@ -9,10 +9,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { NeuronState } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
-  export let neuronId: SnsNeuronId;
+  export let neuronId: SnsGovernanceDid.NeuronId;
   export let neuronState: NeuronState;
   export let reloadNeuron: () => Promise<void>;
 

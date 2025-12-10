@@ -39,7 +39,7 @@ import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import {
   NeuronVisibility,
@@ -2766,7 +2766,7 @@ describe("neurons-services", () => {
     // $ ACCOUNT_IDENTIFIER=$(scripts/convert-id --input text --output account_identifier --subaccount_format hex $GOVERNANCE_CANISTER_ID $SUBACCOUNT)"
     const neuronAccountIdentifier =
       "4fd80d693ceec3278efd81e570e86647de9f3279e7d145fc47d1b5c43c26f104";
-    const stakingTransaction: TransactionWithId = {
+    const stakingTransaction: IcpIndexDid.TransactionWithId = {
       ...mockTransactionWithId,
       id: 1n,
       transaction: {

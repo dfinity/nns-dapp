@@ -16,18 +16,14 @@
   } from "$lib/utils/sns-neuron.utils";
   import { IconClose, Value } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
 
   type Props = {
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     rootCanisterId: Principal;
-    nsFunction: SnsNervousSystemFunction;
+    nsFunction: SnsGovernanceDid.NervousSystemFunction;
   };
   const { neuron, rootCanisterId, nsFunction }: Props = $props();
 
@@ -42,7 +38,7 @@
     followeesByFunction({ neuron, functionId: nsFunction.id })
   );
 
-  const removeCurrentFollowee = async (followee: SnsNeuronId) => {
+  const removeCurrentFollowee = async (followee: SnsGovernanceDid.NeuronId) => {
     startBusy({
       initiator: "remove-sns-followee",
     });

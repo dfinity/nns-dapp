@@ -14,7 +14,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
-import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -52,18 +52,18 @@ describe("FollowSnsNeuronsByTopicModal", () => {
   // legacy followees
   const legacyNsFunctionName = "Test Motion";
   const legacyNsFunctionId = 10n;
-  const legacyFolloweeNeuronId1: SnsNeuronId = {
+  const legacyFolloweeNeuronId1: SnsGovernanceDid.NeuronId = {
     id: Uint8Array.from([1, 2, 3, 4]),
   };
   const legacyFolloweeNeuronId1Hex = "01020304";
-  const legacyFolloweeNeuronId2: SnsNeuronId = {
+  const legacyFolloweeNeuronId2: SnsGovernanceDid.NeuronId = {
     id: Uint8Array.from([5, 6, 7, 8]),
   };
   const legacyFolloweeNeuronId2Hex = "05060708";
 
   const renderComponent = (props: {
     rootCanisterId: Principal;
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     reloadNeuron: () => Promise<void>;
     closeModal: () => void;
   }) => {
@@ -194,7 +194,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
   it("updates following for selected topics", async () => {
     const newFolloweeNeuronIdHex = "040506";
-    const newFolloweeNeuronId: SnsNeuronId = {
+    const newFolloweeNeuronId: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array([4, 5, 6]),
     };
     let resolveQuerySnsNeuron;
@@ -406,7 +406,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
   });
 
   it('handles "already following" error', async () => {
-    const criticalTopic1: SnsTopic = {
+    const criticalTopic1: SnsGovernanceDid.Topic = {
       [criticalTopicKey1]: null,
     };
     const testNeuron = {
@@ -429,7 +429,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
           ],
         },
       ],
-    } as SnsNeuron;
+    } as SnsGovernanceDid.Neuron;
     vi.spyOn(snsGovernanceApi, "querySnsNeuron").mockResolvedValue(testNeuron);
     const setFollowingSpy = vi.spyOn(snsGovernanceApi, "setFollowing");
     const reloadNeuronSpy = vi.fn();

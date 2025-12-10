@@ -14,14 +14,11 @@
   } from "$lib/utils/sns-neuron.utils";
   import { Tag } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
 
-  export let neuron: SnsNeuron;
-  export let parameters: SnsNervousSystemParameters;
+  export let neuron: SnsGovernanceDid.Neuron;
+  export let parameters: SnsGovernanceDid.NervousSystemParameters;
   export let ledgerCanisterId: Principal | undefined;
 
   let token: Token | undefined;

@@ -5,9 +5,9 @@
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
   import { IconPace } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
 
   let disbursingMaturity: bigint;
   $: disbursingMaturity = totalDisbursingMaturity(neuron);

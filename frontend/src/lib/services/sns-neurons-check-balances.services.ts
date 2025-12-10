@@ -15,7 +15,7 @@ import {
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
-import type { SnsNeuron, SnsNeuronId } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { neuronSubaccount } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -28,7 +28,7 @@ const loadNeuron = async ({
   identity,
 }: {
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   certified: boolean;
   identity: Identity;
 }): Promise<void> => {
@@ -74,7 +74,7 @@ export const neuronNeedsRefresh = async ({
   identity,
 }: {
   rootCanisterId: Principal;
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   identity: Identity;
 }): Promise<boolean> => {
   const neuronId = fromNullable(neuron.id);
@@ -133,7 +133,7 @@ const userHasNoPermissions = ({
   neuron,
   controller,
 }: {
-  neuron: SnsNeuron | undefined;
+  neuron: SnsGovernanceDid.Neuron | undefined;
   controller: Principal;
 }): boolean =>
   isNullish(neuron)
@@ -156,7 +156,7 @@ const checkNeuron = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
 }): Promise<boolean> => {
   const neuronId = fromNullable(neuron.id);
   if (
@@ -181,7 +181,7 @@ export const refreshNeuronIfNeeded = async ({
   neuron,
 }: {
   rootCanisterId: Principal | undefined;
-  neuron: SnsNeuron | null | undefined;
+  neuron: SnsGovernanceDid.Neuron | null | undefined;
 }): Promise<boolean> => {
   if (isNullish(rootCanisterId) || isNullish(neuron)) {
     return false;
@@ -242,7 +242,7 @@ const claimNeuronIfNeeded = async ({
     return;
   }
 
-  const neuronId: SnsNeuronId = { id: subaccount };
+  const neuronId: SnsGovernanceDid.NeuronId = { id: subaccount };
   // We use certified: false for performance reasons.
   // A bad actor will only get that we call refresh or claim on a neuron.
   const neuronAccountBalance = await getNeuronBalance({
@@ -276,7 +276,7 @@ export const claimNextNeuronIfNeeded = async ({
   neurons,
 }: {
   rootCanisterId: Principal | undefined;
-  neurons: SnsNeuron[] | undefined;
+  neurons: SnsGovernanceDid.Neuron[] | undefined;
 }): Promise<void> => {
   if (isNullish(rootCanisterId)) {
     return;

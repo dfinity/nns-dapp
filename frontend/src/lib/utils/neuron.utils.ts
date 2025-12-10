@@ -74,8 +74,8 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
+  type NnsGovernanceDid,
   type ProposalInfo,
-  type RewardEvent,
 } from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Component } from "svelte";
@@ -1247,7 +1247,7 @@ export const maturityLastDistribution = ({
   actual_timestamp_seconds,
   rounds_since_last_distribution,
   settled_proposals,
-}: RewardEvent): bigint => {
+}: NnsGovernanceDid.RewardEvent): bigint => {
   // Rewards were distributed that round (the most recent reward event was not a rollover), so the timestamp is correct
   if (settled_proposals.length > 0) {
     return actual_timestamp_seconds;

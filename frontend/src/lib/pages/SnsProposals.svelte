@@ -26,11 +26,13 @@
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 
-  let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  let nsFunctionsStore: Readable<
+    SnsGovernanceDid.NervousSystemFunction[] | undefined
+  >;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);
 
   let snsName: string | undefined;

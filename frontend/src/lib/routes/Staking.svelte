@@ -20,7 +20,7 @@
   import { IconStakedTokens, PageBanner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     TokenAmountV2,
     isNullish,
@@ -38,7 +38,9 @@
     isSignedIn: boolean;
     universes: Universe[];
     nnsNeurons: NeuronInfo[] | undefined;
-    snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
+    snsNeurons: {
+      [rootCanisterId: string]: { neurons: SnsGovernanceDid.Neuron[] };
+    };
   }) => {
     if (!isSignedIn) {
       return true;

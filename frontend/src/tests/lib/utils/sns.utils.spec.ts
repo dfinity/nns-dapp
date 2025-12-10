@@ -33,10 +33,7 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
-import type {
-  SnsGetAutoFinalizationStatusResponse,
-  SnsGetDerivedStateResponse,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns-utils", () => {
@@ -238,7 +235,7 @@ sale_participants_count ${saleBuyerCount} 1677707139456
     });
 
     it("returns false if not finalizing because not attempted", () => {
-      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+      const finalizingResponse: SnsSwapDid.GetAutoFinalizationStatusResponse = {
         is_auto_finalize_enabled: [true],
         auto_finalize_swap_response: [],
         has_auto_finalize_been_attempted: [false],
@@ -248,7 +245,7 @@ sale_participants_count ${saleBuyerCount} 1677707139456
     });
 
     it("returns false if not finalizing because it finished", () => {
-      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+      const finalizingResponse: SnsSwapDid.GetAutoFinalizationStatusResponse = {
         is_auto_finalize_enabled: [true],
         auto_finalize_swap_response: [
           {
@@ -286,11 +283,11 @@ sale_participants_count ${saleBuyerCount} 1677707139456
     });
 
     it("returns undefined if any of the mandatory fields is missing", () => {
-      const missingBuyerTotalIcpE8s: SnsGetDerivedStateResponse = {
+      const missingBuyerTotalIcpE8s: SnsSwapDid.GetDerivedStateResponse = {
         ...mockDerivedResponse,
         buyer_total_icp_e8s: [],
       };
-      const missingSnsPerIcp: SnsGetDerivedStateResponse = {
+      const missingSnsPerIcp: SnsSwapDid.GetDerivedStateResponse = {
         ...mockDerivedResponse,
         sns_tokens_per_icp: [],
       };

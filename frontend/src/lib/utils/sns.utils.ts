@@ -7,13 +7,7 @@ import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { AccountIdentifier, SubAccount } from "@icp-sdk/canisters/ledger/icp";
-import type {
-  SnsGetAutoFinalizationStatusResponse,
-  SnsGetDerivedStateResponse,
-  SnsNervousSystemFunction,
-  SnsProposalData,
-  SnsSwapDerivedState,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid, SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const getSwapCanisterAccount = ({
@@ -135,7 +129,7 @@ export const parseSnsSwapSaleBuyerCount = (
  * 2. `auto_finalize_swap_response` is empty
  */
 export const isSnsFinalizing = (
-  finalizationStatus: SnsGetAutoFinalizationStatusResponse
+  finalizationStatus: SnsSwapDid.GetAutoFinalizationStatusResponse
 ): boolean => {
   const { has_auto_finalize_been_attempted, auto_finalize_swap_response } =
     finalizationStatus;
@@ -147,8 +141,8 @@ export const isSnsFinalizing = (
 };
 
 export const convertDerivedStateResponseToDerivedState = (
-  derivedState: SnsGetDerivedStateResponse
-): SnsSwapDerivedState | undefined => {
+  derivedState: SnsSwapDid.GetDerivedStateResponse
+): SnsSwapDid.DerivedState | undefined => {
   const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
   const buyer_total_icp_e8s = fromNullable(derivedState.buyer_total_icp_e8s);
   // This is not expected, but in case it happens, we want to fail fast.
@@ -183,7 +177,7 @@ export const swapEndedMoreThanOneWeekAgo = ({
  */
 export const isSnsNativeNervousSystemFunction = ({
   id,
-}: SnsNervousSystemFunction): boolean =>
+}: SnsGovernanceDid.NervousSystemFunction): boolean =>
   id < MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
 
 /**
@@ -193,7 +187,7 @@ export const isSnsNativeNervousSystemFunction = ({
  */
 export const isSnsGenericNervousSystemFunction = ({
   id,
-}: SnsNervousSystemFunction): boolean =>
+}: SnsGovernanceDid.NervousSystemFunction): boolean =>
   id >= MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
 
 /**
@@ -201,7 +195,7 @@ export const isSnsGenericNervousSystemFunction = ({
  */
 export const isSnsGenericNervousSystemTypeProposal = ({
   action,
-}: SnsProposalData): boolean =>
+}: SnsGovernanceDid.ProposalData): boolean =>
   action >= MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
 
 /**
