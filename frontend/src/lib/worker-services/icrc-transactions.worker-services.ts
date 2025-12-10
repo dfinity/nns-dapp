@@ -16,7 +16,7 @@ import type {
 import { jsonReplacer, nonNullish } from "@dfinity/utils";
 import {
   decodeIcrcAccount,
-  type IcrcIndexNgDid,
+  type IcrcIndexDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 
 export type GetAccountsTransactionsResults = Omit<
@@ -71,7 +71,7 @@ export const getIcrcAccountsTransactions = ({
             ) !== undefined;
 
           return [...acc, ...(alreadyExist() ? [] : [value])];
-        }, [] as IcrcIndexNgDid.TransactionWithId[]),
+        }, [] as IcrcIndexDid.TransactionWithId[]),
         ...rest,
       };
     })
@@ -111,7 +111,7 @@ const getIcrcAccountTransactions = async ({
   // Therefore, we still need to get between 95 and 98
   //
   // Note that  we do not perform a sort based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
-  const oldestTxId: IcrcIndexNgDid.BlockIndex | undefined = [
+  const oldestTxId: IcrcIndexDid.BlockIndex | undefined = [
     ...transactions,
   ].sort(({ id: idA }, { id: idB }) => Number(idA - idB))[0]?.id;
 

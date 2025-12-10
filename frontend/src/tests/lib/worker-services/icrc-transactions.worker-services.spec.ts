@@ -10,16 +10,16 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import * as dfinityUtils from "@dfinity/utils";
 import {
-  IcrcIndexNgCanister,
-  type IcrcIndexNgDid,
+  IcrcIndexCanister,
+  type IcrcIndexDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 import { mock } from "vitest-mock-extended";
 
 describe("transactions.worker-services", () => {
-  const indexCanisterMock = mock<IcrcIndexNgCanister>();
+  const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeEach(() => {
-    vi.spyOn(IcrcIndexNgCanister, "create").mockImplementation(
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
       () => indexCanisterMock
     );
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
@@ -29,7 +29,7 @@ describe("transactions.worker-services", () => {
 
   const transaction = {
     burn: [],
-  } as unknown as IcrcIndexNgDid.Transaction;
+  } as unknown as IcrcIndexDid.Transaction;
 
   const request: Omit<
     PostMessageDataRequestTransactions,
@@ -167,7 +167,7 @@ describe("transactions.worker-services", () => {
 
     const getTransactionsSpy =
       indexCanisterMock.getTransactions.mockImplementation(
-        async (): Promise<IcrcIndexNgDid.GetTransactions> => {
+        async (): Promise<IcrcIndexDid.GetTransactions> => {
           if (firstCall) {
             firstCall = false;
 

@@ -31,10 +31,10 @@ import {
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import {
-  GovernanceCanister,
   NeuronVisibility,
+  NnsGovernanceCanister,
   Topic,
   Vote,
 } from "@icp-sdk/canisters/nns";
@@ -49,7 +49,7 @@ vi.mock("$lib/api/agent.api", () => {
 });
 
 describe("neurons-api", () => {
-  const mockGovernanceCanister = mock<GovernanceCanister>();
+  const mockGovernanceCanister = mock<NnsGovernanceCanister>();
   beforeEach(() => {
     mockGovernanceCanister.listNeurons.mockImplementation(
       vi.fn().mockResolvedValue([])
@@ -62,14 +62,14 @@ describe("neurons-api", () => {
       vi.fn().mockResolvedValue(mockNeuron)
     );
     mockGovernanceCanister.registerVote.mockResolvedValue(undefined);
-    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+    vi.spyOn(NnsGovernanceCanister, "create").mockImplementation(
       () => mockGovernanceCanister
     );
   });
 
   it("stakeNeuron creates a new neuron", async () => {
-    vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-      mock<LedgerCanister>()
+    vi.spyOn(IcpLedgerCanister, "create").mockImplementation(() =>
+      mock<IcpLedgerCanister>()
     );
 
     expect(mockGovernanceCanister.stakeNeuron).not.toBeCalled();

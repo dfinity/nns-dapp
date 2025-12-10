@@ -16,7 +16,7 @@ import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -24,14 +24,14 @@ import { mock } from "vitest-mock-extended";
 vi.mock("$lib/api/sns-aggregator.api");
 
 describe("app-services", () => {
-  const mockLedgerCanister = mock<LedgerCanister>();
+  const mockLedgerCanister = mock<IcpLedgerCanister>();
   const mockNNSDappCanister = mock<NNSDappCanister>();
 
   beforeEach(() => {
     resetIdentity();
     clearSnsAggregatorCache();
-    vi.spyOn(LedgerCanister, "create").mockImplementation(
-      (): LedgerCanister => mockLedgerCanister
+    vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
+      (): IcpLedgerCanister => mockLedgerCanister
     );
 
     vi.spyOn(NNSDappCanister, "create").mockImplementation(

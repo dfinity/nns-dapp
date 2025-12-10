@@ -2,7 +2,7 @@ import * as governanceApiService from "$lib/api-services/governance.api-service"
 import { createAgent } from "$lib/api/agent.api";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
-import { GovernanceTestCanister, type Neuron } from "@icp-sdk/canisters/nns";
+import { NnsGovernanceTestCanister, type Neuron } from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 
 const governanceTestCanister = async (identity: Identity) => {
@@ -11,7 +11,7 @@ const governanceTestCanister = async (identity: Identity) => {
     host: HOST,
   });
 
-  return GovernanceTestCanister.create({
+  return NnsGovernanceTestCanister.create({
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
   });

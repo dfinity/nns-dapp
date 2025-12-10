@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type {
   ListProposalsRequest,
   ListProposalsResponse,
@@ -8,12 +8,12 @@ import type {
   NeuronInfo,
   ProposalInfo,
 } from "@icp-sdk/canisters/nns";
-import { GovernanceCanister, Vote } from "@icp-sdk/canisters/nns";
+import { NnsGovernanceCanister, Vote } from "@icp-sdk/canisters/nns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 // eslint-disable-next-line
 // @ts-ignore: test file
-export class MockGovernanceCanister extends GovernanceCanister {
+export class MockGovernanceCanister extends NnsGovernanceCanister {
   constructor(private proposals: ProposalInfo[]) {
     super();
   }
@@ -98,7 +98,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
   }: {
     stake: bigint;
     principal: Principal;
-    ledgerCanister: LedgerCanister;
+    ledgerCanister: IcpLedgerCanister;
   }): Promise<NeuronId> => {
     return mockNeuron.neuronId;
   };

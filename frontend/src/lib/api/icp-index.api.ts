@@ -3,7 +3,10 @@ import { INDEX_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { fromNullable } from "@dfinity/utils";
-import { IndexCanister, type IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
+import {
+  IcpIndexCanister,
+  type IcpIndexDid,
+} from "@icp-sdk/canisters/ledger/icp";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 
 export interface GetTransactionsParams {
@@ -50,7 +53,7 @@ const indexCanister = async ({
 }: {
   identity: Identity;
 }): Promise<{
-  canister: IndexCanister;
+  canister: IcpIndexCanister;
   agent: Agent;
 }> => {
   const agent = await createAgent({
@@ -58,7 +61,7 @@ const indexCanister = async ({
     host: HOST,
   });
 
-  const canister = IndexCanister.create({
+  const canister = IcpIndexCanister.create({
     agent,
     canisterId: INDEX_CANISTER_ID,
   });

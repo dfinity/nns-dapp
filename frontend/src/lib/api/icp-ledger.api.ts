@@ -10,7 +10,7 @@ import { toNullable } from "@dfinity/utils";
 import type { BlockHeight } from "@icp-sdk/canisters/ledger/icp";
 import {
   AccountIdentifier,
-  LedgerCanister,
+  IcpLedgerCanister,
 } from "@icp-sdk/canisters/ledger/icp";
 import type { IcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
@@ -158,7 +158,7 @@ export const ledgerCanister = async ({
 }: {
   identity: Identity;
 }): Promise<{
-  canister: LedgerCanister;
+  canister: IcpLedgerCanister;
   agent: Agent;
 }> => {
   logWithTimestamp(`LC call...`);
@@ -167,7 +167,7 @@ export const ledgerCanister = async ({
     host: HOST,
   });
 
-  const canister = LedgerCanister.create({
+  const canister = IcpLedgerCanister.create({
     agent,
     canisterId: LEDGER_CANISTER_ID,
   });

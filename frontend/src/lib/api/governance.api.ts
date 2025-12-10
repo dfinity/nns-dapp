@@ -19,8 +19,8 @@ import type {
   Vote,
 } from "@icp-sdk/canisters/nns";
 import {
-  GovernanceCanister,
   NeuronVisibility,
+  NnsGovernanceCanister,
   type NnsGovernanceDid,
 } from "@icp-sdk/canisters/nns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
@@ -553,7 +553,7 @@ export const registerVote = async ({
     `Registering Vote (${hashCode(proposalId)}, ${hashCode(neuronId)}) call...`
   );
 
-  const governance: GovernanceCanister = GovernanceCanister.create({
+  const governance: NnsGovernanceCanister = NnsGovernanceCanister.create({
     agent: await createAgent({ identity, host: HOST }),
   });
 
@@ -599,7 +599,7 @@ export const governanceCanister = async ({
 }: {
   identity: Identity;
 }): Promise<{
-  canister: GovernanceCanister;
+  canister: NnsGovernanceCanister;
   agent: Agent;
 }> => {
   const agent = await createAgent({
@@ -607,7 +607,7 @@ export const governanceCanister = async ({
     host: HOST,
   });
 
-  const canister = GovernanceCanister.create({
+  const canister = NnsGovernanceCanister.create({
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
   });

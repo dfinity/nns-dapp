@@ -10,7 +10,7 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import {
-  GovernanceCanister,
+  NnsGovernanceCanister,
   ProposalRewardStatus,
 } from "@icp-sdk/canisters/nns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
@@ -26,8 +26,8 @@ describe("proposals-api", () => {
   let spyListProposals;
 
   beforeEach(() => {
-    vi.spyOn(GovernanceCanister, "create").mockImplementation(
-      (): GovernanceCanister => mockGovernanceCanister
+    vi.spyOn(NnsGovernanceCanister, "create").mockImplementation(
+      (): NnsGovernanceCanister => mockGovernanceCanister
     );
 
     spyListProposals = vi.spyOn(mockGovernanceCanister, "listProposals");

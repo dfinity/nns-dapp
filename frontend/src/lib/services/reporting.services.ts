@@ -12,10 +12,7 @@ import { neuronStake } from "$lib/utils/neuron.utils";
 import { mapPool } from "$lib/utils/reporting.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
-import type {
-  IcrcAccount,
-  IcrcIndexNgDid,
-} from "@icp-sdk/canisters/ledger/icrc";
+import type { IcrcAccount, IcrcIndexDid } from "@icp-sdk/canisters/ledger/icrc";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { SignIdentity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -215,12 +212,12 @@ export const getAllIcrcTransactionsFromAccountAndIdentity = async ({
   identity: SignIdentity;
   indexCanisterId: Principal;
   lastTransactionId?: bigint;
-  allTransactions?: IcrcIndexNgDid.TransactionWithId[];
+  allTransactions?: IcrcIndexDid.TransactionWithId[];
   currentPageIndex?: number;
   range?: TransactionsDateRange;
   initialBalance?: bigint;
 }): Promise<{
-  transactions: IcrcIndexNgDid.TransactionWithId[];
+  transactions: IcrcIndexDid.TransactionWithId[];
   balance: bigint;
 }> => {
   const pageSize = 50n;
@@ -295,9 +292,9 @@ export const getAllIcrcTransactionsFromAccountAndIdentity = async ({
 };
 
 const filterIcrcTransactionsByRange = (
-  transactions: IcrcIndexNgDid.TransactionWithId[],
+  transactions: IcrcIndexDid.TransactionWithId[],
   range?: TransactionsDateRange
-): IcrcIndexNgDid.TransactionWithId[] => {
+): IcrcIndexDid.TransactionWithId[] => {
   if (isNullish(range)) return transactions;
 
   return transactions.filter((tx) => {

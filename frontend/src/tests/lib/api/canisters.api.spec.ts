@@ -37,7 +37,7 @@ import { principalToSubAccount } from "@dfinity/utils";
 import { CmcCanister, ProcessingError } from "@icp-sdk/canisters/cmc";
 import {
   AccountIdentifier,
-  LedgerCanister,
+  IcpLedgerCanister,
   SubAccount,
 } from "@icp-sdk/canisters/ledger/icp";
 import { Principal } from "@icp-sdk/core/principal";
@@ -47,7 +47,7 @@ describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
   const mockCmcCanister = mock<CmcCanister>();
   const mockIcManagementCanister = mock<IcManagementCanister>();
-  const mockLedgerCanister = mock<LedgerCanister>();
+  const mockLedgerCanister = mock<IcpLedgerCanister>();
   const fee = 10_000n;
 
   beforeEach(() => {
@@ -69,7 +69,7 @@ describe("canisters-api", () => {
       () => mockIcManagementCanister
     );
 
-    vi.spyOn(LedgerCanister, "create").mockImplementation(
+    vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
       () => mockLedgerCanister
     );
   });

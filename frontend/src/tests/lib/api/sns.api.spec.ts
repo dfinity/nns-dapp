@@ -25,7 +25,7 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsSwapLifecycle,
@@ -69,7 +69,7 @@ describe("sns-api", () => {
   const getUserCommitmentSpy = vi.fn();
   const getDerivedStateSpy = vi.fn();
   const getLifecycleSpy = vi.fn();
-  const ledgerCanisterMock = mock<LedgerCanister>();
+  const ledgerCanisterMock = mock<IcpLedgerCanister>();
   const stakeNeuronSpy = vi.fn();
   const increaseStakeNeuronSpy = vi.fn();
 
@@ -80,7 +80,7 @@ describe("sns-api", () => {
     getLifecycleSpy.mockResolvedValue(lifecycleResponse);
     stakeNeuronSpy.mockResolvedValue(mockSnsNeuron.id);
 
-    vi.spyOn(LedgerCanister, "create").mockImplementation(
+    vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
 

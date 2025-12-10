@@ -10,7 +10,7 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   AccountIdentifier,
-  LedgerCanister,
+  IcpLedgerCanister,
 } from "@icp-sdk/canisters/ledger/icp";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
@@ -31,12 +31,12 @@ describe("icp-ledger.api", () => {
     const nowInBigIntNanoSeconds = BigInt(now) * 1_000_000n;
 
     beforeEach(() => {
-      const ledgerMock = mock<LedgerCanister>();
+      const ledgerMock = mock<IcpLedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(0n);
       vi.useFakeTimers().setSystemTime(now);
 
-      vi.spyOn(LedgerCanister, "create").mockImplementation(
-        (): LedgerCanister => ledgerMock
+      vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
+        (): IcpLedgerCanister => ledgerMock
       );
 
       spyTransfer = vi.spyOn(ledgerMock, "transfer");
@@ -134,12 +134,12 @@ describe("icp-ledger.api", () => {
     const nowInBigIntNanoSeconds = BigInt(now) * 1_000_000n;
 
     beforeEach(() => {
-      const ledgerMock = mock<LedgerCanister>();
+      const ledgerMock = mock<IcpLedgerCanister>();
       ledgerMock.icrc1Transfer.mockResolvedValue(0n);
       vi.useFakeTimers().setSystemTime(now);
 
-      vi.spyOn(LedgerCanister, "create").mockImplementation(
-        (): LedgerCanister => ledgerMock
+      vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
+        (): IcpLedgerCanister => ledgerMock
       );
 
       spyTransfer = vi.spyOn(ledgerMock, "icrc1Transfer");
@@ -259,12 +259,12 @@ describe("icp-ledger.api", () => {
 
   describe("transactionFee", () => {
     const fee = 10_000n;
-    const ledgerMock = mock<LedgerCanister>();
+    const ledgerMock = mock<IcpLedgerCanister>();
 
     beforeEach(() => {
       ledgerMock.transactionFee.mockResolvedValue(fee);
-      vi.spyOn(LedgerCanister, "create").mockImplementation(
-        (): LedgerCanister => ledgerMock
+      vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
+        (): IcpLedgerCanister => ledgerMock
       );
     });
 
@@ -277,12 +277,12 @@ describe("icp-ledger.api", () => {
 
   describe("queryAccountBalance", () => {
     const balance = 10_000_000n;
-    const ledgerMock = mock<LedgerCanister>();
+    const ledgerMock = mock<IcpLedgerCanister>();
 
     beforeEach(() => {
       ledgerMock.accountBalance.mockResolvedValue(balance);
-      vi.spyOn(LedgerCanister, "create").mockImplementation(
-        (): LedgerCanister => ledgerMock
+      vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
+        (): IcpLedgerCanister => ledgerMock
       );
     });
 

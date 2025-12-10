@@ -3,7 +3,7 @@ import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.st
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { toNullable } from "@dfinity/utils";
-import type { IcrcIndexNgDid } from "@icp-sdk/canisters/ledger/icrc";
+import type { IcrcIndexDid } from "@icp-sdk/canisters/ledger/icrc";
 import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
@@ -28,7 +28,7 @@ export const createIcrcTransactionWithId = ({
   amount?: bigint;
   timestamp?: Date;
   memo?: Uint8Array;
-}): IcrcIndexNgDid.TransactionWithId => ({
+}): IcrcIndexDid.TransactionWithId => ({
   id: id ?? 123n,
   transaction: {
     kind: "transfer",
@@ -68,7 +68,7 @@ const fakeSubAccount = {
   subaccount: [new Uint8Array([2, 3, 4])] as [Uint8Array],
 };
 
-const mockIcrcTransactionTransfer: IcrcIndexNgDid.Transaction = {
+const mockIcrcTransactionTransfer: IcrcIndexDid.Transaction = {
   kind: "transfer",
   timestamp: 12_354n,
   burn: [],
@@ -88,7 +88,7 @@ const mockIcrcTransactionTransfer: IcrcIndexNgDid.Transaction = {
   fee_collector: [],
 };
 
-const mockIcrcTransactionTransferToSelf: IcrcIndexNgDid.Transaction = {
+const mockIcrcTransactionTransferToSelf: IcrcIndexDid.Transaction = {
   kind: "transfer",
   timestamp: 12_354n,
   burn: [],
@@ -120,7 +120,7 @@ export const createMintTransaction = ({
   to?: IcrcCandidAccount;
   memo?: Uint8Array;
   createdAt?: bigint;
-}): IcrcIndexNgDid.Transaction => {
+}): IcrcIndexDid.Transaction => {
   return {
     kind: "burn",
     timestamp,
@@ -156,7 +156,7 @@ export const createApproveTransaction = ({
   memo?: Uint8Array;
   createdAt?: bigint;
   spender?: IcrcCandidAccount;
-}): IcrcIndexNgDid.Transaction => {
+}): IcrcIndexDid.Transaction => {
   return {
     kind: "approve",
     timestamp,
@@ -193,7 +193,7 @@ export const createBurnTransaction = ({
   memo?: Uint8Array;
   createdAt?: bigint;
   spender?: IcrcCandidAccount;
-}): IcrcIndexNgDid.Transaction => {
+}): IcrcIndexDid.Transaction => {
   return {
     kind: "burn",
     timestamp,
@@ -214,10 +214,10 @@ export const createBurnTransaction = ({
   };
 };
 
-export const mockIcrcTransactionBurn: IcrcIndexNgDid.Transaction =
+export const mockIcrcTransactionBurn: IcrcIndexDid.Transaction =
   createBurnTransaction({});
 
-export const mockIcrcTransactionMint: IcrcIndexNgDid.Transaction = {
+export const mockIcrcTransactionMint: IcrcIndexDid.Transaction = {
   kind: "mint",
   timestamp: 12_354n,
   burn: [],
@@ -235,16 +235,15 @@ export const mockIcrcTransactionMint: IcrcIndexNgDid.Transaction = {
   fee_collector: [],
 };
 
-export const mockIcrcTransactionWithId: IcrcIndexNgDid.TransactionWithId = {
+export const mockIcrcTransactionWithId: IcrcIndexDid.TransactionWithId = {
   id: 123n,
   transaction: mockIcrcTransactionTransfer,
 };
 
-export const mockIcrcTransactionWithIdToSelf: IcrcIndexNgDid.TransactionWithId =
-  {
-    id: 124n,
-    transaction: mockIcrcTransactionTransferToSelf,
-  };
+export const mockIcrcTransactionWithIdToSelf: IcrcIndexDid.TransactionWithId = {
+  id: 124n,
+  transaction: mockIcrcTransactionTransferToSelf,
+};
 
 export const mockIcrcTransactionsStoreSubscribe =
   (store: IcrcTransactionsStoreData) =>
