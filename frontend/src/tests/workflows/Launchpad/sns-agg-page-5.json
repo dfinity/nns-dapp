@@ -46,19 +46,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 12707777371395,
-              "amount_e8s": 4142180023800,
+              "amount_e8s": 4066470412736,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1764815558
+              "timestamp_seconds": 1765421108
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 394044420266364,
+              "amount_e8s": 398663513426534,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": {
@@ -71,14 +71,14 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1764815558
+              "timestamp_seconds": 1765421108
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 456547812772160,
-            "timestamp_seconds": 1764815558
+            "governance_total_potential_voting_power": 469458945034118,
+            "timestamp_seconds": 1765421108
           },
-          "last_ledger_block_timestamp": 1764811201,
+          "last_ledger_block_timestamp": 1765422737,
           "num_recently_executed_proposals": 70,
           "num_recently_submitted_proposals": 73,
           "genesis_timestamp_seconds": 1746713375
@@ -87,19 +87,22 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1764770978,
-      "end_timestamp_seconds": 1764770975,
+      "actual_timestamp_seconds": 1765375779,
+      "end_timestamp_seconds": 1765375775,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 209,
+      "round": 216,
       "settled_proposals": [
         {
-          "id": 220
+          "id": 242
+        },
+        {
+          "id": 243
         }
       ]
     },
     "parameters": {
-      "reserved_ids": [],
+      "reserved_ids": [3007, 3008],
       "functions": [
         {
           "id": 0,
@@ -374,30 +377,156 @@
           }
         },
         {
-          "id": 3007,
+          "id": 3009,
           "name": "pauseToken",
-          "description": "Pause a token from being traded by the rebalancing trading bot.",
+          "description": "Pause a token from trading.",
           "function_type": {
             "GenericNervousSystemFunction": {
               "topic": "CriticalDappOperations",
               "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
-              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
-              "validator_method_name": "validate_pauseTokenFromTradingManual",
-              "target_method_name": "pauseTokenFromTradingManual"
+              "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+              "validator_method_name": "validate_pauseToken",
+              "target_method_name": "pauseToken"
             }
           }
         },
         {
-          "id": 3008,
-          "name": "unpauseToken",
-          "description": "Resume trading a paused token.",
+          "id": 3010,
+          "name": "upauseToken",
+          "description": "Unpause a manually paused (not circuit broken) token.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+              "validator_method_name": "validate_unpauseToken",
+              "target_method_name": "unpauseToken"
+            }
+          }
+        },
+        {
+          "id": 3011,
+          "name": "updateRebalanceConfig",
+          "description": "Update rebalancer configuration parameters",
           "function_type": {
             "GenericNervousSystemFunction": {
               "topic": "CriticalDappOperations",
               "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
               "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
-              "validator_method_name": "validate_unpauseTokenFromTrading",
-              "target_method_name": "unpauseTokenFromTrading"
+              "validator_method_name": "validate_updateRebalanceConfig",
+              "target_method_name": "updateRebalanceConfig"
+            }
+          }
+        },
+        {
+          "id": 3012,
+          "name": "updateMaxPortfolioSnapshots",
+          "description": "Update the maximum number of portfolio snapshots held by the treasury canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_updateMaxPortfolioSnapshots",
+              "target_method_name": "updateMaxPortfolioSnapshots"
+            }
+          }
+        },
+        {
+          "id": 3013,
+          "name": "updateSystemParameter",
+          "description": "Update DAO system parameters",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+              "validator_method_name": "validate_updateSystemParameter",
+              "target_method_name": "updateSystemParameter"
+            }
+          }
+        },
+        {
+          "id": 3014,
+          "name": "startPortfolioSnapshots",
+          "description": "Start portfolio snapshot timer on the treasury canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "Governance",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_startPortfolioSnapshots",
+              "target_method_name": "startPortfolioSnapshots"
+            }
+          }
+        },
+        {
+          "id": 3015,
+          "name": "stopPortfolioSnapshots",
+          "description": "Stop the portfolio snapshot timer on the treasury canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_stopPortfolioSnapshots",
+              "target_method_name": "stopPortfolioSnapshots"
+            }
+          }
+        },
+        {
+          "id": 3016,
+          "name": "updatePortfolioSnapshotInterval",
+          "description": "Update the portfolio snapshot timer interval in minutes on the treasury canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_updatePortfolioSnapshotInterval",
+              "target_method_name": "updatePortfolioSnapshotInterval"
+            }
+          }
+        },
+        {
+          "id": 3017,
+          "name": "syncWithDao",
+          "description": "Sync the DAO backend canister token statuses with the treasury canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_syncWithDao",
+              "target_method_name": "admin_syncWithDao"
+            }
+          }
+        },
+        {
+          "id": 3018,
+          "name": "recoverPoolBalances",
+          "description": "Recover any balances stuck in ICPSwap swap pool balances",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "Governance",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_recoverPoolBalances",
+              "target_method_name": "admin_recoverPoolBalances"
+            }
+          }
+        },
+        {
+          "id": 3019,
+          "name": "takeNeuronSnapshot",
+          "description": "Take a neuron snapshot. ",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_take_neuron_snapshot",
+              "target_method_name": "take_neuron_snapshot"
             }
           }
         }
@@ -580,7 +709,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777769180820000,
+    "icrc1_total_supply": 777769164270000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -811,7 +940,36 @@
           "is_critical": false,
           "name": "Governance",
           "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 3014,
+              "name": "startPortfolioSnapshots",
+              "description": "Start portfolio snapshot timer on the treasury canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_startPortfolioSnapshots",
+                  "target_method_name": "startPortfolioSnapshots"
+                }
+              }
+            },
+            {
+              "id": 3018,
+              "name": "recoverPoolBalances",
+              "description": "Recover any balances stuck in ICPSwap swap pool balances",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_recoverPoolBalances",
+                  "target_method_name": "admin_recoverPoolBalances"
+                }
+              }
+            }
+          ]
         },
         {
           "extension_operations": [],
@@ -996,30 +1154,128 @@
               }
             },
             {
-              "id": 3007,
+              "id": 3009,
               "name": "pauseToken",
-              "description": "Pause a token from being traded by the rebalancing trading bot.",
+              "description": "Pause a token from trading.",
               "function_type": {
                 "GenericNervousSystemFunction": {
                   "topic": "CriticalDappOperations",
                   "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
-                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
-                  "validator_method_name": "validate_pauseTokenFromTradingManual",
-                  "target_method_name": "pauseTokenFromTradingManual"
+                  "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+                  "validator_method_name": "validate_pauseToken",
+                  "target_method_name": "pauseToken"
                 }
               }
             },
             {
-              "id": 3008,
-              "name": "unpauseToken",
-              "description": "Resume trading a paused token.",
+              "id": 3010,
+              "name": "upauseToken",
+              "description": "Unpause a manually paused (not circuit broken) token.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+                  "validator_method_name": "validate_unpauseToken",
+                  "target_method_name": "unpauseToken"
+                }
+              }
+            },
+            {
+              "id": 3011,
+              "name": "updateRebalanceConfig",
+              "description": "Update rebalancer configuration parameters",
               "function_type": {
                 "GenericNervousSystemFunction": {
                   "topic": "CriticalDappOperations",
                   "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
                   "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
-                  "validator_method_name": "validate_unpauseTokenFromTrading",
-                  "target_method_name": "unpauseTokenFromTrading"
+                  "validator_method_name": "validate_updateRebalanceConfig",
+                  "target_method_name": "updateRebalanceConfig"
+                }
+              }
+            },
+            {
+              "id": 3012,
+              "name": "updateMaxPortfolioSnapshots",
+              "description": "Update the maximum number of portfolio snapshots held by the treasury canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_updateMaxPortfolioSnapshots",
+                  "target_method_name": "updateMaxPortfolioSnapshots"
+                }
+              }
+            },
+            {
+              "id": 3013,
+              "name": "updateSystemParameter",
+              "description": "Update DAO system parameters",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+                  "validator_method_name": "validate_updateSystemParameter",
+                  "target_method_name": "updateSystemParameter"
+                }
+              }
+            },
+            {
+              "id": 3015,
+              "name": "stopPortfolioSnapshots",
+              "description": "Stop the portfolio snapshot timer on the treasury canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_stopPortfolioSnapshots",
+                  "target_method_name": "stopPortfolioSnapshots"
+                }
+              }
+            },
+            {
+              "id": 3016,
+              "name": "updatePortfolioSnapshotInterval",
+              "description": "Update the portfolio snapshot timer interval in minutes on the treasury canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_updatePortfolioSnapshotInterval",
+                  "target_method_name": "updatePortfolioSnapshotInterval"
+                }
+              }
+            },
+            {
+              "id": 3017,
+              "name": "syncWithDao",
+              "description": "Sync the DAO backend canister token statuses with the treasury canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_syncWithDao",
+                  "target_method_name": "admin_syncWithDao"
+                }
+              }
+            },
+            {
+              "id": 3019,
+              "name": "takeNeuronSnapshot",
+              "description": "Take a neuron snapshot. ",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_take_neuron_snapshot",
+                  "target_method_name": "take_neuron_snapshot"
                 }
               }
             }
@@ -1046,7 +1302,14 @@
       "ledger": "kylwo-viaaa-aaaaq-aae7a-cai",
       "index": "bb4ce-dyaaa-aaaaq-aafaa-cai",
       "governance": "kri5s-daaaa-aaaaq-aae6q-cai",
-      "dapps": [],
+      "dapps": [
+        "suemn-5aaaa-aaaap-qb62q-cai",
+        "zdgud-kqaaa-aaaal-ajn4q-cai",
+        "aalgg-jaaaa-aaaak-afkwq-cai",
+        "hjfd4-eqaaa-aaaam-adkmq-cai",
+        "e4tvt-6yaaa-aaaao-a3sdq-cai",
+        "3gxmg-2aaaa-aaaak-apgwq-cai"
+      ],
       "archives": []
     },
     "meta": {
@@ -1062,19 +1325,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 68956402543,
-              "amount_e8s": 0,
+              "amount_e8s": 232923364032,
               "account": {
                 "owner": "kri5s-daaaa-aaaaq-aae6q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1764816784
+              "timestamp_seconds": 1765422289
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 9800000000000,
+              "amount_e8s": 999999999160,
               "account": {
                 "owner": "kri5s-daaaa-aaaaq-aae6q-cai",
                 "subaccount": {
@@ -1087,28 +1350,53 @@
               },
               "ledger_canister_id": "kylwo-viaaa-aaaaq-aae7a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1764816784
+              "timestamp_seconds": 1765422289
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 4266113835730,
-            "timestamp_seconds": 1764816784
+            "governance_total_potential_voting_power": 28653311888124,
+            "timestamp_seconds": 1765422289
           },
-          "last_ledger_block_timestamp": 1763609137,
-          "num_recently_executed_proposals": 0,
-          "num_recently_submitted_proposals": 0,
+          "last_ledger_block_timestamp": 1765422922,
+          "num_recently_executed_proposals": 18,
+          "num_recently_submitted_proposals": 18,
           "genesis_timestamp_seconds": 1763609136
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1764732344,
-      "end_timestamp_seconds": 1764732336,
-      "total_available_e8s_equivalent": 38020504135,
-      "distributed_e8s_equivalent": 0,
-      "round": 13,
-      "settled_proposals": []
+      "actual_timestamp_seconds": 1765337138,
+      "end_timestamp_seconds": 1765337136,
+      "total_available_e8s_equivalent": 58113093044,
+      "distributed_e8s_equivalent": 58113093012,
+      "round": 20,
+      "settled_proposals": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 7
+        },
+        {
+          "id": 8
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -1272,6 +1560,20 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 3000,
+          "name": "Neuron Pylon: ICRC55 Command",
+          "description": "Manage vectors in the neuron pylon.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "validator_method_name": "icrc55_command_validate",
+              "target_method_name": "icrc55_command"
+            }
+          }
         }
       ]
     },
@@ -1311,7 +1613,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 2,
+        "lifecycle": 3,
         "init": {
           "nns_proposal_id": 139382,
           "sns_root_canister_id": "kwj3g-oyaaa-aaaaq-aae6a-cai",
@@ -1366,8 +1668,8 @@
         "decentralization_sale_open_timestamp_seconds": 1763724600
       },
       "derived": {
-        "buyer_total_icp_e8s": 273379807612,
-        "sns_tokens_per_icp": 64.379295
+        "buyer_total_icp_e8s": 348736271571,
+        "sns_tokens_per_icp": 50.467937
       }
     },
     "icrc1_metadata": [
@@ -1427,7 +1729,7 @@
       ]
     ],
     "icrc1_fee": [420],
-    "icrc1_total_supply": 30920000000000,
+    "icrc1_total_supply": 30919999704740,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1483,18 +1785,18 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 64.3792953491211,
-      "buyer_total_icp_e8s": 273379807612,
+      "sns_tokens_per_icp": 50.46793746948242,
+      "buyer_total_icp_e8s": 348736271571,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 273379807612,
-      "direct_participant_count": 81,
+      "direct_participation_icp_e8s": 348736271571,
+      "direct_participant_count": 96,
       "cf_neuron_count": 0
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1763724600,
-      "lifecycle": 2,
-      "decentralization_swap_termination_timestamp_seconds": null
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1764934245
     },
     "topics": {
       "uncategorized_functions": [],
@@ -1644,7 +1946,22 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 3000,
+              "name": "Neuron Pylon: ICRC55 Command",
+              "description": "Manage vectors in the neuron pylon.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "validator_method_name": "icrc55_command_validate",
+                  "target_method_name": "icrc55_command"
+                }
+              }
+            }
+          ]
         },
         {
           "extension_operations": [],
