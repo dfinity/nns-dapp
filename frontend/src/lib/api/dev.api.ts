@@ -181,7 +181,7 @@ export const makeDummyProposals = async ({
     dummyProposalsScriptPath
   );
 
-  await makeProposals({ neuronId, canister, swapCanisterId });
+  await makeProposals({ neuronId, canister });
 };
 
 const assertTestnet = () => {
