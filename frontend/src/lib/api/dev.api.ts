@@ -167,11 +167,9 @@ export const acquireIcrcTokens = async ({
 export const makeDummyProposals = async ({
   neuronId,
   identity,
-  swapCanisterId,
 }: {
   neuronId: NeuronId;
   identity: Identity;
-  swapCanisterId?: string;
 }): Promise<void> => {
   assertTestnet();
 
