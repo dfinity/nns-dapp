@@ -172,7 +172,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     featureFlags: JSON.stringify({
       ENABLE_CKTESTBTC: true,
       DISABLE_CKTOKENS: false,
-      ENABLE_DISBURSE_MATURITY: false,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
