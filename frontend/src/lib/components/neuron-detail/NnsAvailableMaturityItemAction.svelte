@@ -6,7 +6,6 @@
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     formattedMaturity,
@@ -51,7 +50,7 @@
   >
   {#if isControllable}
     <NnsStakeMaturityButton {neuron} />
-    {#if !isControlledByHW && $ENABLE_DISBURSE_MATURITY}
+    {#if !isControlledByHW}
       <NnsDisburseMaturityButton {neuron} />
     {:else}
       <SpawnNeuronButton {neuron} />
