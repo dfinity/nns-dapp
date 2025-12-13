@@ -66,61 +66,61 @@ describe("NnsAvailableMaturityItemAction", () => {
     expect(await po.getDisburseMaturityButton().getTooltipText()).toBe(
       "The maximum of 10 active maturity disbursements for this neuron has been reached. Please wait for a disbursement to complete before initiating a new one."
     );
+  });
 
-    it("should render Spawn button if controlled by attached Ledger device", async () => {
-      setAccountsForTesting({
-        main: mockMainAccount,
-        subAccounts: [],
-        hardwareWallets: [mockHardwareWalletAccount],
-      });
-
-      const po = renderComponent({
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockNeuron.fullNeuron,
-          controller: mockHardwareWalletAccount.principal.toText(),
-        },
-      });
-
-      expect(await po.hasStakeButton()).toBe(true);
-      expect(await po.hasSpawnButton()).toBe(true);
-      expect(await po.hasDisburseMaturityButton()).toBe(false);
+  it("should render Spawn button if controlled by attached Ledger device", async () => {
+    setAccountsForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [mockHardwareWalletAccount],
     });
 
-    it("should render no buttons when the user is not the controller", async () => {
-      const po = renderComponent({
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockNeuron.fullNeuron,
-          controller: mockCanisterId.toText(),
-        },
-      });
-
-      expect(await po.hasStakeButton()).toBe(false);
-      expect(await po.hasDisburseMaturityButton()).toBe(false);
-      expect(await po.hasSpawnButton()).toBe(false);
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockHardwareWalletAccount.principal.toText(),
+      },
     });
 
-    it("should have an appropriate tooltip ID", async () => {
-      const po = renderComponent(mockNeuron);
+    expect(await po.hasStakeButton()).toBe(true);
+    expect(await po.hasSpawnButton()).toBe(true);
+    expect(await po.hasDisburseMaturityButton()).toBe(false);
+  });
 
-      expect(await po.getTooltipIconPo().getTooltipPo().getTooltipId()).toBe(
-        "available-maturity-tooltip"
-      );
+  it("should render no buttons when the user is not the controller", async () => {
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockCanisterId.toText(),
+      },
     });
 
-    it("should render Disburse button", async () => {
-      const po = renderComponent({
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockNeuron.fullNeuron,
-          controller: mockIdentity.getPrincipal().toText(),
-        },
-      });
+    expect(await po.hasStakeButton()).toBe(false);
+    expect(await po.hasDisburseMaturityButton()).toBe(false);
+    expect(await po.hasSpawnButton()).toBe(false);
+  });
 
-      expect(await po.hasStakeButton()).toBe(true);
-      expect(await po.hasSpawnButton()).toBe(false);
-      expect(await po.hasDisburseMaturityButton()).toBe(true);
+  it("should have an appropriate tooltip ID", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getTooltipIconPo().getTooltipPo().getTooltipId()).toBe(
+      "available-maturity-tooltip"
+    );
+  });
+
+  it("should render Disburse button", async () => {
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
     });
+
+    expect(await po.hasStakeButton()).toBe(true);
+    expect(await po.hasSpawnButton()).toBe(false);
+    expect(await po.hasDisburseMaturityButton()).toBe(true);
   });
 });
