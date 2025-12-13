@@ -269,6 +269,7 @@ interface I18nReporting {
   transactions_description: string;
   transactions_download: string;
   transactions_source_nns: string;
+  transactions_source_sns: string;
   transactions_source_ck: string;
   transactions_no_results: string;
   busy_screen: string;

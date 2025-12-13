@@ -259,6 +259,7 @@
     "transactions_description": "Download a detailed CSV report of your transaction history, including both regular token accounts and neurons showing staking and minting transactions for manual tracking and analysis.",
     "transactions_download": "Export Transactions",
     "transactions_source_nns": "NNS",
+    "transactions_source_sns": "SNS",
     "transactions_source_ck": "Ck-Tokens",
     "transactions_no_results": "To generate a report you need to have at least one transaction in the selected period.",
     "busy_screen": "Generating report... This may take a moment",
