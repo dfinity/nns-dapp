@@ -1354,16 +1354,9 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   try {
     const identity: Identity =
       await getIdentityOfControllerByNeuronId(neuronId);
-    const { snsSummariesStore } = await import("../stores/sns.store");
-    const projects = get(snsSummariesStore);
-    const pendingProject = projects.find(
-      // Use 1 instead of using enum to avoid importing sns-js
-      (summary) => summary.getLifecycle() === 1
-    );
     await makeDummyProposalsApi({
       neuronId,
       identity,
-      swapCanisterId: pendingProject?.swapCanisterId.toText(),
     });
 
     // reload actionable proposals
