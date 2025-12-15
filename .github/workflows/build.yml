@@ -45,31 +45,31 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload nns-dapp wasm module'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: nns-dapp
           path: out/nns-dapp.wasm.gz
           retention-days: 3
       - name: 'Upload nns-dapp test wasm module'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: nns-dapp_test
           path: out/nns-dapp_test.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator wasm module'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: sns_aggregator
           path: out/sns_aggregator.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator_dev wasm module'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: sns_aggregator_dev
           path: out/sns_aggregator_dev.wasm.gz
           retention-days: 3
       - name: 'Upload whole out directory'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: out
           path: out
@@ -147,7 +147,7 @@ jobs:
         run: ./scripts/nns-dapp/migration-test --accounts 1000 --chunk 100
       - name: Upload dfx logs
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
@@ -476,7 +476,7 @@ jobs:
       - name: 'Record the git commit and any tags'
         run: git log | head -n1 > out/commit.txt
       - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: nns-dapp for ${{ matrix.BUILD_NAME }}
           path: |
@@ -487,7 +487,7 @@ jobs:
             out/frontend-config.sh
             out/deployment-config.json
       - name: 'Upload sns_aggregator wasm module'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: sns_aggregator for ${{ matrix.BUILD_NAME }}
           path: |
@@ -499,7 +499,7 @@ jobs:
           assets_dir: 'out'
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload frontend assets'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: NNS frontend assets
           path: |
