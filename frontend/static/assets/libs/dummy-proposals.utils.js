@@ -443,7 +443,6 @@ const url =
 export const makeDummyProposals = async ({
   neuronId,
   canister,
-  swapCanisterId,
 }) => {
   try {
     console.log("Making dummy proposals...");
