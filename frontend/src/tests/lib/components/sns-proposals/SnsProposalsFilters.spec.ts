@@ -1,5 +1,4 @@
 import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { page } from "$mocks/$app/stores";
 import {
@@ -25,10 +24,46 @@ describe("SnsProposalsFilters", () => {
     resetIdentity();
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
+
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        topics: {
+          topics: [
+            topicInfoDtoMock({
+              topic: "DaoCommunitySettings",
+              name: "Topic1",
+              description: "This is a description",
+              isCritical: false,
+            }),
+          ],
+          uncategorized_functions: [],
+        },
+      },
+    ]);
   });
 
-  it("should render filter by status and type buttons by default", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+  it("should open filter modal when status filter is clicked", async () => {
+    const po = await renderComponent();
+    await po.getActionableProposalsSegmentPo().clickAllProposals();
+    expect(await po.getFilterModalPo().isPresent()).toBe(false);
+
+    await po.clickFiltersByStatusButton();
+    await runResolvedPromises();
+    expect(await po.getFilterModalPo().isPresent()).toBe(true);
+  });
+
+  it("should render filter by topics button when sns-aggregator returns topics and project governance canister supports filtering by topic", async () => {
+    const po = await renderComponent();
+    await po.getActionableProposalsSegmentPo().clickAllProposals();
+
+    expect(await po.getFilterByStatusButtonPo().isPresent()).toBe(true);
+    expect(await po.getFilterByTypesButtonPo().isPresent()).toBe(false);
+    expect(await po.getFilterByTopicsButtonPo().isPresent()).toBe(true);
+  });
+
+  it("should not render filter by topics button when sns-aggregator returns topics but project governance canister doesn't support filtering by topic", async () => {
+    unsupportedFilterByTopicSnsesStore.add(mockPrincipal.toText());
 
     const po = await renderComponent();
     await po.getActionableProposalsSegmentPo().clickAllProposals();
@@ -38,22 +73,12 @@ describe("SnsProposalsFilters", () => {
     expect(await po.getFilterByTopicsButtonPo().isPresent()).toBe(false);
   });
 
-  it("should open filter modal when type filter is clicked", async () => {
+  it("should open filter modal when topic filter is clicked", async () => {
     const po = await renderComponent();
     await po.getActionableProposalsSegmentPo().clickAllProposals();
     expect(await po.getFilterModalPo().isPresent()).toBe(false);
 
-    await po.clickFiltersByTypesButton();
-    await runResolvedPromises();
-    expect(await po.getFilterModalPo().isPresent()).toBe(true);
-  });
-
-  it("should open filter modal when status filter is clicked", async () => {
-    const po = await renderComponent();
-    await po.getActionableProposalsSegmentPo().clickAllProposals();
-    expect(await po.getFilterModalPo().isPresent()).toBe(false);
-
-    await po.clickFiltersByStatusButton();
+    await po.clickFiltersByTopicButton();
     await runResolvedPromises();
     expect(await po.getFilterModalPo().isPresent()).toBe(true);
   });
@@ -98,15 +123,15 @@ describe("SnsProposalsFilters", () => {
       const segmentPo = po.getActionableProposalsSegmentPo();
 
       await segmentPo.clickAllProposals();
-      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(true);
+      expect(await po.getFilterByTopicsButtonPo().isPresent()).toEqual(true);
       expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(true);
 
       await segmentPo.clickActionableProposals();
-      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(false);
+      expect(await po.getFilterByTopicsButtonPo().isPresent()).toEqual(false);
       expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(false);
 
       await segmentPo.clickAllProposals();
-      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(true);
+      expect(await po.getFilterByTopicsButtonPo().isPresent()).toEqual(true);
       expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(true);
     });
   });
@@ -126,61 +151,8 @@ describe("SnsProposalsFilters", () => {
 
     it("should filters be shown", async () => {
       const po = await renderComponent();
-      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(true);
+      expect(await po.getFilterByTopicsButtonPo().isPresent()).toEqual(true);
       expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(true);
-    });
-  });
-
-  describe("filter by topics is on", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
-
-      setSnsProjects([
-        {
-          rootCanisterId: mockPrincipal,
-          topics: {
-            topics: [
-              topicInfoDtoMock({
-                topic: "DaoCommunitySettings",
-                name: "Topic1",
-                description: "This is a description",
-                isCritical: false,
-              }),
-            ],
-            uncategorized_functions: [],
-          },
-        },
-      ]);
-    });
-
-    it("should render filter by topics button when sns-aggregator returns topics and project governance canister supports filtering by topic", async () => {
-      const po = await renderComponent();
-      await po.getActionableProposalsSegmentPo().clickAllProposals();
-
-      expect(await po.getFilterByStatusButtonPo().isPresent()).toBe(true);
-      expect(await po.getFilterByTypesButtonPo().isPresent()).toBe(false);
-      expect(await po.getFilterByTopicsButtonPo().isPresent()).toBe(true);
-    });
-
-    it("should not render filter by topics button when sns-aggregator returns topics but project governance canister doesn't support filtering by topic", async () => {
-      unsupportedFilterByTopicSnsesStore.add(mockPrincipal.toText());
-
-      const po = await renderComponent();
-      await po.getActionableProposalsSegmentPo().clickAllProposals();
-
-      expect(await po.getFilterByStatusButtonPo().isPresent()).toBe(true);
-      expect(await po.getFilterByTypesButtonPo().isPresent()).toBe(true);
-      expect(await po.getFilterByTopicsButtonPo().isPresent()).toBe(false);
-    });
-
-    it("should open filter modal when topic filter is clicked", async () => {
-      const po = await renderComponent();
-      await po.getActionableProposalsSegmentPo().clickAllProposals();
-      expect(await po.getFilterModalPo().isPresent()).toBe(false);
-
-      await po.clickFiltersByTopicButton();
-      await runResolvedPromises();
-      expect(await po.getFilterModalPo().isPresent()).toBe(true);
     });
   });
 });

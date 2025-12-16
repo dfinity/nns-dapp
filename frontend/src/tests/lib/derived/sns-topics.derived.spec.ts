@@ -3,7 +3,6 @@ import {
   createSnsTopicsProjectStore,
   snsTopicsStore,
 } from "$lib/derived/sns-topics.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { convertDtoTopicInfo } from "$lib/utils/sns-aggregator-converters.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -235,8 +234,6 @@ describe("sns topics store", () => {
 
   describe("createSnsTopicsProposalsFilteringStore", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
-
       setSnsProjects([
         {
           rootCanisterId: mockPrincipal,
@@ -261,13 +258,6 @@ describe("sns topics store", () => {
 
     it("should return false when rootCanisterId is undefined", () => {
       const store = createEnableFilteringBySnsTopicsStore(undefined);
-      expect(get(store)).toBe(false);
-    });
-
-    it("should return false when ENABLE_SNS_TOPICS is false", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", false);
-
-      const store = createEnableFilteringBySnsTopicsStore(mockPrincipal);
       expect(get(store)).toBe(false);
     });
 

@@ -9,23 +9,22 @@
   } from "$lib/derived/sns-ns-functions-project.derived";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
+  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import {
     followeesByNeuronId,
     hasPermissionToVote,
     type SnsFolloweesByNeuron,
   } from "$lib/utils/sns-neuron.utils";
   import { IconRight, KeyValuePairInfo } from "@dfinity/gix-components";
-  import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { getContext } from "svelte";
-  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -66,7 +65,6 @@
 
   let isFollowByTopic: boolean;
   $: isFollowByTopic =
-    $ENABLE_SNS_TOPICS &&
     nonNullish(rootCanisterId) &&
     nonNullish($snsTopicsStore[rootCanisterId?.toText()]);
 </script>
@@ -77,18 +75,12 @@
     {#snippet value()}{/snippet}
     {#snippet info()}
       <div class="key-value-pair-info-wrapper">
-        {#if $ENABLE_SNS_TOPICS}
-          <span>
-            {$i18n.neuron_detail.following_description}
-          </span>
-          <span class="note">
-            {$i18n.neuron_detail.following_note}
-          </span>
-        {:else}
-          <span>
-            {$i18n.neuron_detail.following_description_to_be_removed}
-          </span>
-        {/if}
+        <span>
+          {$i18n.neuron_detail.following_description}
+        </span>
+        <span class="note">
+          {$i18n.neuron_detail.following_note}
+        </span>
       </div>
     {/snippet}
   </KeyValuePairInfo>

@@ -10,7 +10,6 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import {
   getSnsNeuronIdAsHexString,
@@ -468,7 +467,6 @@ describe("SnsNeuronDetail", () => {
           },
         ],
       });
-      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
     });
 
     it("should open follow by type modal by default", async () => {
@@ -483,33 +481,6 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
       await po.getFollowingCardPo().getFollowSnsNeuronsButtonPo().click();
 
-      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(true);
-    });
-
-    it("should open follow by type modal w/o the feature flag", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", false);
-      setSnsProjects([
-        {
-          rootCanisterId,
-          topics: {
-            topics: [],
-            uncategorized_functions: [],
-          },
-        },
-      ]);
-      const po = await renderComponent({
-        neuronId: validNeuronIdAsHexString,
-      });
-
-      expect(await po.getFollowSnsNeuronsByTopicModalPo().isPresent()).toBe(
-        false
-      );
-      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
-      await po.getFollowingCardPo().getFollowSnsNeuronsButtonPo().click();
-
-      expect(await po.getFollowSnsNeuronsByTopicModalPo().isPresent()).toBe(
-        false
-      );
       expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(true);
     });
 
