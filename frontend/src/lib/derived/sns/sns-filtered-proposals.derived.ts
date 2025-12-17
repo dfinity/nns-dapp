@@ -1,4 +1,3 @@
-import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
 import {
   snsSelectedFiltersStore,
   type SnsFiltersStoreData,
@@ -21,7 +20,7 @@ import { snsTopicToTopicKey } from "$lib/utils/sns-topics.utils";
 import { isSnsGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
 import { fromNullable, isNullish } from "@dfinity/utils";
 import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
-import { derived, get, type Readable } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
 
 export const snsFilteredProposalsStore = derived<
   [
@@ -77,8 +76,7 @@ export const snsFilteredProposalsStore = derived<
             const isTopicFilteringUnsupported =
               unsupportedFilterByTopicSnses.includes(rootCanisterIdText);
 
-            const isTopicFilteringEnabled =
-              get(ENABLE_SNS_TOPICS) && !isTopicFilteringUnsupported;
+            const isTopicFilteringEnabled = !isTopicFilteringUnsupported;
 
             if (isTopicFilteringEnabled)
               return statusMatch && proposalTopicMatch;

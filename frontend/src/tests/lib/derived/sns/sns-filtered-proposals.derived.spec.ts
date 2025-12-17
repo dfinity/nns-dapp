@@ -1,13 +1,8 @@
-import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
-import {
-  ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
-} from "$lib/types/filters";
+import { ALL_SNS_PROPOSALS_WITHOUT_TOPIC } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createSnsProposal,
@@ -203,70 +198,6 @@ describe("snsFilteredProposalsStore", () => {
     expect(getProposals()).toEqual([proposal1, proposal2]);
   });
 
-  it('should return all generic proposals when "All generic" is checked', () => {
-    // TODO: Type filtering will be removed at some point in favor of topic filtering
-    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
-
-    const nativeNsFunctionId = 1n;
-    const nativeTypeProposal = createSnsProposal({
-      proposalId: 9001n,
-      action: nativeNsFunctionId,
-      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-    });
-    const genericTypeProposal1 = createSnsProposal({
-      proposalId: 9002n,
-      action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID,
-      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-    });
-    const genericTypeProposal2 = createSnsProposal({
-      proposalId: 9003n,
-      action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID + 1n,
-      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-    });
-
-    snsProposalsStore.setProposals({
-      rootCanisterId,
-      proposals: [
-        nativeTypeProposal,
-        genericTypeProposal1,
-        genericTypeProposal2,
-      ],
-      certified: true,
-      completed: true,
-    });
-    snsFiltersStore.setTypes({
-      rootCanisterId,
-      types: [
-        {
-          id: `${nativeNsFunctionId}`,
-          value: `${nativeNsFunctionId}`,
-          name: "Motion",
-          checked: true,
-        },
-        {
-          id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-          value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-          name: "All SNS Specific Functions",
-          checked: false,
-        },
-      ],
-    });
-
-    expect(getProposals()).toHaveLength(1);
-    expect(getProposals()).toEqual([nativeTypeProposal]);
-
-    snsFiltersStore.setCheckTypes({
-      rootCanisterId,
-      checkedTypes: [ALL_SNS_GENERIC_PROPOSAL_TYPES_ID],
-    });
-
-    expect(getProposals()).toHaveLength(2);
-    expect(getProposals()).toEqual([
-      genericTypeProposal1,
-      genericTypeProposal2,
-    ]);
-  });
-
   it("should return all proposals if no topics are selected", () => {
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
@@ -331,8 +262,6 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should filter proposals by topic when topic filter is selected", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
-
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
 
@@ -396,8 +325,6 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should filter proposals without topics when 'Without Topic' filter is selected", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
-
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
 
@@ -461,8 +388,6 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should filter proposals by multiple topics", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
-
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
     const treasuryTopic = { TreasuryAssetManagement: null };
@@ -612,8 +537,6 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should combine filters for status and topic", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
-
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
 

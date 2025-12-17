@@ -1,5 +1,4 @@
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
@@ -19,7 +18,6 @@ import {
 describe("SnsNeuronFollowingCard", () => {
   beforeEach(() => {
     resetIdentity();
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", false);
   });
 
   describe("user has permissions to manage followees", () => {
@@ -126,70 +124,60 @@ describe("SnsNeuronFollowingCard", () => {
       expect(await po.getFollowSnsNeuronsButtonPo().isPresent()).toBe(true);
     });
 
-    describe("topics support", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
-      });
-
-      it("should display topics definition button when topics are available", async () => {
-        setSnsProjects([
-          {
-            rootCanisterId: rootCanisterIdMock,
-            nervousFunctions: [function0, function1, function2],
-            topics: {
-              topics: [],
-              uncategorized_functions: [],
-            },
+    it("should display topics definition button when topics are available", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: rootCanisterIdMock,
+          nervousFunctions: [function0, function1, function2],
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
           },
-        ]);
-        const po = renderComponent(neuronWithFollowees);
-        expect(await po.getSnsTopicDefinitionsButtonPo().isPresent()).toBe(
-          true
-        );
-      });
+        },
+      ]);
+      const po = renderComponent(neuronWithFollowees);
+      expect(await po.getSnsTopicDefinitionsButtonPo().isPresent()).toBe(true);
+    });
 
-      it("should not display topics definition button when topics are NOT available", async () => {
-        setSnsProjects([
-          {
-            rootCanisterId: rootCanisterIdMock,
-            nervousFunctions: [function0, function1, function2],
+    it("should not display topics definition button when topics are NOT available", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: rootCanisterIdMock,
+          nervousFunctions: [function0, function1, function2],
+        },
+      ]);
+      const po = renderComponent(neuronWithFollowees);
+      expect(await po.getSnsTopicDefinitionsButtonPo().isPresent()).toBe(false);
+    });
+
+    it("should not display legacy followees when topics are available", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: rootCanisterIdMock,
+          nervousFunctions: [function0, function1, function2],
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
           },
-        ]);
-        const po = renderComponent(neuronWithFollowees);
-        expect(await po.getSnsTopicDefinitionsButtonPo().isPresent()).toBe(
-          false
-        );
-      });
+        },
+      ]);
+      const po = renderComponent(neuronWithFollowees);
+      const followeePos = await po.getSnsFolloweePos();
 
-      it("should not display legacy followees when topics are available", async () => {
-        setSnsProjects([
-          {
-            rootCanisterId: rootCanisterIdMock,
-            nervousFunctions: [function0, function1, function2],
-            topics: {
-              topics: [],
-              uncategorized_functions: [],
-            },
-          },
-        ]);
-        const po = renderComponent(neuronWithFollowees);
-        const followeePos = await po.getSnsFolloweePos();
+      expect(followeePos.length).toBe(0);
+    });
 
-        expect(followeePos.length).toBe(0);
-      });
+    it("should display legacy followees when topics are NOT available", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: rootCanisterIdMock,
+          nervousFunctions: [function0, function1, function2],
+        },
+      ]);
+      const po = renderComponent(neuronWithFollowees);
+      const followeePos = await po.getSnsFolloweePos();
 
-      it("should display legacy followees when topics are NOT available", async () => {
-        setSnsProjects([
-          {
-            rootCanisterId: rootCanisterIdMock,
-            nervousFunctions: [function0, function1, function2],
-          },
-        ]);
-        const po = renderComponent(neuronWithFollowees);
-        const followeePos = await po.getSnsFolloweePos();
-
-        expect(followeePos.length).toBe(2);
-      });
+      expect(followeePos.length).toBe(2);
     });
   });
 

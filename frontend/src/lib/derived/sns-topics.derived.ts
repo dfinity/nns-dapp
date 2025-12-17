@@ -1,5 +1,4 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
-import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import type { RootCanisterIdText } from "$lib/types/sns";
 import type {
@@ -48,16 +47,13 @@ export const createEnableFilteringBySnsTopicsStore = (
     [
       createSnsTopicsProjectStore(rootCanisterId),
       unsupportedFilterByTopicSnsesStore,
-      ENABLE_SNS_TOPICS,
     ],
-    ([topics, $unsupportedFilterByTopicSnsesStore, $ENABLE_SNS_TOPICS]) => {
+    ([topics, $unsupportedFilterByTopicSnsesStore]) => {
       if (isNullish(rootCanisterId)) return false;
 
       const isTopicFilteringUnsupported =
         $unsupportedFilterByTopicSnsesStore.includes(rootCanisterId.toText());
 
-      return (
-        $ENABLE_SNS_TOPICS && nonNullish(topics) && !isTopicFilteringUnsupported
-      );
+      return nonNullish(topics) && !isTopicFilteringUnsupported;
     }
   );
