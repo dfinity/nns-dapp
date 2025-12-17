@@ -287,7 +287,7 @@ export const addMaturity = async ({
 };
 
 // Generated with `didc bind -t js bitcoin_mock.did`, and then everything but
-// push_utxo_to_address manually removed.
+// push_utxos_to_address manually removed.
 const mockBitcoinIdlFactory: IDL.InterfaceFactory = ({ IDL }) => {
   const OutPoint = IDL.Record({
     txid: IDL.Vec(IDL.Nat8),
@@ -298,9 +298,12 @@ const mockBitcoinIdlFactory: IDL.InterfaceFactory = ({ IDL }) => {
     value: IDL.Nat64,
     outpoint: OutPoint,
   });
-  const PushUtxoToAddress = IDL.Record({ utxo: Utxo, address: IDL.Text });
+  const PushUtxosToAddress = IDL.Record({
+    utxos: IDL.Vec(Utxo),
+    address: IDL.Text,
+  });
   return IDL.Service({
-    push_utxo_to_address: IDL.Func([PushUtxoToAddress], [], []),
+    push_utxos_to_address: IDL.Func([PushUtxosToAddress], [], []),
   });
 };
 
@@ -331,24 +334,26 @@ export const receiveMockBtc = async ({
   for (let i = 0; i < txid.length; i++) {
     txid[i] = Math.floor(Math.random() * 256);
   }
-  await actor.push_utxo_to_address({
-    utxo: {
-      // We need >= 12 confirmations to get the ckBTC credited by the minter.
-      // We have 1 confirmation as soon as the UTXO is included in a block.
-      // Each block mined after that first block, in the same chain, counts as
-      // an additional confirmation.
-      // So the smaller the height of the block with the utxo, the more
-      // confirmations it has (given a fixed height of the latest block).
-      // The mock bitcoin canister starts out assuming that the latest block is
-      // at height 12. So giving our UTXO height 0 will make sure that it has
-      // the required 12 confirmations.
-      height: 0,
-      value: amountE8s,
-      outpoint: {
-        txid,
-        vout: 0,
+  await actor.push_utxos_to_address({
+    utxos: [
+      {
+        // We need >= 12 confirmations to get the ckBTC credited by the minter.
+        // We have 1 confirmation as soon as the UTXO is included in a block.
+        // Each block mined after that first block, in the same chain, counts as
+        // an additional confirmation.
+        // So the smaller the height of the block with the utxo, the more
+        // confirmations it has (given a fixed height of the latest block).
+        // The mock bitcoin canister starts out assuming that the latest block is
+        // at height 12. So giving our UTXO height 0 will make sure that it has
+        // the required 12 confirmations.
+        height: 0,
+        value: amountE8s,
+        outpoint: {
+          txid,
+          vout: 0,
+        },
       },
-    },
+    ],
     address: btcAddress,
   });
 };
