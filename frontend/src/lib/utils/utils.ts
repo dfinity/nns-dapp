@@ -93,9 +93,9 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
 export const isDefined = <T>(argument: T | undefined): argument is T =>
   argument !== undefined;
 
-// e.g. payloads.did/state_hash
+// e.g. payloads.did/state_hash (32 bytes) or SEV-SNP measurements (48 bytes)
 export const isHash = (bytes: number[]): boolean =>
-  bytes.length === 32 &&
+  [32, 48].includes(bytes.length) &&
   bytes.find(
     (value) => !Number.isInteger(value) || value < 0 || value > 255
   ) === undefined;

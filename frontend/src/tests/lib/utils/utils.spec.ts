@@ -135,29 +135,54 @@ describe("utils", () => {
   });
 
   describe("isHash", () => {
-    const bytes = (specialValue: unknown = undefined) => {
-      const res = Array(32).fill(0);
+    const bytes = (length: number, specialValue: unknown = undefined) => {
+      const res = Array(length).fill(0);
       if (specialValue !== undefined) {
         res[1] = specialValue;
       }
       return res as number[];
     };
 
-    it("should identify similar to hash arrays", () => {
-      expect(isHash(bytes())).toBe(true);
-      expect(isHash(bytes(255))).toBe(true);
+    it("should identify 32-byte hash arrays", () => {
+      expect(isHash(bytes(32))).toBe(true);
+      expect(isHash(bytes(32, 255))).toBe(true);
       expect(isHash([])).toBe(false);
-      expect(isHash(bytes().slice(1))).toBe(false);
+      expect(isHash(bytes(32).slice(1))).toBe(false);
     });
 
-    it("should identify not byte values", () => {
-      expect(isHash(bytes(-1))).toBe(false);
-      expect(isHash(bytes(null))).toBe(false);
-      expect(isHash(bytes(256))).toBe(false);
-      expect(isHash(bytes(1.5))).toBe(false);
-      expect(isHash(bytes(""))).toBe(false);
-      expect(isHash(bytes(NaN))).toBe(false);
-      expect(isHash(bytes(Infinity))).toBe(false);
+    it("should identify 48-byte SEV-SNP measurement arrays", () => {
+      expect(isHash(bytes(48))).toBe(true);
+      expect(isHash(bytes(48, 255))).toBe(true);
+      expect(isHash(bytes(48).slice(1))).toBe(false);
+    });
+
+    it("should reject arrays of other lengths", () => {
+      expect(isHash(bytes(16))).toBe(false);
+      expect(isHash(bytes(64))).toBe(false);
+      expect(isHash(bytes(31))).toBe(false);
+      expect(isHash(bytes(33))).toBe(false);
+      expect(isHash(bytes(47))).toBe(false);
+      expect(isHash(bytes(49))).toBe(false);
+    });
+
+    it("should identify not byte values in 32-byte arrays", () => {
+      expect(isHash(bytes(32, -1))).toBe(false);
+      expect(isHash(bytes(32, null))).toBe(false);
+      expect(isHash(bytes(32, 256))).toBe(false);
+      expect(isHash(bytes(32, 1.5))).toBe(false);
+      expect(isHash(bytes(32, ""))).toBe(false);
+      expect(isHash(bytes(32, NaN))).toBe(false);
+      expect(isHash(bytes(32, Infinity))).toBe(false);
+    });
+
+    it("should identify not byte values in 48-byte arrays", () => {
+      expect(isHash(bytes(48, -1))).toBe(false);
+      expect(isHash(bytes(48, null))).toBe(false);
+      expect(isHash(bytes(48, 256))).toBe(false);
+      expect(isHash(bytes(48, 1.5))).toBe(false);
+      expect(isHash(bytes(48, ""))).toBe(false);
+      expect(isHash(bytes(48, NaN))).toBe(false);
+      expect(isHash(bytes(48, Infinity))).toBe(false);
     });
   });
 
