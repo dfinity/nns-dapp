@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Export transaction data for SNS projects in the reporting section.
+- Support for the hex encoding of the SEV SNP measurement field.
 
 #### Changed
 
