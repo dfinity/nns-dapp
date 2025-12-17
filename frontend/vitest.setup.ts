@@ -175,7 +175,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
-      ENABLE_SNS_TOPICS: false,
       ENABLE_NNS_TOPICS: false,
       ENABLE_APY_PORTFOLIO: true,
       ENABLE_NEW_TABLES: false,

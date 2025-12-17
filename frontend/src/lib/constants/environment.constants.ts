@@ -22,7 +22,6 @@ export interface FeatureFlags<T> {
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
-  ENABLE_SNS_TOPICS: T;
   ENABLE_NNS_TOPICS: T;
   ENABLE_APY_PORTFOLIO: T;
   ENABLE_NEW_TABLES: T;
@@ -34,7 +33,6 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
   TEST_FLAG_EDITABLE: false,
   TEST_FLAG_NOT_EDITABLE: false,
-  ENABLE_SNS_TOPICS: false,
   ENABLE_NNS_TOPICS: false,
   ENABLE_APY_PORTFOLIO: true,
   ENABLE_NEW_TABLES: false,

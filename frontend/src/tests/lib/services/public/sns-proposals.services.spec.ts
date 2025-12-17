@@ -5,7 +5,6 @@ import {
   loadSnsProposals,
   registerVote,
 } from "$lib/services/public/sns-proposals.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
@@ -234,7 +233,6 @@ describe("sns-proposals services", () => {
         });
 
         // topics state
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
         setSnsProjects([
           {
             rootCanisterId: mockPrincipal,
@@ -303,7 +301,6 @@ describe("sns-proposals services", () => {
       });
 
       it("should call queryProposals with selected topics filters", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
         setSnsProjects([
           {
             rootCanisterId: mockPrincipal,
