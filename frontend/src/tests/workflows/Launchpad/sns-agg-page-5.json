@@ -46,19 +46,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 12707777371395,
-              "amount_e8s": 4066470412736,
+              "amount_e8s": 3980453060578,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1765421108
+              "timestamp_seconds": 1766023054
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 398663513426534,
+              "amount_e8s": 413206992064805,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": {
@@ -71,33 +71,93 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1765421108
+              "timestamp_seconds": 1766023054
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 469458945034118,
-            "timestamp_seconds": 1765421108
+            "governance_total_potential_voting_power": 485643493955719,
+            "timestamp_seconds": 1766023054
           },
-          "last_ledger_block_timestamp": 1765422737,
-          "num_recently_executed_proposals": 70,
-          "num_recently_submitted_proposals": 73,
+          "last_ledger_block_timestamp": 1766022836,
+          "num_recently_executed_proposals": 106,
+          "num_recently_submitted_proposals": 111,
           "genesis_timestamp_seconds": 1746713375
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1765375779,
-      "end_timestamp_seconds": 1765375775,
+      "actual_timestamp_seconds": 1765980584,
+      "end_timestamp_seconds": 1765980575,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 216,
+      "round": 223,
       "settled_proposals": [
         {
-          "id": 242
+          "id": 255
         },
         {
-          "id": 243
+          "id": 256
+        },
+        {
+          "id": 257
+        },
+        {
+          "id": 258
+        },
+        {
+          "id": 259
+        },
+        {
+          "id": 260
+        },
+        {
+          "id": 261
+        },
+        {
+          "id": 262
+        },
+        {
+          "id": 263
+        },
+        {
+          "id": 264
+        },
+        {
+          "id": 265
+        },
+        {
+          "id": 268
+        },
+        {
+          "id": 269
+        },
+        {
+          "id": 270
+        },
+        {
+          "id": 271
+        },
+        {
+          "id": 283
+        },
+        {
+          "id": 284
+        },
+        {
+          "id": 285
+        },
+        {
+          "id": 286
+        },
+        {
+          "id": 287
+        },
+        {
+          "id": 288
+        },
+        {
+          "id": 289
         }
       ]
     },
@@ -529,6 +589,370 @@
               "target_method_name": "take_neuron_snapshot"
             }
           }
+        },
+        {
+          "id": 3020,
+          "name": "addTriggerCondition",
+          "description": "Add a price alert token pausing trigger condition to the trading bot",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_addTriggerCondition",
+              "target_method_name": "addTriggerCondition"
+            }
+          }
+        },
+        {
+          "id": 3021,
+          "name": "setTriggerConditionActive",
+          "description": "Activate or deactivate a price alert token pause trigger condition",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_setTriggerConditionActive",
+              "target_method_name": "setTriggerConditionActive"
+            }
+          }
+        },
+        {
+          "id": 3022,
+          "name": "removeTriggerCondition",
+          "description": "Remove a price alert token pause trigger condition",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_removeTriggerCondition",
+              "target_method_name": "removeTriggerCondition"
+            }
+          }
+        },
+        {
+          "id": 3023,
+          "name": "unpauseTokenFromTrading",
+          "description": "Unpause a token that has been paused from trading by the automatic circuit breaker or price alert trigger conditions",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_unpauseTokenFromTrading",
+              "target_method_name": "unpauseTokenFromTrading"
+            }
+          }
+        },
+        {
+          "id": 3024,
+          "name": "pauseTokenFromTradingManual",
+          "description": "Emulate pausing a token via circuit breaker or price alert trigger condition. Normally prefer calling pauseToken instead.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_pauseTokenFromTradingManual",
+              "target_method_name": "pauseTokenFromTradingManual"
+            }
+          }
+        },
+        {
+          "id": 3025,
+          "name": "clearAllTradingPauses",
+          "description": "Unpause all tokens paused by circuit breaker or price alert trigger conditions.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_clearAllTradingPauses",
+              "target_method_name": "clearAllTradingPauses"
+            }
+          }
+        },
+        {
+          "id": 3026,
+          "name": "addPortfolioCircuitBreakerCondition",
+          "description": "Add a portfolio circuit breaker condition",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_addPortfolioCircuitBreakerCondition",
+              "target_method_name": "addPortfolioCircuitBreakerCondition"
+            }
+          }
+        },
+        {
+          "id": 3027,
+          "name": "setPortfolioCircuitBreakerConditionActive",
+          "description": "Activate or deactivate a portfolio circuit breaker condition",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_setPortfolioCircuitBreakerConditionActive",
+              "target_method_name": "setPortfolioCircuitBreakerConditionActive"
+            }
+          }
+        },
+        {
+          "id": 3028,
+          "name": "removePortfolioCircuitBreakerCondition",
+          "description": "Remove a portfolio circuit breaker condition",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+              "validator_method_name": "validate_removePortfolioCircuitBreakerCondition",
+              "target_method_name": "removePortfolioCircuitBreakerCondition"
+            }
+          }
+        },
+        {
+          "id": 3029,
+          "name": "setMaxNeuronSnapshots",
+          "description": "Set the maximum number of neuron snapshots to retain",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_setMaxNeuronSnapshots",
+              "target_method_name": "setMaxNeuronSnapshots"
+            }
+          }
+        },
+        {
+          "id": 3030,
+          "name": "triggerDistribution",
+          "description": "Trigger a rewards distribution round using the current distribution parameters on the rewards canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_triggerDistribution",
+              "target_method_name": "triggerDistribution"
+            }
+          }
+        },
+        {
+          "id": 3031,
+          "name": "startDistributionTimer",
+          "description": "Start the reward distribution timer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_startDistributionTimer",
+              "target_method_name": "startDistributionTimer"
+            }
+          }
+        },
+        {
+          "id": 3032,
+          "name": "stopDistributionTimer",
+          "description": "Stop the reward distribution timer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_stopDistributionTimer",
+              "target_method_name": "stopDistributionTimer"
+            }
+          }
+        },
+        {
+          "id": 3033,
+          "name": "triggerDistributionCustom",
+          "description": "Trigger a reward distribution round using custom distribution parameters",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_triggerDistributionCustom",
+              "target_method_name": "triggerDistributionCustom"
+            }
+          }
+        },
+        {
+          "id": 3034,
+          "name": "setPeriodicRewardPot",
+          "description": "Set the amount (in whole TACO tokens) that should be distributed in a reward distribution round.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_setPeriodicRewardPot",
+              "target_method_name": "setPeriodicRewardPot"
+            }
+          }
+        },
+        {
+          "id": 3035,
+          "name": "setDistributionPeriod",
+          "description": "Set the rewards distribution period (in nanoseconds)",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_setDistributionPeriod",
+              "target_method_name": "setDistributionPeriod"
+            }
+          }
+        },
+        {
+          "id": 3036,
+          "name": "setPerformanceScorePower",
+          "description": "Set the reward distribution performance score power",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_setPerformanceScorePower",
+              "target_method_name": "setPerformanceScorePower"
+            }
+          }
+        },
+        {
+          "id": 3037,
+          "name": "setVotingPowerPower",
+          "description": "Set the reward distribution voting power (stake) power",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_setVotingPowerPower",
+              "target_method_name": "setVotingPowerPower"
+            }
+          }
+        },
+        {
+          "id": 3038,
+          "name": "addToRewardSkipList",
+          "description": "Add a neuron id to the reward distribution skip list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_addToRewardSkipList",
+              "target_method_name": "addToRewardSkipList"
+            }
+          }
+        },
+        {
+          "id": 3039,
+          "name": "removeFromRewardSkipList",
+          "description": "Remove a neuron id from the reward distribution skip list",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+              "validator_method_name": "validate_removeFromRewardSkipList",
+              "target_method_name": "removeFromRewardSkipList"
+            }
+          }
+        },
+        {
+          "id": 3040,
+          "name": "startBatchImportSystem",
+          "description": "Start the batch import on the specified archive canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_startBatchImportSystem",
+              "target_method_name": "archiveProxy_startBatchImportSystem"
+            }
+          }
+        },
+        {
+          "id": 3041,
+          "name": "stopBatchImportSystem",
+          "description": "Stop the batch import on the specified archive canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_stopBatchImportSystem",
+              "target_method_name": "archiveProxy_stopBatchImportSystem"
+            }
+          }
+        },
+        {
+          "id": 3042,
+          "name": "stopAllTimers",
+          "description": "Stop all the import timers on the specified archive canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_stopAllTimers",
+              "target_method_name": "archiveProxy_stopAllTimers"
+            }
+          }
+        },
+        {
+          "id": 3043,
+          "name": "runManualBatchImport",
+          "description": "Do one manual run of the batch import on the specified archive canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_runManualBatchImport",
+              "target_method_name": "archiveProxy_runManualBatchImport"
+            }
+          }
+        },
+        {
+          "id": 3044,
+          "name": "setMaxInnerLoopIterations",
+          "description": "Set the max number of iterations on the batch import inner loop on the specified archive canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_setMaxInnerLoopIterations",
+              "target_method_name": "archiveProxy_setMaxInnerLoopIterations"
+            }
+          }
+        },
+        {
+          "id": 3045,
+          "name": "resetImportTimestamps",
+          "description": "Reset the time stamps for the batch import on the specified archive canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+              "validator_method_name": "validate_resetImportTimestamps",
+              "target_method_name": "archiveProxy_resetImportTimestamps"
+            }
+          }
         }
       ]
     },
@@ -709,7 +1133,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777769164270000,
+    "icrc1_total_supply": 777769142050000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -1278,6 +1702,370 @@
                   "target_method_name": "take_neuron_snapshot"
                 }
               }
+            },
+            {
+              "id": 3020,
+              "name": "addTriggerCondition",
+              "description": "Add a price alert token pausing trigger condition to the trading bot",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_addTriggerCondition",
+                  "target_method_name": "addTriggerCondition"
+                }
+              }
+            },
+            {
+              "id": 3021,
+              "name": "setTriggerConditionActive",
+              "description": "Activate or deactivate a price alert token pause trigger condition",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_setTriggerConditionActive",
+                  "target_method_name": "setTriggerConditionActive"
+                }
+              }
+            },
+            {
+              "id": 3022,
+              "name": "removeTriggerCondition",
+              "description": "Remove a price alert token pause trigger condition",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_removeTriggerCondition",
+                  "target_method_name": "removeTriggerCondition"
+                }
+              }
+            },
+            {
+              "id": 3023,
+              "name": "unpauseTokenFromTrading",
+              "description": "Unpause a token that has been paused from trading by the automatic circuit breaker or price alert trigger conditions",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_unpauseTokenFromTrading",
+                  "target_method_name": "unpauseTokenFromTrading"
+                }
+              }
+            },
+            {
+              "id": 3024,
+              "name": "pauseTokenFromTradingManual",
+              "description": "Emulate pausing a token via circuit breaker or price alert trigger condition. Normally prefer calling pauseToken instead.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_pauseTokenFromTradingManual",
+                  "target_method_name": "pauseTokenFromTradingManual"
+                }
+              }
+            },
+            {
+              "id": 3025,
+              "name": "clearAllTradingPauses",
+              "description": "Unpause all tokens paused by circuit breaker or price alert trigger conditions.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_clearAllTradingPauses",
+                  "target_method_name": "clearAllTradingPauses"
+                }
+              }
+            },
+            {
+              "id": 3026,
+              "name": "addPortfolioCircuitBreakerCondition",
+              "description": "Add a portfolio circuit breaker condition",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_addPortfolioCircuitBreakerCondition",
+                  "target_method_name": "addPortfolioCircuitBreakerCondition"
+                }
+              }
+            },
+            {
+              "id": 3027,
+              "name": "setPortfolioCircuitBreakerConditionActive",
+              "description": "Activate or deactivate a portfolio circuit breaker condition",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_setPortfolioCircuitBreakerConditionActive",
+                  "target_method_name": "setPortfolioCircuitBreakerConditionActive"
+                }
+              }
+            },
+            {
+              "id": 3028,
+              "name": "removePortfolioCircuitBreakerCondition",
+              "description": "Remove a portfolio circuit breaker condition",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "v6t5d-6yaaa-aaaan-qzzja-cai",
+                  "validator_method_name": "validate_removePortfolioCircuitBreakerCondition",
+                  "target_method_name": "removePortfolioCircuitBreakerCondition"
+                }
+              }
+            },
+            {
+              "id": 3029,
+              "name": "setMaxNeuronSnapshots",
+              "description": "Set the maximum number of neuron snapshots to retain",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_setMaxNeuronSnapshots",
+                  "target_method_name": "setMaxNeuronSnapshots"
+                }
+              }
+            },
+            {
+              "id": 3030,
+              "name": "triggerDistribution",
+              "description": "Trigger a rewards distribution round using the current distribution parameters on the rewards canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_triggerDistribution",
+                  "target_method_name": "triggerDistribution"
+                }
+              }
+            },
+            {
+              "id": 3031,
+              "name": "startDistributionTimer",
+              "description": "Start the reward distribution timer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_startDistributionTimer",
+                  "target_method_name": "startDistributionTimer"
+                }
+              }
+            },
+            {
+              "id": 3032,
+              "name": "stopDistributionTimer",
+              "description": "Stop the reward distribution timer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_stopDistributionTimer",
+                  "target_method_name": "stopDistributionTimer"
+                }
+              }
+            },
+            {
+              "id": 3033,
+              "name": "triggerDistributionCustom",
+              "description": "Trigger a reward distribution round using custom distribution parameters",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_triggerDistributionCustom",
+                  "target_method_name": "triggerDistributionCustom"
+                }
+              }
+            },
+            {
+              "id": 3034,
+              "name": "setPeriodicRewardPot",
+              "description": "Set the amount (in whole TACO tokens) that should be distributed in a reward distribution round.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_setPeriodicRewardPot",
+                  "target_method_name": "setPeriodicRewardPot"
+                }
+              }
+            },
+            {
+              "id": 3035,
+              "name": "setDistributionPeriod",
+              "description": "Set the rewards distribution period (in nanoseconds)",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_setDistributionPeriod",
+                  "target_method_name": "setDistributionPeriod"
+                }
+              }
+            },
+            {
+              "id": 3036,
+              "name": "setPerformanceScorePower",
+              "description": "Set the reward distribution performance score power",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_setPerformanceScorePower",
+                  "target_method_name": "setPerformanceScorePower"
+                }
+              }
+            },
+            {
+              "id": 3037,
+              "name": "setVotingPowerPower",
+              "description": "Set the reward distribution voting power (stake) power",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_setVotingPowerPower",
+                  "target_method_name": "setVotingPowerPower"
+                }
+              }
+            },
+            {
+              "id": 3038,
+              "name": "addToRewardSkipList",
+              "description": "Add a neuron id to the reward distribution skip list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_addToRewardSkipList",
+                  "target_method_name": "addToRewardSkipList"
+                }
+              }
+            },
+            {
+              "id": 3039,
+              "name": "removeFromRewardSkipList",
+              "description": "Remove a neuron id from the reward distribution skip list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "dkgdg-saaaa-aaaan-qz5ma-cai",
+                  "validator_method_name": "validate_removeFromRewardSkipList",
+                  "target_method_name": "removeFromRewardSkipList"
+                }
+              }
+            },
+            {
+              "id": 3040,
+              "name": "startBatchImportSystem",
+              "description": "Start the batch import on the specified archive canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_startBatchImportSystem",
+                  "target_method_name": "archiveProxy_startBatchImportSystem"
+                }
+              }
+            },
+            {
+              "id": 3041,
+              "name": "stopBatchImportSystem",
+              "description": "Stop the batch import on the specified archive canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_stopBatchImportSystem",
+                  "target_method_name": "archiveProxy_stopBatchImportSystem"
+                }
+              }
+            },
+            {
+              "id": 3042,
+              "name": "stopAllTimers",
+              "description": "Stop all the import timers on the specified archive canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_stopAllTimers",
+                  "target_method_name": "archiveProxy_stopAllTimers"
+                }
+              }
+            },
+            {
+              "id": 3043,
+              "name": "runManualBatchImport",
+              "description": "Do one manual run of the batch import on the specified archive canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_runManualBatchImport",
+                  "target_method_name": "archiveProxy_runManualBatchImport"
+                }
+              }
+            },
+            {
+              "id": 3044,
+              "name": "setMaxInnerLoopIterations",
+              "description": "Set the max number of iterations on the batch import inner loop on the specified archive canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_setMaxInnerLoopIterations",
+                  "target_method_name": "archiveProxy_setMaxInnerLoopIterations"
+                }
+              }
+            },
+            {
+              "id": 3045,
+              "name": "resetImportTimestamps",
+              "description": "Reset the time stamps for the batch import on the specified archive canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vzs3x-taaaa-aaaan-qzzjq-cai",
+                  "validator_method_name": "validate_resetImportTimestamps",
+                  "target_method_name": "archiveProxy_resetImportTimestamps"
+                }
+              }
             }
           ]
         }
@@ -1325,14 +2113,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 68956402543,
-              "amount_e8s": 232923364032,
+              "amount_e8s": 235630529719,
               "account": {
                 "owner": "kri5s-daaaa-aaaaq-aae6q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1765422289
+              "timestamp_seconds": 1766024104
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -1350,51 +2138,30 @@
               },
               "ledger_canister_id": "kylwo-viaaa-aaaaq-aae7a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1765422289
+              "timestamp_seconds": 1766024104
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 28653311888124,
-            "timestamp_seconds": 1765422289
+            "governance_total_potential_voting_power": 30302988065551,
+            "timestamp_seconds": 1766024104
           },
-          "last_ledger_block_timestamp": 1765422922,
-          "num_recently_executed_proposals": 18,
-          "num_recently_submitted_proposals": 18,
+          "last_ledger_block_timestamp": 1766024311,
+          "num_recently_executed_proposals": 19,
+          "num_recently_submitted_proposals": 19,
           "genesis_timestamp_seconds": 1763609136
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1765337138,
-      "end_timestamp_seconds": 1765337136,
-      "total_available_e8s_equivalent": 58113093044,
-      "distributed_e8s_equivalent": 58113093012,
-      "round": 20,
+      "actual_timestamp_seconds": 1765941946,
+      "end_timestamp_seconds": 1765941936,
+      "total_available_e8s_equivalent": 5638569784,
+      "distributed_e8s_equivalent": 5638569746,
+      "round": 27,
       "settled_proposals": [
         {
-          "id": 1
-        },
-        {
-          "id": 2
-        },
-        {
-          "id": 3
-        },
-        {
-          "id": 4
-        },
-        {
-          "id": 5
-        },
-        {
-          "id": 6
-        },
-        {
-          "id": 7
-        },
-        {
-          "id": 8
+          "id": 19
         }
       ]
     },
@@ -1729,7 +2496,7 @@
       ]
     ],
     "icrc1_fee": [420],
-    "icrc1_total_supply": 30919999704740,
+    "icrc1_total_supply": 30950390059756,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
