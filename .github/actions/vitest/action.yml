@@ -25,6 +25,10 @@ runs:
       shell: bash
       run: npm ci
       working-directory: ./frontend
+    - name: Prepare
+      shell: bash
+      run: npm run prepare
+      working-directory: ./frontend
     - name: Test
       shell: bash
       run: npm run test -- $(find src/tests -name '*.spec.ts' | sort | grep -v '^src/tests/e2e' | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})

@@ -49,6 +49,7 @@ runs:
       working-directory: frontend
       run: |
         npm ci
+        npm run prepare
         npx playwright install
     - name: Run Playwright end-to-end tests
       shell: bash

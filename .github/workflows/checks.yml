@@ -117,6 +117,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
         working-directory: ./frontend
+      - name: Prepare
+        shell: bash
+        run: npm run prepare
+        working-directory: ./frontend
       - name: Run linter
         run: npm run check
         working-directory: ./frontend
