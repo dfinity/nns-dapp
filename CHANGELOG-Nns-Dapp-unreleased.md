@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Bump the GIX package to resolve the issue with dropdowns in Windows.
+
 #### Security
 
 #### Not Published
