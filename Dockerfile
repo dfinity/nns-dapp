@@ -127,7 +127,7 @@ COPY --from=mainnet_configurator /build/frontend/.env /build/frontend/.env
 COPY ./build-frontend.sh /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
-RUN ( cd frontend && npm ci )
+RUN ( cd frontend && npm ci && npm run prepare )
 RUN ./build-frontend.sh
 
 # Title: Image to build the nns-dapp backend.
