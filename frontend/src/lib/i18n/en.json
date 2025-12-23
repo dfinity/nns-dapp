@@ -378,6 +378,7 @@
     "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
     "bitcoin_transaction_fee_notice": "BTC Network Fee *",
+    "bitcoin_network_warning": "<strong>You are sending BTC from the NNS</strong><br /><br />The NNS holds the underlying BTC in an Internet Computer custody address, not in your personal wallet address.<br /><br />If you send BTC to a centralized exchange (CEX), the exchange will see a different sender address than your NNS wallet address.<br /><br />Some exchanges require wallet address verification, and may not accept or return funds correctly.<br /><br />Only proceed if the recipient explicitly supports deposits from Internet Computer custody addresses.<br /><br /><strong>Reccomendation:</strong> we suggest sending the BTC from the NNS to an address that you fully own and control (intermediate address), and only then, send the BTC to the exchange, so that the sending address to the exchange is always controlled by you.",
     "estimated_bitcoin_transaction_fee": "Estimated BTC Network Fee",
     "internetwork_fee_notice": "Inter-network Fee *",
     "estimated_internetwork_fee": "Estimated Inter-network Fee",
