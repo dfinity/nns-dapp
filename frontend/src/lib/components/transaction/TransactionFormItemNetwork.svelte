@@ -30,7 +30,7 @@
       {selectedDestinationAddress}
     />
   {/if}
-  {#if selectedNetwork === TransactionNetwork.BTC_MAINNET}
+  {#if selectedNetwork === TransactionNetwork.BTC_MAINNET || selectedNetwork === TransactionNetwork.BTC_TESTNET}
     <div class="readonly warning" data-tid="btc-network-warning">
       <Html text={$i18n.accounts.bitcoin_network_warning} />
     </div>

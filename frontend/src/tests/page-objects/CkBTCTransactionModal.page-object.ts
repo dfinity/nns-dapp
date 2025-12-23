@@ -39,4 +39,8 @@ export class CkBTCTransactionModalPo extends TransactionModalBasePo {
   async selectNetwork(network: string): Promise<void> {
     return this.getTransactionFormItemNetworkPo().selectNetwork(network);
   }
+
+  getBtcNetworkWarning(): PageObjectElement {
+    return this.getElement("btc-network-warning");
+  }
 }
