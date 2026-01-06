@@ -1640,6 +1640,7 @@ interface I18nActions {
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
   FulfillSubnetRentalRequest: string;
+  BlessAlternativeGuestOsVersion: string;
 }
 
 interface I18nActions_description {
@@ -1660,6 +1661,7 @@ interface I18nActions_description {
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
   FulfillSubnetRentalRequest: string;
+  BlessAlternativeGuestOsVersion: string;
 }
 
 interface I18nNns_functions {
