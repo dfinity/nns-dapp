@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-12-04_03-28-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/46f8d1da58f539aa7035cbce9854d37e925d8500/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -500,6 +500,25 @@ pub struct ManageNeuronProposal {
     pub neuron_id_or_subaccount: Option<NeuronIdOrSubaccount>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurementMetadata {
+    pub kernel_cmdline: Option<String>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurement {
+    pub metadata: Option<GuestLaunchMeasurementMetadata>,
+    pub measurement: Option<serde_bytes::ByteBuf>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurements {
+    pub guest_launch_measurements: Option<Vec<GuestLaunchMeasurement>>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct BlessAlternativeGuestOsVersion {
+    pub rootfs_hash: Option<String>,
+    pub chip_ids: Option<Vec<serde_bytes::ByteBuf>>,
+    pub base_guest_launch_measurements: Option<GuestLaunchMeasurements>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct Controllers {
     pub controllers: Vec<Principal>,
 }
@@ -717,6 +736,7 @@ pub enum Action {
     RegisterKnownNeuron(KnownNeuron),
     FulfillSubnetRentalRequest(FulfillSubnetRentalRequest),
     ManageNeuron(ManageNeuronProposal),
+    BlessAlternativeGuestOsVersion(BlessAlternativeGuestOsVersion),
     UpdateCanisterSettings(UpdateCanisterSettings),
     InstallCode(InstallCode),
     DeregisterKnownNeuron(DeregisterKnownNeuron),
@@ -1082,6 +1102,7 @@ pub enum ProposalActionRequest {
     RegisterKnownNeuron(KnownNeuron),
     FulfillSubnetRentalRequest(FulfillSubnetRentalRequest),
     ManageNeuron(Box<ManageNeuronRequest>),
+    BlessAlternativeGuestOsVersion(BlessAlternativeGuestOsVersion),
     UpdateCanisterSettings(UpdateCanisterSettings),
     InstallCode(InstallCodeRequest),
     DeregisterKnownNeuron(DeregisterKnownNeuron),
