@@ -148,13 +148,16 @@ Verify the build before approving:
 
 1. git fetch
 2. git checkout $COMMIT
-3. git merge-base --is-ancestor HEAD origin/main && echo OK || echo \"Commit is not on main branch!\"
-4. ./scripts/docker-build
-5. sha256sum nns-dapp.wasm.gz
+3. ./scripts/docker-build
+4. sha256sum nns-dapp.wasm.gz
+
+To verify the arguments:
+1. DFX_NETWORK=beta ./config.sh
+2. didc encode \"\$(cat nns-dapp-arg-beta.did)\" | xxd -r -p | sha256sum
 
 One liner:
 
-git fetch && git checkout \"$COMMIT\" && (git merge-base --is-ancestor HEAD origin/main && echo OK || echo \"Commit is not on main branch!\") && ./scripts/docker-build && sha256sum \"nns-dapp.wasm.gz\""
+git fetch && git checkout \"$COMMIT\" && ./scripts/docker-build && sha256sum \"nns-dapp.wasm.gz\" && DFX_NETWORK=beta ./config.sh && didc encode \"\$(cat nns-dapp-arg-beta.did)\" | xxd -r -p | sha256sum"
 
 dfx-orbit --station "$STATION" --identity "$DFX_IDENTITY" request --title "$TITLE" --summary "$SUMMARY" canister install --mode "$INSTALL_MODE" --wasm "$WASM_PATH" "$NNS_DAPP_BETA_CANISTER_ID" --argument "$(cat nns-dapp-arg-beta.did)" --asset-canister "$ASSET_CANISTER_ID"
 
