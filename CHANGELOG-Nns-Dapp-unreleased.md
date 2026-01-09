@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Export transaction data for SNS projects in the reporting section.
 - Support for the hex encoding of the SEV SNP measurement field.
 - Warning message when attempting to transfer using the BTC network.
+- Support for the new Ledger device.
 
 #### Changed
 
