@@ -3,6 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { TransactionNetwork } from "$lib/types/transaction";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import { Html } from "@dfinity/gix-components";
   import { notEmptyString } from "@dfinity/utils";
 
   export let universeId: UniverseCanisterId;
@@ -29,6 +30,11 @@
       {selectedDestinationAddress}
     />
   {/if}
+  {#if selectedNetwork === TransactionNetwork.BTC_MAINNET || selectedNetwork === TransactionNetwork.BTC_TESTNET}
+    <div class="readonly warning" data-tid="btc-network-warning">
+      <Html text={$i18n.accounts.bitcoin_network_warning} />
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -53,5 +59,14 @@
 
   .readonly {
     margin: var(--padding) 0 0;
+  }
+
+  .warning {
+    margin-top: var(--padding-1_5x);
+    background-color: var(--warning-emphasis-light);
+    color: var(--warning-emphasis-contrast);
+    padding: var(--padding) var(--padding-1_5x);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-small);
   }
 </style>
