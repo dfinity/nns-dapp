@@ -73,11 +73,11 @@
   "dependencies": {
     "@dfinity/gix-components": "next",
     "@dfinity/utils": "next",
-    "@icp-sdk/auth": "^5.0.0",
+    "@icp-sdk/auth": "^4.2.0",
     "@icp-sdk/canisters": "next",
-    "@icp-sdk/core": "^5.0.0",
-    "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.8",
-    "@ledgerhq/hw-transport-webhid": "^6.27.8",
+    "@icp-sdk/core": "^4.2.1",
+    "@ledgerhq/hw-transport-node-hid-noevents": "^6.30.16",
+    "@ledgerhq/hw-transport-webhid": "^6.30.11",
     "@zondax/ledger-icp": "^0.6.1",
     "buffer": "^6.0.3",
     "plausible-tracker": "0.3.9"
