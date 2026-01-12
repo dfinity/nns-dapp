@@ -14,11 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Export transaction data for SNS projects in the reporting section.
-- Support for the hex encoding of the SEV SNP measurement field.
-- Warning message when attempting to transfer using the BTC network.
-- Support for the new Ledger device.
-
 #### Changed
 
 #### Deprecated
@@ -26,8 +21,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-- Bump the GIX package to resolve the issue with dropdowns in Windows.
 
 #### Security
 
