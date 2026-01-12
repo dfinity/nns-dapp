@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-12-04_03-28-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-01-08_03-31-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -370,7 +370,7 @@ pub struct RerouteCanisterRangesPayload {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GuestLaunchMeasurementsGuestLaunchMeasurementsItemMetadataInner {
-    pub kernel_cmdline: String,
+    pub kernel_cmdline: Option<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GuestLaunchMeasurementsGuestLaunchMeasurementsItem {
