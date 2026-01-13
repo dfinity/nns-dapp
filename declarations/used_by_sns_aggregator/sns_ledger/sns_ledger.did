@@ -1,4 +1,4 @@
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-12-04_03-28-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-01-08_03-31-base/rs/ledger_suite/icrc1/ledger/ledger.did>
 type BlockIndex = nat;
 type Subaccount = blob;
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
@@ -233,7 +233,8 @@ type Transaction = record {
 type FeeCollector = record {
   caller : opt principal;
   fee_collector : opt Account;
-  ts : opt nat64
+  ts : opt nat64;
+  mthd : opt text
 };
 
 type Burn = record {
