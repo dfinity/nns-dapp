@@ -1641,6 +1641,8 @@ interface I18nActions {
   UpdateCanisterSettings: string;
   FulfillSubnetRentalRequest: string;
   BlessAlternativeGuestOsVersion: string;
+  TakeCanisterSnapshot: string;
+  LoadCanisterSnapshot: string;
 }
 
 interface I18nActions_description {
@@ -1662,6 +1664,8 @@ interface I18nActions_description {
   UpdateCanisterSettings: string;
   FulfillSubnetRentalRequest: string;
   BlessAlternativeGuestOsVersion: string;
+  TakeCanisterSnapshot: string;
+  LoadCanisterSnapshot: string;
 }
 
 interface I18nNns_functions {

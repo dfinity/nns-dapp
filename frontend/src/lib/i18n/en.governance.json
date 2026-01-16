@@ -96,7 +96,9 @@
     "StopOrStartCanister": "Stop or Start Canister",
     "UpdateCanisterSettings": "Update Canister Settings",
     "FulfillSubnetRentalRequest": "Subnet Rental Agreement",
-    "BlessAlternativeGuestOsVersion": "Bless Alternative GuestOS Version"
+    "BlessAlternativeGuestOsVersion": "Bless Alternative GuestOS Version",
+    "TakeCanisterSnapshot": "Take Canister Snapshot",
+    "LoadCanisterSnapshot": "Load Canister Snapshot"
   },
   "actions_description": {
     "RegisterKnownNeuron": "This proposal registers an existing neuron as a “known neuron,” giving it a name and an optional description, and adding the neuron to the list of known neurons.",
@@ -116,7 +118,9 @@
     "StopOrStartCanister": "Stop or start a canister that is controlled by the NNS.",
     "UpdateCanisterSettings": "Update the settings of a canister that is controlled by the NNS.",
     "FulfillSubnetRentalRequest": "A proposal to create a rented subnet with a subnet rental agreement, based on a previously executed Subnet Rental Request proposal. The resulting subnet allows only the user of the rental agreement to create canisters, and canisters are not charged cycles for computation and storage.",
-    "BlessAlternativeGuestOsVersion": "A proposal to bless an alternative GuestOS version that can be used to recover the specified set of replicas that are in a non-functional state. This is a last resort recovery mechanism to be used when the replica cannot be upgraded through the regular mechanisms."
+    "BlessAlternativeGuestOsVersion": "A proposal to bless an alternative GuestOS version that can be used to recover the specified set of replicas that are in a non-functional state. This is a last resort recovery mechanism to be used when the replica cannot be upgraded through the regular mechanisms.",
+    "TakeCanisterSnapshot": "A proposal to take a snapshot of a canister's state at the time the proposal is executed. The snapshot can be used later to restore the canister's state.",
+    "LoadCanisterSnapshot": "A proposal to load a previously taken snapshot of a canister's state. The canister's state will be restored to the state captured in the snapshot."
   },
   "nns_functions": {
     "Unspecified": "Unspecified",
