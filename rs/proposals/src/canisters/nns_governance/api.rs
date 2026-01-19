@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/4ddc6ed164eb03cbc46af0d194e8ad5d90b1b6b9/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-01-08_03-31-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -500,11 +500,6 @@ pub struct ManageNeuronProposal {
     pub neuron_id_or_subaccount: Option<NeuronIdOrSubaccount>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct LoadCanisterSnapshot {
-    pub canister_id: Option<Principal>,
-    pub snapshot_id: Option<serde_bytes::ByteBuf>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct GuestLaunchMeasurementMetadata {
     pub kernel_cmdline: Option<String>,
 }
@@ -553,11 +548,6 @@ pub struct InstallCode {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeregisterKnownNeuron {
     pub id: Option<NeuronId>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct TakeCanisterSnapshot {
-    pub replace_snapshot: Option<serde_bytes::ByteBuf>,
-    pub canister_id: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct StopOrStartCanister {
@@ -746,12 +736,10 @@ pub enum Action {
     RegisterKnownNeuron(KnownNeuron),
     FulfillSubnetRentalRequest(FulfillSubnetRentalRequest),
     ManageNeuron(ManageNeuronProposal),
-    LoadCanisterSnapshot(LoadCanisterSnapshot),
     BlessAlternativeGuestOsVersion(BlessAlternativeGuestOsVersion),
     UpdateCanisterSettings(UpdateCanisterSettings),
     InstallCode(InstallCode),
     DeregisterKnownNeuron(DeregisterKnownNeuron),
-    TakeCanisterSnapshot(TakeCanisterSnapshot),
     StopOrStartCanister(StopOrStartCanister),
     CreateServiceNervousSystem(CreateServiceNervousSystem),
     ExecuteNnsFunction(ExecuteNnsFunction),
@@ -1115,12 +1103,10 @@ pub enum ProposalActionRequest {
     RegisterKnownNeuron(KnownNeuron),
     FulfillSubnetRentalRequest(FulfillSubnetRentalRequest),
     ManageNeuron(Box<ManageNeuronRequest>),
-    LoadCanisterSnapshot(LoadCanisterSnapshot),
     BlessAlternativeGuestOsVersion(BlessAlternativeGuestOsVersion),
     UpdateCanisterSettings(UpdateCanisterSettings),
     InstallCode(InstallCodeRequest),
     DeregisterKnownNeuron(DeregisterKnownNeuron),
-    TakeCanisterSnapshot(TakeCanisterSnapshot),
     StopOrStartCanister(StopOrStartCanister),
     CreateServiceNervousSystem(CreateServiceNervousSystem),
     ExecuteNnsFunction(ExecuteNnsFunction),
