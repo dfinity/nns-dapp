@@ -14,8 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Support for new proposal actions:  `BlessAlternativeGuestOsVersion`, `TakeCanisterSnapshot` and `LoadCanisterSnapshot`.
-
 #### Changed
 
 #### Deprecated
