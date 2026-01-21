@@ -9,7 +9,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 const aggregatorPageUrl = (page: number) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/list/page/${page}/slow.json`;
 
-const DEV_PAGE_COUNT = 2;
+const DEV_PAGE_COUNT = 1;
 // Aggregator has a page size of 10 elements.
 // We currently have 51 projects so 6 pages
 // https://github.com/dfinity/nns-dapp/blob/b056a5dd42ffc8f198ce8eb92688645389293ef6/rs/sns_aggregator/src/state.rs#L140
