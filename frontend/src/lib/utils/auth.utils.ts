@@ -1,7 +1,4 @@
-import {
-  IDENTITY_SERVICE_URL,
-  OLD_MAINNET_IDENTITY_SERVICE_URL,
-} from "$lib/constants/identity.constants";
+import { IDENTITY_SERVICE_URL } from "$lib/constants/identity.constants";
 import { AuthClient } from "@icp-sdk/auth/client";
 import type { Identity } from "@icp-sdk/core/agent";
 
@@ -44,11 +41,4 @@ export const loadIdentity = async (): Promise<Identity | undefined> => {
   return authClient.getIdentity();
 };
 
-export const getIdentityProviderUrl = (): string => {
-  // If we are in mainnet in the old domain, we use the old identity provider.
-  if (location.host.endsWith(".ic0.app")) {
-    return OLD_MAINNET_IDENTITY_SERVICE_URL;
-  }
-
-  return IDENTITY_SERVICE_URL;
-};
+export const getIdentityProviderUrl = (): string => IDENTITY_SERVICE_URL;
