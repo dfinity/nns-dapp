@@ -1,6 +1,7 @@
 import {
   BETA_IDENTITY_SERVICE_URL,
   IDENTITY_SERVICE_URL,
+  OLD_BETA_IDENTITY_SERVICE_URL,
   OLD_MAINNET_IDENTITY_SERVICE_URL,
 } from "$lib/constants/identity.constants";
 import { AuthClient } from "@icp-sdk/auth/client";
@@ -47,9 +48,11 @@ export const loadIdentity = async (): Promise<Identity | undefined> => {
 
 export const getIdentityProviderUrl = (): string => {
   // If we are in mainnet in the old domain, we use the old identity provider.
-  if (location.host.startsWith("beta")) return BETA_IDENTITY_SERVICE_URL;
-  if (location.host.endsWith(".ic0.app"))
+  if (location.host.endsWith(".ic0.app")) {
+    if (location.host.startsWith("beta")) return OLD_BETA_IDENTITY_SERVICE_URL;
     return OLD_MAINNET_IDENTITY_SERVICE_URL;
+  }
 
+  if (location.host.startsWith("beta")) return BETA_IDENTITY_SERVICE_URL;
   return IDENTITY_SERVICE_URL;
 };
