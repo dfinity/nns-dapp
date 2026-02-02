@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 140184
+
+### Application
+
+#### Changed
+
+- Migrated authentication to the new Internet Identity service at `id.ai` with guided upgrade flow enabled.
+
+### Operations
+
 ## Proposal 140007
 
 ### Application

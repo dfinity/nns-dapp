@@ -27,7 +27,7 @@
     "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
   },
   "internet_identity": {
-    "mainnet": "identity"
+    "mainnet": "id"
   },
   "icp-swap": {
     "mainnet": "uvevg-iyaaa-aaaak-ac27q-cai"
