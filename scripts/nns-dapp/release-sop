@@ -268,7 +268,7 @@ verify() {
       echo "$previous_label: $previous_value"
       echo "$label: $current_value"
     ) >&2
-    # exit 1
+    exit 1
   fi
   value="$(checklist_get "$label")"
   if ! [ "$value" ]; then
