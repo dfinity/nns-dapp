@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-01-22_03-33-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-01-29_23-28-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -54,14 +54,26 @@ pub struct IPv4Config {
     pub ip_addr: String,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct SevCertificateChain {
+    pub ark_pem: Option<String>,
+    pub ask_pem: Option<String>,
+    pub vcek_pem: Option<String>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct SevAttestationPackage {
+    pub attestation_report: Option<serde_bytes::ByteBuf>,
+    pub certificate_chain: Option<SevCertificateChain>,
+    pub custom_data_debug_info: Option<String>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct AddNodePayload {
     pub prometheus_metrics_endpoint: String,
     pub http_endpoint: String,
     pub idkg_dealing_encryption_pk: Option<serde_bytes::ByteBuf>,
     pub domain: Option<String>,
     pub public_ipv4_config: Option<IPv4Config>,
+    pub node_registration_attestation: Option<SevAttestationPackage>,
     pub xnet_endpoint: String,
-    pub chip_id: Option<serde_bytes::ByteBuf>,
     pub committee_signing_pk: serde_bytes::ByteBuf,
     pub node_reward_type: Option<String>,
     pub node_signing_pk: serde_bytes::ByteBuf,
