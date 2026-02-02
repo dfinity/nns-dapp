@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-01-22_03-33-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-01-29_23-28-base/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -38,13 +38,25 @@ type AddNodePayload = record {
   domain : opt text;
   public_ipv4_config : opt IPv4Config;
   xnet_endpoint : text;
-  chip_id : opt blob;
   committee_signing_pk : blob;
   node_signing_pk : blob;
   transport_tls_cert : blob;
   ni_dkg_dealing_encryption_pk : blob;
   p2p_flow_endpoints : vec text;
   node_reward_type : opt text;
+  node_registration_attestation : opt SevAttestationPackage;
+};
+
+type SevAttestationPackage = record {
+  attestation_report : opt blob;
+  certificate_chain : opt SevCertificateChain;
+  custom_data_debug_info : opt text;
+};
+
+type SevCertificateChain = record {
+  ark_pem : opt text;
+  ask_pem : opt text;
+  vcek_pem : opt text;
 };
 
 type AddNodesToSubnetPayload = record {
