@@ -16,8 +16,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Migrated authentication to the new Internet Identity service at `id.ai` with guided upgrade flow enabled.
-
 #### Deprecated
 
 #### Removed
