@@ -95,7 +95,10 @@
     "InstallCode": "Install Code",
     "StopOrStartCanister": "Stop or Start Canister",
     "UpdateCanisterSettings": "Update Canister Settings",
-    "FulfillSubnetRentalRequest": "Subnet Rental Agreement"
+    "FulfillSubnetRentalRequest": "Subnet Rental Agreement",
+    "BlessAlternativeGuestOsVersion": "Bless Alternative GuestOS Version",
+    "TakeCanisterSnapshot": "Take Canister Snapshot",
+    "LoadCanisterSnapshot": "Load Canister Snapshot"
   },
   "actions_description": {
     "RegisterKnownNeuron": "This proposal registers an existing neuron as a “known neuron,” giving it a name and an optional description, and adding the neuron to the list of known neurons.",
@@ -114,7 +117,10 @@
     "InstallCode": "Install, reinstall or upgrade the code of a canister that is controlled by the NNS.",
     "StopOrStartCanister": "Stop or start a canister that is controlled by the NNS.",
     "UpdateCanisterSettings": "Update the settings of a canister that is controlled by the NNS.",
-    "FulfillSubnetRentalRequest": "A proposal to create a rented subnet with a subnet rental agreement, based on a previously executed Subnet Rental Request proposal. The resulting subnet allows only the user of the rental agreement to create canisters, and canisters are not charged cycles for computation and storage."
+    "FulfillSubnetRentalRequest": "A proposal to create a rented subnet with a subnet rental agreement, based on a previously executed Subnet Rental Request proposal. The resulting subnet allows only the user of the rental agreement to create canisters, and canisters are not charged cycles for computation and storage.",
+    "BlessAlternativeGuestOsVersion": "A proposal to bless an alternative GuestOS version that can be used to recover the specified set of replicas that are in a non-functional state. This is a last resort recovery mechanism to be used when the replica cannot be upgraded through the regular mechanisms.",
+    "TakeCanisterSnapshot": "A proposal that, when executed, creates a snapshot of a canister that is controlled by the NNS. The snapshot saves the canister's current stable memory, heap memory, data, and Wasm module. The snapshot can be loaded later using a Load Canister Snapshot proposal, rolling the canister back to the state saved within the snapshot.",
+    "LoadCanisterSnapshot": "A proposal to load a snapshot created by a Take Canister Snapshot proposal into a canister that is controlled by the NNS. Loading a snapshot replaces the canister's current stable memory, heap memory, data, and Wasm module with what was saved in the snapshot, rolling the canister back to that earlier state."
   },
   "nns_functions": {
     "Unspecified": "Unspecified",

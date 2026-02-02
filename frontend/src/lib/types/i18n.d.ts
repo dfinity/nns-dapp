@@ -390,6 +390,7 @@ interface I18nAccounts {
   network_btc_testnet: string;
   select_network: string;
   bitcoin_transaction_fee_notice: string;
+  bitcoin_network_warning: string;
   estimated_bitcoin_transaction_fee: string;
   internetwork_fee_notice: string;
   estimated_internetwork_fee: string;
@@ -1639,6 +1640,9 @@ interface I18nActions {
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
   FulfillSubnetRentalRequest: string;
+  BlessAlternativeGuestOsVersion: string;
+  TakeCanisterSnapshot: string;
+  LoadCanisterSnapshot: string;
 }
 
 interface I18nActions_description {
@@ -1659,6 +1663,9 @@ interface I18nActions_description {
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
   FulfillSubnetRentalRequest: string;
+  BlessAlternativeGuestOsVersion: string;
+  TakeCanisterSnapshot: string;
+  LoadCanisterSnapshot: string;
 }
 
 interface I18nNns_functions {

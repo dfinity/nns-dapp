@@ -14,18 +14,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Export transaction data for SNS projects in the reporting section.
-- Support for the hex encoding of the SEV SNP measurement field.
-
 #### Changed
+
+- Migrated authentication to the new Internet Identity service at `id.ai` with guided upgrade flow enabled.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-- Bump the GIX package to resolve the issue with dropdowns in Windows.
 
 #### Security
 

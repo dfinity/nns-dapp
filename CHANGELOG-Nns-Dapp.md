@@ -11,6 +11,33 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 140007
+
+### Application
+
+#### Added
+
+- Support for new proposal actions:  `BlessAlternativeGuestOsVersion`, `TakeCanisterSnapshot` and `LoadCanisterSnapshot`.
+
+### Operations
+
+## Proposal 139939
+
+### Application
+
+#### Added
+
+- Export transaction data for SNS projects in the reporting section.
+- Support for the hex encoding of the SEV SNP measurement field.
+- Warning message when attempting to transfer using the BTC network.
+- Support for the new Ledger device.
+
+#### Fixed
+
+- Bump the GIX package to resolve the issue with dropdowns in Windows.
+
+### Operations
+
 ## Proposal 139676
 
 ### Application

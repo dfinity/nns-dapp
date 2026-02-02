@@ -426,6 +426,16 @@ describe("CkBTCTransactionModal", () => {
     expect(await po.getEstimatedFee()).toBe("0.00001234 BTC");
   });
 
+  it("should display a warning the network is BTC", async () => {
+    const po = await renderModalToPo();
+
+    expect(await po.getBtcNetworkWarning().isPresent()).toBe(false);
+
+    await po.selectNetwork(TransactionNetwork.BTC_TESTNET);
+
+    expect(await po.getBtcNetworkWarning().isPresent()).toBe(true);
+  });
+
   it("should render kyt estimated fee on first step", async () => {
     const kytFee = 2233n;
     setKytFee(kytFee);
