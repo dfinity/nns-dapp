@@ -104,7 +104,6 @@ fn create_sub_account_account_not_found() {
 /// (it never adds a new key to the DB), so it should not be blocked by the
 /// account limit.
 #[test]
-#[ignore] // Slow: inserts 330,000 accounts into the stable BTreeMap (~65s).
 fn create_sub_account_at_account_limit() {
     let mut store = AccountsStore::default();
 
