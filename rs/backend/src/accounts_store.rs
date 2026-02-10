@@ -443,7 +443,6 @@ impl AccountsStore {
 
     /// Creates a sub-account for the given user.
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
-        self.assert_account_limit();
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
