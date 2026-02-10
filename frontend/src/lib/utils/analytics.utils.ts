@@ -13,14 +13,14 @@ export const slugifyTitle = (title: string) =>
     .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 
-const buildUrl = (
-  url: string,
+const buildPath = (
+  path: string,
   projectsToSlugMap: Map<string, string>,
   parameter: string | null
 ) =>
   parameter
-    ? `${url}/${projectsToSlugMap.get(parameter) ?? parameter}`
-    : `${url}/`;
+    ? `${path}/${projectsToSlugMap.get(parameter) ?? parameter}`
+    : `${path}/`;
 
 /**
  * Transforms query parameter URLs into clean, readable URLs for analytics tracking
@@ -29,35 +29,34 @@ export const transformUrlForAnalytics = (
   url: URL,
   projectsToSlugMap: Map<string, string>
 ): string => {
-  const pathname = url.pathname;
-  const searchParams = url.searchParams;
+  const { origin, pathname, searchParams } = url;
 
   switch (pathname) {
     case AppPath.Project + "/":
     case AppPath.Project: {
       const project = searchParams.get(PROJECT_PARAM);
-      return buildUrl(AppPath.Project, projectsToSlugMap, project);
+      return `${origin}${buildPath(AppPath.Project, projectsToSlugMap, project)}`;
     }
 
     case AppPath.Neuron + "/":
     case AppPath.Neuron: {
       const universe = searchParams.get(UNIVERSE_PARAM);
-      return buildUrl(AppPath.Neuron, projectsToSlugMap, universe);
+      return `${origin}${buildPath(AppPath.Neuron, projectsToSlugMap, universe)}`;
     }
 
     case AppPath.Neurons + "/":
     case AppPath.Neurons: {
       const universe = searchParams.get(UNIVERSE_PARAM);
-      return buildUrl(AppPath.Neurons, projectsToSlugMap, universe);
+      return `${origin}${buildPath(AppPath.Neurons, projectsToSlugMap, universe)}`;
     }
 
     case AppPath.Wallet + "/":
     case AppPath.Wallet: {
       const universe = searchParams.get(UNIVERSE_PARAM);
-      return buildUrl(AppPath.Wallet, projectsToSlugMap, universe);
+      return `${origin}${buildPath(AppPath.Wallet, projectsToSlugMap, universe)}`;
     }
 
     default:
-      return pathname;
+      return `${origin}${pathname}`;
   }
 };

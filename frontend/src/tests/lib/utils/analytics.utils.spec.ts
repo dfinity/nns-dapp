@@ -29,145 +29,143 @@ describe("analytics.utils", () => {
       ["bd3sg-teaaa-aaaaa-qaaba-cai", "project-three"],
     ]);
 
+    const origin = "http://localhost:8080";
+
     describe("Project page transformations", () => {
       it("should transform project parameter", () => {
         const url = new URL(
-          "http://localhost:8080/project/?project=ajuq4-ruaaa-aaaaa-qaaga-cai"
+          `${origin}/project/?project=ajuq4-ruaaa-aaaaa-qaaga-cai`
         );
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/project/project-one");
+        expect(result).toBe(`${origin}/project/project-one`);
       });
 
       it("should return original pathname when project parameter is missing", () => {
-        const urlWithTrailingSlash = new URL("http://localhost:8080/project/");
+        const urlWithTrailingSlash = new URL(`${origin}/project/`);
         expect(
           transformUrlForAnalytics(urlWithTrailingSlash, projectsToSlugMap)
-        ).toBe("/project/");
+        ).toBe(`${origin}/project/`);
 
-        const urlWithoutTrailingSlash = new URL(
-          "http://localhost:8080/project"
-        );
+        const urlWithoutTrailingSlash = new URL(`${origin}/project`);
         expect(
           transformUrlForAnalytics(urlWithoutTrailingSlash, projectsToSlugMap)
-        ).toBe("/project/");
+        ).toBe(`${origin}/project/`);
       });
 
       it("should return original pathname when project parameter is empty", () => {
-        const url = new URL("http://localhost:8080/project/?project=");
+        const url = new URL(`${origin}/project/?project=`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/project/");
+        expect(result).toBe(`${origin}/project/`);
       });
     });
 
     describe("Neurons page transformations", () => {
       it("should transform universe parameter", () => {
         const url = new URL(
-          "http://localhost:8080/neurons/?u=qsgjb-riaaa-aaaaa-aaaga-cai"
+          `${origin}/neurons/?u=qsgjb-riaaa-aaaaa-aaaga-cai`
         );
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/neurons/project-two");
+        expect(result).toBe(`${origin}/neurons/project-two`);
       });
 
       it("should not track neuron parameter", () => {
         const url = new URL(
-          "http://localhost:8080/neurons/?u=qsgjb-riaaa-aaaaa-aaaga-cai&neuron=12345"
+          `${origin}/neurons/?u=qsgjb-riaaa-aaaaa-aaaga-cai&neuron=12345`
         );
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/neurons/project-two");
+        expect(result).toBe(`${origin}/neurons/project-two`);
       });
 
       it("should return original pathname when universe parameter is missing", () => {
-        const url = new URL("http://localhost:8080/neurons/");
+        const url = new URL(`${origin}/neurons/`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/neurons/");
+        expect(result).toBe(`${origin}/neurons/`);
       });
 
       it("should return original pathname when universe parameter is empty", () => {
-        const url = new URL("http://localhost:8080/neurons/?u=");
+        const url = new URL(`${origin}/neurons/?u=`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/neurons/");
+        expect(result).toBe(`${origin}/neurons/`);
       });
     });
 
     describe("Neuron page transformations", () => {
       it("should transform universe parameter", () => {
         const url = new URL(
-          "http://localhost:8080/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai"
+          `${origin}/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai`
         );
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/neuron/project-two");
+        expect(result).toBe(`${origin}/neuron/project-two`);
       });
 
       it("should not track neuron parameter", () => {
         const url = new URL(
-          "http://localhost:8080/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai&neuron=12345"
+          `${origin}/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai&neuron=12345`
         );
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/neuron/project-two");
+        expect(result).toBe(`${origin}/neuron/project-two`);
       });
     });
 
     describe("Wallet page transformations", () => {
       it("should transform universe parameter", () => {
         const url = new URL(
-          "http://localhost:8080/wallet/?u=bd3sg-teaaa-aaaaa-qaaba-cai"
+          `${origin}/wallet/?u=bd3sg-teaaa-aaaaa-qaaba-cai`
         );
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/wallet/project-three");
+        expect(result).toBe(`${origin}/wallet/project-three`);
       });
 
       it("should return original pathname when universe parameter is missing", () => {
-        const url = new URL("http://localhost:8080/wallet/");
+        const url = new URL(`${origin}/wallet/`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/wallet/");
+        expect(result).toBe(`${origin}/wallet/`);
       });
 
       it("should return original pathname when universe parameter is empty", () => {
-        const url = new URL("http://localhost:8080/wallet/?u=");
+        const url = new URL(`${origin}/wallet/?u=`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/wallet/");
+        expect(result).toBe(`${origin}/wallet/`);
       });
     });
 
     describe("Unkown projects", () => {
       it("should transform project parameter", () => {
-        const url = new URL(
-          "http://localhost:8080/project/?project=ajuq4-ruaaa"
-        );
+        const url = new URL(`${origin}/project/?project=ajuq4-ruaaa`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/project/ajuq4-ruaaa");
+        expect(result).toBe(`${origin}/project/ajuq4-ruaaa`);
       });
 
       it("should transform universe parameter", () => {
-        const url = new URL("http://localhost:8080/neurons/?u=qsgjb-riaaa");
+        const url = new URL(`${origin}/neurons/?u=qsgjb-riaaa`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/neurons/qsgjb-riaaa");
+        expect(result).toBe(`${origin}/neurons/qsgjb-riaaa`);
       });
 
       it("should leave the canisterId if universe is not known", () => {
-        const url = new URL("http://localhost:8080/wallet/?u=bd3sg-teaaa");
+        const url = new URL(`${origin}/wallet/?u=bd3sg-teaaa`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/wallet/bd3sg-teaaa");
+        expect(result).toBe(`${origin}/wallet/bd3sg-teaaa`);
       });
     });
 
     describe("Default case - non-transformed pages", () => {
-      it("should return original pathname for non-tracked pages", () => {
-        const url = new URL("http://localhost:8080/settings");
+      it("should return full URL for non-tracked pages", () => {
+        const url = new URL(`${origin}/settings`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/settings");
+        expect(result).toBe(`${origin}/settings`);
       });
 
-      it("should return original pathname for home page", () => {
-        const url = new URL("http://localhost:8080/");
+      it("should return full URL for home page", () => {
+        const url = new URL(`${origin}/`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/");
+        expect(result).toBe(`${origin}/`);
       });
 
-      it("should return original pathname for tokens page", () => {
-        const url = new URL("http://localhost:8080/tokens/");
+      it("should return full URL for tokens page", () => {
+        const url = new URL(`${origin}/tokens/`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
-        expect(result).toBe("/tokens/");
+        expect(result).toBe(`${origin}/tokens/`);
       });
     });
   });
