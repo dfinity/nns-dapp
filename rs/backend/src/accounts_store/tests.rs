@@ -99,6 +99,31 @@ fn create_sub_account_account_not_found() {
     assert_eq!(CreateSubAccountResponse::AccountNotFound, response);
 }
 
+/// Verify that creating a sub-account still works when the accounts DB is at
+/// full capacity. `create_sub_account` only mutates an existing account entry
+/// (it never adds a new key to the DB), so it should not be blocked by the
+/// account limit.
+#[test]
+#[ignore] // Slow: inserts 330,000 accounts into the stable BTreeMap (~65s).
+fn create_sub_account_at_account_limit() {
+    let mut store = AccountsStore::default();
+
+    // Fill the accounts DB to exactly ACCOUNT_LIMIT.
+    for i in 0..ACCOUNT_LIMIT {
+        let principal = PrincipalId::new_user_test_id(i);
+        store.add_account(principal);
+    }
+
+    let mut stats = crate::stats::Stats::default();
+    store.get_stats(&mut stats);
+    assert_eq!(ACCOUNT_LIMIT, stats.accounts_count);
+
+    // Creating a sub-account for an existing account should still succeed.
+    let principal = PrincipalId::new_user_test_id(0);
+    let response = store.create_sub_account(principal, "Test".to_string());
+    assert!(matches!(response, CreateSubAccountResponse::Ok(_)));
+}
+
 #[test]
 fn rename_sub_account() {
     let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
