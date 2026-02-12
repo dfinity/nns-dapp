@@ -25,10 +25,7 @@ pub mod histogram;
 // the limit.
 // When you increase this limit, make sure to also increase the limit on the alerts.
 // See for example https://github.com/dfinity-ops/k8s/pull/731
-#[cfg(not(test))]
 const ACCOUNT_LIMIT: u64 = 330_000;
-#[cfg(test)]
-const ACCOUNT_LIMIT: u64 = 10_100;
 
 const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 
