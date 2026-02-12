@@ -53,7 +53,7 @@ describe("auth-store", () => {
       identityProvider: string;
     }) => {
       expect(identityProvider).toBe(
-        `${IDENTITY_SERVICE_URL}/?feature_flag_guided_upgrade=true`
+        `${IDENTITY_SERVICE_URL}?feature_flag_guided_upgrade=true`
       );
       onSuccess();
     };
