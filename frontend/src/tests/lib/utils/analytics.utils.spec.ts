@@ -61,9 +61,7 @@ describe("analytics.utils", () => {
 
     describe("Neurons page transformations", () => {
       it("should transform universe parameter", () => {
-        const url = new URL(
-          `${origin}/neurons/?u=qsgjb-riaaa-aaaaa-aaaga-cai`
-        );
+        const url = new URL(`${origin}/neurons/?u=qsgjb-riaaa-aaaaa-aaaga-cai`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/neurons/project-two`);
       });
@@ -91,9 +89,7 @@ describe("analytics.utils", () => {
 
     describe("Neuron page transformations", () => {
       it("should transform universe parameter", () => {
-        const url = new URL(
-          `${origin}/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai`
-        );
+        const url = new URL(`${origin}/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/neuron/project-two`);
       });
@@ -109,9 +105,7 @@ describe("analytics.utils", () => {
 
     describe("Wallet page transformations", () => {
       it("should transform universe parameter", () => {
-        const url = new URL(
-          `${origin}/wallet/?u=bd3sg-teaaa-aaaaa-qaaba-cai`
-        );
+        const url = new URL(`${origin}/wallet/?u=bd3sg-teaaa-aaaaa-qaaba-cai`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/wallet/project-three`);
       });
