@@ -17,7 +17,7 @@ export const initAnalytics = () => {
     domain,
     hashMode: false,
     // Change to true for local development and see traffic at https://plausible.io/nns-test
-    trackLocalhost: false,
+    trackLocalhost: true,
   });
 };
 

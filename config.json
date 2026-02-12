@@ -68,7 +68,8 @@
         "HOST": "https://yhabib-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        }
+        },
+        "PLAUSIBLE_DOMAIN": "nns-test"
       }
     },
     "devenv_francesco": {
