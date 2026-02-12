@@ -76,9 +76,9 @@
       "candid": "internet_identity.did",
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "url": {
-        "mainnet": "https://id.ai/?feature_flag_guided_upgrade=true",
-        "app": "https://id.ai/?feature_flag_guided_upgrade=true",
-        "beta": "https://id.ai/?feature_flag_guided_upgrade=true"
+        "mainnet": "https://id.ai/",
+        "app": "https://id.ai/",
+        "beta": "https://id.ai/"
       },
       "remote": {
         "id": {

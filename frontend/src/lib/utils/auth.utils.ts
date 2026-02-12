@@ -41,4 +41,6 @@ export const loadIdentity = async (): Promise<Identity | undefined> => {
   return authClient.getIdentity();
 };
 
-export const getIdentityProviderUrl = (): string => IDENTITY_SERVICE_URL;
+// TODO: Remove the query param once II no longer needs it for the guided upgrade flow.
+export const getIdentityProviderUrl = (): string =>
+  `${IDENTITY_SERVICE_URL}?feature_flag_guided_upgrade=true`;
