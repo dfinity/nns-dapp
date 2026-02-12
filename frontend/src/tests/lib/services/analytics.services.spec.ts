@@ -61,6 +61,7 @@ describe("analytics service", () => {
     initAnalytics();
 
     const testUrl = "/test-url";
+    const expectedUrl = "http://localhost/test-url";
     page.url = new URL(testUrl, "http://localhost");
 
     analytics.event("test-event");
@@ -69,7 +70,7 @@ describe("analytics service", () => {
       {
         props: undefined,
       },
-      { url: testUrl }
+      { url: expectedUrl }
     );
 
     const eventProps = { category: "test", value: 123, enabled: true };
@@ -79,7 +80,7 @@ describe("analytics service", () => {
       {
         props: eventProps,
       },
-      { url: testUrl }
+      { url: expectedUrl }
     );
   });
 
@@ -91,11 +92,12 @@ describe("analytics service", () => {
     const tracker = Plausible();
     initAnalytics();
     const pageToTrack = "/test-page";
+    const expectedUrl = "http://localhost/test-page";
     page.url = new URL(pageToTrack, "http://localhost");
 
     analytics.pageView();
     expect(tracker.trackPageview).toHaveBeenCalledWith({
-      url: pageToTrack,
+      url: expectedUrl,
     });
   });
 });
