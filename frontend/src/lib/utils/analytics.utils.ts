@@ -23,7 +23,10 @@ const buildPath = (
     : `${path}/`;
 
 /**
- * Transforms query parameter URLs into clean, readable URLs for analytics tracking
+ * Transforms a URL into a clean, absolute URL for analytics tracking.
+ * - Replaces known query parameters (e.g. `project`, `u`) with slug-based path segments.
+ * - Drops all other query parameters (e.g. `neuron`) to avoid tracking sensitive or irrelevant data.
+ * - Always returns a full absolute URL including the origin.
  */
 export const transformUrlForAnalytics = (
   url: URL,

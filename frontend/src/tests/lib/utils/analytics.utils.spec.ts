@@ -40,7 +40,7 @@ describe("analytics.utils", () => {
         expect(result).toBe(`${origin}/project/project-one`);
       });
 
-      it("should return original pathname when project parameter is missing", () => {
+      it("should return full URL with original path when project parameter is missing", () => {
         const urlWithTrailingSlash = new URL(`${origin}/project/`);
         expect(
           transformUrlForAnalytics(urlWithTrailingSlash, projectsToSlugMap)
@@ -52,7 +52,7 @@ describe("analytics.utils", () => {
         ).toBe(`${origin}/project/`);
       });
 
-      it("should return original pathname when project parameter is empty", () => {
+      it("should return full URL with original path when project parameter is empty", () => {
         const url = new URL(`${origin}/project/?project=`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/project/`);
@@ -74,13 +74,13 @@ describe("analytics.utils", () => {
         expect(result).toBe(`${origin}/neurons/project-two`);
       });
 
-      it("should return original pathname when universe parameter is missing", () => {
+      it("should return full URL with original path when universe parameter is missing", () => {
         const url = new URL(`${origin}/neurons/`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/neurons/`);
       });
 
-      it("should return original pathname when universe parameter is empty", () => {
+      it("should return full URL with original path when universe parameter is empty", () => {
         const url = new URL(`${origin}/neurons/?u=`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/neurons/`);
@@ -110,20 +110,20 @@ describe("analytics.utils", () => {
         expect(result).toBe(`${origin}/wallet/project-three`);
       });
 
-      it("should return original pathname when universe parameter is missing", () => {
+      it("should return full URL with original path when universe parameter is missing", () => {
         const url = new URL(`${origin}/wallet/`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/wallet/`);
       });
 
-      it("should return original pathname when universe parameter is empty", () => {
+      it("should return full URL with original path when universe parameter is empty", () => {
         const url = new URL(`${origin}/wallet/?u=`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe(`${origin}/wallet/`);
       });
     });
 
-    describe("Unkown projects", () => {
+    describe("Unknown projects", () => {
       it("should transform project parameter", () => {
         const url = new URL(`${origin}/project/?project=ajuq4-ruaaa`);
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
