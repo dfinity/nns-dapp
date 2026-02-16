@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-05_03-47-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-12_20-24-base/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -404,6 +404,7 @@ type GovernanceParameters = record {
   proposal_initial_voting_period : opt Duration;
   proposal_rejection_fee : opt Tokens;
   voting_reward_parameters : opt VotingRewardParameters;
+  custom_proposal_criticality : opt CustomProposalCriticality;
 };
 
 type IdealMatchedParticipationFunction = record {
@@ -1397,6 +1398,10 @@ type VotingRewardParameters = record {
   reward_rate_transition_duration : opt Duration;
   initial_reward_rate : opt Percentage;
   final_reward_rate : opt Percentage;
+};
+
+type CustomProposalCriticality = record {
+  additional_critical_native_action_ids : opt vec nat64;
 };
 
 type WaitForQuietState = record {

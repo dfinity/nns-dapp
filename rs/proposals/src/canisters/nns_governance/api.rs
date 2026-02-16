@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-05_03-47-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-12_20-24-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -573,6 +573,10 @@ pub struct Tokens {
     pub e8s: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct CustomProposalCriticality {
+    pub additional_critical_native_action_ids: Option<Vec<u64>>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct VotingRewardParameters {
     pub reward_rate_transition_duration: Option<Duration>,
     pub initial_reward_rate: Option<Percentage>,
@@ -588,6 +592,7 @@ pub struct GovernanceParameters {
     pub neuron_minimum_stake: Option<Tokens>,
     pub proposal_wait_for_quiet_deadline_increase: Option<Duration>,
     pub proposal_initial_voting_period: Option<Duration>,
+    pub custom_proposal_criticality: Option<CustomProposalCriticality>,
     pub proposal_rejection_fee: Option<Tokens>,
     pub voting_reward_parameters: Option<VotingRewardParameters>,
 }

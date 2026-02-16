@@ -1,4 +1,4 @@
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-05_03-47-base/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-12_20-24-base/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record {
   hash : blob;
   wasm : opt SnsWasm;
@@ -250,6 +250,11 @@ type SnsInitPayload = record {
   restricted_countries : opt Countries;
   min_icp_e8s : opt nat64;
   max_direct_participation_icp_e8s : opt nat64;
+  custom_proposal_criticality : opt CustomProposalCriticality;
+};
+
+type CustomProposalCriticality = record {
+  additional_critical_native_action_ids : vec nat64;
 };
 
 type SnsUpgrade = record {

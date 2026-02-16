@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-05_03-47-base/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-12_20-24-base/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -60,6 +60,10 @@ pub struct Canister {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DappCanisters {
     pub canisters: Vec<Canister>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct CustomProposalCriticality {
+    pub additional_critical_native_action_ids: Vec<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct LinearScalingCoefficient {
@@ -143,6 +147,7 @@ pub struct SnsInitPayload {
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub transaction_fee_e8s: Option<u64>,
     pub dapp_canisters: Option<DappCanisters>,
+    pub custom_proposal_criticality: Option<CustomProposalCriticality>,
     pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
     pub max_age_bonus_percentage: Option<u64>,
     pub initial_token_distribution: Option<InitialTokenDistribution>,
