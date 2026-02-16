@@ -13,9 +13,13 @@ here after a successful release.
 
 ## Proposal 140402
 
-### Application
+### Changed
 
-### Operations
+- Added a new domain to the list of alternative Internet Identity origins.
+
+### Fixed
+
+- Fixed Content Security Policy configuration for the Internet Identity domain.
 
 ## Proposal 140184
 
