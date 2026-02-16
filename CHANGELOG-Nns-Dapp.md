@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 140402
+
+### Changed
+
+- Added a new domain to the list of alternative Internet Identity origins.
+
+### Fixed
+
+- Fixed Content Security Policy configuration for the Internet Identity domain.
+
 ## Proposal 140184
 
 ### Application
