@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-05_03-47-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-12_20-24-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -203,6 +203,10 @@ pub struct NeuronPermissionList {
     pub permissions: Vec<i32>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CustomProposalCriticality {
+    pub additional_critical_native_action_ids: Vec<u64>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct VotingRewardsParameters {
     pub final_reward_rate_basis_points: Option<u64>,
     pub initial_reward_rate_basis_points: Option<u64>,
@@ -226,6 +230,7 @@ pub struct NervousSystemParameters {
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub max_number_of_neurons: Option<u64>,
     pub transaction_fee_e8s: Option<u64>,
+    pub custom_proposal_criticality: Option<CustomProposalCriticality>,
     pub max_number_of_proposals_with_ballots: Option<u64>,
     pub max_age_bonus_percentage: Option<u64>,
     pub neuron_grantable_permissions: Option<NeuronPermissionList>,
