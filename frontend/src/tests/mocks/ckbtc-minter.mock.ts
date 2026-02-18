@@ -1,4 +1,5 @@
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import type { CkBtcMinterDid } from "@icp-sdk/canisters/ckbtc";
 
 export const mockUpdateBalanceOk = [
   {
@@ -10,8 +11,9 @@ export const mockUpdateBalanceOk = [
   },
 ];
 
-export const mockCkBTCMinterInfo = {
+export const mockCkBTCMinterInfo: CkBtcMinterDid.MinterInfo = {
   retrieve_btc_min_amount: 1n,
+  deposit_btc_min_amount: [],
   min_confirmations: 12,
   kyt_fee: 3n,
 };

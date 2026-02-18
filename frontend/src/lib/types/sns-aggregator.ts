@@ -149,6 +149,11 @@ export type CachedNervousSystemParametersDto = {
   voting_rewards_parameters?: CachedVotingRewardsParametersDto;
   maturity_modulation_disabled?: boolean;
   max_number_of_principals_per_neuron?: number;
+  custom_proposal_criticality?: CachedCustomProposalCriticalityDto;
+};
+
+export type CachedCustomProposalCriticalityDto = {
+  additional_critical_native_action_ids: number[];
 };
 
 type CachedCountriesDto = {

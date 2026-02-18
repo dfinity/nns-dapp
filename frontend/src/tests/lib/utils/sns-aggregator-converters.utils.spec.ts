@@ -863,6 +863,9 @@ describe("sns aggregator converters utils", () => {
         },
         maturity_modulation_disabled: true,
         max_number_of_principals_per_neuron: 5,
+        custom_proposal_criticality: {
+          additional_critical_native_action_ids: [1000, 1001, 1002],
+        },
       };
 
       const expectedSnsNervousSystemParameters: SnsGovernanceDid.NervousSystemParameters =
@@ -908,6 +911,15 @@ describe("sns aggregator converters utils", () => {
           ],
           maturity_modulation_disabled: [true],
           max_number_of_principals_per_neuron: [5n],
+          custom_proposal_criticality: [
+            {
+              additional_critical_native_action_ids: BigUint64Array.from([
+                1000n,
+                1001n,
+                1002n,
+              ]),
+            },
+          ],
         };
 
       expect(
@@ -937,6 +949,7 @@ describe("sns aggregator converters utils", () => {
         voting_rewards_parameters: null,
         maturity_modulation_disabled: null,
         max_number_of_principals_per_neuron: null,
+        custom_proposal_criticality: undefined,
       };
 
       const expectedSnsNervousSystemParameters: SnsGovernanceDid.NervousSystemParameters =
@@ -962,6 +975,7 @@ describe("sns aggregator converters utils", () => {
           voting_rewards_parameters: [],
           maturity_modulation_disabled: [],
           max_number_of_principals_per_neuron: [],
+          custom_proposal_criticality: [],
         };
 
       expect(
