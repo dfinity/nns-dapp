@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Added support for new fields "subnet_admins".
+
 #### Changed
 
 #### Deprecated
