@@ -147,6 +147,7 @@ describe("CkBTCWallet", () => {
     );
     vi.mocked(ckbtcMinterApi.minterInfo).mockResolvedValue({
       retrieve_btc_min_amount: 80_000n,
+      deposit_btc_min_amount: [],
       min_confirmations: 12,
       kyt_fee: 7_000n,
     });

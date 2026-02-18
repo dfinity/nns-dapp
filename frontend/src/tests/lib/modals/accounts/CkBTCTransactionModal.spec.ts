@@ -351,6 +351,7 @@ describe("CkBTCTransactionModal", () => {
     ckBTCInfoStore.reset();
     vi.mocked(minterApi.minterInfo).mockResolvedValue({
       retrieve_btc_min_amount: retreiveBtcMinAmount,
+      deposit_btc_min_amount: [],
       min_confirmations: 12,
       kyt_fee: 1234n,
     });
