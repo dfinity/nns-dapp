@@ -9,6 +9,7 @@ import type {
   SnsTopicKey,
 } from "$lib/types/sns";
 import type {
+  CachedCustomProposalCriticalityDto,
   CachedDefaultFolloweesDto,
   CachedFunctionTypeDto,
   CachedLifecycleResponseDto,
@@ -117,6 +118,23 @@ const convertDefaultFollowees = (
 const numberToNullableBigInt = (num?: number | null): [] | [bigint] =>
   toNullable(convertOptionalNumToBigInt(num));
 
+const convertCustomProposalCriticality = (
+  customProposalCriticality: undefined | CachedCustomProposalCriticalityDto
+): [] | [SnsGovernanceDid.CustomProposalCriticality] => {
+  if (isNullish(customProposalCriticality)) {
+    return [];
+  }
+  return [
+    {
+      additional_critical_native_action_ids: BigUint64Array.from(
+        customProposalCriticality.additional_critical_native_action_ids.map(
+          BigInt
+        )
+      ),
+    },
+  ];
+};
+
 const convertVotingRewardsParameters = (
   votingRewardsParameters: undefined | CachedVotingRewardsParametersDto
 ): [] | [SnsGovernanceDid.VotingRewardsParameters] => {
@@ -162,6 +180,7 @@ export const convertNervousSystemParameters = ({
   voting_rewards_parameters,
   maturity_modulation_disabled,
   max_number_of_principals_per_neuron,
+  custom_proposal_criticality,
 }: CachedNervousSystemParametersDto): SnsGovernanceDid.NervousSystemParameters => ({
   automatically_advance_target_version: [],
   default_followees: convertDefaultFollowees(default_followees),
@@ -206,6 +225,9 @@ export const convertNervousSystemParameters = ({
   maturity_modulation_disabled: toNullable(maturity_modulation_disabled),
   max_number_of_principals_per_neuron: numberToNullableBigInt(
     max_number_of_principals_per_neuron
+  ),
+  custom_proposal_criticality: convertCustomProposalCriticality(
+    custom_proposal_criticality
   ),
 });
 
