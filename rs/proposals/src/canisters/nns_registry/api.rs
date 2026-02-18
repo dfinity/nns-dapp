@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-12_20-24-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dae366b0fc4d4887f3f1f5bf7077f520194cf3b0/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -220,6 +220,7 @@ pub struct CreateSubnetPayload {
     pub max_number_of_canisters: u64,
     pub canister_cycles_cost_schedule: Option<CanisterCyclesCostSchedule>,
     pub gossip_max_artifact_streams_per_peer: u32,
+    pub subnet_admins: Option<Vec<Principal>>,
     pub replica_version_id: String,
     pub gossip_max_duplicity: u32,
     pub gossip_max_chunk_wait_ms: u32,
