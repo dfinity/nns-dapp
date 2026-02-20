@@ -116,7 +116,7 @@
         "DIDC_VERSION": "didc 0.4.0",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2026-02-11",
+        "SNSDEMO_RELEASE": "release-2026-02-18",
         "IC_COMMIT_FOR_PROPOSALS": "dae366b0fc4d4887f3f1f5bf7077f520194cf3b0",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2026-02-12_20-24-base"
       },
