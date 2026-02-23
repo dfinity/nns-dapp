@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 140496
+
+### Application
+
+#### Added
+
+- Added support for new field subnet admins.
+
+### Operations
+
 ## Proposal 140402
 
 ### Changed
