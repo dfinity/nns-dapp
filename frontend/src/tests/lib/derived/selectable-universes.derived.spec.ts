@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { FEATURED_SNS_PROJECTS } from "$lib/constants/sns.constants";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
@@ -10,6 +11,7 @@ import {
   setCkETHCanisters,
 } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("selectable universes derived stores", () => {
@@ -69,7 +71,7 @@ describe("selectable universes derived stores", () => {
       ]);
     });
 
-    it("should return NNS followed by SNS projects ordered alphabetically", () => {
+    it("should return NNS followed by SNS projects ordered alphabetically on governance pages when metrics are equal", () => {
       page.mock({
         routeId: AppPath.Proposals,
         data: { universe: OWN_CANISTER_ID.toText() },
@@ -102,7 +104,7 @@ describe("selectable universes derived stores", () => {
       ]);
     });
 
-    it("should return NNS followed by SNS projects in reverse order of actionable proposals", () => {
+    it("should not sort by actionable proposal count on governance pages", () => {
       page.mock({
         routeId: AppPath.Proposals,
         data: { universe: OWN_CANISTER_ID.toText() },
@@ -137,11 +139,91 @@ describe("selectable universes derived stores", () => {
         proposals: [mockSnsProposal],
       });
 
+      // Without metrics, projects fall back to alphabetical order
+      // regardless of actionable proposal count
       expect(get(selectableUniversesStore).map(({ title }) => title)).toEqual([
         "Internet Computer",
-        "Charlie",
-        "Bravo",
         "Alfa",
+        "Bravo",
+        "Charlie",
+      ]);
+    });
+
+    it("should sort featured SNS projects first on governance pages", () => {
+      page.mock({
+        routeId: AppPath.Proposals,
+        data: { universe: OWN_CANISTER_ID.toText() },
+      });
+
+      const featuredCanisterId = Principal.fromText(FEATURED_SNS_PROJECTS[0]);
+      const nonFeaturedCanisterId = principal(1);
+
+      setSnsProjects([
+        {
+          rootCanisterId: nonFeaturedCanisterId,
+          projectName: "Alfa Non-Featured",
+        },
+        {
+          rootCanisterId: featuredCanisterId,
+          projectName: "Zulu Featured",
+        },
+      ]);
+
+      const titles = get(selectableUniversesStore).map(({ title }) => title);
+      expect(titles).toEqual([
+        "Internet Computer",
+        "Zulu Featured",
+        "Alfa Non-Featured",
+      ]);
+    });
+
+    it("should sort SNS projects by proposal activity on governance pages", () => {
+      page.mock({
+        routeId: AppPath.Proposals,
+        data: { universe: OWN_CANISTER_ID.toText() },
+      });
+
+      const rootCanisterId1 = principal(1);
+      const rootCanisterId2 = principal(2);
+      const rootCanisterId3 = principal(3);
+
+      setSnsProjects([
+        {
+          rootCanisterId: rootCanisterId1,
+          projectName: "Low Activity",
+          metrics: {
+            num_recently_submitted_proposals: null,
+            num_recently_executed_proposals: 10,
+            last_ledger_block_timestamp: null,
+            treasury_metrics: null,
+            voting_power_metrics: null,
+            genesis_timestamp_seconds: null,
+          },
+        },
+        {
+          rootCanisterId: rootCanisterId2,
+          projectName: "No Activity",
+        },
+        {
+          rootCanisterId: rootCanisterId3,
+          projectName: "High Activity",
+          metrics: {
+            num_recently_submitted_proposals: null,
+            num_recently_executed_proposals: 100,
+            last_ledger_block_timestamp: null,
+            treasury_metrics: null,
+            voting_power_metrics: null,
+            genesis_timestamp_seconds: null,
+          },
+        },
+      ]);
+
+      const titles = get(selectableUniversesStore).map(({ title }) => title);
+      expect(titles).toEqual([
+        "Internet Computer",
+        "High Activity",
+        "Low Activity",
+        "No Activity",
       ]);
     });
   });
