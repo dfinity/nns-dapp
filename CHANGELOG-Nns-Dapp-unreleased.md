@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Apply the same sorting rules to SNS projects on the Proposals page as those used in the Launchpad.
+
 #### Deprecated
 
 #### Removed
