@@ -8,7 +8,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-anyhow = "1.0.95"
+anyhow = "1.0.102"
 base64 = "0.22.1"
 candid = "0.10.20"
 dfn_candid = { workspace = true }
