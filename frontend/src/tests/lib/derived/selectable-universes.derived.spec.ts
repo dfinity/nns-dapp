@@ -104,7 +104,7 @@ describe("selectable universes derived stores", () => {
       ]);
     });
 
-    it("should not sort by actionable proposal count on governance pages", () => {
+    it("should sort by actionable proposal count first on the proposals page", () => {
       page.mock({
         routeId: AppPath.Proposals,
         data: { universe: OWN_CANISTER_ID.toText() },
@@ -139,8 +139,50 @@ describe("selectable universes derived stores", () => {
         proposals: [mockSnsProposal],
       });
 
-      // Without metrics, projects fall back to alphabetical order
-      // regardless of actionable proposal count
+      expect(get(selectableUniversesStore).map(({ title }) => title)).toEqual([
+        "Internet Computer",
+        "Charlie",
+        "Bravo",
+        "Alfa",
+      ]);
+    });
+
+    it("should not sort by actionable proposal count on the neurons page", () => {
+      page.mock({
+        routeId: AppPath.Neurons,
+        data: { universe: OWN_CANISTER_ID.toText() },
+      });
+
+      const rootCanisterIdA = principal(1);
+      const rootCanisterIdB = principal(2);
+      const rootCanisterIdC = principal(3);
+
+      setSnsProjects([
+        {
+          rootCanisterId: rootCanisterIdB,
+          projectName: "Bravo",
+        },
+        {
+          rootCanisterId: rootCanisterIdA,
+          projectName: "Alfa",
+        },
+        {
+          rootCanisterId: rootCanisterIdC,
+          projectName: "Charlie",
+        },
+      ]);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: rootCanisterIdC,
+        proposals: [mockSnsProposal, mockSnsProposal],
+      });
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: rootCanisterIdB,
+        proposals: [mockSnsProposal],
+      });
+
+      // Alphabetical tiebreaker, not actionable count
       expect(get(selectableUniversesStore).map(({ title }) => title)).toEqual([
         "Internet Computer",
         "Alfa",
