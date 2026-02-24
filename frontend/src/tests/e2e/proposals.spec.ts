@@ -156,7 +156,7 @@ test("Test proposals", async ({ page, context }) => {
   // Actions
   expect(
     await nnsProposalPo.getProposalProposerActionsEntryPo().getActionTitle()
-  ).toBe("Motion");
+  ).toBe("Payload");
 
   await appPo.goBack();
 });
