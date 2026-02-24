@@ -40,8 +40,6 @@ import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type {
   Action,
   Ballot,
-  ExecuteNnsFunction,
-  KnownNeuron,
   NeuronInfo,
   Proposal,
   ProposalInfo,

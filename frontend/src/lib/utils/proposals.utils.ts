@@ -20,7 +20,7 @@ import {
   mergeComparators,
 } from "$lib/utils/sort.utils";
 import { isDefined, keyOf, keyOfOptional } from "$lib/utils/utils";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish } from "@dfinity/utils";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -390,8 +390,7 @@ const mapProposalType = (
 
   return {
     type: proposal.selfDescribingAction.typeName ?? undefined,
-    typeDescription:
-      proposal.selfDescribingAction.typeDescription ?? undefined,
+    typeDescription: proposal.selfDescribingAction.typeDescription ?? undefined,
   };
 };
 
