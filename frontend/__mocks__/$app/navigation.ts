@@ -1,5 +1,9 @@
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { AfterNavigate, BeforeNavigate, Navigation } from "@sveltejs/kit";
+import type {
+  AfterNavigate,
+  BeforeNavigate,
+  NavigationExternal,
+} from "@sveltejs/kit";
 import { page } from "./stores";
 
 let beforeNavigateCallbacks: ((navigation: BeforeNavigate) => void)[] = [];
@@ -24,12 +28,13 @@ export const goto = async (
 
   const completePromise = runResolvedPromises() as Promise<void>;
 
-  const navigation: Navigation = {
+  const navigation: NavigationExternal = {
     from: null,
     to: {
       params: Object.fromEntries(new URLSearchParams(search)),
       route: { id: routeId },
       url: typeof url === "string" ? new URL(url, "http://localhost") : url,
+      scroll: null,
     },
     type: "goto",
     complete: completePromise,

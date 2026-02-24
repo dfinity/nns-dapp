@@ -33,9 +33,11 @@
     icpOnlyTable = false,
   }: Props = $props();
 
-  const href = icpOnlyTable
-    ? buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT })
-    : AppPath.Tokens;
+  const href = $derived(
+    icpOnlyTable
+      ? buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT })
+      : AppPath.Tokens
+  );
 
   const icp: UserTokenData | undefined = $derived(topHeldTokens[0]);
   const restOfTokens = $derived(topHeldTokens);

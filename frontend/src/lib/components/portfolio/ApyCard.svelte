@@ -27,15 +27,19 @@
   const href = AppPath.Staking;
   const dataTid = "apy-card-component";
 
-  const maturityBalanceFormatted = nonNullish(icpOnlyMaturityBalance)
-    ? formatCurrencyNumber(icpOnlyMaturityBalance)
-    : $i18n.core.not_applicable;
+  const maturityBalanceFormatted = $derived(
+    nonNullish(icpOnlyMaturityBalance)
+      ? formatCurrencyNumber(icpOnlyMaturityBalance)
+      : $i18n.core.not_applicable
+  );
 
-  const maturityEstimateWeekFormatted = nonNullish(icpOnlyMaturityEstimateWeek)
-    ? formatCurrencyNumber(icpOnlyMaturityEstimateWeek, {
-        smallValueDecimalPlaces: 3,
-      })
-    : $i18n.core.not_applicable;
+  const maturityEstimateWeekFormatted = $derived(
+    nonNullish(icpOnlyMaturityEstimateWeek)
+      ? formatCurrencyNumber(icpOnlyMaturityEstimateWeek, {
+          smallValueDecimalPlaces: 3,
+        })
+      : $i18n.core.not_applicable
+  );
 
   const stakingPowerPercentage = $derived(
     formatPercentage(icpOnlyStakingPower, {

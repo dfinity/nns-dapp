@@ -75,6 +75,7 @@
 <div
   class="stacked-cards"
   data-tid="stacked-cards-component"
+  role="region"
   ontouchstart={handleTouchStart}
   ontouchend={handleTouchEnd}
 >

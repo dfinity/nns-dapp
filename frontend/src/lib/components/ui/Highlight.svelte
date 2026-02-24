@@ -28,16 +28,18 @@
   };
 
   const { level, title, description, link, id }: Props = $props();
-  const localStorageKey = StoreLocalStorageKey.HighlightDisplay + id;
+  const localStorageKey = $derived(StoreLocalStorageKey.HighlightDisplay + id);
 
   // TODO: Extract this into a util. This is a copy of $lib/components/header/Banner
-  let isOpen = $state(
-    browser
-      ? (JSON.parse(
-          localStorage?.getItem(localStorageKey) ?? "true"
-        ) as boolean)
-      : false
-  );
+  let isOpen = $state(false);
+
+  $effect.pre(() => {
+    if (browser) {
+      isOpen = JSON.parse(
+        localStorage?.getItem(localStorageKey) ?? "true"
+      ) as boolean;
+    }
+  });
   const Icon = $derived(iconMapper[level]);
 
   const close = () => {

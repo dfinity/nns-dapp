@@ -11,10 +11,12 @@
   };
   const { title = "", children }: Props = $props();
 
-  title &&
-    layoutTitleStore.set({
-      title,
-    });
+  $effect(() => {
+    title &&
+      layoutTitleStore.set({
+        title,
+      });
+  });
 </script>
 
 <Banner />
