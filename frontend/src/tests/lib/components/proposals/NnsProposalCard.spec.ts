@@ -6,7 +6,6 @@ import { createMockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { secondsToDuration } from "@dfinity/utils";
 import {
-  NnsFunction,
   ProposalStatus,
   Topic,
   type Action,
@@ -35,41 +34,47 @@ describe("NnsProposalCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render the proposal nns execute function name as title for ExecuteNnsFunction actions", () => {
-    const action: Action = {
-      ExecuteNnsFunction: {
-        nnsFunctionId: NnsFunction.NnsCanisterUpgrade,
-      },
-    };
+  it("should render the proposal type from selfDescribingAction for ExecuteNnsFunction actions", () => {
     const { queryByTestId } = render(NnsProposalCard, {
       props: {
-        proposalInfo: createMockProposalInfo({ action }),
+        proposalInfo: {
+          ...createMockProposalInfo({ action: {} as Action }),
+          proposal: {
+            ...createMockProposalInfo({ action: {} as Action }).proposal,
+            selfDescribingAction: {
+              typeName: "NnsCanisterUpgrade",
+              typeDescription: "Upgrade an NNS canister",
+              value: undefined,
+            },
+          },
+        },
       },
     });
 
     expect(queryByTestId("proposal-card-heading").textContent).toBe(
-      "NNS Canister Upgrade"
+      "NnsCanisterUpgrade"
     );
   });
 
-  it("should render the proposal action key as title if not ExecuteNnsFunction action", () => {
-    const knownNeuronAction: Action = {
-      RegisterKnownNeuron: {
-        id: 2n,
-        name: "Super neuron",
-        description: "Super neuron description",
-        links: undefined,
-        committed_topics: undefined,
-      },
-    };
+  it("should render the proposal type from selfDescribingAction", () => {
     const { queryByTestId } = render(NnsProposalCard, {
       props: {
-        proposalInfo: createMockProposalInfo({ action: knownNeuronAction }),
+        proposalInfo: {
+          ...createMockProposalInfo({ action: {} as Action }),
+          proposal: {
+            ...createMockProposalInfo({ action: {} as Action }).proposal,
+            selfDescribingAction: {
+              typeName: "RegisterKnownNeuron",
+              typeDescription: "Register a known neuron",
+              value: undefined,
+            },
+          },
+        },
       },
     });
 
     expect(queryByTestId("proposal-card-heading").textContent).toBe(
-      "Register Known Neuron"
+      "RegisterKnownNeuron"
     );
   });
 
@@ -116,7 +121,7 @@ describe("NnsProposalCard", () => {
       },
     });
 
-    expect(getByText(en.actions.RegisterKnownNeuron)).toBeInTheDocument();
+    expect(getByText("RegisterKnownNeuron")).toBeInTheDocument();
   });
 
   it("should render deadline", () => {

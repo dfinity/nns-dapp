@@ -377,63 +377,22 @@ export const mapProposalInfo = (
 };
 
 /**
- * Derives the proposal type label and description.
- *
- * When `selfDescribingAction` is present (detail page, fetched with
- * `returnSelfDescribingAction: true`), we use its `typeName` and
- * `typeDescription` directly. In that case `proposal.action` is undefined
- * because the governance canister omits it when self-describing data is
- * returned.
- *
- * When `selfDescribingAction` is absent (list page, where we don't request
- * it to keep responses lightweight), we fall back to deriving the type from
- * `proposal.action` and i18n labels.
+ * Derives the proposal type label and description from
+ * `selfDescribingAction`, which is always present because both
+ * `queryProposals` and `queryProposal` set `returnSelfDescribingAction: true`.
  */
 const mapProposalType = (
   proposal: Proposal | undefined
 ): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
-  const NO_MATCH = { type: undefined, typeDescription: undefined };
-
-  if (isNullish(proposal)) return NO_MATCH;
-
-  // Detail page: returnSelfDescribingAction: true, so we resolved type name and
-  // from selfDescribingAction.
-  if (nonNullish(proposal.selfDescribingAction)) {
-    return {
-      type: proposal.selfDescribingAction.typeName!,
-      typeDescription: proposal.selfDescribingAction.typeDescription!,
-    };
+  if (isNullish(proposal?.selfDescribingAction)) {
+    return { type: undefined, typeDescription: undefined };
   }
 
-  // List page: selfDescribingAction: false, so selfDescribingAction is undefined. We derive the type
-  // from proposal.action using i18n labels.
-  const {
-    actions,
-    actions_description,
-    nns_functions,
-    nns_functions_description,
-  } = get(i18n);
-
-  const nnsFunctionKey: string | undefined = getNnsFunctionKey(proposal);
-
-  if (nnsFunctionKey !== undefined) {
-    return {
-      type: keyOf({ obj: nns_functions, key: nnsFunctionKey }),
-      typeDescription: keyOf({
-        obj: nns_functions_description,
-        key: nnsFunctionKey,
-      }),
-    };
-  }
-
-  const action: string | undefined = proposalFirstActionKey(proposal);
-
-  return action !== undefined
-    ? {
-        type: keyOf({ obj: actions, key: action }),
-        typeDescription: keyOf({ obj: actions_description, key: action }),
-      }
-    : NO_MATCH;
+  return {
+    type: proposal.selfDescribingAction.typeName ?? undefined,
+    typeDescription:
+      proposal.selfDescribingAction.typeDescription ?? undefined,
+  };
 };
 
 /**

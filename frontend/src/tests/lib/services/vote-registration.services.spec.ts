@@ -16,7 +16,6 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   mockProposalInfo,
@@ -35,7 +34,7 @@ import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 const proposalTopic = Topic.Governance;
-const proposalTypeName = en.actions.Motion;
+const proposalTypeName = "Motion";
 
 let proposalInfoIdIndex = 0;
 const proposalInfo = (): ProposalInfo => ({

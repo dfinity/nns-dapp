@@ -76,6 +76,7 @@ describe("proposals-api", () => {
           includeAllManageNeuronProposals: false,
           limit: 100,
           omitLargeFields: true,
+          returnSelfDescribingAction: true,
         },
       });
     });
@@ -97,6 +98,7 @@ describe("proposals-api", () => {
           includeAllManageNeuronProposals: false,
           limit: 100,
           omitLargeFields: true,
+          returnSelfDescribingAction: true,
         },
       });
     });
@@ -122,6 +124,7 @@ describe("proposals-api", () => {
           includeAllManageNeuronProposals: false,
           limit: 100,
           omitLargeFields: false,
+          returnSelfDescribingAction: true,
         },
       });
     });

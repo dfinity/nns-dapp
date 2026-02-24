@@ -585,7 +585,7 @@ describe("proposals-utils", () => {
       );
     });
 
-    it("should map action to undefined", () => {
+    it("should map type to undefined when selfDescribingAction is absent", () => {
       const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal,
@@ -595,78 +595,38 @@ describe("proposals-utils", () => {
       expect(typeDescription).toBeUndefined();
     });
 
-    it("should map action to type", () => {
+    it("should map type from selfDescribingAction", () => {
       const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
-          action: { RegisterKnownNeuron: {} as KnownNeuron },
+          selfDescribingAction: {
+            typeName: "RegisterKnownNeuron",
+            typeDescription: "Register a known neuron",
+            value: undefined,
+          },
         },
       });
 
-      expect(en.actions.RegisterKnownNeuron).toEqual(type);
-      expect(en.actions_description.RegisterKnownNeuron).toEqual(
-        typeDescription
-      );
+      expect(type).toEqual("RegisterKnownNeuron");
+      expect(typeDescription).toEqual("Register a known neuron");
     });
 
-    it("should map nns function to type", () => {
+    it("should map nns function type from selfDescribingAction", () => {
       const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
-          action: {
-            ExecuteNnsFunction: { nnsFunctionId: 3 } as ExecuteNnsFunction,
+          selfDescribingAction: {
+            typeName: "ExecuteNnsFunction",
+            typeDescription: "Install an NNS canister",
+            value: undefined,
           },
         },
       });
 
-      expect(en.nns_functions.NnsCanisterInstall).toEqual(type);
-      expect(en.nns_functions_description.NnsCanisterInstall).toEqual(
-        typeDescription
-      );
-    });
-
-    it("should provide labels for all function IDs", () => {
-      const IGNORED_NNS_FUNCTION_IDS = [
-        NnsFunction.HardResetNnsRootToVersion,
-        // Obsolete types
-        NnsFunction.BlessReplicaVersion,
-        NnsFunction.RetireReplicaVersion,
-        NnsFunction.UpdateApiBoundaryNodeDomain,
-        NnsFunction.UpdateApiBoundaryNodesVersion,
-      ];
-      const proposalWithNnsFunctionId = (nnsFunctionId: number) => ({
-        ...proposalInfo,
-        proposal: {
-          ...proposal,
-          action: {
-            ExecuteNnsFunction: { nnsFunctionId } as ExecuteNnsFunction,
-          },
-        },
-      });
-      const typeSet = new Set();
-      const typeDescriptionSet = new Set();
-
-      for (const nnsFunctionId of enumValues(NnsFunction)) {
-        if (IGNORED_NNS_FUNCTION_IDS.includes(nnsFunctionId)) {
-          continue;
-        }
-        const { type, typeDescription } = mapProposalInfo(
-          proposalWithNnsFunctionId(nnsFunctionId)
-        );
-
-        // Labels should be defined
-        expect(type).toBeDefined();
-        expect(typeDescription).toBeDefined();
-
-        // Labels should be unique
-        expect(typeSet.has(type)).toBe(false);
-        expect(typeDescriptionSet.has(typeDescription)).toBe(false);
-
-        typeSet.add(type);
-        typeDescriptionSet.add(typeDescription);
-      }
+      expect(type).toEqual("ExecuteNnsFunction");
+      expect(typeDescription).toEqual("Install an NNS canister");
     });
   });
 

@@ -69,6 +69,13 @@ export const mockProposalInfo: ProposalInfo = {
     url: "https://url.com",
     action: proposalActionMotion,
     summary: "summary-content",
+    selfDescribingAction: {
+      typeName: "Motion",
+      typeDescription: "A motion proposal",
+      value: {
+        Map: [["motion_text", { Text: "Test motion" }]],
+      },
+    },
   },
   proposer: 123n,
   latestTally: {
