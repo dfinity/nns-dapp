@@ -1,5 +1,4 @@
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
-import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { filteredProposals } from "$lib/derived/proposals.derived";
@@ -62,7 +61,6 @@ describe("Proposal", () => {
     });
 
   beforeEach(() => {
-    vi.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
     actionableProposalsSegmentStore.set("all");
   });
 
@@ -92,15 +90,6 @@ describe("Proposal", () => {
     await waitFor(() =>
       expect(
         queryByTestId("proposal-proposer-actions-entry-title")
-      ).toBeInTheDocument()
-    );
-  });
-
-  it("should render proposer proposal payload entry", async () => {
-    const { queryByTestId } = renderProposalModern();
-    await waitFor(() =>
-      expect(
-        queryByTestId("proposal-proposer-payload-entry-title")
       ).toBeInTheDocument()
     );
   });

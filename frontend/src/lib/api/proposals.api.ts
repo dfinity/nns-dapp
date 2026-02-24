@@ -1,5 +1,4 @@
 import { createAgent } from "$lib/api/agent.api";
-import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
@@ -101,6 +100,7 @@ export const queryProposal = async ({
       excludeTopic: [],
       includeStatus: [],
       includeAllManageNeuronProposals: false,
+      returnSelfDescribingAction: true,
     },
     certified,
   });
@@ -115,26 +115,4 @@ export const queryProposal = async ({
   return response?.proposals?.[0].id === proposalId
     ? response.proposals[0]
     : undefined;
-};
-
-export const queryProposalPayload = async ({
-  proposalId,
-  identity,
-}: {
-  proposalId: ProposalId;
-  identity: Identity;
-}): Promise<object> => {
-  logWithTimestamp(`Loading Proposal Payload ${hashCode(proposalId)} call...`);
-
-  const { canister } = await nnsDappCanister({ identity });
-
-  const response = await canister.getProposalPayload({
-    proposalId,
-  });
-
-  logWithTimestamp(
-    `Loading Proposal Payload ${hashCode(proposalId)} complete.`
-  );
-
-  return response;
 };

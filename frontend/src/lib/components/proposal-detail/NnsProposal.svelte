@@ -1,8 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
-  import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
-  import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
+import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
   import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
   import ProposalVotingSection from "$lib/components/proposal-detail/ProposalVotingSection.svelte";
@@ -87,10 +86,6 @@
         </div>
         <NnsProposalSummarySection proposalInfo={$store.proposal} />
         <NnsProposalProposerActionsEntry proposal={$store.proposal.proposal} />
-        <NnsProposalProposerPayloadEntry
-          proposal={$store.proposal.proposal}
-          proposalId={$store.proposalId}
-        />
       </div>
     </TestIdWrapper>
   {:else}

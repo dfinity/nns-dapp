@@ -1,36 +1,74 @@
 import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
 import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
-import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
-import {
-  mockProposalInfo,
-  proposalActionMotion,
-  proposalActionNnsFunction21,
-  proposalActionRewardNodeProvider,
-} from "$tests/mocks/proposal.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { Action, Proposal } from "@icp-sdk/canisters/nns";
+import type { Proposal } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 const proposalWithMotionAction = {
   ...mockProposalInfo.proposal,
-  action: proposalActionMotion,
+  selfDescribingAction: {
+    typeName: "Motion",
+    typeDescription: "A motion proposal",
+    value: {
+      Map: [["motion_text", { Text: "Test motion" }]],
+    },
+  },
 } as Proposal;
 
 const proposalWithRewardNodeProviderAction = {
   ...mockProposalInfo.proposal,
-  action: proposalActionRewardNodeProvider,
+  selfDescribingAction: {
+    typeName: "RewardNodeProvider",
+    typeDescription: undefined,
+    value: {
+      Map: [
+        [
+          "node_provider",
+          {
+            Map: [["id", { Text: "aaaaa-aa" }]],
+          },
+        ],
+        ["amount_e8s", { Nat: 10_000_000n }],
+        [
+          "reward_mode",
+          {
+            Map: [
+              [
+                "RewardToNeuron",
+                {
+                  Map: [["dissolve_delay_seconds", { Nat: 1_000n }]],
+                },
+              ],
+            ],
+          },
+        ],
+      ],
+    },
+  },
 } as Proposal;
 
-const actionWithUndefined = {
-  Motion: {
-    motionText: undefined,
-  },
-} as Action;
-
-const proposalWithActionWithUndefined = {
+const proposalWithNullValue = {
   ...mockProposalInfo.proposal,
-  action: actionWithUndefined,
+  selfDescribingAction: {
+    typeName: "Motion",
+    typeDescription: undefined,
+    value: {
+      Map: [["motion_text", { Null: null }]],
+    },
+  },
+} as Proposal;
+
+const proposalWithNnsFunctionAction = {
+  ...mockProposalInfo.proposal,
+  selfDescribingAction: {
+    typeName: "ExecuteNnsFunction",
+    typeDescription: undefined,
+    value: {
+      Map: [["nns_function_id", { Nat: 21n }]],
+    },
+  },
 } as Proposal;
 
 describe("NnsProposalProposerActionsEntry", () => {
@@ -46,26 +84,21 @@ describe("NnsProposalProposerActionsEntry", () => {
 
   beforeEach(() => jsonRepresentationStore.setMode("raw"));
 
-  it("should render action key", async () => {
+  it("should render 'Payload' as the section title", async () => {
     const po = renderComponent({
       proposal: proposalWithMotionAction,
     });
 
-    const key = proposalFirstActionKey(proposalWithMotionAction) as string;
-    expect(await po.getActionTitle()).toEqual(key);
+    expect(await po.getActionTitle()).toEqual("Payload");
   });
 
-  it("should render action fields", async () => {
+  it("should render action fields from selfDescribingAction value", async () => {
     const po = renderComponent({
       proposal: proposalWithMotionAction,
     });
 
-    const [key, value] = Object.entries(
-      (proposalWithMotionAction?.action as { Motion: object }).Motion
-    )[0];
-
-    expect(await po.getJsonPreviewPo().getRawText()).toMatch(`${key}`);
-    expect(await po.getJsonPreviewPo().getRawText()).toMatch(`${value}`);
+    expect(await po.getJsonPreviewPo().getRawText()).toMatch("motion_text");
+    expect(await po.getJsonPreviewPo().getRawText()).toMatch("Test motion");
   });
 
   it("should render action data as JSON", async () => {
@@ -75,13 +108,13 @@ describe("NnsProposalProposerActionsEntry", () => {
     });
 
     expect(await po.getJsonPreviewPo().getRawObject()).toEqual({
-      amountE8s: "10000000",
-      nodeProvider: {
+      node_provider: {
         id: "aaaaa-aa",
       },
-      rewardMode: {
+      amount_e8s: "10000000",
+      reward_mode: {
         RewardToNeuron: {
-          dissolveDelaySeconds: "1000",
+          dissolve_delay_seconds: "1000",
         },
       },
     });
@@ -96,36 +129,26 @@ describe("NnsProposalProposerActionsEntry", () => {
     await po.getJsonPreviewPo().clickExpand();
 
     expect(await po.getJsonPreviewPo().getTreeText()).toEqual(
-      `nodeProvider id "aaaaa-aa"amountE8s 10000000 rewardMode  RewardToNeuron dissolveDelaySeconds 1000`
+      `amount_e8s 10000000 node_provider id "aaaaa-aa" reward_mode  RewardToNeuron dissolve_delay_seconds 1000`
     );
   });
 
-  it("should render undefined fields as 'undefined'", async () => {
+  it("should render null fields as 'null'", async () => {
     const po = renderComponent({
-      proposal: proposalWithActionWithUndefined,
+      proposal: proposalWithNullValue,
     });
 
-    expect(await po.getJsonPreviewPo().getRawText()).toContain("undefined");
+    expect(await po.getJsonPreviewPo().getRawText()).toContain("null");
   });
 
   it("should render nnsFunction id", async () => {
-    const proposalWithNnsFunctionAction = {
-      ...mockProposalInfo.proposal,
-      action: proposalActionNnsFunction21,
-    } as Proposal;
-    const [key, value] = Object.entries(
-      (
-        proposalWithNnsFunctionAction?.action as {
-          ExecuteNnsFunction: object;
-        }
-      ).ExecuteNnsFunction
-    )[0];
-
     const po = renderComponent({
       proposal: proposalWithNnsFunctionAction,
     });
 
-    expect(await po.getJsonPreviewPo().getRawText()).toContain(key);
-    expect(await po.getJsonPreviewPo().getRawText()).toContain(value);
+    expect(await po.getJsonPreviewPo().getRawText()).toContain(
+      "nns_function_id"
+    );
+    expect(await po.getJsonPreviewPo().getRawText()).toContain("21");
   });
 });

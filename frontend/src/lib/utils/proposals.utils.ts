@@ -26,6 +26,7 @@ import type {
   ExecuteNnsFunction,
   NeuronId,
   NeuronInfo,
+  NnsGovernanceDid,
   Proposal,
   ProposalId,
   ProposalInfo,
@@ -384,18 +385,28 @@ export const mapProposalInfo = (
 const mapProposalType = (
   proposal: Proposal | undefined
 ): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
+  const NO_MATCH = { type: undefined, typeDescription: undefined };
+
+  if (proposal === undefined) {
+    return NO_MATCH;
+  }
+
+  // Use selfDescribingAction when available (detail page)
+  if (proposal.selfDescribingAction !== undefined) {
+    return {
+      type: proposal.selfDescribingAction.typeName ?? undefined,
+      typeDescription:
+        proposal.selfDescribingAction.typeDescription ?? undefined,
+    };
+  }
+
+  // Fallback to proposal.action (list page)
   const {
     actions,
     actions_description,
     nns_functions,
     nns_functions_description,
   } = get(i18n);
-
-  const NO_MATCH = { type: undefined, typeDescription: undefined };
-
-  if (proposal === undefined) {
-    return NO_MATCH;
-  }
 
   const nnsFunctionKey: string | undefined = getNnsFunctionKey(proposal);
 
@@ -675,3 +686,32 @@ export const sortNnsTopics = ({
       ),
     ])
   );
+
+const blobToHex = (blob: Uint8Array): string =>
+  Array.from(blob)
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+
+/**
+ * Converts a `SelfDescribingValue` (Candid tagged union) to a plain JS value
+ * suitable for rendering with `JsonPreview`.
+ */
+export const selfDescribingValueToJson = (
+  value: NnsGovernanceDid.SelfDescribingValue
+): unknown => {
+  if ("Text" in value) return value.Text;
+  if ("Bool" in value) return value.Bool;
+  if ("Null" in value) return null;
+  if ("Nat" in value) return value.Nat;
+  if ("Int" in value) return value.Int;
+  if ("Blob" in value) return blobToHex(value.Blob);
+  if ("Array" in value) return value.Array.map(selfDescribingValueToJson);
+  if ("Map" in value) {
+    return Object.fromEntries(
+      [...value.Map]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, val]) => [key, selfDescribingValueToJson(val)])
+    );
+  }
+  return null;
+};

@@ -14,13 +14,10 @@ import {
   InvalidIcpAddressError,
   InvalidIcrc1AddressError,
   NameTooLongError,
-  ProposalPayloadNotFoundError,
-  ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
   TooManyFavProjectsError,
   TooManyImportedTokensError,
   TooManyNamedAddressesError,
-  UnknownProposalPayloadError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import { idlFactory } from "$lib/canisters/nns-dapp/nns-dapp.idl";
@@ -43,7 +40,6 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
-import type { ProposalId } from "@icp-sdk/canisters/nns";
 import { Actor } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
@@ -316,32 +312,6 @@ export class NNSDappCanister {
     // Edge case
     throw new Error(`Error detaching canister ${JSON.stringify(response)}`);
   };
-
-  public async getProposalPayload({
-    proposalId,
-  }: {
-    proposalId: ProposalId;
-  }): Promise<object> {
-    // Currently works only with certifiedService
-    const response =
-      await this.certifiedService.get_proposal_payload(proposalId);
-    if ("Ok" in response) {
-      return JSON.parse(response.Ok);
-    }
-
-    const errorText = "Err" in response ? response.Err : undefined;
-    if (errorText?.includes("Proposal not found") === true) {
-      throw new ProposalPayloadNotFoundError();
-    }
-
-    if (errorText?.includes("cannot be larger than") === true) {
-      throw new ProposalPayloadTooLargeError();
-    }
-
-    throw new UnknownProposalPayloadError(
-      errorText ?? (nonNullish(response) ? JSON.stringify(response) : undefined)
-    );
-  }
 
   public getImportedTokens = async ({
     certified,

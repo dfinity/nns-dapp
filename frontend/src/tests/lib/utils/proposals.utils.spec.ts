@@ -24,6 +24,7 @@ import {
   replaceAndConcatenateProposals,
   replaceProposals,
   selectedNeuronsVotingPower,
+  selfDescribingValueToJson,
   sortNnsTopics,
   sortProposalsByIdDescendingOrder,
 } from "$lib/utils/proposals.utils";
@@ -1199,6 +1200,77 @@ describe("proposals-utils", () => {
         /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
         /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
       ]);
+    });
+  });
+
+  describe("selfDescribingValueToJson", () => {
+    it("should convert Text", () => {
+      expect(selfDescribingValueToJson({ Text: "hello" })).toBe("hello");
+    });
+
+    it("should convert Bool", () => {
+      expect(selfDescribingValueToJson({ Bool: true })).toBe(true);
+      expect(selfDescribingValueToJson({ Bool: false })).toBe(false);
+    });
+
+    it("should convert Null", () => {
+      expect(selfDescribingValueToJson({ Null: null })).toBeNull();
+    });
+
+    it("should convert Nat", () => {
+      expect(selfDescribingValueToJson({ Nat: 42n })).toBe(42n);
+    });
+
+    it("should convert Int", () => {
+      expect(selfDescribingValueToJson({ Int: -7n })).toBe(-7n);
+    });
+
+    it("should convert Blob to hex string", () => {
+      expect(
+        selfDescribingValueToJson({ Blob: new Uint8Array([0xca, 0xfe]) })
+      ).toBe("cafe");
+    });
+
+    it("should convert Array", () => {
+      expect(
+        selfDescribingValueToJson({
+          Array: [{ Text: "a" }, { Nat: 1n }],
+        })
+      ).toEqual(["a", 1n]);
+    });
+
+    it("should convert Map to object", () => {
+      expect(
+        selfDescribingValueToJson({
+          Map: [
+            ["key1", { Text: "value1" }],
+            ["key2", { Nat: 42n }],
+          ],
+        })
+      ).toEqual({ key1: "value1", key2: 42n });
+    });
+
+    it("should handle nested structures", () => {
+      expect(
+        selfDescribingValueToJson({
+          Map: [
+            [
+              "outer",
+              {
+                Map: [
+                  ["inner", { Text: "deep" }],
+                  ["list", { Array: [{ Bool: true }, { Null: null }] }],
+                ],
+              },
+            ],
+          ],
+        })
+      ).toEqual({
+        outer: {
+          inner: "deep",
+          list: [true, null],
+        },
+      });
     });
   });
 });

@@ -1,10 +1,5 @@
 import * as agent from "$lib/api/agent.api";
-import {
-  queryProposal,
-  queryProposalPayload,
-  queryProposals,
-} from "$lib/api/proposals.api";
-import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { queryProposal, queryProposals } from "$lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
@@ -153,29 +148,11 @@ describe("proposals-api", () => {
           includeRewardStatus: [],
           includeStatus: [],
           includeAllManageNeuronProposals: false,
+          returnSelfDescribingAction: true,
           limit: 1,
         },
       });
     });
   });
 
-  describe("queryProposalPayload", () => {
-    const nnsDappMock = mock<NNSDappCanister>();
-
-    beforeEach(() => {
-      nnsDappMock.getProposalPayload.mockResolvedValue({});
-      vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
-    });
-
-    it("should call the canister to get proposal payload", async () => {
-      const spyGetProposalPayload = vi.spyOn(nnsDappMock, "getProposalPayload");
-
-      await queryProposalPayload({
-        proposalId: 0n,
-        identity: mockIdentity,
-      });
-
-      expect(spyGetProposalPayload).toBeCalledTimes(1);
-    });
-  });
 });

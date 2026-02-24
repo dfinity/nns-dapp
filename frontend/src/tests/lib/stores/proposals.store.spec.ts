@@ -1,6 +1,5 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import {
-  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
@@ -350,31 +349,4 @@ describe("proposals-store", () => {
     });
   });
 
-  describe("proposalPayloadStore", () => {
-    it("should store a payload", () => {
-      proposalPayloadsStore.setPayload({
-        proposalId: 0n,
-        payload: null,
-      });
-
-      expect(get(proposalPayloadsStore).get(0n)).toBeNull();
-    });
-
-    it("should throw on initial map set", () => {
-      const call = () => get(proposalPayloadsStore).set(0n, null);
-
-      expect(call).toThrow();
-    });
-
-    it("should throw on map set after update", () => {
-      proposalPayloadsStore.setPayload({
-        proposalId: 0n,
-        payload: null,
-      });
-
-      const call = () => get(proposalPayloadsStore).set(0n, null);
-
-      expect(call).toThrow();
-    });
-  });
 });

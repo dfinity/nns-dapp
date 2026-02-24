@@ -1,17 +1,11 @@
 import * as api from "$lib/api/proposals.api";
-import {
-  ProposalPayloadNotFoundError,
-  ProposalPayloadTooLargeError,
-} from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import {
   listNextProposals,
   listProposals,
   loadProposal,
-  loadProposalPayload,
 } from "$lib/services/public/proposals.services";
 import {
-  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
@@ -367,55 +361,4 @@ describe("proposals-services", () => {
     });
   });
 
-  describe("getProposalPayload", () => {
-    let spyQueryProposalPayload;
-    const mockProposalPayload = { data: "test" };
-
-    beforeEach(() => {
-      spyQueryProposalPayload = vi.spyOn(api, "queryProposalPayload");
-      vi.spyOn(console, "error").mockReturnValue();
-      spyQueryProposalPayload.mockResolvedValue(mockProposalPayload);
-    });
-
-    it("should call queryProposalPayload", async () => {
-      expect(spyQueryProposalPayload).not.toBeCalled();
-      await loadProposalPayload({ proposalId: 0n });
-      expect(spyQueryProposalPayload).toBeCalledTimes(1);
-    });
-
-    it("should update proposalPayloadsStore", async () => {
-      expect(get(proposalPayloadsStore)).toEqual(new Map());
-      await loadProposalPayload({ proposalId: 0n });
-
-      expect(get(proposalPayloadsStore)).toEqual(
-        new Map([[0n, mockProposalPayload]])
-      );
-    });
-
-    it("should update proposalPayloadsStore with null if the payload was not found", async () => {
-      proposalPayloadsStore.reset();
-
-      vi.spyOn(api, "queryProposalPayload").mockRejectedValue(
-        new ProposalPayloadNotFoundError()
-      );
-
-      await loadProposalPayload({ proposalId: 0n });
-
-      expect(get(proposalPayloadsStore).get(0n)).toBeNull();
-    });
-
-    it("should update proposalPayloadsStore with null if the payload was not found", async () => {
-      proposalPayloadsStore.reset();
-
-      vi.spyOn(api, "queryProposalPayload").mockRejectedValue(
-        new ProposalPayloadTooLargeError()
-      );
-
-      await loadProposalPayload({ proposalId: 0n });
-
-      expect(get(proposalPayloadsStore).get(0n)).toEqual({
-        error: "Payload too large",
-      });
-    });
-  });
 });
