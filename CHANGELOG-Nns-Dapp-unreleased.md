@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Apply the same sorting rules to SNS projects on the Proposals page as those used in the Launchpad.
+- Sort SNS projects on the Proposals page by actionable proposals first, then by the same rules used in the Launchpad (featured, market cap, activity, treasury).
 
 #### Deprecated
 
