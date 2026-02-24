@@ -1,5 +1,4 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
 import { FEATURED_SNS_PROJECTS } from "$lib/constants/sns.constants";
 import {
   actionableProposalCountStore,
@@ -65,8 +64,6 @@ const adaptProjectComparator =
     return 0;
   };
 
-const isProposalsPath = ({ path }: Page): boolean => path === AppPath.Proposals;
-
 export const selectableUniversesStore = derived<
   [
     Readable<Universe[]>,
@@ -125,25 +122,15 @@ export const selectableUniversesStore = derived<
       })
     );
 
-    let sorting: Comparator<UniverseWithSortData>;
-    if (isAllTokensPath(page)) {
-      sorting = mergeComparators([compareNnsFirst, compareTitle]);
-    } else if (isProposalsPath(page)) {
-      sorting = mergeComparators([
-        compareNnsFirst,
-        compareActionableProposalCount,
-        compareFeaturedFirst,
-        launchpadSorting,
-        compareTitle,
-      ]);
-    } else {
-      sorting = mergeComparators([
-        compareNnsFirst,
-        compareFeaturedFirst,
-        launchpadSorting,
-        compareTitle,
-      ]);
-    }
+    const sorting = isAllTokensPath(page)
+      ? mergeComparators([compareNnsFirst, compareTitle])
+      : mergeComparators([
+          compareNnsFirst,
+          compareActionableProposalCount,
+          compareFeaturedFirst,
+          launchpadSorting,
+          compareTitle,
+        ]);
 
     return enriched.sort(sorting).map(({ universe }) => universe);
   }
