@@ -313,4 +313,3 @@ const getProposal = async ({
     logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
   });
 };
-

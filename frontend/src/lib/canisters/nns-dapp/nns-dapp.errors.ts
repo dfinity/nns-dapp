@@ -121,4 +121,3 @@ export class CanisterNotFoundError extends AccountTranslateError {
     this.substitutions = substitutions;
   }
 }
-

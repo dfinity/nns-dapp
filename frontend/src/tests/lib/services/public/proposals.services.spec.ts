@@ -360,5 +360,4 @@ describe("proposals-services", () => {
       proposalsFiltersStore.reset();
     });
   });
-
 });

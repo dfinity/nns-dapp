@@ -348,5 +348,4 @@ describe("proposals-store", () => {
       });
     });
   });
-
 });

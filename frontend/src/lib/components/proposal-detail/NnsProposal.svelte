@@ -1,7 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
-import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
+  import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
   import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
   import ProposalVotingSection from "$lib/components/proposal-detail/ProposalVotingSection.svelte";
