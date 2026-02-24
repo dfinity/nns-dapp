@@ -17,7 +17,11 @@
   const { TestComponent, neuron, componentProps = {} }: Props = $props();
 
   export const neuronStore = writable<NnsNeuronStore>({
-    neuron,
+    neuron: undefined,
+  });
+
+  $effect.pre(() => {
+    neuronStore.set({ neuron });
   });
 
   setContext<NnsNeuronContext>(NNS_NEURON_CONTEXT_KEY, {

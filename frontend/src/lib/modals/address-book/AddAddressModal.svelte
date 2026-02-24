@@ -24,12 +24,15 @@
   // Helper function to normalize names for comparison (case-insensitive, trimmed)
   const normalizeName = (name: string): string => name.trim().toLowerCase();
 
-  // Determine if we're in edit mode
-  const isEditMode = nonNullish(namedAddress);
+  const isEditMode = $derived(nonNullish(namedAddress));
 
-  // Initialize fields with existing data if in edit mode
-  let nickname = $state(namedAddress?.name ?? "");
-  let address = $state(getAddressString(namedAddress?.address));
+  let nickname = $state("");
+  let address = $state("");
+
+  $effect.pre(() => {
+    nickname = namedAddress?.name ?? "";
+    address = getAddressString(namedAddress?.address);
+  });
 
   // Error messages - set on submit, cleared on change
   let nicknameError = $state<string | undefined>(undefined);

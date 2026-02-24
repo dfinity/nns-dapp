@@ -17,7 +17,7 @@
       ? disbursement.accountIdentifierToDisburseTo
       : ""
   );
-  const amount = formatMaturity(disbursement.amountE8s ?? 0n);
+  const amount = $derived(formatMaturity(disbursement.amountE8s ?? 0n));
 </script>
 
 <ActiveDisbursementItem {dateTime} {destination} {amount} />

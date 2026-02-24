@@ -46,9 +46,11 @@
     icpOnlyTable = false,
   }: Props = $props();
 
-  const href = icpOnlyTable
-    ? buildNeuronsUrl({ universe: OWN_CANISTER_ID_TEXT })
-    : AppPath.Staking;
+  const href = $derived(
+    icpOnlyTable
+      ? buildNeuronsUrl({ universe: OWN_CANISTER_ID_TEXT })
+      : AppPath.Staking
+  );
 
   const icp: TableProject | undefined = $derived(topStakedTokens[0]);
   const restOfStakedTokens = $derived(topStakedTokens);
