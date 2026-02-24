@@ -387,12 +387,9 @@ const mapProposalType = (
 ): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
   const NO_MATCH = { type: undefined, typeDescription: undefined };
 
-  if (proposal === undefined) {
-    return NO_MATCH;
-  }
+  if (isNullish(proposal)) return NO_MATCH;
 
-  // Use selfDescribingAction when available (detail page)
-  if (proposal.selfDescribingAction !== undefined) {
+  if (nonNullish(proposal.selfDescribingAction)) {
     return {
       type: proposal.selfDescribingAction.typeName ?? undefined,
       typeDescription:
