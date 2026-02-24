@@ -118,7 +118,7 @@
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2026-02-18",
         "IC_COMMIT_FOR_PROPOSALS": "release-2026-02-20_12-29-base",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2026-02-12_20-24-base"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2026-02-20_12-29-base"
       },
       "packtool": ""
     }
