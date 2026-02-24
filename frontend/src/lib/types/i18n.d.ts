@@ -51,8 +51,6 @@ interface I18nError {
   auth_sync: string;
   sign_in: string;
   proposal_not_found: string;
-  proposal_payload: string;
-  proposal_payload_not_found: string;
   neuron_not_found: string;
   neuron_spawning: string;
   neuron_load: string;
@@ -1622,162 +1620,6 @@ interface I18nStatus_description {
   Failed: string;
 }
 
-interface I18nActions {
-  RegisterKnownNeuron: string;
-  DeregisterKnownNeuron: string;
-  NeuronManagement: string;
-  ApproveGenesisKyc: string;
-  ManageNetworkEconomics: string;
-  RewardNodeProvider: string;
-  RewardNodeProviders: string;
-  AddOrRemoveNodeProvider: string;
-  SetDefaultFollowees: string;
-  Motion: string;
-  SetSnsTokenSwapOpenTimeWindow: string;
-  OpenSnsTokenSwap: string;
-  CreateServiceNervousSystem: string;
-  InstallCode: string;
-  StopOrStartCanister: string;
-  UpdateCanisterSettings: string;
-  FulfillSubnetRentalRequest: string;
-  BlessAlternativeGuestOsVersion: string;
-  TakeCanisterSnapshot: string;
-  LoadCanisterSnapshot: string;
-}
-
-interface I18nActions_description {
-  RegisterKnownNeuron: string;
-  DeregisterKnownNeuron: string;
-  NeuronManagement: string;
-  ApproveGenesisKyc: string;
-  ManageNetworkEconomics: string;
-  RewardNodeProvider: string;
-  RewardNodeProviders: string;
-  AddOrRemoveNodeProvider: string;
-  SetDefaultFollowees: string;
-  Motion: string;
-  SetSnsTokenSwapOpenTimeWindow: string;
-  OpenSnsTokenSwap: string;
-  CreateServiceNervousSystem: string;
-  InstallCode: string;
-  StopOrStartCanister: string;
-  UpdateCanisterSettings: string;
-  FulfillSubnetRentalRequest: string;
-  BlessAlternativeGuestOsVersion: string;
-  TakeCanisterSnapshot: string;
-  LoadCanisterSnapshot: string;
-}
-
-interface I18nNns_functions {
-  Unspecified: string;
-  CreateSubnet: string;
-  AddNodeToSubnet: string;
-  NnsCanisterInstall: string;
-  NnsCanisterUpgrade: string;
-  RecoverSubnet: string;
-  UpdateConfigOfSubnet: string;
-  AssignNoid: string;
-  NnsRootUpgrade: string;
-  IcpXdrConversionRate: string;
-  DeployGuestosToAllSubnetNodes: string;
-  ClearProvisionalWhitelist: string;
-  RemoveNodesFromSubnet: string;
-  SetAuthorizedSubnetworks: string;
-  SetFirewallConfig: string;
-  UpdateNodeOperatorConfig: string;
-  StopOrStartNnsCanister: string;
-  RemoveNodes: string;
-  UninstallCode: string;
-  UpdateNodeRewardsTable: string;
-  AddOrRemoveDataCenters: string;
-  UpdateUnassignedNodesConfig: string;
-  RemoveNodeOperators: string;
-  RerouteCanisterRanges: string;
-  AddFirewallRules: string;
-  RemoveFirewallRules: string;
-  UpdateFirewallRules: string;
-  PrepareCanisterMigration: string;
-  CompleteCanisterMigration: string;
-  AddSnsWasm: string;
-  ChangeSubnetMembership: string;
-  UpdateSubnetType: string;
-  ChangeSubnetTypeAssignment: string;
-  UpdateSnsWasmSnsSubnetIds: string;
-  UpdateAllowedPrincipals: string;
-  InsertSnsWasmUpgradePathEntries: string;
-  ReviseElectedGuestosVersions: string;
-  BitcoinSetConfig: string;
-  UpdateElectedHostosVersions: string;
-  UpdateNodesHostosVersion: string;
-  AddApiBoundaryNodes: string;
-  RemoveApiBoundaryNodes: string;
-  UpdateApiBoundaryNodesVersion: string;
-  DeployGuestosToSomeApiBoundaryNodes: string;
-  DeployGuestosToAllUnassignedNodes: string;
-  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
-  ReviseElectedHostosVersions: string;
-  DeployHostosToSomeNodes: string;
-  SubnetRentalRequest: string;
-  PauseCanisterMigrations: string;
-  UnpauseCanisterMigrations: string;
-  SetSubnetOperationalLevel: string;
-}
-
-interface I18nNns_functions_description {
-  Unspecified: string;
-  CreateSubnet: string;
-  AddNodeToSubnet: string;
-  NnsCanisterInstall: string;
-  NnsCanisterUpgrade: string;
-  RecoverSubnet: string;
-  UpdateConfigOfSubnet: string;
-  AssignNoid: string;
-  NnsRootUpgrade: string;
-  IcpXdrConversionRate: string;
-  DeployGuestosToAllSubnetNodes: string;
-  ClearProvisionalWhitelist: string;
-  RemoveNodesFromSubnet: string;
-  SetAuthorizedSubnetworks: string;
-  SetFirewallConfig: string;
-  UpdateNodeOperatorConfig: string;
-  StopOrStartNnsCanister: string;
-  RemoveNodes: string;
-  UninstallCode: string;
-  UpdateNodeRewardsTable: string;
-  AddOrRemoveDataCenters: string;
-  UpdateUnassignedNodesConfig: string;
-  RemoveNodeOperators: string;
-  RerouteCanisterRanges: string;
-  AddFirewallRules: string;
-  RemoveFirewallRules: string;
-  UpdateFirewallRules: string;
-  PrepareCanisterMigration: string;
-  CompleteCanisterMigration: string;
-  AddSnsWasm: string;
-  ChangeSubnetMembership: string;
-  UpdateSubnetType: string;
-  ChangeSubnetTypeAssignment: string;
-  UpdateSnsWasmSnsSubnetIds: string;
-  UpdateAllowedPrincipals: string;
-  InsertSnsWasmUpgradePathEntries: string;
-  ReviseElectedGuestosVersions: string;
-  BitcoinSetConfig: string;
-  UpdateElectedHostosVersions: string;
-  UpdateNodesHostosVersion: string;
-  AddApiBoundaryNodes: string;
-  RemoveApiBoundaryNodes: string;
-  UpdateApiBoundaryNodesVersion: string;
-  DeployGuestosToSomeApiBoundaryNodes: string;
-  DeployGuestosToAllUnassignedNodes: string;
-  UpdateSshReadOnlyAccessForAllUnassignedNodes: string;
-  ReviseElectedHostosVersions: string;
-  DeployHostosToSomeNodes: string;
-  SubnetRentalRequest: string;
-  PauseCanisterMigrations: string;
-  UnpauseCanisterMigrations: string;
-  SetSubnetOperationalLevel: string;
-}
-
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -1859,8 +1701,4 @@ interface I18n {
   rewards_description: I18nRewards_description;
   status: I18nStatus;
   status_description: I18nStatus_description;
-  actions: I18nActions;
-  actions_description: I18nActions_description;
-  nns_functions: I18nNns_functions;
-  nns_functions_description: I18nNns_functions_description;
 }

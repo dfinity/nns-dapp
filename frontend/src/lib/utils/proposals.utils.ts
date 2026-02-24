@@ -20,7 +20,7 @@ import {
   mergeComparators,
 } from "$lib/utils/sort.utils";
 import { isDefined, keyOf, keyOfOptional } from "$lib/utils/utils";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -377,10 +377,17 @@ export const mapProposalInfo = (
 };
 
 /**
- * If the action is a ExecuteNnsFunction, then we map the NNS function id (its detailed label).
- * Otherwise, we map the action function itself.
+ * Derives the proposal type label and description.
  *
- * This outcome is called "the proposal type".
+ * When `selfDescribingAction` is present (detail page, fetched with
+ * `returnSelfDescribingAction: true`), we use its `typeName` and
+ * `typeDescription` directly. In that case `proposal.action` is undefined
+ * because the governance canister omits it when self-describing data is
+ * returned.
+ *
+ * When `selfDescribingAction` is absent (list page, where we don't request
+ * it to keep responses lightweight), we fall back to deriving the type from
+ * `proposal.action` and i18n labels.
  */
 const mapProposalType = (
   proposal: Proposal | undefined
@@ -389,15 +396,17 @@ const mapProposalType = (
 
   if (isNullish(proposal)) return NO_MATCH;
 
+  // Detail page: returnSelfDescribingAction: true, so we resolved type name and
+  // from selfDescribingAction.
   if (nonNullish(proposal.selfDescribingAction)) {
     return {
-      type: proposal.selfDescribingAction.typeName ?? undefined,
-      typeDescription:
-        proposal.selfDescribingAction.typeDescription ?? undefined,
+      type: proposal.selfDescribingAction.typeName!,
+      typeDescription: proposal.selfDescribingAction.typeDescription!,
     };
   }
 
-  // Fallback to proposal.action (list page)
+  // List page: selfDescribingAction: false, so selfDescribingAction is undefined. We derive the type
+  // from proposal.action using i18n labels.
   const {
     actions,
     actions_description,
