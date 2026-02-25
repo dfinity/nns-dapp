@@ -1480,10 +1480,7 @@ fn set_address_book_name_too_short_after_trimming() {
             name: "a b".to_string(),
         }],
     };
-    assert_eq!(
-        store.get_address_book(principal),
-        GetAddressBookResponse::Ok(expected)
-    );
+    assert_eq!(store.get_address_book(principal), GetAddressBookResponse::Ok(expected));
 }
 
 #[test]
