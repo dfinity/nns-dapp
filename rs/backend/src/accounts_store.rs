@@ -762,8 +762,7 @@ impl AccountsStore {
 
     fn validate_address_book_names_length(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
         for named_address in &address_book.named_addresses {
-            let normalized_name = Self::normalize_name(&named_address.name);
-            let name_len = normalized_name.len();
+            let name_len = named_address.name.len();
 
             if name_len < (MIN_NAMED_ADDRESS_NAME_LENGTH as usize) {
                 return Err(SetAddressBookResponse::AddressNameTooShort {
@@ -813,9 +812,23 @@ impl AccountsStore {
         Ok(())
     }
 
+    fn normalize_address_book(address_book: AddressBook) -> AddressBook {
+        AddressBook {
+            named_addresses: address_book
+                .named_addresses
+                .into_iter()
+                .map(|entry| NamedAddress {
+                    name: Self::normalize_name(&entry.name),
+                    address: entry.address,
+                })
+                .collect(),
+        }
+    }
+
     pub fn set_address_book(&mut self, caller: PrincipalId, new_address_book: AddressBook) -> SetAddressBookResponse {
-        // Validate the address book
-        if let Err(error_response) = Self::validate_address_book(&new_address_book) {
+        let normalized = Self::normalize_address_book(new_address_book);
+
+        if let Err(error_response) = Self::validate_address_book(&normalized) {
             return error_response;
         }
 
@@ -824,7 +837,7 @@ impl AccountsStore {
             return SetAddressBookResponse::AccountNotFound;
         };
 
-        account.address_book = Some(new_address_book);
+        account.address_book = Some(normalized);
 
         self.accounts_db.insert(account_identifier, account);
         SetAddressBookResponse::Ok
