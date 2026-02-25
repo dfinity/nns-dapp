@@ -4,7 +4,11 @@ import { get } from "svelte/store";
 describe("projects-table.store", () => {
   describe("projectsTableOrderStore", () => {
     it("should have an initial value", () => {
-      expect(get(projectsTableOrderStore)).toEqual([]);
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "stake",
+        },
+      ]);
     });
 
     it("should set", () => {

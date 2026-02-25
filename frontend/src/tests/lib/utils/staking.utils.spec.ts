@@ -733,22 +733,7 @@ describe("staking.utils", () => {
         stakeInUsd: 2,
       };
 
-      expect(compareByStake(project1, project2)).toEqual(1);
-    });
-
-    it("should compare projects with neurons before projects without neurons, if neither has a stake in USD", () => {
-      const project1 = {
-        ...mockTableProject,
-        stakeInUsd: undefined,
-        neuronCount: 0,
-      };
-      const project2 = {
-        ...mockTableProject,
-        stakeInUsd: undefined,
-        neuronCount: 1,
-      };
-
-      expect(compareByStake(project1, project2)).toEqual(1);
+      expect(compareByStake([])(project1, project2)).toEqual(1);
     });
 
     it("should compare ICP before other projects, if neither have neurons", () => {
@@ -765,7 +750,7 @@ describe("staking.utils", () => {
         universeId: OWN_CANISTER_ID_TEXT,
       };
 
-      expect(compareByStake(project1, project2)).toEqual(1);
+      expect(compareByStake([])(project1, project2)).toEqual(1);
     });
 
     it("should push unavailable projects to the bottom", () => {
@@ -804,9 +789,9 @@ describe("staking.utils", () => {
         },
       };
 
-      expect(compareByApy(project1, project2)).toEqual(1);
-      expect(compareByApy(project2, project1)).toEqual(-1);
-      expect(compareByApy(project1, project1)).toEqual(0);
+      expect(compareByApy([])(project1, project2)).toEqual(1);
+      expect(compareByApy([])(project2, project1)).toEqual(-1);
+      expect(compareByApy([])(project1, project1)).toEqual(0);
     });
 
     it("should prioritize ICP first", () => {
@@ -827,8 +812,8 @@ describe("staking.utils", () => {
         universeId: principal(2).toText(),
       };
 
-      expect(compareByApy(project1, project2)).toEqual(-1);
-      expect(compareByApy(project2, project1)).toEqual(1);
+      expect(compareByApy([])(project1, project2)).toEqual(-1);
+      expect(compareByApy([])(project2, project1)).toEqual(1);
     });
 
     it("should push unavailable projects to the bottom", () => {
@@ -851,8 +836,8 @@ describe("staking.utils", () => {
           token: ICPToken,
         }),
       };
-      expect(compareByApy(failedProject, nonFailedProject)).toEqual(1);
-      expect(compareByApy(nonFailedProject, failedProject)).toEqual(-1);
+      expect(compareByApy([])(failedProject, nonFailedProject)).toEqual(1);
+      expect(compareByApy([])(nonFailedProject, failedProject)).toEqual(-1);
     });
   });
 
@@ -869,7 +854,7 @@ describe("staking.utils", () => {
         universeId: principal(2).toText(),
       };
 
-      expect(compareByNeuron(project1, project2)).toEqual(1);
+      expect(compareByNeuron([])(project1, project2)).toEqual(1);
     });
 
     it("should prioritize ICP first", () => {
@@ -884,7 +869,7 @@ describe("staking.utils", () => {
         universeId: principal(2).toText(),
       };
 
-      expect(compareByNeuron(project1, project2)).toEqual(-1);
+      expect(compareByNeuron([])(project1, project2)).toEqual(-1);
     });
 
     it("should push unavailable projects to the bottom", () => {
@@ -923,7 +908,7 @@ describe("staking.utils", () => {
         title: "AAA",
       };
 
-      expect(compareByNeuron(project1, project2)).toEqual(1);
+      expect(compareByNeuron([])(project1, project2)).toEqual(1);
     });
 
     it("should prioritize ICP first", () => {
@@ -940,7 +925,7 @@ describe("staking.utils", () => {
         title: "AAA",
       };
 
-      expect(compareByNeuron(project1, project2)).toEqual(-1);
+      expect(compareByNeuron([])(project1, project2)).toEqual(-1);
     });
 
     it("should push unavailable projects to the bottom", () => {

@@ -282,35 +282,37 @@ const compareByApyCurrent = createDescendingComparator(
   (project: TableProject) => project.apy?.cur ?? 0
 );
 
-export const compareByNeuron = mergeComparators([
-  compareIcpFirst,
-  compareNonFailedTokenAmountFirst,
-  compareByNeuronCount,
-]);
+export const compareByNeuron = (universeOrder: string[]) =>
+  mergeComparators([
+    compareIcpFirst,
+    compareNonFailedTokenAmountFirst,
+    compareByNeuronCount,
+    compareByUniverseOrder(universeOrder),
+  ]);
 
-export const compareByProject = mergeComparators([
-  compareIcpFirst,
-  compareNonFailedTokenAmountFirst,
-  compareByProjectTitle,
-]);
+export const compareByProject = (universeOrder: string[]) =>
+  mergeComparators([
+    compareIcpFirst,
+    compareNonFailedTokenAmountFirst,
+    compareByProjectTitle,
+    compareByUniverseOrder(universeOrder),
+  ]);
 
-// This is used when clicking the "Stake" header, but in addition to sorting
-// by stake, it has a number of tie breakers.
-// Note that it tries to sort by USD stake but also sorts tokens with neurons
-// above tokens without neurons if there is no exchange rate for that project.
-export const compareByStake = mergeComparators([
-  compareIcpFirst,
-  compareByStakeInUsd,
-  compareNonFailedTokenAmountFirst,
-  comparePositiveNeuronsFirst,
-]);
+export const compareByStake = (universeOrder: string[]) =>
+  mergeComparators([
+    compareIcpFirst,
+    compareByStakeInUsd,
+    compareNonFailedTokenAmountFirst,
+    compareByUniverseOrder(universeOrder),
+  ]);
 
-export const compareByApy = mergeComparators([
-  compareIcpFirst,
-  compareByApyCurrent,
-  compareNonFailedTokenAmountFirst,
-  comparePositiveNeuronsFirst,
-]);
+export const compareByApy = (universeOrder: string[]) =>
+  mergeComparators([
+    compareIcpFirst,
+    compareByApyCurrent,
+    compareNonFailedTokenAmountFirst,
+    compareByUniverseOrder(universeOrder),
+  ]);
 
 const compareByUniverseOrder = (universeOrder: string[]) =>
   createAscendingComparator((project: TableProject) => {

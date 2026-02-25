@@ -1,7 +1,11 @@
 import type { ProjectsTableOrder } from "$lib/types/staking";
 import { writable } from "svelte/store";
 
-const initialProjectsTableOrder: ProjectsTableOrder = [];
+const initialProjectsTableOrder: ProjectsTableOrder = [
+  {
+    columnId: "stake",
+  },
+];
 
 const initProjectsTableOrderStore = () => {
   const { subscribe, set } = writable<ProjectsTableOrder>(
