@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { FEATURED_SNS_PROJECTS } from "$lib/constants/sns.constants";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
@@ -10,6 +11,7 @@ import {
   setCkETHCanisters,
 } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("selectable universes derived stores", () => {
@@ -69,79 +71,63 @@ describe("selectable universes derived stores", () => {
       ]);
     });
 
-    it("should return NNS followed by SNS projects ordered alphabetically", () => {
+    it("should sort NNS before SNS projects on the proposals page", () => {
       page.mock({
         routeId: AppPath.Proposals,
         data: { universe: OWN_CANISTER_ID.toText() },
       });
 
-      const rootCanisterId1 = principal(1);
-      const rootCanisterId2 = principal(2);
-      const rootCanisterId3 = principal(3);
+      setSnsProjects([{ projectName: "SNS Project" }]);
 
-      setSnsProjects([
-        {
-          rootCanisterId: rootCanisterId1,
-          projectName: "Bravo",
-        },
-        {
-          rootCanisterId: rootCanisterId2,
-          projectName: "Alfa",
-        },
-        {
-          rootCanisterId: rootCanisterId3,
-          projectName: "Charlie",
-        },
-      ]);
-
-      expect(get(selectableUniversesStore).map(({ title }) => title)).toEqual([
-        "Internet Computer",
-        "Alfa",
-        "Bravo",
-        "Charlie",
-      ]);
+      const titles = get(selectableUniversesStore).map(({ title }) => title);
+      expect(titles[0]).toBe("Internet Computer");
+      expect(titles).toContain("SNS Project");
     });
 
-    it("should return NNS followed by SNS projects in reverse order of actionable proposals", () => {
+    it("should sort SNS projects by actionable proposals, then featured, then launchpad rules, then alphabetically", () => {
       page.mock({
         routeId: AppPath.Proposals,
         data: { universe: OWN_CANISTER_ID.toText() },
       });
 
-      const rootCanisterIdA = principal(1);
-      const rootCanisterIdB = principal(2);
-      const rootCanisterIdC = principal(3);
+      const actionableId = principal(1);
+      const featuredId = Principal.fromText(FEATURED_SNS_PROJECTS[0]);
+      const activeId = principal(3);
+      const idleZuluId = principal(4);
+      const idleAlfaId = principal(5);
 
       setSnsProjects([
+        { rootCanisterId: idleAlfaId, projectName: "Alfa Idle" },
         {
-          rootCanisterId: rootCanisterIdB,
-          projectName: "Bravo",
+          rootCanisterId: activeId,
+          projectName: "Active",
+          metrics: {
+            num_recently_submitted_proposals: null,
+            num_recently_executed_proposals: 100,
+            last_ledger_block_timestamp: null,
+            treasury_metrics: null,
+            voting_power_metrics: null,
+            genesis_timestamp_seconds: null,
+          },
         },
-        {
-          rootCanisterId: rootCanisterIdA,
-          projectName: "Alfa",
-        },
-        {
-          rootCanisterId: rootCanisterIdC,
-          projectName: "Charlie",
-        },
+        { rootCanisterId: featuredId, projectName: "Featured" },
+        { rootCanisterId: idleZuluId, projectName: "Zulu Idle" },
+        { rootCanisterId: actionableId, projectName: "Actionable" },
       ]);
 
       actionableSnsProposalsStore.set({
-        rootCanisterId: rootCanisterIdC,
-        proposals: [mockSnsProposal, mockSnsProposal],
-      });
-
-      actionableSnsProposalsStore.set({
-        rootCanisterId: rootCanisterIdB,
+        rootCanisterId: actionableId,
         proposals: [mockSnsProposal],
       });
 
-      expect(get(selectableUniversesStore).map(({ title }) => title)).toEqual([
+      const titles = get(selectableUniversesStore).map(({ title }) => title);
+      expect(titles).toEqual([
         "Internet Computer",
-        "Charlie",
-        "Bravo",
-        "Alfa",
+        "Actionable",
+        "Featured",
+        "Active",
+        "Alfa Idle",
+        "Zulu Idle",
       ]);
     });
   });

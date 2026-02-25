@@ -1,4 +1,5 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { FEATURED_SNS_PROJECTS } from "$lib/constants/sns.constants";
 import {
   actionableProposalCountStore,
   type ActionableProposalCountData,
@@ -9,56 +10,99 @@ import {
   type IcrcCanistersStoreData,
 } from "$lib/derived/icrc-canisters.derived";
 import { pageStore, type Page } from "$lib/derived/page.derived";
+import {
+  snsProjectsRecordStore,
+  type SnsFullProject,
+} from "$lib/derived/sns/sns-projects.derived";
+import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 import { universesStore } from "$lib/derived/universes.derived";
+import { tickersStore, type TickersStore } from "$lib/stores/tickers.store";
+import type { RootCanisterIdText } from "$lib/types/sns";
+import type { TickersStoreData } from "$lib/types/tickers";
 import type { Universe } from "$lib/types/universe";
+import { compareLaunchpadSnsProjects } from "$lib/utils/launchpad.utils";
 import {
   createAscendingComparator,
   createDescendingComparator,
   mergeComparators,
+  type Comparator,
 } from "$lib/utils/sort.utils";
 import { isAllTokensPath, isUniverseCkBTC } from "$lib/utils/universe.utils";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
-type UniverseWithActionableProposalCount = {
+type UniverseWithSortData = {
   universe: Universe;
+  project: SnsFullProject | undefined;
   actionableProposalCount: number;
 };
 
 const compareNnsFirst = createDescendingComparator(
-  ({ universe: { canisterId } }: UniverseWithActionableProposalCount) =>
+  ({ universe: { canisterId } }: UniverseWithSortData) =>
     canisterId === OWN_CANISTER_ID_TEXT
 );
 
+const compareFeaturedFirst = createDescendingComparator(
+  ({ universe: { canisterId } }: UniverseWithSortData) =>
+    FEATURED_SNS_PROJECTS.includes(canisterId)
+);
+
 const compareActionableProposalCount = createDescendingComparator(
-  ({ actionableProposalCount }: UniverseWithActionableProposalCount) =>
-    actionableProposalCount
+  ({ actionableProposalCount }: UniverseWithSortData) => actionableProposalCount
 );
 
 const compareTitle = createAscendingComparator(
-  ({ universe: { title } }: UniverseWithActionableProposalCount) =>
-    title.toLowerCase()
+  ({ universe: { title } }: UniverseWithSortData) => title.toLowerCase()
 );
+
+const adaptProjectComparator =
+  (comparator: Comparator<SnsFullProject>): Comparator<UniverseWithSortData> =>
+  (a, b) => {
+    if (a.project !== undefined && b.project !== undefined) {
+      return comparator(a.project, b.project);
+    }
+    return 0;
+  };
 
 export const selectableUniversesStore = derived<
   [
     Readable<Universe[]>,
     Readable<Page>,
     IcrcCanistersStore,
+    Readable<Record<RootCanisterIdText, SnsFullProject>>,
+    Readable<Record<RootCanisterIdText, TokenAmountV2>>,
+    TickersStore,
     Readable<ActionableProposalCountData>,
   ],
   Universe[]
 >(
-  [universesStore, pageStore, icrcCanistersStore, actionableProposalCountStore],
-  ([universes, page, icrcCanisters, actionableProposalCounts]: [
+  [
+    universesStore,
+    pageStore,
+    icrcCanistersStore,
+    snsProjectsRecordStore,
+    snsTotalSupplyTokenAmountStore,
+    tickersStore,
+    actionableProposalCountStore,
+  ],
+  ([
+    universes,
+    page,
+    icrcCanisters,
+    projectsRecord,
+    totalSupply,
+    tickers,
+    actionableProposalCounts,
+  ]: [
     Universe[],
     Page,
     IcrcCanistersStoreData,
+    Record<RootCanisterIdText, SnsFullProject>,
+    Record<RootCanisterIdText, TokenAmountV2>,
+    TickersStoreData,
     ActionableProposalCountData,
-  ]) =>
-    // Non-governance paths show all universes
-    // The rest show all universes except for ckBTC, and ICRC Tokens
-    universes
+  ]) => {
+    const enriched = universes
       .filter(
         ({ canisterId }) =>
           isAllTokensPath(page) ||
@@ -66,15 +110,28 @@ export const selectableUniversesStore = derived<
       )
       .map((universe) => ({
         universe,
+        project: projectsRecord[universe.canisterId],
         actionableProposalCount:
           actionableProposalCounts[universe.canisterId] ?? 0,
-      }))
-      .sort(
-        mergeComparators([
+      }));
+
+    const launchpadSorting = adaptProjectComparator(
+      compareLaunchpadSnsProjects({
+        snsTotalSupplyTokenAmountStore: totalSupply,
+        tickersStore: tickers,
+      })
+    );
+
+    const sorting = isAllTokensPath(page)
+      ? mergeComparators([compareNnsFirst, compareTitle])
+      : mergeComparators([
           compareNnsFirst,
           compareActionableProposalCount,
+          compareFeaturedFirst,
+          launchpadSorting,
           compareTitle,
-        ])
-      )
-      .map(({ universe }) => universe)
+        ]);
+
+    return enriched.sort(sorting).map(({ universe }) => universe);
+  }
 );
