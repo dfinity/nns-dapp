@@ -780,10 +780,9 @@ describe("staking.utils", () => {
           token: ICPToken,
         }),
       };
-      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
-        nonFailedProject,
-        failedProject,
-      ]);
+      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual(
+        [nonFailedProject, failedProject]
+      );
     });
   });
 
@@ -901,10 +900,9 @@ describe("staking.utils", () => {
           token: ICPToken,
         }),
       };
-      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
-        nonFailedProject,
-        failedProject,
-      ]);
+      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual(
+        [nonFailedProject, failedProject]
+      );
     });
   });
 
@@ -958,155 +956,110 @@ describe("staking.utils", () => {
         }),
       };
 
-      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
-        nonFailedProject,
-        failedProject,
-      ]);
+      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual(
+        [nonFailedProject, failedProject]
+      );
     });
   });
 
   describe("sortTableProjects", () => {
-    const icpDomKey = OWN_CANISTER_ID_TEXT;
-    const snsUniverseId = principal(2).toText();
-    const snsDomKey = snsUniverseId;
+    const snsUniverseIdA = principal(1).toText();
+    const snsUniverseIdB = principal(2).toText();
+    const snsUniverseIdC = principal(3).toText();
 
     const defaultProject = {
       ...mockTableProject,
-      domKey: snsDomKey,
       neuronCount: 0,
     };
 
     it("should sort ICP first", () => {
       const icpProject = {
         ...defaultProject,
-        domKey: icpDomKey,
         universeId: OWN_CANISTER_ID_TEXT,
-        title: "Internet Computer",
-        neuronCount: 0,
+        domKey: OWN_CANISTER_ID_TEXT,
       };
       const snsProject = {
         ...defaultProject,
-        domKey: snsDomKey,
-        universeId: snsUniverseId,
-        title: "AAA",
-        neuronCount: 1,
+        universeId: snsUniverseIdA,
+        domKey: snsUniverseIdA,
+        stakeInUsd: 999,
       };
-      expect(sortTableProjects([snsProject, icpProject])).toEqual([
-        icpProject,
-        snsProject,
-      ]);
-      expect(sortTableProjects([icpProject, snsProject])).toEqual([
-        icpProject,
-        snsProject,
-      ]);
+      expect(
+        sortTableProjects([snsProject, icpProject], [snsUniverseIdA])
+      ).toEqual([icpProject, snsProject]);
     });
 
     it("should push unavailable projects to the bottom", () => {
       const failedProject = {
         ...defaultProject,
-        title: "ZZZ",
+        universeId: snsUniverseIdA,
+        domKey: snsUniverseIdA,
         stake: new FailedTokenAmount(mockSnsToken),
-        neuronCount: 1,
       };
       const nonFailedProject = {
         ...defaultProject,
-        title: "AAA",
+        universeId: snsUniverseIdB,
+        domKey: snsUniverseIdB,
         stake: TokenAmountV2.fromUlps({
           amount: 100_000_000n,
           token: ICPToken,
         }),
-        neuronCount: 0,
       };
-      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
-        nonFailedProject,
-        failedProject,
-      ]);
+      expect(
+        sortTableProjects(
+          [failedProject, nonFailedProject],
+          [snsUniverseIdA, snsUniverseIdB]
+        )
+      ).toEqual([nonFailedProject, failedProject]);
     });
 
-    it("should sort SNSes with neurons before SNSes without neuron", () => {
-      const snsWithNeurons = {
+    it("should sort by USD stake descending", () => {
+      const highStake = {
         ...defaultProject,
-        title: "ZZZ",
-        neuronCount: 1,
+        universeId: snsUniverseIdA,
+        domKey: snsUniverseIdA,
+        stakeInUsd: 100,
       };
-      const snsWithoutNeurons = {
+      const lowStake = {
         ...defaultProject,
-        title: "AAA",
-        neuronCount: 0,
+        universeId: snsUniverseIdB,
+        domKey: snsUniverseIdB,
+        stakeInUsd: 10,
       };
-      expect(sortTableProjects([snsWithoutNeurons, snsWithNeurons])).toEqual([
-        snsWithNeurons,
-        snsWithoutNeurons,
-      ]);
-      expect(sortTableProjects([snsWithNeurons, snsWithoutNeurons])).toEqual([
-        snsWithNeurons,
-        snsWithoutNeurons,
-      ]);
+      expect(
+        sortTableProjects(
+          [lowStake, highStake],
+          [snsUniverseIdA, snsUniverseIdB]
+        )
+      ).toEqual([highStake, lowStake]);
     });
 
-    it("should sort SNSes with neurons alphabetically", () => {
-      const snsA = {
+    it("should use universe order as tiebreaker when USD stake is equal", () => {
+      const projectA = {
         ...defaultProject,
-        title: "AAA",
-        neuronCount: 1,
+        universeId: snsUniverseIdA,
+        domKey: snsUniverseIdA,
+        stakeInUsd: 0,
       };
-      const snsZ = {
+      const projectB = {
         ...defaultProject,
-        title: "ZZZ",
-        neuronCount: 1,
+        universeId: snsUniverseIdB,
+        domKey: snsUniverseIdB,
+        stakeInUsd: 0,
       };
-      expect(sortTableProjects([snsZ, snsA])).toEqual([snsA, snsZ]);
-      expect(sortTableProjects([snsA, snsZ])).toEqual([snsA, snsZ]);
-    });
-
-    it("should sort SNSes without neurons alphabetically", () => {
-      const snsA = {
+      const projectC = {
         ...defaultProject,
-        title: "AAA",
-        neuronCount: 0,
+        universeId: snsUniverseIdC,
+        domKey: snsUniverseIdC,
+        stakeInUsd: 0,
       };
-      const snsZ = {
-        ...defaultProject,
-        title: "ZZZ",
-        neuronCount: 0,
-      };
-      expect(sortTableProjects([snsZ, snsA])).toEqual([snsA, snsZ]);
-      expect(sortTableProjects([snsA, snsZ])).toEqual([snsA, snsZ]);
-    });
-
-    it("should sort case insensitive", () => {
-      const snsA = {
-        ...defaultProject,
-        title: "aaa",
-        neuronCount: 0,
-      };
-      const snsB = {
-        ...defaultProject,
-        title: "BBB",
-        neuronCount: 0,
-      };
-      const snsC = {
-        ...defaultProject,
-        title: "ccc",
-        neuronCount: 0,
-      };
-      const snsD = {
-        ...defaultProject,
-        title: "DDD",
-        neuronCount: 0,
-      };
-      expect(sortTableProjects([snsD, snsC, snsB, snsA])).toEqual([
-        snsA,
-        snsB,
-        snsC,
-        snsD,
-      ]);
-      expect(sortTableProjects([snsC, snsA, snsD, snsB])).toEqual([
-        snsA,
-        snsB,
-        snsC,
-        snsD,
-      ]);
+      // Universe order: C, A, B (simulating launchpad ordering)
+      expect(
+        sortTableProjects(
+          [projectA, projectB, projectC],
+          [snsUniverseIdC, snsUniverseIdA, snsUniverseIdB]
+        )
+      ).toEqual([projectC, projectA, projectB]);
     });
   });
 

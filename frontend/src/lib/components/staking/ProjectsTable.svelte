@@ -170,7 +170,12 @@
       : tableProjects
   );
 
-  const sortedTableProjects = $derived(sortTableProjects(visibleTableProjects));
+  const universeOrder = $derived(
+    $selectableUniversesStore.map((u) => u.canisterId)
+  );
+  const sortedTableProjects = $derived(
+    sortTableProjects(visibleTableProjects, universeOrder)
+  );
 
   const hasAnyNeurons = $derived(
     tableProjects.some((project) => (project.neuronCount ?? 0) > 0)

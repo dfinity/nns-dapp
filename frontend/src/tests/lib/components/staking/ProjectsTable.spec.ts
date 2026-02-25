@@ -861,19 +861,12 @@ describe("ProjectsTable", () => {
       expect(console.error).toBeCalledTimes(2);
     });
 
-    it("should order by stake by default", async () => {
+    it("should have no column order by default", async () => {
       const po = renderComponent();
 
-      expect(get(projectsTableOrderStore)).toEqual([
-        {
-          columnId: "stake",
-        },
-        {
-          columnId: "title",
-        },
-      ]);
+      expect(get(projectsTableOrderStore)).toEqual([]);
 
-      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
     });
 
     it("should show settings button", async () => {
@@ -962,7 +955,7 @@ describe("ProjectsTable", () => {
 
     it("should change order based on order store", async () => {
       const po = renderComponent();
-      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
 
       projectsTableOrderStore.set([
         {
@@ -975,16 +968,9 @@ describe("ProjectsTable", () => {
 
     it("should change order store based on clicked header", async () => {
       const po = renderComponent();
-      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
 
-      expect(get(projectsTableOrderStore)).toEqual([
-        {
-          columnId: "stake",
-        },
-        {
-          columnId: "title",
-        },
-      ]);
+      expect(get(projectsTableOrderStore)).toEqual([]);
 
       await po.clickColumnHeader("Neurons");
 
@@ -992,27 +978,14 @@ describe("ProjectsTable", () => {
         {
           columnId: "neurons",
         },
-        {
-          columnId: "stake",
-        },
-        {
-          columnId: "title",
-        },
       ]);
     });
 
     it("should support changing order from settings popover", async () => {
       const po = renderComponent();
-      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
 
-      expect(get(projectsTableOrderStore)).toEqual([
-        {
-          columnId: "stake",
-        },
-        {
-          columnId: "title",
-        },
-      ]);
+      expect(get(projectsTableOrderStore)).toEqual([]);
 
       await po.openSettings();
       await po.sortFromSettingsByLabel("Neurons");
@@ -1020,12 +993,6 @@ describe("ProjectsTable", () => {
       expect(get(projectsTableOrderStore)).toEqual([
         {
           columnId: "neurons",
-        },
-        {
-          columnId: "stake",
-        },
-        {
-          columnId: "title",
         },
       ]);
     });
@@ -1085,7 +1052,7 @@ describe("ProjectsTable", () => {
     expect(await po.getProjectsTableRowPos()).toHaveLength(3);
   });
 
-  it("should sort projects by stake in USD, with unpriced neurons before no neuron and then alphabetically with ICP before the rest", async () => {
+  it("should sort projects by USD stake descending, then by universe order", async () => {
     const snsNeuronWithStake = createMockSnsNeuron({
       stake: 100_000_000n,
       id: [1, 1, 3],
@@ -1171,10 +1138,10 @@ describe("ProjectsTable", () => {
       "Internet Computer",
       "D with more USD",
       "C with less USD",
-      "B with neurons",
-      "Z with neurons",
       "A without neurons",
+      "B with neurons",
       "X without neurons",
+      "Z with neurons",
     ]);
   });
 

@@ -312,13 +312,22 @@ export const compareByApy = mergeComparators([
   comparePositiveNeuronsFirst,
 ]);
 
-export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
+const compareByUniverseOrder = (universeOrder: string[]) =>
+  createAscendingComparator((project: TableProject) => {
+    const index = universeOrder.indexOf(project.universeId);
+    return index === -1 ? Infinity : index;
+  });
+
+export const sortTableProjects = (
+  projects: TableProject[],
+  universeOrder: string[]
+): TableProject[] => {
   return [...projects].sort(
     mergeComparators([
       compareIcpFirst,
       compareNonFailedTokenAmountFirst,
-      comparePositiveNeuronsFirst,
-      compareByProjectTitle,
+      compareByStakeInUsd,
+      compareByUniverseOrder(universeOrder),
     ])
   );
 };

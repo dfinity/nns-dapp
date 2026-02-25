@@ -17,7 +17,7 @@ export const selectPrimaryOrder = ({
   order: ResponsiveTableOrder;
   selectedColumnId: string;
 }): ResponsiveTableOrder => {
-  if (order[0].columnId === selectedColumnId) {
+  if (order[0]?.columnId === selectedColumnId) {
     return [
       {
         columnId: order[0].columnId,
