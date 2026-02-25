@@ -944,10 +944,8 @@ describe("staking.utils", () => {
         }),
       };
 
-      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual([
-        nonFailedProject,
-        failedProject,
-      ]);
+      expect(compareByProject([])(failedProject, nonFailedProject)).toEqual(1);
+      expect(compareByProject([])(nonFailedProject, failedProject)).toEqual(-1);
     });
   });
 
