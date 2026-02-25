@@ -262,10 +262,6 @@ export const compareNonFailedTokenAmountFirst = createAscendingComparator(
   (project: TableProject) => project.stake instanceof FailedTokenAmount
 );
 
-const comparePositiveNeuronsFirst = createDescendingComparator(
-  (project: TableProject) => (project.neuronCount ?? 0) > 0
-);
-
 export const compareByNeuronCount = createDescendingComparator(
   (project: TableProject) => project.neuronCount
 );
