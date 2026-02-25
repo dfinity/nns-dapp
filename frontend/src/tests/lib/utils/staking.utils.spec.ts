@@ -780,9 +780,10 @@ describe("staking.utils", () => {
           token: ICPToken,
         }),
       };
-      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual(
-        [nonFailedProject, failedProject]
-      );
+      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual([
+        nonFailedProject,
+        failedProject,
+      ]);
     });
   });
 
@@ -900,9 +901,10 @@ describe("staking.utils", () => {
           token: ICPToken,
         }),
       };
-      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual(
-        [nonFailedProject, failedProject]
-      );
+      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual([
+        nonFailedProject,
+        failedProject,
+      ]);
     });
   });
 
@@ -956,9 +958,10 @@ describe("staking.utils", () => {
         }),
       };
 
-      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual(
-        [nonFailedProject, failedProject]
-      );
+      expect(sortTableProjects([failedProject, nonFailedProject], [])).toEqual([
+        nonFailedProject,
+        failedProject,
+      ]);
     });
   });
 
