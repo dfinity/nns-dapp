@@ -310,11 +310,15 @@ export const compareByApy = (universeOrder: string[]) =>
     compareByUniverseOrder(universeOrder),
   ]);
 
-const compareByUniverseOrder = (universeOrder: string[]) =>
-  createAscendingComparator((project: TableProject) => {
-    const index = universeOrder.indexOf(project.universeId);
-    return index === -1 ? Infinity : index;
+const compareByUniverseOrder = (universeOrder: string[]) => {
+  const universeIndexMap = new Map(
+    universeOrder.map((id, index) => [id, index] as const)
+  );
+  return createAscendingComparator((project: TableProject) => {
+    const index = universeIndexMap.get(project.universeId);
+    return index === undefined ? Infinity : index;
   });
+};
 
 export const sortTableProjects = (
   projects: TableProject[],

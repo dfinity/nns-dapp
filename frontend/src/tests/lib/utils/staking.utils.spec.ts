@@ -8,6 +8,7 @@ import {
   compareByApy,
   compareByNeuron,
   compareByNeuronCount,
+  compareByProject,
   compareByStake,
   compareByStakeInUsd,
   getTableProjects,
@@ -908,7 +909,7 @@ describe("staking.utils", () => {
         title: "AAA",
       };
 
-      expect(compareByNeuron([])(project1, project2)).toEqual(1);
+      expect(compareByProject([])(project1, project2)).toEqual(1);
     });
 
     it("should prioritize ICP first", () => {
@@ -925,7 +926,7 @@ describe("staking.utils", () => {
         title: "AAA",
       };
 
-      expect(compareByNeuron([])(project1, project2)).toEqual(-1);
+      expect(compareByProject([])(project1, project2)).toEqual(-1);
     });
 
     it("should push unavailable projects to the bottom", () => {
