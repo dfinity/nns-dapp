@@ -861,7 +861,7 @@ describe("ProjectsTable", () => {
       expect(console.error).toBeCalledTimes(2);
     });
 
-    it("should have no column order by default", async () => {
+    it("should order by stake by default", async () => {
       const po = renderComponent();
 
       expect(get(projectsTableOrderStore)).toEqual([
@@ -870,7 +870,7 @@ describe("ProjectsTable", () => {
         },
       ]);
 
-      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
     });
 
     it("should show settings button", async () => {
@@ -959,7 +959,7 @@ describe("ProjectsTable", () => {
 
     it("should change order based on order store", async () => {
       const po = renderComponent();
-      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
 
       projectsTableOrderStore.set([
         {
@@ -972,7 +972,7 @@ describe("ProjectsTable", () => {
 
     it("should change order store based on clicked header", async () => {
       const po = renderComponent();
-      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
 
       expect(get(projectsTableOrderStore)).toEqual([
         {
@@ -994,7 +994,7 @@ describe("ProjectsTable", () => {
 
     it("should support changing order from settings popover", async () => {
       const po = renderComponent();
-      expect(await po.getColumnHeaderWithArrow()).toBeUndefined();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
 
       expect(get(projectsTableOrderStore)).toEqual([
         {
