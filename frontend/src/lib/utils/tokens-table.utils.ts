@@ -94,10 +94,22 @@ export const compareTokenHasBalance = createDescendingComparator(
     token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n
 );
 
-export const compareTokensByProject = mergeComparators([
-  compareTokensIcpFirst,
-  compareTokensAlphabetically,
-]);
+const compareTokensByUniverseOrder = (universeOrder: string[]) => {
+  const universeIndexMap = new Map(
+    universeOrder.map((id, index) => [id, index] as const)
+  );
+  return createAscendingComparator((token: UserToken) => {
+    const index = universeIndexMap.get(token.universeId.toText());
+    return index === undefined ? Infinity : index;
+  });
+};
+
+export const compareTokensByProject = (universeOrder: string[]) =>
+  mergeComparators([
+    compareTokensIcpFirst,
+    compareTokensAlphabetically,
+    compareTokensByUniverseOrder(universeOrder),
+  ]);
 
 export const compareCkTokensByDefault = mergeComparators([
   compareTokensCKBTCFirst,
@@ -113,8 +125,10 @@ export const compareCkTokensByDefault = mergeComparators([
 // above tokens without balance if there is no exchange rate for that token.
 export const compareTokensByBalance = ({
   importedTokenIds,
+  universeOrder,
 }: {
   importedTokenIds: Set<string>;
+  universeOrder: string[];
 }) =>
   mergeComparators([
     compareTokensIcpFirst,
@@ -127,19 +141,23 @@ export const compareTokensByBalance = ({
     compareTokensCKETHFirst,
     compareTokensIsImported({ importedTokenIds }),
     compareFailedTokensLast,
+    compareTokensByUniverseOrder(universeOrder),
     compareTokensAlphabetically,
   ]);
 
 export const compareTokensForTokensTable = ({
   importedTokenIds,
+  universeOrder,
 }: {
   importedTokenIds: Set<string>;
+  universeOrder: string[];
 }) =>
   mergeComparators([
     compareTokensIcpFirst,
     compareTokensWithBalanceOrImportedFirst({ importedTokenIds }),
     compareFailedTokensLast,
     compareTokensByImportance,
+    compareTokensByUniverseOrder(universeOrder),
     compareTokensAlphabetically,
   ]);
 

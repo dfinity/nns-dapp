@@ -8,9 +8,6 @@ describe("tokens-table.store", () => {
         {
           columnId: "balance",
         },
-        {
-          columnId: "title",
-        },
       ]);
     });
 

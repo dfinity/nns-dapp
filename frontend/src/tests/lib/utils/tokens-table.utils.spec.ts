@@ -181,13 +181,13 @@ describe("tokens-table.utils", () => {
     const annaToken = createUserToken({ title: "Anna" });
 
     it("should sort tokens by importance", () => {
-      expect(compareTokensByProject(annaToken, ckBTCToken)).toEqual(-1);
-      expect(compareTokensByProject(ckBTCToken, annaToken)).toEqual(1);
+      expect(compareTokensByProject([])(annaToken, ckBTCToken)).toEqual(-1);
+      expect(compareTokensByProject([])(ckBTCToken, annaToken)).toEqual(1);
     });
 
     it("should prioritize ICP", () => {
-      expect(compareTokensByProject(annaToken, icpToken)).toEqual(1);
-      expect(compareTokensByProject(icpToken, ckBTCToken)).toEqual(-1);
+      expect(compareTokensByProject([])(annaToken, icpToken)).toEqual(1);
+      expect(compareTokensByProject([])(icpToken, ckBTCToken)).toEqual(-1);
     });
   });
 
@@ -260,6 +260,7 @@ describe("tokens-table.utils", () => {
           tokenImported.universeId.toText(),
           failedImportedToken.universeId.toText(),
         ]),
+        universeOrder: [],
       });
 
       // Include i and j in the expected value to know what i and j were

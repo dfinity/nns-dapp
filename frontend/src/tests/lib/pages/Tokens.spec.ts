@@ -370,9 +370,6 @@ describe("Tokens page", () => {
       {
         columnId: "balance",
       },
-      {
-        columnId: "title",
-      },
     ]);
 
     expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
@@ -406,9 +403,6 @@ describe("Tokens page", () => {
     expect(get(tokensTableOrderStore)).toEqual([
       {
         columnId: "balance",
-      },
-      {
-        columnId: "title",
       },
     ]);
 
