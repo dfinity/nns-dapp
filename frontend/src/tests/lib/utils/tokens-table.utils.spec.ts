@@ -200,10 +200,7 @@ describe("tokens-table.utils", () => {
         title: "Zulu",
       });
       // Universe order puts Zulu before Alfa
-      const universeOrder = [
-        principal(11).toText(),
-        principal(10).toText(),
-      ];
+      const universeOrder = [principal(11).toText(), principal(10).toText()];
       expect(compareTokensByProject(universeOrder)(tokenA, tokenZ)).toEqual(1);
       expect(compareTokensByProject(universeOrder)(tokenZ, tokenA)).toEqual(-1);
     });
