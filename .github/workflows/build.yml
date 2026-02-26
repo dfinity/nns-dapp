@@ -202,7 +202,7 @@ jobs:
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
       - name: Install command line HTML parser
         run: |
-          go install github.com/ericchiang/pup@latest
+          GOTOOLCHAIN=auto go install github.com/ericchiang/pup@latest
           pup --version
       - name: Install IC tools
         run: |
