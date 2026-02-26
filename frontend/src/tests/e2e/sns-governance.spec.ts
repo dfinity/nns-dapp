@@ -16,13 +16,8 @@ test("Test SNS governance", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Navigate to SNS universe");
-  const snsUniverseRows = await appPo
-    .getTokensPo()
-    .getTokensPagePo()
-    .getSnsTokensTable()
-    .getSnsRows();
-  expect(snsUniverseRows.length).toBeGreaterThanOrEqual(1);
-  const snsProjectName = await snsUniverseRows[0].getProjectName();
+  // "Alfa Centauri" is the test SNS project configured with a faucet.
+  const snsProjectName = "Alfa Centauri";
 
   step("Acquire tokens");
   const askedAmount = 20;
