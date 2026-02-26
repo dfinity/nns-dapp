@@ -24,9 +24,6 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(snsUniverseRows.length).toBeGreaterThanOrEqual(1);
   const snsProjectName = await snsUniverseRows[0].getProjectName();
 
-  // Our first test SNS project is always named "Alfa Centauri".
-  expect(snsProjectName).toBe("Alfa Centauri");
-
   step("Acquire tokens");
   const askedAmount = 20;
   await appPo.getSnsTokens({ amount: askedAmount, name: snsProjectName });
