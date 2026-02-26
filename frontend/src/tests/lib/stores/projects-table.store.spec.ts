@@ -8,9 +8,6 @@ describe("projects-table.store", () => {
         {
           columnId: "stake",
         },
-        {
-          columnId: "title",
-        },
       ]);
     });
 
