@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Normalize address book entry names before storing to prevent raw whitespace in stored data.
+
 #### Security
 
 #### Not Published

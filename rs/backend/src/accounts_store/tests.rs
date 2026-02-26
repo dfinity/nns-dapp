@@ -1460,24 +1460,27 @@ fn set_address_book_name_too_short_after_trimming() {
     );
 
     // Test with name that's OK after trimming
-    let only_spaces = "  a     b ".to_string(); // After trim and normalize: "a b" (3 chars)
+    let raw_name = "  a     b ".to_string(); // After trim and normalize: "a b" (3 chars)
     let address_book_3 = AddressBook {
         named_addresses: vec![NamedAddress {
             address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
-            name: only_spaces,
+            name: raw_name,
         }],
     };
 
     assert_eq!(
-        store.set_address_book(principal, address_book_3.clone()),
+        store.set_address_book(principal, address_book_3),
         SetAddressBookResponse::Ok
     );
 
-    // Verify that the address book was saved
-    assert_eq!(
-        store.get_address_book(principal),
-        GetAddressBookResponse::Ok(address_book_3)
-    );
+    // Verify that the address book was saved with normalized name
+    let expected = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
+            name: "a b".to_string(),
+        }],
+    };
+    assert_eq!(store.get_address_book(principal), GetAddressBookResponse::Ok(expected));
 }
 
 #[test]
