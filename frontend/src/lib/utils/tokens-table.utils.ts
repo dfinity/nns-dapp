@@ -107,8 +107,8 @@ const compareTokensByUniverseOrder = (universeOrder: string[]) => {
 export const compareTokensByProject = (universeOrder: string[]) =>
   mergeComparators([
     compareTokensIcpFirst,
-    compareTokensAlphabetically,
     compareTokensByUniverseOrder(universeOrder),
+    compareTokensAlphabetically,
   ]);
 
 export const compareCkTokensByDefault = mergeComparators([

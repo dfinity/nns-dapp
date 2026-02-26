@@ -189,6 +189,24 @@ describe("tokens-table.utils", () => {
       expect(compareTokensByProject([])(annaToken, icpToken)).toEqual(1);
       expect(compareTokensByProject([])(icpToken, ckBTCToken)).toEqual(-1);
     });
+
+    it("should sort by universe order before alphabetical", () => {
+      const tokenA = createUserToken({
+        universeId: principal(10),
+        title: "Alfa",
+      });
+      const tokenZ = createUserToken({
+        universeId: principal(11),
+        title: "Zulu",
+      });
+      // Universe order puts Zulu before Alfa
+      const universeOrder = [
+        principal(11).toText(),
+        principal(10).toText(),
+      ];
+      expect(compareTokensByProject(universeOrder)(tokenA, tokenZ)).toEqual(1);
+      expect(compareTokensByProject(universeOrder)(tokenZ, tokenA)).toEqual(-1);
+    });
   });
 
   describe("compareTokensByUsdBalance", () => {
