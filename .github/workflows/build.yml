@@ -196,13 +196,17 @@ jobs:
           nns_dapp_wasm: 'nns-dapp.wasm.gz'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
           logfile: 'dfx-test-rest.log'
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
       - name: Install command line HTML parser
         run: |
-          GOTOOLCHAIN=auto go install github.com/ericchiang/pup@latest
+          go install github.com/ericchiang/pup@latest
           pup --version
       - name: Install IC tools
         run: |
