@@ -868,9 +868,6 @@ describe("ProjectsTable", () => {
         {
           columnId: "stake",
         },
-        {
-          columnId: "title",
-        },
       ]);
 
       expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
@@ -981,9 +978,6 @@ describe("ProjectsTable", () => {
         {
           columnId: "stake",
         },
-        {
-          columnId: "title",
-        },
       ]);
 
       await po.clickColumnHeader("Neurons");
@@ -994,9 +988,6 @@ describe("ProjectsTable", () => {
         },
         {
           columnId: "stake",
-        },
-        {
-          columnId: "title",
         },
       ]);
     });
@@ -1009,9 +1000,6 @@ describe("ProjectsTable", () => {
         {
           columnId: "stake",
         },
-        {
-          columnId: "title",
-        },
       ]);
 
       await po.openSettings();
@@ -1023,9 +1011,6 @@ describe("ProjectsTable", () => {
         },
         {
           columnId: "stake",
-        },
-        {
-          columnId: "title",
         },
       ]);
     });
@@ -1085,7 +1070,7 @@ describe("ProjectsTable", () => {
     expect(await po.getProjectsTableRowPos()).toHaveLength(3);
   });
 
-  it("should sort projects by stake in USD, with unpriced neurons before no neuron and then alphabetically with ICP before the rest", async () => {
+  it("should sort projects by USD stake descending, then by universe order", async () => {
     const snsNeuronWithStake = createMockSnsNeuron({
       stake: 100_000_000n,
       id: [1, 1, 3],
@@ -1171,10 +1156,10 @@ describe("ProjectsTable", () => {
       "Internet Computer",
       "D with more USD",
       "C with less USD",
-      "B with neurons",
-      "Z with neurons",
       "A without neurons",
+      "B with neurons",
       "X without neurons",
+      "Z with neurons",
     ]);
   });
 

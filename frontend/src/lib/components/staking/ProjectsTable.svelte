@@ -60,6 +60,10 @@
     }
   });
 
+  const universeOrder = $derived(
+    $selectableUniversesStore.map((u) => u.canisterId)
+  );
+
   const commonColumns: ProjectsTableColumn[] = $derived([
     {
       id: "stake",
@@ -67,7 +71,9 @@
       cellComponent: ProjectStakeCell,
       alignment: "right",
       templateColumns: ["1fr"],
-      comparator: $authSignedInStore ? compareByStake : undefined,
+      comparator: $authSignedInStore
+        ? compareByStake(universeOrder)
+        : undefined,
     },
     ...($ENABLE_APY_PORTFOLIO
       ? [
@@ -77,7 +83,9 @@
             cellComponent: ProjectApyCell,
             alignment: "right",
             templateColumns: ["1fr"],
-            comparator: $authSignedInStore ? compareByApy : undefined,
+            comparator: $authSignedInStore
+              ? compareByApy(universeOrder)
+              : undefined,
           } as ProjectsTableColumn,
         ]
       : []),
@@ -93,7 +101,9 @@
       cellComponent: ProjectNeuronsCell,
       alignment: "right",
       templateColumns: ["1fr"],
-      comparator: $authSignedInStore ? compareByNeuron : undefined,
+      comparator: $authSignedInStore
+        ? compareByNeuron(universeOrder)
+        : undefined,
     },
     {
       title: "",
@@ -110,7 +120,9 @@
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
-      comparator: $authSignedInStore ? compareByProject : undefined,
+      comparator: $authSignedInStore
+        ? compareByProject(universeOrder)
+        : undefined,
     },
     ...commonColumns,
   ]);
@@ -123,7 +135,9 @@
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
-      comparator: $authSignedInStore ? compareByProject : undefined,
+      comparator: $authSignedInStore
+        ? compareByProject(universeOrder)
+        : undefined,
       overrideSortLabel: $i18n.tokens.token_name,
     },
     ...commonColumns,
@@ -137,7 +151,9 @@
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
-      comparator: $authSignedInStore ? compareByProject : undefined,
+      comparator: $authSignedInStore
+        ? compareByProject(universeOrder)
+        : undefined,
       overrideSortLabel: $i18n.tokens.token_name,
     },
     ...commonColumns,
@@ -170,7 +186,9 @@
       : tableProjects
   );
 
-  const sortedTableProjects = $derived(sortTableProjects(visibleTableProjects));
+  const sortedTableProjects = $derived(
+    sortTableProjects(visibleTableProjects, universeOrder)
+  );
 
   const hasAnyNeurons = $derived(
     tableProjects.some((project) => (project.neuronCount ?? 0) > 0)

@@ -5,9 +5,6 @@ const initialProjectsTableOrder: ProjectsTableOrder = [
   {
     columnId: "stake",
   },
-  {
-    columnId: "title",
-  },
 ];
 
 const initProjectsTableOrderStore = () => {
