@@ -47,8 +47,6 @@
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
     "sign_in": "The sign-in process was aborted or did not succeed.",
     "proposal_not_found": "An error occurred while loading the proposal.",
-    "proposal_payload": "An error occurred while loading proposal payload.",
-    "proposal_payload_not_found": "Payload for proposal: $proposal_id was not found.",
     "neuron_not_found": "Neuron not found.",
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",

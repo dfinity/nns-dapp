@@ -121,12 +121,3 @@ export class CanisterNotFoundError extends AccountTranslateError {
     this.substitutions = substitutions;
   }
 }
-
-export class UnknownProposalPayloadError extends Error {
-  constructor(message?: string) {
-    super(message);
-  }
-}
-
-export class ProposalPayloadNotFoundError extends Error {}
-export class ProposalPayloadTooLargeError extends Error {}

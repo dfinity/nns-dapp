@@ -1,12 +1,4 @@
-import {
-  queryProposal,
-  queryProposalPayload,
-  queryProposals,
-} from "$lib/api/proposals.api";
-import {
-  ProposalPayloadNotFoundError,
-  ProposalPayloadTooLargeError,
-} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { queryProposal, queryProposals } from "$lib/api/proposals.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getCurrentIdentity } from "$lib/services/auth.services";
@@ -17,7 +9,6 @@ import {
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
 import {
-  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   type ProposalsFiltersStore,
@@ -321,55 +312,4 @@ const getProposal = async ({
     strategy,
     logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
   });
-};
-
-/**
- * Loads proposal payload in proposalPayloadsStore.
- * Updates the proposalPayloadsStore with:
- * - `undefined` - loading
- * - `null` - erroneous
- * - otherwise data `object`
- */
-export const loadProposalPayload = async ({
-  proposalId,
-}: {
-  proposalId: ProposalId;
-}): Promise<void> => {
-  try {
-    proposalPayloadsStore.setPayload({ proposalId, payload: undefined });
-    const payload = await queryProposalPayload({
-      proposalId,
-      identity: getCurrentIdentity(),
-    });
-    proposalPayloadsStore.setPayload({ proposalId, payload });
-  } catch (err) {
-    console.error(err);
-
-    if (err instanceof ProposalPayloadTooLargeError) {
-      proposalPayloadsStore.setPayload({
-        proposalId,
-        payload: { error: "Payload too large" },
-      });
-
-      return;
-    }
-    if (err instanceof ProposalPayloadNotFoundError) {
-      toastsError({
-        labelKey: "error.proposal_payload_not_found",
-        substitutions: {
-          $proposal_id: proposalId.toString(),
-        },
-      });
-
-      // set 'null' avoid refetching of not existing data
-      proposalPayloadsStore.setPayload({ proposalId, payload: null });
-
-      return;
-    }
-
-    toastsError({
-      labelKey: "error.proposal_payload",
-      err,
-    });
-  }
 };

@@ -1,11 +1,8 @@
 import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
 import { secondsToDateTime } from "$lib/utils/date.utils";
-import { getNnsFunctionKey, mapProposalInfo } from "$lib/utils/proposals.utils";
+import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import en from "$tests/mocks/i18n.mock";
-import {
-  mockProposalInfo,
-  proposalActionNnsFunction21,
-} from "$tests/mocks/proposal.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { Proposal } from "@icp-sdk/canisters/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
@@ -260,10 +257,14 @@ describe("ProposalSystemInfoSection", () => {
     expect(() => getByTestId(`proposal-system-info-proposer-value`)).toThrow();
   });
 
-  it("should render nnsFunction name", async () => {
+  it("should render nnsFunction name from selfDescribingAction", async () => {
     const proposalWithNnsFunctionAction = {
       ...mockProposalInfo.proposal,
-      action: proposalActionNnsFunction21,
+      selfDescribingAction: {
+        typeName: "ExecuteNnsFunction",
+        typeDescription: "Install an NNS canister",
+        value: undefined,
+      },
     } as Proposal;
 
     const { getByTestId } = render(ProposalSystemInfoSection, {
@@ -275,11 +276,8 @@ describe("ProposalSystemInfoSection", () => {
       },
     });
 
-    const nnsFunctionKey = getNnsFunctionKey(proposalWithNnsFunctionAction);
-    const fnName = en.nns_functions[nnsFunctionKey as string];
-
     expect(getByTestId("proposal-system-info-type-value")?.textContent).toEqual(
-      fnName
+      "ExecuteNnsFunction"
     );
   });
 });

@@ -1,5 +1,4 @@
 import { createAgent } from "$lib/api/agent.api";
-import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
@@ -60,6 +59,7 @@ export const queryProposals = async ({
       // This flag solves the issue when the proposal payload being too large.
       // (e.g. IC0504: Error from Canister rrkah-fqaaa-aaaaa-aaaaq-cai: Canister violated contract: ic0.msg_reply_data_append: application payload size (3661753) cannot be larger than 3145728.)
       omitLargeFields,
+      returnSelfDescribingAction: true,
     },
     certified,
   });
@@ -101,6 +101,7 @@ export const queryProposal = async ({
       excludeTopic: [],
       includeStatus: [],
       includeAllManageNeuronProposals: false,
+      returnSelfDescribingAction: true,
     },
     certified,
   });
@@ -115,26 +116,4 @@ export const queryProposal = async ({
   return response?.proposals?.[0].id === proposalId
     ? response.proposals[0]
     : undefined;
-};
-
-export const queryProposalPayload = async ({
-  proposalId,
-  identity,
-}: {
-  proposalId: ProposalId;
-  identity: Identity;
-}): Promise<object> => {
-  logWithTimestamp(`Loading Proposal Payload ${hashCode(proposalId)} call...`);
-
-  const { canister } = await nnsDappCanister({ identity });
-
-  const response = await canister.getProposalPayload({
-    proposalId,
-  });
-
-  logWithTimestamp(
-    `Loading Proposal Payload ${hashCode(proposalId)} complete.`
-  );
-
-  return response;
 };

@@ -32,6 +32,13 @@ export const mockProposals: ProposalInfo[] = [
           ],
         },
       },
+      selfDescribingAction: {
+        typeName: "RegisterKnownNeuron",
+        typeDescription: "Register a known neuron",
+        value: {
+          Map: [["id", { Nat: 1n }]],
+        },
+      },
     },
     status: ProposalStatus.Open,
     rewardStatus: ProposalRewardStatus.AcceptVotes,

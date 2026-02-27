@@ -24,6 +24,7 @@ import {
   replaceAndConcatenateProposals,
   replaceProposals,
   selectedNeuronsVotingPower,
+  selfDescribingValueToJson,
   sortNnsTopics,
   sortProposalsByIdDescendingOrder,
 } from "$lib/utils/proposals.utils";
@@ -39,8 +40,6 @@ import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type {
   Action,
   Ballot,
-  ExecuteNnsFunction,
-  KnownNeuron,
   NeuronInfo,
   Proposal,
   ProposalInfo,
@@ -584,7 +583,7 @@ describe("proposals-utils", () => {
       );
     });
 
-    it("should map action to undefined", () => {
+    it("should defensively map type to undefined when selfDescribingAction is absent", () => {
       const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal,
@@ -594,78 +593,38 @@ describe("proposals-utils", () => {
       expect(typeDescription).toBeUndefined();
     });
 
-    it("should map action to type", () => {
+    it("should map type from selfDescribingAction", () => {
       const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
-          action: { RegisterKnownNeuron: {} as KnownNeuron },
+          selfDescribingAction: {
+            typeName: "RegisterKnownNeuron",
+            typeDescription: "Register a known neuron",
+            value: undefined,
+          },
         },
       });
 
-      expect(en.actions.RegisterKnownNeuron).toEqual(type);
-      expect(en.actions_description.RegisterKnownNeuron).toEqual(
-        typeDescription
-      );
+      expect(type).toEqual("RegisterKnownNeuron");
+      expect(typeDescription).toEqual("Register a known neuron");
     });
 
-    it("should map nns function to type", () => {
+    it("should map nns function type from selfDescribingAction", () => {
       const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
-          action: {
-            ExecuteNnsFunction: { nnsFunctionId: 3 } as ExecuteNnsFunction,
+          selfDescribingAction: {
+            typeName: "ExecuteNnsFunction",
+            typeDescription: "Install an NNS canister",
+            value: undefined,
           },
         },
       });
 
-      expect(en.nns_functions.NnsCanisterInstall).toEqual(type);
-      expect(en.nns_functions_description.NnsCanisterInstall).toEqual(
-        typeDescription
-      );
-    });
-
-    it("should provide labels for all function IDs", () => {
-      const IGNORED_NNS_FUNCTION_IDS = [
-        NnsFunction.HardResetNnsRootToVersion,
-        // Obsolete types
-        NnsFunction.BlessReplicaVersion,
-        NnsFunction.RetireReplicaVersion,
-        NnsFunction.UpdateApiBoundaryNodeDomain,
-        NnsFunction.UpdateApiBoundaryNodesVersion,
-      ];
-      const proposalWithNnsFunctionId = (nnsFunctionId: number) => ({
-        ...proposalInfo,
-        proposal: {
-          ...proposal,
-          action: {
-            ExecuteNnsFunction: { nnsFunctionId } as ExecuteNnsFunction,
-          },
-        },
-      });
-      const typeSet = new Set();
-      const typeDescriptionSet = new Set();
-
-      for (const nnsFunctionId of enumValues(NnsFunction)) {
-        if (IGNORED_NNS_FUNCTION_IDS.includes(nnsFunctionId)) {
-          continue;
-        }
-        const { type, typeDescription } = mapProposalInfo(
-          proposalWithNnsFunctionId(nnsFunctionId)
-        );
-
-        // Labels should be defined
-        expect(type).toBeDefined();
-        expect(typeDescription).toBeDefined();
-
-        // Labels should be unique
-        expect(typeSet.has(type)).toBe(false);
-        expect(typeDescriptionSet.has(typeDescription)).toBe(false);
-
-        typeSet.add(type);
-        typeDescriptionSet.add(typeDescription);
-      }
+      expect(type).toEqual("ExecuteNnsFunction");
+      expect(typeDescription).toEqual("Install an NNS canister");
     });
   });
 
@@ -1199,6 +1158,77 @@ describe("proposals-utils", () => {
         /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
         /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
       ]);
+    });
+  });
+
+  describe("selfDescribingValueToJson", () => {
+    it("should convert Text", () => {
+      expect(selfDescribingValueToJson({ Text: "hello" })).toBe("hello");
+    });
+
+    it("should convert Bool", () => {
+      expect(selfDescribingValueToJson({ Bool: true })).toBe(true);
+      expect(selfDescribingValueToJson({ Bool: false })).toBe(false);
+    });
+
+    it("should convert Null", () => {
+      expect(selfDescribingValueToJson({ Null: null })).toBeNull();
+    });
+
+    it("should convert Nat", () => {
+      expect(selfDescribingValueToJson({ Nat: 42n })).toBe(42n);
+    });
+
+    it("should convert Int", () => {
+      expect(selfDescribingValueToJson({ Int: -7n })).toBe(-7n);
+    });
+
+    it("should convert Blob to hex string", () => {
+      expect(
+        selfDescribingValueToJson({ Blob: new Uint8Array([0xca, 0xfe]) })
+      ).toBe("cafe");
+    });
+
+    it("should convert Array", () => {
+      expect(
+        selfDescribingValueToJson({
+          Array: [{ Text: "a" }, { Nat: 1n }],
+        })
+      ).toEqual(["a", 1n]);
+    });
+
+    it("should convert Map to object", () => {
+      expect(
+        selfDescribingValueToJson({
+          Map: [
+            ["key1", { Text: "value1" }],
+            ["key2", { Nat: 42n }],
+          ],
+        })
+      ).toEqual({ key1: "value1", key2: 42n });
+    });
+
+    it("should handle nested structures", () => {
+      expect(
+        selfDescribingValueToJson({
+          Map: [
+            [
+              "outer",
+              {
+                Map: [
+                  ["inner", { Text: "deep" }],
+                  ["list", { Array: [{ Bool: true }, { Null: null }] }],
+                ],
+              },
+            ],
+          ],
+        })
+      ).toEqual({
+        outer: {
+          inner: "deep",
+          list: [true, null],
+        },
+      });
     });
   });
 });

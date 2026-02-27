@@ -26,6 +26,7 @@ import type {
   ExecuteNnsFunction,
   NeuronId,
   NeuronInfo,
+  NnsGovernanceDid,
   Proposal,
   ProposalId,
   ProposalInfo,
@@ -376,47 +377,21 @@ export const mapProposalInfo = (
 };
 
 /**
- * If the action is a ExecuteNnsFunction, then we map the NNS function id (its detailed label).
- * Otherwise, we map the action function itself.
- *
- * This outcome is called "the proposal type".
+ * Derives the proposal type label and description from
+ * `selfDescribingAction`, which is guaranteed by the API because both
+ * `queryProposals` and `queryProposal` set `returnSelfDescribingAction: true`.
+ * The nullish check is a defensive guard since the field is typed as optional.
  */
 const mapProposalType = (
   proposal: Proposal | undefined
 ): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
-  const {
-    actions,
-    actions_description,
-    nns_functions,
-    nns_functions_description,
-  } = get(i18n);
+  if (isNullish(proposal?.selfDescribingAction))
+    return { type: undefined, typeDescription: undefined };
 
-  const NO_MATCH = { type: undefined, typeDescription: undefined };
-
-  if (proposal === undefined) {
-    return NO_MATCH;
-  }
-
-  const nnsFunctionKey: string | undefined = getNnsFunctionKey(proposal);
-
-  if (nnsFunctionKey !== undefined) {
-    return {
-      type: keyOf({ obj: nns_functions, key: nnsFunctionKey }),
-      typeDescription: keyOf({
-        obj: nns_functions_description,
-        key: nnsFunctionKey,
-      }),
-    };
-  }
-
-  const action: string | undefined = proposalFirstActionKey(proposal);
-
-  return action !== undefined
-    ? {
-        type: keyOf({ obj: actions, key: action }),
-        typeDescription: keyOf({ obj: actions_description, key: action }),
-      }
-    : NO_MATCH;
+  return {
+    type: proposal.selfDescribingAction.typeName ?? undefined,
+    typeDescription: proposal.selfDescribingAction.typeDescription ?? undefined,
+  };
 };
 
 /**
@@ -675,3 +650,32 @@ export const sortNnsTopics = ({
       ),
     ])
   );
+
+const blobToHex = (blob: Uint8Array): string =>
+  Array.from(blob)
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+
+/**
+ * Converts a `SelfDescribingValue` (Candid tagged union) to a plain JS value
+ * suitable for rendering with `JsonPreview`.
+ */
+export const selfDescribingValueToJson = (
+  value: NnsGovernanceDid.SelfDescribingValue
+): unknown => {
+  if ("Text" in value) return value.Text;
+  if ("Bool" in value) return value.Bool;
+  if ("Null" in value) return null;
+  if ("Nat" in value) return value.Nat;
+  if ("Int" in value) return value.Int;
+  if ("Blob" in value) return blobToHex(value.Blob);
+  if ("Array" in value) return value.Array.map(selfDescribingValueToJson);
+  if ("Map" in value) {
+    return Object.fromEntries(
+      [...value.Map]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, val]) => [key, selfDescribingValueToJson(val)])
+    );
+  }
+  return null;
+};
