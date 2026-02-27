@@ -122,10 +122,10 @@ export const selectableUniversesStore = derived<
       })
     );
 
-    // On non-governance paths (accounts, wallet), sort alphabetically.
-    // On governance paths, sort by launchpad criteria with actionable proposals
-    // as priority (only has effect on the proposals page where the data is loaded;
-    // on other pages all counts are 0 so it falls through to featured/launchpad).
+    // On accounts/wallet pages (which include ckBTC/ICRC in the sidebar),
+    // sort alphabetically. On all other pages, sort by launchpad criteria.
+    // compareActionableProposalCount only has effect on the proposals page
+    // where the data is loaded; on other pages all counts are 0.
     const sorting = isAllTokensPath(page)
       ? mergeComparators([compareNnsFirst, compareTitle])
       : mergeComparators([
