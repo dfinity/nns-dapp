@@ -233,11 +233,6 @@ pub fn get_address_book() -> GetAddressBookResponse {
     with_state(|s| s.accounts_store.get_address_book(principal))
 }
 
-#[ic_cdk::update]
-pub async fn get_proposal_payload(proposal_id: u64) -> Result<proposals::Json, String> {
-    proposals::get_proposal_payload(proposal_id).await
-}
-
 /// Returns stats about the canister.
 ///
 /// These stats include things such as the number of accounts registered, the memory usage, the

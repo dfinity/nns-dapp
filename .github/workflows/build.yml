@@ -213,8 +213,6 @@ jobs:
           pushd snsdemo
           bin/dfx-sns-demo-install
           popd
-      - name: Test getting proposal payloads
-        run: scripts/nns-dapp/test-proposal-payload
       - name: Install tools
         run: |
           # libarchive-zip-perl is needed for crc32, used by test-cmc-notify.
