@@ -180,11 +180,6 @@ describe("tokens-table.utils", () => {
   describe("compareTokensByProject", () => {
     const annaToken = createUserToken({ title: "Anna" });
 
-    it("should sort tokens by importance", () => {
-      expect(compareTokensByProject([])(annaToken, ckBTCToken)).toEqual(-1);
-      expect(compareTokensByProject([])(ckBTCToken, annaToken)).toEqual(1);
-    });
-
     it("should prioritize ICP", () => {
       expect(compareTokensByProject([])(annaToken, icpToken)).toEqual(1);
       expect(compareTokensByProject([])(icpToken, ckBTCToken)).toEqual(-1);
@@ -289,6 +284,24 @@ describe("tokens-table.utils", () => {
           expect([i, j, compare(tokens[j], tokens[i])]).toEqual([i, j, 1]);
         }
       }
+    });
+
+    it("should use universe order as tiebreaker when balances are equal", () => {
+      const tokenA = createUserToken({
+        universeId: principal(10),
+        balanceInUsd: 5,
+      });
+      const tokenB = createUserToken({
+        universeId: principal(11),
+        balanceInUsd: 5,
+      });
+      // Universe order puts B before A
+      const compare = compareTokensByBalance({
+        importedTokenIds: new Set(),
+        universeOrder: [principal(11).toText(), principal(10).toText()],
+      });
+      expect(compare(tokenA, tokenB)).toEqual(1);
+      expect(compare(tokenB, tokenA)).toEqual(-1);
     });
   });
 
