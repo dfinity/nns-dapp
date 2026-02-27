@@ -583,7 +583,7 @@ describe("proposals-utils", () => {
       );
     });
 
-    it("should map type to undefined when selfDescribingAction is absent", () => {
+    it("should defensively map type to undefined when selfDescribingAction is absent", () => {
       const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal,

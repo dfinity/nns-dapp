@@ -378,15 +378,15 @@ export const mapProposalInfo = (
 
 /**
  * Derives the proposal type label and description from
- * `selfDescribingAction`, which is always present because both
+ * `selfDescribingAction`, which is guaranteed by the API because both
  * `queryProposals` and `queryProposal` set `returnSelfDescribingAction: true`.
+ * The nullish check is a defensive guard since the field is typed as optional.
  */
 const mapProposalType = (
   proposal: Proposal | undefined
 ): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
-  if (isNullish(proposal?.selfDescribingAction)) {
+  if (isNullish(proposal?.selfDescribingAction))
     return { type: undefined, typeDescription: undefined };
-  }
 
   return {
     type: proposal.selfDescribingAction.typeName ?? undefined,
