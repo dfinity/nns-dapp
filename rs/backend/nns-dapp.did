@@ -125,12 +125,6 @@ type DetachCanisterResponse =
         AccountNotFound;
     };
 
-type GetProposalPayloadResponse =
-    variant {
-        Ok: text;
-        Err: text;
-    };
-
 type Stats =
     record {
         accounts_count: nat64;
@@ -292,7 +286,6 @@ service: (opt Config) -> {
     get_fav_projects: () -> (GetFavProjectsResponse) query;
     set_address_book: (AddressBook) -> (SetAddressBookResponse);
     get_address_book: () -> (GetAddressBookResponse) query;
-    get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
     get_tvl : () -> (TvlResponse) query;

@@ -69,10 +69,6 @@ export const idlFactory = ({ IDL }) => {
   });
   const BlockHeight = IDL.Nat64;
   const NeuronId = IDL.Nat64;
-  const GetProposalPayloadResponse = IDL.Variant({
-    Ok: IDL.Text,
-    Err: IDL.Text,
-  });
   const Stats = IDL.Record({
     seconds_since_last_ledger_sync: IDL.Nat64,
     sub_accounts_count: IDL.Nat64,
@@ -185,11 +181,6 @@ export const idlFactory = ({ IDL }) => {
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], ["query"]),
     get_fav_projects: IDL.Func([], [GetFavProjectsResponse], ["query"]),
     get_imported_tokens: IDL.Func([], [GetImportedTokensResponse], ["query"]),
-    get_proposal_payload: IDL.Func(
-      [IDL.Nat64],
-      [GetProposalPayloadResponse],
-      []
-    ),
     get_stats: IDL.Func([], [Stats], ["query"]),
     http_request: IDL.Func([HttpRequest], [HttpResponse], ["query"]),
     register_hardware_wallet: IDL.Func(

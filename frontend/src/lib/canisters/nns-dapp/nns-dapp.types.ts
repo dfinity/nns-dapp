@@ -44,7 +44,6 @@ export type GetFavProjectsResponse =
 export type GetImportedTokensResponse =
   | { Ok: ImportedTokens }
   | { AccountNotFound: null };
-export type GetProposalPayloadResponse = { Ok: string } | { Err: string };
 export interface HardwareWalletAccountDetails {
   principal: Principal;
   name: string;
@@ -173,7 +172,6 @@ export default interface _SERVICE {
   get_imported_tokens: () => Promise<GetImportedTokensResponse>;
   get_fav_projects: () => Promise<GetFavProjectsResponse>;
   get_address_book: () => Promise<GetAddressBookResponse>;
-  get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   http_request: (arg_0: HttpRequest) => Promise<HttpResponse>;
   register_hardware_wallet: (
