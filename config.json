@@ -119,6 +119,8 @@
         "SNSDEMO_RELEASE": "release-2026-04-01",
         "IC_COMMIT_FOR_PROPOSALS": "release-2026-03-19_04-43-base",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2026-04-02_04-48-base"
+        "SNSDEMO_RELEASE": "release-2026-03-18",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2026-03-06_10-46-base"
       },
       "packtool": ""
     }
