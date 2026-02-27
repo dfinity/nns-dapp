@@ -16,9 +16,7 @@ clap.define long=crate desc="'sns_aggregator'" variable=CRATE default="sns_aggre
 source "$(clap.build)"
 
 if [[ "${CRATE:-}" = "all" ]]; then
-  for crate in sns_aggregator; do
-    "$0" --ic_commit "$DFX_IC_COMMIT" --crate "$crate"
-  done
+  "$0" --ic_commit "$DFX_IC_COMMIT" --crate "sns_aggregator"
   exit 0
 fi
 
