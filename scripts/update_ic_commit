@@ -11,12 +11,12 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=c long=ic_commit desc="The IC commit to use" variable=DFX_IC_COMMIT default=""
-clap.define long=crate desc="'proposals' or 'sns_aggregator' or 'all'" variable=CRATE default="all"
+clap.define long=crate desc="'sns_aggregator'" variable=CRATE default="sns_aggregator"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
 if [[ "${CRATE:-}" = "all" ]]; then
-  for crate in proposals sns_aggregator; do
+  for crate in sns_aggregator; do
     "$0" --ic_commit "$DFX_IC_COMMIT" --crate "$crate"
   done
   exit 0
@@ -55,12 +55,7 @@ bump_ic_commit() {
       curl -SsfL --retry 5 "$IC_URL$upstream_path"
     } >"${local_path}"
   }
-  if [[ "$CRATE" = "proposals" ]]; then
-    bump_ic_commit IC_COMMIT_FOR_PROPOSALS
-    did_curl proposals nns_governance /rs/nns/governance/canister/governance.did
-    did_curl proposals nns_registry /rs/registry/canister/canister/registry.did
-    did_curl proposals sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
-  elif [[ "$CRATE" = "sns_aggregator" ]]; then
+  if [[ "$CRATE" = "sns_aggregator" ]]; then
     bump_ic_commit IC_COMMIT_FOR_SNS_AGGREGATOR
     did_curl sns_aggregator sns_governance /rs/sns/governance/canister/governance.did
     did_curl sns_aggregator sns_root /rs/sns/root/canister/root.did
@@ -68,7 +63,7 @@ bump_ic_commit() {
     did_curl sns_aggregator sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
     did_curl sns_aggregator sns_ledger /rs/ledger_suite/icrc1/ledger/ledger.did
   else
-    echo "ERROR: --crate should be 'proposals' or 'sns_aggregator' or 'all'."
+    echo "ERROR: --crate should be 'sns_aggregator'."
     exit 1
   fi
 }
