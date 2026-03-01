@@ -28,6 +28,7 @@
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
   import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import type { Account } from "$lib/types/account";
   import { ActionType, type Action } from "$lib/types/actions";
@@ -249,8 +250,12 @@
     )
   );
 
+  $: universeOrder = $selectableUniversesStore.map((u) => u.canisterId);
+
   const sortTokens = (tokens: UserToken[]) =>
-    [...tokens].sort(compareTokensForTokensTable({ importedTokenIds }));
+    [...tokens].sort(
+      compareTokensForTokensTable({ importedTokenIds, universeOrder })
+    );
 </script>
 
 <TestIdWrapper testId="tokens-route-component">
@@ -258,6 +263,7 @@
     <Tokens
       userTokensData={sortTokens($tokensListUserStore)}
       on:nnsAction={handleAction}
+      {universeOrder}
     />
   {:else}
     <SignInTokens

@@ -26,6 +26,7 @@
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
+  export let universeOrder: string[] = [];
 
   let totalBalanceInUsd: number;
   $: totalBalanceInUsd = getTotalBalanceInUsd(userTokensData);
@@ -119,6 +120,7 @@
       bind:order={$tokensTableOrderStore}
       displayTableSettings
       testId="icp-tokens-table-component"
+      {universeOrder}
     >
       <svelte:fragment slot="settings-popover">
         <HideZeroBalancesToggle />
@@ -151,6 +153,7 @@
         bind:order={$tokensTableOrderStore}
         displayTableSettings
         testId="ck-tokens-table-component"
+        {universeOrder}
       >
         <svelte:fragment slot="settings-popover">
           <HideZeroBalancesToggle />
@@ -169,6 +172,7 @@
         bind:order={$tokensTableOrderStore}
         displayTableSettings
         testId="sns-tokens-table-component"
+        {universeOrder}
       >
         <svelte:fragment slot="settings-popover">
           <HideZeroBalancesToggle />
@@ -187,6 +191,7 @@
         bind:order={$tokensTableOrderStore}
         displayTableSettings
         testId="imported-tokens-table-component"
+        {universeOrder}
       >
         <svelte:fragment slot="settings-popover">
           <HideZeroBalancesToggle />
@@ -202,6 +207,7 @@
       firstColumnHeader={$i18n.tokens.projects_header}
       bind:order={$tokensTableOrderStore}
       displayTableSettings
+      {universeOrder}
     >
       <svelte:fragment slot="settings-popover">
         <HideZeroBalancesToggle />
