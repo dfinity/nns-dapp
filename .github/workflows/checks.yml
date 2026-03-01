@@ -143,10 +143,6 @@ jobs:
         run: scripts/install-didc
       - name: Check didc
         run: command -v didc
-      - name: Run the ic_commit code generator for proposals
-        run: |
-          ./scripts/update_ic_commit --crate proposals --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_PROPOSALS config.json)"
-          ./scripts/proposals/did2rs
       - name: Run the ic_commit code generator for sns_aggregator
         run: |
           ./scripts/update_ic_commit --crate sns_aggregator --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR config.json)"
@@ -207,25 +203,6 @@ jobs:
         run: |
           set +x
           scripts/nns-dapp/migration-test.on-exit.test
-  dfx-nns-proposal-args-works:
-    # TODO: Re-enable (add it in line 338) once fixed, should it depend on mainnet?
-    if: false
-    name: Can get NNS proposal args
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v6
-      - name: Install didc
-        run: scripts/install-didc
-      - name: Install cargo binstall
-        uses: ./.github/actions/install_binstall
-      - name: Install idl2json
-        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)" && idl2json --version
-      - name: Install sponge
-        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-      - name: Install dfx
-        uses: dfinity/setup-dfx@main
-      - name: Test getting proposal args
-        run: scripts/dfx-nns-proposal-args.test
   minor-version-bump-works:
     runs-on: ubuntu-22.04
     steps:
