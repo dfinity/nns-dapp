@@ -40,7 +40,7 @@ icrc-ledger-types = { workspace = true }
 on_wire = { workspace = true }
 
 [dev-dependencies]
-anyhow = "1.0.95"
+anyhow = "1.0.102"
 candid_parser = "0.1.2"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
