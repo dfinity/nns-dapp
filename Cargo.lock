@@ -3475,18 +3475,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
 
 [[package]]
-name = "idl2json"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96c98794e1d7ff2814db503a7fb3aed059b8c816cbaaaa7cf7420ab39edbca41"
-dependencies = [
- "candid",
- "candid_parser",
- "serde_json",
- "sha2",
-]
-
-[[package]]
 name = "idna"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4422,35 +4410,6 @@ dependencies = [
  "itertools 0.12.1",
  "once_cell",
  "regex",
-]
-
-[[package]]
-name = "proposals"
-version = "2.0.139"
-dependencies = [
- "anyhow",
- "candid",
- "candid_parser",
- "cycles-minting-canister",
- "dfn_candid",
- "dfn_core",
- "hex",
- "ic-base-types",
- "ic-btc-interface",
- "ic-cdk",
- "ic-crypto-sha2",
- "ic-management-canister-types",
- "ic-nervous-system-common",
- "ic-nervous-system-root",
- "ic-nns-constants",
- "ic-protobuf",
- "ic_principal",
- "idl2json",
- "pretty_assertions",
- "registry-canister",
- "serde",
- "serde_bytes",
- "serde_json",
 ]
 
 [[package]]
