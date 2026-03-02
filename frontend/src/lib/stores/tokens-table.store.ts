@@ -5,9 +5,6 @@ const initialTokensTableOrder: TokensTableOrder = [
   {
     columnId: "balance",
   },
-  {
-    columnId: "title",
-  },
 ];
 
 const initTokensTableOrderStore = () => {

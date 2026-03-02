@@ -21,6 +21,7 @@
   export let displayTableSettings = false;
   export let testId: string = "tokens-table-component";
   export let subtitle: string | undefined = undefined;
+  export let universeOrder: string[] = [];
 
   let enableSorting: boolean;
   $: enableSorting = order.length > 0;
@@ -42,7 +43,9 @@
       cellComponent: TokenTitleCell,
       alignment: "left",
       templateColumns: ["1fr"],
-      comparator: enableSorting ? compareTokensByProject : undefined,
+      comparator: enableSorting
+        ? compareTokensByProject(universeOrder)
+        : undefined,
       overrideSortLabel: $i18n.tokens.token_name,
     },
     {
@@ -52,7 +55,7 @@
       alignment: "right",
       templateColumns: ["max-content"],
       comparator: enableSorting
-        ? compareTokensByBalance({ importedTokenIds })
+        ? compareTokensByBalance({ importedTokenIds, universeOrder })
         : undefined,
     },
     {
