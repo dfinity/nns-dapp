@@ -197,7 +197,7 @@ jobs:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
           logfile: 'dfx-test-rest.log'
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.25'
       - name: Add go and SNS scripts to the path
