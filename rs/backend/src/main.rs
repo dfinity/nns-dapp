@@ -95,7 +95,11 @@ pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
 }
 
 fn get_caller() -> PrincipalId {
-    ic_cdk::api::caller().into()
+    let caller = ic_cdk::api::caller();
+    if caller == candid::Principal::anonymous() {
+        ic_cdk::api::trap("Anonymous principal is not allowed to call this endpoint.");
+    }
+    caller.into()
 }
 
 /// Returns the user's account details if they have an account, else `AccountNotFound`.
