@@ -37,4 +37,4 @@
     });
 </script>
 
-<StakeMaturityButton {disabledText} on:click={showModal} />
+<StakeMaturityButton {disabledText} onclick={showModal} />

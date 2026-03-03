@@ -9,9 +9,13 @@
   import { NeuronState } from "@icp-sdk/canisters/nns";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
-  export let neuron: SnsGovernanceDid.Neuron;
+  type Props = {
+    neuron: SnsGovernanceDid.Neuron;
+  };
 
-  $: disabledText = (() => {
+  const { neuron }: Props = $props();
+
+  const disabledText = $derived.by(() => {
     if (getSnsNeuronState(neuron) === NeuronState.Dissolved) {
       return $i18n.neuron_detail.stake_maturity_disabled_tooltip_unlocked;
     }
@@ -19,9 +23,9 @@
       return $i18n.neuron_detail.stake_maturity_disabled_tooltip;
     }
     return undefined;
-  })();
+  });
 
   const showModal = () => openSnsNeuronModal({ type: "stake-maturity" });
 </script>
 
-<StakeMaturityButton {disabledText} on:click={showModal} />
+<StakeMaturityButton {disabledText} onclick={showModal} />

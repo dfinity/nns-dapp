@@ -3,11 +3,16 @@
   import { Tooltip } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
 
-  export let disabledText: string | undefined = undefined;
+  type Props = {
+    disabledText?: string | undefined;
+    onclick?: () => void;
+  };
+
+  const { disabledText = undefined, onclick }: Props = $props();
 </script>
 
 {#if isNullish(disabledText)}
-  <button class="secondary" on:click data-tid="stake-maturity-button"
+  <button class="secondary" {onclick} data-tid="stake-maturity-button"
     >{$i18n.neuron_detail.stake_maturity}</button
   >
 {:else}
