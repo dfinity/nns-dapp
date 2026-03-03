@@ -31,6 +31,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Reject anonymous principal in backend canister endpoints to prevent unintended operations without an authenticated caller.
+
 #### Not Published
 
 ### Operations
