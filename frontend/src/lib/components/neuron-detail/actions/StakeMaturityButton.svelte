@@ -5,7 +5,7 @@
 
   type Props = {
     disabledText?: string | undefined;
-    onclick?: () => void;
+    onclick?: (event: MouseEvent) => void;
   };
 
   const { disabledText = undefined, onclick }: Props = $props();

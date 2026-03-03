@@ -18,7 +18,7 @@
 
   const disabledText = $derived.by(() => {
     if (neuron.state === NeuronState.Dissolved) {
-      return $i18n.neuron_detail.stake_maturity_disabled_tooltip_unlocked;
+      return $i18n.neuron_detail.stake_maturity_disabled_tooltip_dissolved;
     }
     if (!hasEnoughMaturityToStake(neuron)) {
       return $i18n.neuron_detail.stake_maturity_disabled_tooltip;
