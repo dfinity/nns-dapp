@@ -6,17 +6,17 @@ describe("StakeMaturityButton", () => {
   it("renders stake maturity cta", () => {
     const { getByText } = render(StakeMaturityButton, {
       props: {
-        enoughMaturity: true,
+        disabledText: undefined,
       },
     });
 
     expect(getByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
   });
 
-  it("should be enabled", async () => {
+  it("should be enabled when no disabledText", async () => {
     const { getByTestId } = render(StakeMaturityButton, {
       props: {
-        enoughMaturity: true,
+        disabledText: undefined,
       },
     });
 
@@ -24,10 +24,10 @@ describe("StakeMaturityButton", () => {
     await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
   });
 
-  it("should be disabled", async () => {
+  it("should be disabled when disabledText is provided", async () => {
     const { getByTestId } = render(StakeMaturityButton, {
       props: {
-        enoughMaturity: false,
+        disabledText: "Some reason",
       },
     });
 

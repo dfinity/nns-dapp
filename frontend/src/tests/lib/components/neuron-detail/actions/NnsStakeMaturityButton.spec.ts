@@ -2,6 +2,7 @@ import NnsStakeMaturityButton from "$lib/components/neuron-detail/actions/NnsSta
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("NnsStakeMaturityButton", () => {
@@ -31,6 +32,22 @@ describe("NnsStakeMaturityButton", () => {
             ...mockNeuron.fullNeuron,
             maturityE8sEquivalent: 0n,
           },
+        },
+        testComponent: NnsStakeMaturityButton,
+      },
+    });
+
+    const btn = getByTestId("stake-maturity-button") as HTMLButtonElement;
+
+    expect(btn.hasAttribute("disabled")).toBeTruthy();
+  });
+
+  it("should be disabled if neuron is dissolved", async () => {
+    const { getByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          state: NeuronState.Dissolved,
         },
         testComponent: NnsStakeMaturityButton,
       },

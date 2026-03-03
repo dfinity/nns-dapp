@@ -1,19 +1,22 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Tooltip } from "@dfinity/gix-components";
+  import { isNullish } from "@dfinity/utils";
 
-  export let enoughMaturity: boolean;
+  type Props = {
+    disabledText?: string | undefined;
+    onclick?: (event: MouseEvent) => void;
+  };
+
+  const { disabledText = undefined, onclick }: Props = $props();
 </script>
 
-{#if enoughMaturity}
-  <button class="secondary" on:click data-tid="stake-maturity-button"
+{#if isNullish(disabledText)}
+  <button class="secondary" {onclick} data-tid="stake-maturity-button"
     >{$i18n.neuron_detail.stake_maturity}</button
   >
 {:else}
-  <Tooltip
-    id="stake-maturity-tooltip"
-    text={$i18n.neuron_detail.stake_maturity_disabled_tooltip}
-  >
+  <Tooltip id="stake-maturity-tooltip" text={disabledText}>
     <button disabled class="secondary" data-tid="stake-maturity-button"
       >{$i18n.neuron_detail.stake_maturity}</button
     >
