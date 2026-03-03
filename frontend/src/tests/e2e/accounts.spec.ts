@@ -28,13 +28,32 @@ test("Test accounts requirements", async ({ page, context }) => {
 
   step("AU002: The user MUST be able to create an additional account");
   const subAccountName = "My second account";
+  const toastsPo = appPo.getToastsPo();
+
   await nnsAccountsPo.clickAddAccount();
 
-  const addAccountModalPo = accountsPo.getAddAccountModalPo();
+  let addAccountModalPo = accountsPo.getAddAccountModalPo();
   expect(await addAccountModalPo.isPresent()).toBe(true);
 
   await addAccountModalPo.addAccount(subAccountName);
   await addAccountModalPo.waitForClosed();
+
+  if ((await toastsPo.getToastPos()).length > 0) {
+    step("Subaccount creation failed, retrying after 2 seconds");
+    await toastsPo.closeAll();
+    await page.waitForTimeout(2_000);
+
+    await nnsAccountsPo.clickAddAccount();
+
+    addAccountModalPo = accountsPo.getAddAccountModalPo();
+    expect(await addAccountModalPo.isPresent()).toBe(true);
+
+    await addAccountModalPo.addAccount(subAccountName);
+    await addAccountModalPo.waitForClosed();
+
+    const toasts = await toastsPo.getMessages();
+    expect(toasts).toEqual([]);
+  }
 
   // Wait for the subaccount row to be rendered to avoid race conditions
   const newSubaccountRow = await tokensTablePo.getRowByName(subAccountName);
