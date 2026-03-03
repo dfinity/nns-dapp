@@ -1,18 +1,30 @@
 <script lang="ts">
   import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { hasEnoughMaturityToStake } from "$lib/utils/neuron.utils";
-  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
+  import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
   import { getContext } from "svelte";
 
-  export let neuron: NeuronInfo;
+  type Props = {
+    neuron: NeuronInfo;
+  };
 
-  let enoughMaturity: boolean;
-  $: enoughMaturity = hasEnoughMaturityToStake(neuron);
+  const { neuron }: Props = $props();
+
+  const disabledText = $derived.by(() => {
+    if (neuron.state === NeuronState.Dissolved) {
+      return $i18n.neuron_detail.stake_maturity_disabled_tooltip_unlocked;
+    }
+    if (!hasEnoughMaturityToStake(neuron)) {
+      return $i18n.neuron_detail.stake_maturity_disabled_tooltip;
+    }
+    return undefined;
+  });
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -25,4 +37,4 @@
     });
 </script>
 
-<StakeMaturityButton {enoughMaturity} on:click={showModal} />
+<StakeMaturityButton {disabledText} on:click={showModal} />

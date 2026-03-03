@@ -894,6 +894,7 @@ interface I18nNeuron_detail {
   spawn: string;
   disburse_stake_disabled_tooltip_zero: string;
   stake_maturity_disabled_tooltip: string;
+  stake_maturity_disabled_tooltip_unlocked: string;
   stake_maturity_disabled_tooltip_max_disbursements: string;
   disburse_maturity_disabled_tooltip_zero: string;
   disburse_maturity_disabled_tooltip_non_zero: string;
