@@ -27,7 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 - Normalize address book entry names before storing to prevent raw whitespace in stored data.
-- Disable the "Stake Maturity" button for dissolved neurons with a tooltip explaining why.
+- Disable the "Stake Maturity" button for dissolved neurons.
 
 #### Security
 
