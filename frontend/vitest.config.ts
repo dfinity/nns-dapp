@@ -46,6 +46,10 @@ export default defineConfig(
           url: "https://nns.internetcomputer.org/",
         },
       },
+      // Node 25+ ships a built-in localStorage that lacks standard methods
+      // (e.g. clear()) when no --localstorage-file is configured, which
+      // conflicts with jsdom's proper implementation.
+      execArgv: ["--no-webstorage"],
       exclude: [
         ...configDefaults.exclude,
         ...(mode === "test" ? ["./src/tests/e2e/**/*"] : []),
