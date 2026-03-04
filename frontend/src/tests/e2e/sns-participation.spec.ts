@@ -17,9 +17,7 @@ test("Test SNS participation", async ({ page, context }) => {
   step("D001: User can see the list of new launches and proposals");
   await appPo.goToLaunchpad();
 
-  await page.waitForTimeout(300);
-
-  appPo.getLaunchpad2Po().getUpcomingLaunchesCardListPo();
+  await appPo.getLaunchpad2Po().getUpcomingLaunchesCardListPo().waitFor();
   const upcomingLaunchesCards = await appPo
     .getLaunchpad2Po()
     .getUpcomingLaunchesCardListPo()
@@ -33,7 +31,7 @@ test("Test SNS participation", async ({ page, context }) => {
   expect(projectsNames).toEqual(["Bravo", "Charlie"]);
 
   step("D002: User can see the list of successful sales");
-  await page.waitForTimeout(100);
+  await appPo.getLaunchpad2Po().getRestProjectsCardListPo().waitFor();
   let committedProjectsCards = await appPo
     .getLaunchpad2Po()
     .getRestProjectsCardListPo()
@@ -41,8 +39,6 @@ test("Test SNS participation", async ({ page, context }) => {
   expect(committedProjectsCards.length).toBeGreaterThan(1);
 
   step("D003: User can see the details of one sale");
-  await page.waitForTimeout(100);
-
   committedProjectsCards = await appPo
     .getLaunchpad2Po()
     .getUpcomingLaunchesCardListPo()
