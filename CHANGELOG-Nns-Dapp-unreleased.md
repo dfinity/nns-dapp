@@ -16,22 +16,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Sort SNS projects on the Proposals page by actionable proposals first, then by the same rules used in the Launchpad (featured, market cap, activity, treasury).
-- Sort SNS projects on the Staking page by USD stake value first, then by Launchpad ordering.
-- Sort SNS tokens on the Tokens page by USD balance first, then by Launchpad ordering.
-
 #### Deprecated
 
 #### Removed
 
 #### Fixed
 
-- Normalize address book entry names before storing to prevent raw whitespace in stored data.
-- Disable the "Stake Maturity" button for dissolved neurons.
-
 #### Security
-
-- Reject anonymous principal in backend canister endpoints to prevent unintended operations without an authenticated caller.
 
 #### Not Published
 
