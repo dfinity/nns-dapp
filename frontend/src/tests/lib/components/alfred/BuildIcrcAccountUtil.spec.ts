@@ -111,10 +111,7 @@ describe("BuildIcrcAccountUtil", () => {
 
     const hexBytes = new Uint8Array(32);
     for (let i = 0; i < 32; i++) {
-      hexBytes[i] = parseInt(
-        testHexSubaccount.slice(i * 2, i * 2 + 2),
-        16
-      );
+      hexBytes[i] = parseInt(testHexSubaccount.slice(i * 2, i * 2 + 2), 16);
     }
 
     const output = getOutput(container);
@@ -137,10 +134,7 @@ describe("BuildIcrcAccountUtil", () => {
 
     const hexBytes = new Uint8Array(32);
     for (let i = 0; i < 32; i++) {
-      hexBytes[i] = parseInt(
-        testHexSubaccount.slice(i * 2, i * 2 + 2),
-        16
-      );
+      hexBytes[i] = parseInt(testHexSubaccount.slice(i * 2, i * 2 + 2), 16);
     }
 
     const output = getOutput(container);
@@ -239,10 +233,7 @@ describe("BuildIcrcAccountUtil", () => {
 
     const hexBytes = new Uint8Array(32);
     for (let i = 0; i < 32; i++) {
-      hexBytes[i] = parseInt(
-        testHexSubaccount.slice(i * 2, i * 2 + 2),
-        16
-      );
+      hexBytes[i] = parseInt(testHexSubaccount.slice(i * 2, i * 2 + 2), 16);
     }
 
     const output = getOutput(container);

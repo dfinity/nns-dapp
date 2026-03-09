@@ -23,9 +23,7 @@
 
     const hex = trimmed.startsWith("0x") ? trimmed.slice(2) : trimmed;
     if (hex.length !== 64 || !/^[0-9a-fA-F]+$/.test(hex)) {
-      throw new Error(
-        $i18n.alfred.build_icrc_account_subaccount_error
-      );
+      throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
     }
     const bytes = new Uint8Array(32);
     for (let i = 0; i < 32; i++) {
@@ -35,7 +33,11 @@
   };
 
   $effect(() => {
-    if (principalInput === "" || isNullish(subAccountInput) || subAccountInput.trim() === "") {
+    if (
+      principalInput === "" ||
+      isNullish(subAccountInput) ||
+      subAccountInput.trim() === ""
+    ) {
       icrcAccountText = null;
       errorMessage = null;
       return;
