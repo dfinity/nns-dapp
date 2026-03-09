@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-20_12-29-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-06_10-46-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -202,6 +202,8 @@ pub enum SubnetType {
     Application,
     #[serde(rename = "verified_application")]
     VerifiedApplication,
+    #[serde(rename = "cloud_engine")]
+    CloudEngine,
     #[serde(rename = "system")]
     System,
 }
@@ -219,6 +221,7 @@ pub struct CreateSubnetPayload {
     pub max_ingress_messages_per_block: u64,
     pub max_number_of_canisters: u64,
     pub canister_cycles_cost_schedule: Option<CanisterCyclesCostSchedule>,
+    pub max_ingress_bytes_per_block: Option<u64>,
     pub gossip_max_artifact_streams_per_peer: u32,
     pub subnet_admins: Option<Vec<Principal>>,
     pub replica_version_id: String,
@@ -424,6 +427,7 @@ pub struct NodeSshAccess {
 pub struct SetSubnetOperationalLevelPayload {
     pub operational_level: Option<i32>,
     pub subnet_id: Option<Principal>,
+    pub recalled_replica_version_ids: Option<Vec<String>>,
     pub ssh_node_state_write_access: Option<Vec<NodeSshAccess>>,
     pub ssh_readonly_access: Option<Vec<String>>,
 }
@@ -537,6 +541,7 @@ pub struct UpdateSubnetPayload {
     pub chain_key_signing_enable: Option<Vec<MasterPublicKeyId>>,
     pub max_ingress_messages_per_block: Option<u64>,
     pub max_number_of_canisters: Option<u64>,
+    pub max_ingress_bytes_per_block: Option<u64>,
     pub retransmission_request_ms: Option<u32>,
     pub dkg_interval_length: Option<u64>,
     pub registry_poll_period_ms: Option<u32>,

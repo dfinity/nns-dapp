@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-02-20_12-29-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-06_10-46-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -922,6 +922,25 @@ pub struct ClaimOrRefreshNeuronFromAccountResponse {
     pub result: Option<Result1>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct CreateNeuronRequest {
+    pub controller: Option<Principal>,
+    pub source_subaccount: Option<serde_bytes::ByteBuf>,
+    pub dissolve_delay_seconds: Option<u64>,
+    pub auto_stake_maturity: Option<bool>,
+    pub amount_e8s: Option<u64>,
+    pub followees: Option<SetFollowing>,
+    pub dissolving: Option<bool>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct CreatedNeuron {
+    pub neuron_id: Option<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum CreateNeuronResponse {
+    Ok(CreatedNeuron),
+    Err(GovernanceError),
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub enum Result2 {
     Ok(Neuron),
     Err(GovernanceError),
@@ -1301,6 +1320,9 @@ impl Service {
         arg0: ClaimOrRefreshNeuronFromAccount,
     ) -> CallResult<(ClaimOrRefreshNeuronFromAccountResponse,)> {
         ic_cdk::call(self.0, "claim_or_refresh_neuron_from_account", (arg0,)).await
+    }
+    pub async fn create_neuron(&self, arg0: CreateNeuronRequest) -> CallResult<(CreateNeuronResponse,)> {
+        ic_cdk::call(self.0, "create_neuron", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await
