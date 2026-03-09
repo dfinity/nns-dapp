@@ -11,6 +11,27 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 140767
+
+### Application
+
+#### Changed
+
+- Sort SNS projects on the Proposals page by actionable proposals first, then by the same rules used in the Launchpad (featured, market cap, activity, treasury).
+- Sort SNS projects on the Staking page by USD stake value first, then by Launchpad ordering.
+- Sort SNS tokens on the Tokens page by USD balance first, then by Launchpad ordering.
+
+#### Fixed
+
+- Normalize address book entry names before storing to prevent raw whitespace in stored data.
+- Disable the "Stake Maturity" button for dissolved neurons.
+
+#### Security
+
+- Reject anonymous principal in backend canister endpoints to prevent unintended operations without an authenticated caller.
+
+### Operations
+
 ## Proposal 140496
 
 ### Application
