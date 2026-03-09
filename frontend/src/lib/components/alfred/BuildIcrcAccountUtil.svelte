@@ -10,12 +10,32 @@
 
   let principalInputRef = $state<HTMLInputElement | undefined>();
   let principalInput = $state("");
-  let subAccountInput = $state<number | undefined>();
+  let subAccountInput = $state<string | undefined>();
   let icrcAccountText = $state<string | null>(null);
   let errorMessage = $state<string | null>(null);
 
+  const parseSubAccount = (input: string): SubAccount => {
+    const trimmed = input.trim();
+
+    if (/^\d+$/.test(trimmed)) {
+      return SubAccount.fromID(Number(trimmed));
+    }
+
+    const hex = trimmed.startsWith("0x") ? trimmed.slice(2) : trimmed;
+    if (hex.length !== 64 || !/^[0-9a-fA-F]+$/.test(hex)) {
+      throw new Error(
+        $i18n.alfred.build_icrc_account_subaccount_error
+      );
+    }
+    const bytes = new Uint8Array(32);
+    for (let i = 0; i < 32; i++) {
+      bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+    }
+    return SubAccount.fromBytes(bytes);
+  };
+
   $effect(() => {
-    if (principalInput === "" || isNullish(subAccountInput)) {
+    if (principalInput === "" || isNullish(subAccountInput) || subAccountInput.trim() === "") {
       icrcAccountText = null;
       errorMessage = null;
       return;
@@ -23,7 +43,7 @@
 
     try {
       const owner = Principal.fromText(principalInput.trim());
-      const subaccount = SubAccount.fromID(subAccountInput);
+      const subaccount = parseSubAccount(subAccountInput);
 
       const icrc = encodeIcrcAccount({
         owner,
@@ -58,7 +78,7 @@
       <Input
         inputType="text"
         name="alfred-util-principal"
-        placeholder="Enter principal"
+        placeholder={$i18n.alfred.build_icrc_account_principal_placeholder}
         autocomplete="off"
         spellcheck={false}
         testId="alfred-util-principal"
@@ -71,9 +91,9 @@
         >{$i18n.alfred.build_icrc_account_subaccount_label}</label
       >
       <Input
-        inputType="number"
+        inputType="text"
         name="alfred-util-subaccount"
-        placeholder="Enter subaccount"
+        placeholder={$i18n.alfred.build_icrc_account_subaccount_placeholder}
         autocomplete="off"
         spellcheck={false}
         testId="alfred-util-subaccount"

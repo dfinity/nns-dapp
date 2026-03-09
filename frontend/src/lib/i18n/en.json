@@ -235,7 +235,10 @@
     "build_icrc_account_title": "Encode ICRC-1 Account",
     "build_icrc_account_description": "Encode an ICRC-1 account defined by a principal and a subaccount into its textual format.",
     "build_icrc_account_principal_label": "Principal",
-    "build_icrc_account_subaccount_label": "Subaccount"
+    "build_icrc_account_principal_placeholder": "Enter principal",
+    "build_icrc_account_subaccount_label": "Subaccount",
+    "build_icrc_account_subaccount_placeholder": "Number or 64-char hex (e.g. 0 or ff0c...9c68)",
+    "build_icrc_account_subaccount_error": "Subaccount must be a number or a 32-byte hex string (64 hex characters)."
   },
   "header": {
     "menu": "Open menu to access navigation options",
