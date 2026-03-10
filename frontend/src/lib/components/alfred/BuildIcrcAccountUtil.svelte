@@ -2,7 +2,7 @@
   import Copy from "$lib/components/ui/Copy.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { IconKey, Input } from "@dfinity/gix-components";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { hexStringToUint8Array, isNullish, nonNullish } from "@dfinity/utils";
   import { SubAccount } from "@icp-sdk/canisters/ledger/icp";
   import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
   import { Principal } from "@icp-sdk/core/principal";
@@ -14,22 +14,40 @@
   let icrcAccountText = $state<string | null>(null);
   let errorMessage = $state<string | null>(null);
 
+  const parseHexSubAccount = (hex: string): SubAccount => {
+    if (hex.length > 64 || !/^[0-9a-fA-F]+$/.test(hex)) {
+      throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
+    }
+    const sub = SubAccount.fromBytes(
+      hexStringToUint8Array(hex.padStart(64, "0"))
+    );
+    if (sub instanceof Error) {
+      throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
+    }
+    return sub;
+  };
+
   const parseSubAccount = (input: string): SubAccount => {
     const trimmed = input.trim();
 
-    if (/^\d+$/.test(trimmed)) {
-      return SubAccount.fromID(Number(trimmed));
+    if (trimmed.startsWith("0x") || trimmed.startsWith("0X")) {
+      return parseHexSubAccount(trimmed.slice(2));
     }
 
-    const hex = trimmed.startsWith("0x") ? trimmed.slice(2) : trimmed;
-    if (hex.length !== 64 || !/^[0-9a-fA-F]+$/.test(hex)) {
-      throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
+    const hasHexLetters = /[a-fA-F]/.test(trimmed);
+    if (hasHexLetters || trimmed.length === 64) {
+      return parseHexSubAccount(trimmed);
     }
-    const bytes = new Uint8Array(32);
-    for (let i = 0; i < 32; i++) {
-      bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+
+    if (/^\d+$/.test(trimmed)) {
+      const num = Number(trimmed);
+      if (num > Number.MAX_SAFE_INTEGER) {
+        return parseHexSubAccount(trimmed);
+      }
+      return SubAccount.fromID(num);
     }
-    return SubAccount.fromBytes(bytes);
+
+    throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
   };
 
   $effect(() => {

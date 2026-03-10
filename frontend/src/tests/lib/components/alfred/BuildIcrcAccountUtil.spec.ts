@@ -1,5 +1,6 @@
 import BuildIcrcAccountUtil from "$lib/components/alfred/BuildIcrcAccountUtil.svelte";
 import en from "$tests/mocks/i18n.mock";
+import { hexStringToUint8Array } from "@dfinity/utils";
 import { SubAccount } from "@icp-sdk/canisters/ledger/icp";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Principal } from "@icp-sdk/core/principal";
@@ -159,7 +160,7 @@ describe("BuildIcrcAccountUtil", () => {
     expect(getError(container)).not.toBeNull();
   });
 
-  it("should show error for hex string with wrong length", async () => {
+  it("should encode short hex subaccount with zero-padding", async () => {
     const { container } = render(BuildIcrcAccountUtil);
 
     await setInputValues(container, {
@@ -167,11 +168,15 @@ describe("BuildIcrcAccountUtil", () => {
       subaccount: "ff0c0b36",
     });
 
-    expect(getOutput(container)).toBeNull();
-    const error = getError(container);
-    expect(error).not.toBeNull();
-    expect(error?.textContent).toBe(
-      en.alfred.build_icrc_account_subaccount_error
+    const output = getOutput(container);
+    expect(output).not.toBeNull();
+    expect(output?.textContent).toBe(
+      expectedIcrcAccount({
+        principal: testPrincipal,
+        subaccountBytes: hexStringToUint8Array(
+          "ff0c0b36".padStart(64, "0")
+        ),
+      })
     );
   });
 
