@@ -154,10 +154,11 @@ describe("env-vars-utils", () => {
     );
   });
 
-  it("Kong Swap URL is mandatory", () => {
+  it("Kong Swap URL is not mandatory", () => {
     vi.stubEnv("VITE_KONG_SWAP_URL", "");
-    expect(() => getEnvVars()).toThrowError(
-      "Missing mandatory environment variables: kongSwapUrl"
-    );
+    expect(getEnvVars()).toEqual({
+      ...defaultExpectedEnvVars,
+      kongSwapUrl: undefined,
+    });
   });
 });
