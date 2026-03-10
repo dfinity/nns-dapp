@@ -1,5 +1,4 @@
 import BuildIcrcAccountUtil from "$lib/components/alfred/BuildIcrcAccountUtil.svelte";
-import en from "$tests/mocks/i18n.mock";
 import { hexStringToUint8Array } from "@dfinity/utils";
 import { SubAccount } from "@icp-sdk/canisters/ledger/icp";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
@@ -194,9 +193,7 @@ describe("BuildIcrcAccountUtil", () => {
     expect(output?.textContent).toBe(
       expectedIcrcAccount({
         principal: testPrincipal,
-        subaccountBytes: hexStringToUint8Array(
-          "ff0c0b36".padStart(64, "0")
-        ),
+        subaccountBytes: hexStringToUint8Array("ff0c0b36".padStart(64, "0")),
       })
     );
   });
