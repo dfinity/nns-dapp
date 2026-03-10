@@ -185,6 +185,20 @@ describe("auth-services", () => {
 
       spy.mockClear();
     });
+
+    it("should not call logout twice when called concurrently", async () => {
+      const reloadSpy = vi.spyOn(window.location, "reload");
+      const signOutSpy = vi.spyOn(authStore, "signOut");
+
+      await Promise.all([
+        logout({ msg: { labelKey: "warning.auth_sign_out", level: "warn" } }),
+        logout({ msg: { labelKey: "warning.auth_sign_out", level: "warn" } }),
+        logout({ msg: { labelKey: "error.missing_identity", level: "error" } }),
+      ]);
+
+      expect(signOutSpy).toHaveBeenCalledTimes(1);
+      expect(reloadSpy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("getCurrentIdentity", () => {
