@@ -45,7 +45,7 @@ export const logout = async ({
   // missing identity and each independently call logout() again, appending
   // duplicate URL params before the browser reloads.
   if (logoutInProgress) return;
-  
+
   logoutInProgress = true;
 
   // To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).
