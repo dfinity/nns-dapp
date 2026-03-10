@@ -4,6 +4,7 @@ import { startBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { ToastMsg } from "$lib/types/toast";
 import { replaceHistory } from "$lib/utils/route.utils";
+import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
 import type { ToastLevel } from "@dfinity/gix-components";
 import type { Identity } from "@icp-sdk/core/agent";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
@@ -11,6 +12,12 @@ import { get } from "svelte/store";
 
 const msgParam = "msg";
 const levelParam = "level";
+
+let logoutInProgress = false;
+
+registerCleanupForTesting(() => {
+  logoutInProgress = false;
+});
 
 export const login = async () => {
   const onError = (err: unknown) => {
@@ -33,6 +40,14 @@ export const logout = async ({
 }: {
   msg?: Pick<ToastMsg, "labelKey" | "level">;
 }) => {
+  // Prevent re-entrant logout calls. When authStore.signOut() sets identity
+  // to null, reactive cascades can cause multiple services to detect the
+  // missing identity and each independently call logout() again, appending
+  // duplicate URL params before the browser reloads.
+  if (logoutInProgress) return;
+  
+  logoutInProgress = true;
+
   // To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).
   startBusy({ initiator: "logout" });
 
@@ -95,8 +110,8 @@ const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
 
   const url: URL = new URL(window.location.href);
 
-  url.searchParams.append(msgParam, encodeURI(labelKey));
-  url.searchParams.append(levelParam, level);
+  url.searchParams.set(msgParam, encodeURI(labelKey));
+  url.searchParams.set(levelParam, level);
 
   replaceHistory(url);
 };
