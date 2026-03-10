@@ -14,7 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Support full 32-byte hex subaccounts in the Encode ICRC-1 Account command palette utility, in addition to numeric IDs.
+- Support full 32-byte hex sub-accounts in the Encode ICRC-1 Account command palette utility, in addition to numeric IDs.
 
 #### Changed
 
