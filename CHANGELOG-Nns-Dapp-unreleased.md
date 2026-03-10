@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Made `kongSwapUrl` environment variable optional to prevent app crash in environments without KongSwap configured.
+
 #### Security
 
 #### Not Published
