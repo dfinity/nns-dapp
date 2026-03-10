@@ -102,6 +102,27 @@ describe("BuildIcrcAccountUtil", () => {
     );
   });
 
+  it("should treat all-digit string exceeding MAX_SAFE_INTEGER as hex", async () => {
+    const { container } = render(BuildIcrcAccountUtil);
+
+    const bigDigitString = "99999999999999999";
+    await setInputValues(container, {
+      principal: testPrincipal,
+      subaccount: bigDigitString,
+    });
+
+    const output = getOutput(container);
+    expect(output).not.toBeNull();
+    expect(output?.textContent).toBe(
+      expectedIcrcAccount({
+        principal: testPrincipal,
+        subaccountBytes: hexStringToUint8Array(
+          bigDigitString.padStart(64, "0")
+        ),
+      })
+    );
+  });
+
   it("should encode with a 32-byte hex subaccount", async () => {
     const { container } = render(BuildIcrcAccountUtil);
 

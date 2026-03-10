@@ -237,8 +237,8 @@
     "build_icrc_account_principal_label": "Principal",
     "build_icrc_account_principal_placeholder": "Enter principal",
     "build_icrc_account_subaccount_label": "Subaccount",
-    "build_icrc_account_subaccount_placeholder": "Number or 64-char hex (e.g. 0 or ff0c...9c68)",
-    "build_icrc_account_subaccount_error": "Subaccount must be a number or a 32-byte hex string (64 hex characters)."
+    "build_icrc_account_subaccount_placeholder": "Number, hex (0x...), or 64-char hex",
+    "build_icrc_account_subaccount_error": "Invalid subaccount. Use a number, a 0x-prefixed hex, or a 64-char hex string."
   },
   "header": {
     "menu": "Open menu to access navigation options",
