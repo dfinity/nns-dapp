@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Fix re-entrant logout calls causing duplicate URL params and browser freeze on session expiry.
+
 #### Security
 
 #### Not Published
