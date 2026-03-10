@@ -22,7 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-- Made `kongSwapUrl` environment variable optional to prevent app crash in environments without KongSwap configured.
+- Made `kongSwapUrl` environment variable optional to prevent app crash in environments without it configured.
 
 #### Security
 
