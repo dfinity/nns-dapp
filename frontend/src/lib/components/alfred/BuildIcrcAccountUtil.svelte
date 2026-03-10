@@ -15,7 +15,8 @@
   let errorMessage = $state<string | null>(null);
 
   const parseHexSubAccount = (hex: string): SubAccount => {
-    if (hex.length > 64 || !/^[0-9a-fA-F]+$/.test(hex)) {
+    const isValidHex = /^[0-9a-fA-F]+$/.test(hex);
+    if (hex.length > 64 || !isValidHex) {
       throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
     }
     const sub = SubAccount.fromBytes(
@@ -34,12 +35,13 @@
       return parseHexSubAccount(trimmed.slice(2));
     }
 
-    const hasHexLetters = /[a-fA-F]/.test(trimmed);
-    if (hasHexLetters || trimmed.length === 64) {
+    const containsHexLetters = /[a-fA-F]/.test(trimmed);
+    if (containsHexLetters || trimmed.length === 64) {
       return parseHexSubAccount(trimmed);
     }
 
-    if (/^\d+$/.test(trimmed)) {
+    const isDecimalNumber = /^\d+$/.test(trimmed);
+    if (isDecimalNumber) {
       const num = Number(trimmed);
       if (num > Number.MAX_SAFE_INTEGER) {
         return parseHexSubAccount(trimmed);
