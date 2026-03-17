@@ -243,7 +243,10 @@ interface I18nAlfred {
   build_icrc_account_title: string;
   build_icrc_account_description: string;
   build_icrc_account_principal_label: string;
+  build_icrc_account_principal_placeholder: string;
   build_icrc_account_subaccount_label: string;
+  build_icrc_account_subaccount_placeholder: string;
+  build_icrc_account_subaccount_error: string;
 }
 
 interface I18nHeader {

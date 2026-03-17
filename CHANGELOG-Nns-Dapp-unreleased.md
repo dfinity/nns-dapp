@@ -14,11 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
+- Support full 32-byte hex sub-accounts in the Encode ICRC-1 Account command palette utility, in addition to numeric IDs.
 
-- Sort SNS projects on the Proposals page by actionable proposals first, then by the same rules used in the Launchpad (featured, market cap, activity, treasury).
-- Sort SNS projects on the Staking page by USD stake value first, then by Launchpad ordering.
-- Sort SNS tokens on the Tokens page by USD balance first, then by Launchpad ordering.
+#### Changed
 
 #### Deprecated
 
@@ -26,12 +24,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-- Normalize address book entry names before storing to prevent raw whitespace in stored data.
-- Disable the "Stake Maturity" button for dissolved neurons.
+- Fix re-entrant logout calls causing duplicate URL params and browser freeze on session expiry.
 
 #### Security
-
-- Reject anonymous principal in backend canister endpoints to prevent unintended operations without an authenticated caller.
 
 #### Not Published
 
