@@ -11,6 +11,20 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 140953
+
+### Application
+
+#### Added
+
+- Support full 32-byte hex sub-accounts in the Encode ICRC-1 Account command palette utility, in addition to numeric IDs.
+
+#### Fixed
+
+- Fix re-entrant logout calls causing duplicate URL params and browser freeze on session expiry.
+
+### Operations
+
 ## Proposal 140767
 
 ### Application

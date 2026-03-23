@@ -1,5 +1,7 @@
 {
-  "args": ["--new"],
+  "args": [
+    "--new"
+  ],
   "behavior": [
     {
       "command": "date +%Y-%m-%d",
@@ -101,7 +103,7 @@
     "Security test: cargo audit: \u001b[32mRUSTSEC-1999-0001\u001b[0m",
     "Values don't match!",
     "Security test: cargo audit: RUSTSEC-1999-0001",
-    "Expected cargo audit: no vulnerabilities"
+    "Expected cargo audit: RUSTSEC-2026-0001,RUSTSEC-2026-0009"
   ],
   "expectedExitCode": 1
 }

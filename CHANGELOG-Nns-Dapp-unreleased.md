@@ -14,8 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Support full 32-byte hex sub-accounts in the Encode ICRC-1 Account command palette utility, in addition to numeric IDs.
-
 #### Changed
 
 #### Deprecated
@@ -23,8 +21,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-- Fix re-entrant logout calls causing duplicate URL params and browser freeze on session expiry.
 
 #### Security
 
