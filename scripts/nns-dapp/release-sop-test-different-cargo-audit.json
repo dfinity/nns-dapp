@@ -1,5 +1,7 @@
 {
-  "args": ["--new"],
+  "args": [
+    "--new"
+  ],
   "behavior": [
     {
       "command": "date +%Y-%m-%d",
