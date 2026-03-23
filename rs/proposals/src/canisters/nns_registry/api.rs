@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-06_10-46-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-19_04-43-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -432,6 +432,12 @@ pub struct SetSubnetOperationalLevelPayload {
     pub ssh_readonly_access: Option<Vec<String>>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct SplitSubnetPayload {
+    pub destination_canister_ranges: Vec<CanisterIdRange>,
+    pub destination_node_ids: Vec<Principal>,
+    pub source_subnet_id: Principal,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct SwapNodeInSubnetDirectlyPayload {
     pub new_node_id: Option<Principal>,
     pub old_node_id: Option<Principal>,
@@ -555,6 +561,17 @@ pub struct UpdateSubnetPayload {
     pub subnet_type: Option<SubnetType>,
     pub ssh_readonly_access: Option<Vec<String>>,
     pub chain_key_signing_disable: Option<Vec<MasterPublicKeyId>>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum OperationType {
+    Add(Vec<Principal>),
+    Remove(Vec<Principal>),
+    Clear(EmptyRecord),
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateSubnetAdminsPayload {
+    pub operation_type: Option<OperationType>,
+    pub subnet_id: Principal,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateUnassignedNodesConfigPayload {
@@ -690,6 +707,9 @@ impl Service {
     pub async fn set_subnet_operational_level(&self, arg0: SetSubnetOperationalLevelPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "set_subnet_operational_level", (arg0,)).await
     }
+    pub async fn split_subnet(&self, arg0: SplitSubnetPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "split_subnet", (arg0,)).await
+    }
     pub async fn swap_node_in_subnet_directly(&self, arg0: SwapNodeInSubnetDirectlyPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "swap_node_in_subnet_directly", (arg0,)).await
     }
@@ -743,6 +763,9 @@ impl Service {
     }
     pub async fn update_subnet(&self, arg0: UpdateSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_subnet", (arg0,)).await
+    }
+    pub async fn update_subnet_admins(&self, arg0: UpdateSubnetAdminsPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "update_subnet_admins", (arg0,)).await
     }
     pub async fn update_unassigned_nodes_config(&self, arg0: UpdateUnassignedNodesConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_unassigned_nodes_config", (arg0,)).await

@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-06_10-46-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-19_04-43-base/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -521,6 +521,24 @@ type NodeSshAccess = record {
   public_keys : opt vec text;
 };
 
+type SplitSubnetPayload = record {
+  source_subnet_id: principal;
+  destination_canister_ranges: vec CanisterIdRange;
+  destination_node_ids: vec principal;
+};
+
+type OperationType = variant {
+  Add: vec principal;
+  Remove: vec principal;
+  Clear: record {};
+};
+
+type UpdateSubnetAdminsPayload = record {
+  subnet_id: principal;
+  // opt for future compatibility when removing operation types.
+  operation_type: opt OperationType;
+};
+
 service : {
   add_api_boundary_nodes : (AddApiBoundaryNodesPayload) -> ();
   add_firewall_rules : (AddFirewallRulesPayload) -> ();
@@ -579,6 +597,8 @@ service : {
     UpdateSshReadOnlyAccessForAllUnassignedNodesPayload
   ) -> ();
   update_subnet : (UpdateSubnetPayload) -> ();
+  update_subnet_admins : (UpdateSubnetAdminsPayload) -> ();
   update_unassigned_nodes_config : (UpdateUnassignedNodesConfigPayload) -> ();
   swap_node_in_subnet_directly : (SwapNodeInSubnetDirectlyPayload) -> ();
+  split_subnet : (SplitSubnetPayload) -> ();
 };
