@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-06_10-46-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-19_04-43-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -110,6 +110,7 @@ pub struct GovernanceCachedMetrics {
     pub community_fund_total_maturity_e8s_equivalent: u64,
     pub total_staked_e8s_seed: u64,
     pub total_staked_maturity_e8s_equivalent_ect: u64,
+    pub total_maturity_disbursements_in_progress_e8s_equivalent: u64,
     pub total_staked_e8s: u64,
     pub fully_lost_voting_power_neuron_subset_metrics: Option<NeuronSubsetMetrics>,
     pub not_dissolving_neurons_count: u64,
