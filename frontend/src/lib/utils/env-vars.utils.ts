@@ -19,7 +19,7 @@ type EnvironmentVars = {
   host: string;
   governanceCanisterId: string;
   identityServiceUrl: string;
-  icpSwapUrl: string;
+  icpSwapUrl?: string;
   kongSwapUrl?: string;
   ledgerCanisterId: string;
   indexCanisterId: string;
@@ -40,7 +40,6 @@ const mandatoryEnvVarKeys: EnvironmentVars = {
   host: "",
   governanceCanisterId: "",
   identityServiceUrl: "",
-  icpSwapUrl: "",
   ledgerCanisterId: "",
   indexCanisterId: "",
   ownCanisterId: "",
