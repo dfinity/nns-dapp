@@ -147,17 +147,19 @@ describe("env-vars-utils", () => {
     });
   });
 
-  it("ICP Swap URL is mandatory", () => {
+  it("ICP Swap URL is not mandatory", () => {
     vi.stubEnv("VITE_ICP_SWAP_URL", "");
-    expect(() => getEnvVars()).toThrowError(
-      "Missing mandatory environment variables: icpSwapUrl"
-    );
+    expect(getEnvVars()).toEqual({
+      ...defaultExpectedEnvVars,
+      icpSwapUrl: undefined,
+    });
   });
 
-  it("Kong Swap URL is mandatory", () => {
+  it("Kong Swap URL is not mandatory", () => {
     vi.stubEnv("VITE_KONG_SWAP_URL", "");
-    expect(() => getEnvVars()).toThrowError(
-      "Missing mandatory environment variables: kongSwapUrl"
-    );
+    expect(getEnvVars()).toEqual({
+      ...defaultExpectedEnvVars,
+      kongSwapUrl: undefined,
+    });
   });
 });
