@@ -1,14 +1,12 @@
 import * as agent from "$lib/api/agent.api";
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as kongSwapApi from "$lib/api/kong-swap.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { queryFinalizationStatus } from "$lib/api/sns-sale.api";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
-import { mockKongSwapTicker } from "$tests/mocks/kong-swap.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
@@ -25,7 +23,6 @@ import { mock } from "vitest-mock-extended";
 vi.mock("$lib/api/proposals.api");
 vi.mock("$lib/api/sns-sale.api");
 vi.mock("$lib/api/icp-swap.api");
-vi.mock("$lib/api/kong-swap.api");
 
 vi.mock("$lib/services/public/app.services", () => ({
   initAppAuth: vi.fn(() => Promise.resolve()),
@@ -86,20 +83,6 @@ describe("Launchpad", () => {
     ];
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(
       icpSwapTickers
-    );
-
-    // Mock Kong Swap tickers with ckUSDC ticker required by the provider
-    const kongSwapTickers = [
-      {
-        ...mockKongSwapTicker,
-        base_currency: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        target_currency: LEDGER_CANISTER_ID.toText(),
-        last_price: 0.1, // 1 ICP = 10 ckUSDC
-        liquidity_in_usd: 1000,
-      },
-    ];
-    vi.spyOn(kongSwapApi, "queryKongSwapTickers").mockResolvedValue(
-      kongSwapTickers
     );
 
     // Depends on the `snsAggregatorUrl` set in `vi-setup.ts`.

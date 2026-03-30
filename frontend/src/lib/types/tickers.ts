@@ -2,7 +2,6 @@ import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 
 export enum TickersProviders {
   ICP_SWAP = "ICPSwap",
-  KONG_SWAP = "KongSwap",
 }
 
 export type ProviderLoader = () => Promise<TickersData>;
