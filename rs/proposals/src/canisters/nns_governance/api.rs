@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-19_04-43-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-26_04-51-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -534,6 +534,7 @@ pub struct CanisterSettings {
     pub wasm_memory_threshold: Option<u64>,
     pub controllers: Option<Controllers>,
     pub log_visibility: Option<i32>,
+    pub snapshot_visibility: Option<i32>,
     pub wasm_memory_limit: Option<u64>,
     pub memory_allocation: Option<u64>,
     pub compute_allocation: Option<u64>,
