@@ -255,7 +255,6 @@ export IDENTITY_SERVICE_URL
 ICP_SWAP_URL="$icpSwapUrl"
 export ICP_SWAP_URL
 
-
 SNS_AGGREGATOR_URL="${aggregatorCanisterUrl:-}"
 export SNS_AGGREGATOR_URL
 
