@@ -140,5 +140,4 @@ describe("env-vars-utils", () => {
       icpSwapUrl: undefined,
     });
   });
-
 });
