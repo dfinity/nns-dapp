@@ -20,7 +20,6 @@ type EnvironmentVars = {
   governanceCanisterId: string;
   identityServiceUrl: string;
   icpSwapUrl?: string;
-  kongSwapUrl?: string;
   ledgerCanisterId: string;
   indexCanisterId: string;
   ownCanisterId: string;
@@ -134,9 +133,6 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     icpSwapUrl: convertEmtpyStringToUndefined(
       import.meta.env.VITE_ICP_SWAP_URL
-    ),
-    kongSwapUrl: convertEmtpyStringToUndefined(
-      import.meta.env.VITE_KONG_SWAP_URL
     ),
     ledgerCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_LEDGER_CANISTER_ID

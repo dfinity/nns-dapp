@@ -1,18 +1,13 @@
 import { icpSwapTickerProvider } from "$lib/services/icp-swap.provider";
-import { kongSwapTickerProvider } from "$lib/services/kong-swap.provider";
 import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
 import { tickersStore } from "$lib/stores/tickers.store";
 import { TickersProviders, type ProviderLoader } from "$lib/types/tickers";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const providers: TickersProviders[] = [
-  TickersProviders.ICP_SWAP,
-  TickersProviders.KONG_SWAP,
-];
+export const providers: TickersProviders[] = [TickersProviders.ICP_SWAP];
 const providersLoaders = new Map<TickersProviders, ProviderLoader>([
   [TickersProviders.ICP_SWAP, icpSwapTickerProvider],
-  [TickersProviders.KONG_SWAP, kongSwapTickerProvider],
 ]);
 
 export const loadTickers = async (): Promise<void> => {
