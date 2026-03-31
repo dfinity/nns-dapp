@@ -1460,8 +1460,6 @@
     "start_staking_card_link": "Open Staking"
   },
   "highlight": {
-    "topics_feature_title": "Protect your transfers",
-    "topics_feature_description": "With the new Address Book you can save up to 20 addresses and reduce the risk of address poisoning.",
     "new_nns_app_title": "Meet the new NNS governance app",
     "new_nns_app_description": "A faster, cleaner experience for proposals, neurons, and staking. Designed for ICP holders. Same identity, same neurons — just sign in.",
     "new_nns_app_cta": "Open new app",

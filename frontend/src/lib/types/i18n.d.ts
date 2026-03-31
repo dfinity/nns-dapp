@@ -1534,8 +1534,6 @@ interface I18nPortfolio {
 }
 
 interface I18nHighlight {
-  topics_feature_title: string;
-  topics_feature_description: string;
   new_nns_app_title: string;
   new_nns_app_description: string;
   new_nns_app_cta: string;
