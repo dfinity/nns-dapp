@@ -41,6 +41,18 @@ export default defineConfig({
     trace: "retain-on-failure",
     /* Makes page.getByTestId() work with [data-tid] attributes. */
     testIdAttribute: "data-tid",
+    /* Hide the new NNS app announcement banner in e2e tests. */
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:5173",
+          localStorage: [
+            { name: "nnsNewNnsAppBanner", value: "false" },
+          ],
+        },
+      ],
+    },
   },
 
   /* Configure projects for major browsers */

@@ -30,9 +30,6 @@ export const signInWithAnchor = async ({
   anchor: number;
 }) => {
   step(`Sign in to existing anchor ${anchor}`);
-
-  await dismissNewNnsAppBanner(page);
-
   const iiPagePromise = context.waitForEvent("page");
 
   await page.locator("[data-tid=login-button]").click();
@@ -57,9 +54,6 @@ export const signInWithNewUser = async ({
   context: BrowserContext;
 }) => {
   step("Sign in");
-
-  await dismissNewNnsAppBanner(page);
-
   const iiPagePromise = context.waitForEvent("page");
 
   await page.locator("[data-tid=login-button]").click();
@@ -137,14 +131,6 @@ export const dfxCanisterId = async (canisterName: string) => {
       resolve(stdout.trim());
     });
   });
-};
-
-// Dismiss the new NNS app banner if present
-const dismissNewNnsAppBanner = async (page: Page) => {
-  const banner = page.locator("[data-tid=new-nns-app-banner]");
-  if (await banner.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await page.locator("[data-tid=new-nns-app-stay]").click();
-  }
 };
 
 // Close the Highlight popup if present
