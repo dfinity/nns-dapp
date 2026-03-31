@@ -20,6 +20,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+- Removed Kong Swap as an exchange rate provider.
+
 #### Fixed
 
 - Made `kongSwapUrl` and `icpSwapUrl` environment variables optional to prevent app crash in environments without them configured.
