@@ -9,27 +9,27 @@
   const NEW_NNS_APP_URL = "https://nns.internetcomputer.org";
   const localStorageKey = StoreLocalStorageKey.NewNnsAppBanner;
 
-  let dismissed = $state(false);
+  let isOpen = $state(false);
 
-  let visible = $derived(
-    browser &&
-      !dismissed &&
-      (JSON.parse(
+  $effect.pre(() => {
+    if (browser) {
+      isOpen = JSON.parse(
         localStorage?.getItem(localStorageKey) ?? "true"
-      ) as boolean)
-  );
+      ) as boolean;
+    }
+  });
 
   const close = () => {
-    dismissed = true;
+    isOpen = false;
     localStorage?.setItem(localStorageKey, "false");
   };
 
   const dismiss = () => {
-    dismissed = true;
+    isOpen = false;
   };
 </script>
 
-{#if visible}
+{#if isOpen}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="backdrop"
@@ -62,19 +62,17 @@
         </p>
 
         <div class="actions">
-          <button
-            class="primary with-icon"
+          <a
+            class="button primary with-icon"
             data-tid="new-nns-app-cta"
-            onclick={() => window.open(NEW_NNS_APP_URL, "_blank", "noopener,noreferrer")}
+            href={NEW_NNS_APP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {$i18n.highlight.new_nns_app_cta}
             <IconOpenInNew size="16" />
-          </button>
-          <button
-            class="secondary"
-            data-tid="new-nns-app-stay"
-            onclick={close}
-          >
+          </a>
+          <button class="secondary" data-tid="new-nns-app-stay" onclick={close}>
             {$i18n.highlight.new_nns_app_stay}
           </button>
         </div>
@@ -107,7 +105,7 @@
   }
 
   .hero {
-    // The gradient is custom — no theme variable exists for decorative gradients
+    // The gradient is custom, no theme variable exists for decorative gradients
     --hero-gradient: linear-gradient(
       135deg,
       #c8d2f5 0%,
