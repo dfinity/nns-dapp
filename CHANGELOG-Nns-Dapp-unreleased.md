@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Added announcement banner and sidebar link for the new NNS governance app.
+
 #### Changed
 
 #### Deprecated

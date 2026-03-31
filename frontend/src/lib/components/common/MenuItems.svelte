@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NewNnsAppButton from "$lib/components/common/NewNnsAppButton.svelte";
   import SourceCodeButton from "$lib/components/common/SourceCodeButton.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
@@ -121,6 +122,7 @@
       in:scale={{ duration: 200, easing: cubicIn }}
     >
       <TotalValueLocked layout="stacked" />
+      <NewNnsAppButton />
       <div class="menu-footer-buttons">
         <div class="grow-item"><SourceCodeButton /></div>
         <ThemeToggleButton />
