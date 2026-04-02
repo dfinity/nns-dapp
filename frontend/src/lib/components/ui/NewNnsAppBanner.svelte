@@ -2,6 +2,7 @@
   import { browser } from "$app/environment";
   import icpLogo from "$lib/assets/icp-rounded.svg";
   import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+  import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
   import { IconOpenInNew } from "@dfinity/gix-components";
   import { fade } from "svelte/transition";
@@ -22,6 +23,7 @@
   const close = () => {
     isOpen = false;
     localStorage?.setItem(localStorageKey, "false");
+    analytics.event("new-nns-app-banner", { action: "stay-here" });
   };
 
   const dismiss = () => {
@@ -66,6 +68,8 @@
             href={NEW_NNS_APP_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onclick={() =>
+              analytics.event("new-nns-app-banner", { action: "open-new-app" })}
           >
             {$i18n.highlight.new_nns_app_cta}
             <IconOpenInNew size="16" />
@@ -118,22 +122,6 @@
     padding: var(--padding-8x) var(--padding-3x);
   }
 
-  .logo {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--card-background);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--box-shadow);
-
-    img {
-      width: 32px;
-      height: 32px;
-    }
-  }
-
   @include media.dark-theme() {
     .hero {
       --hero-gradient: linear-gradient(
@@ -142,6 +130,20 @@
         #2a1f3d 50%,
         #2d2235 100%
       );
+    }
+  }
+
+  .logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 
@@ -173,6 +175,7 @@
     }
   }
 
+  .actions a,
   .actions button {
     flex: 1;
   }
