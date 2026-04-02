@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
   import { IconOpenInNew } from "@dfinity/gix-components";
 </script>
@@ -9,6 +10,8 @@
   rel="noopener noreferrer external"
   target="_blank"
   class="new-nns-app-button"
+  onclick={() =>
+    analytics.event("new-nns-app-banner", { action: "sidebar-link" })}
 >
   <IconOpenInNew size="16" />
   {$i18n.highlight.new_nns_app_link}
