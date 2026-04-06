@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-03-19_04-43-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-04-02_04-48-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -130,6 +130,11 @@ pub struct CompleteCanisterMigrationPayload {
     pub migration_trace: Vec<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct ResourceLimits {
+    pub maximum_state_size: Option<u64>,
+    pub maximum_state_delta: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct SubnetFeatures {
     pub canister_sandboxing: bool,
     pub http_requests: bool,
@@ -210,6 +215,7 @@ pub enum SubnetType {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CreateSubnetPayload {
     pub unit_delay_millis: u64,
+    pub resource_limits: Option<ResourceLimits>,
     pub features: SubnetFeatures,
     pub gossip_registry_poll_period_ms: u32,
     pub max_ingress_bytes_per_message: u64,
@@ -243,6 +249,15 @@ pub struct CreateSubnetPayload {
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum CreateSubnetResponse {
     Ok { new_subnet_id: Option<Principal> },
+    Err(String),
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DeleteSubnetPayload {
+    pub subnet_id: Principal,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum DeleteSubnetResponse {
+    Ok,
     Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -334,6 +349,11 @@ pub struct MigrateCanistersPayload {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MigrateCanistersResponse {
     pub registry_version: u64,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct MigrateNodeOperatorPayload {
+    pub new_node_operator_id: Option<Principal>,
+    pub old_node_operator_id: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct PrepareCanisterMigrationPayload {
@@ -534,6 +554,7 @@ pub struct ChainKeyConfig {
 pub struct UpdateSubnetPayload {
     pub unit_delay_millis: Option<u64>,
     pub max_duplicity: Option<u32>,
+    pub resource_limits: Option<ResourceLimits>,
     pub features: Option<SubnetFeatures>,
     pub set_gossip_config_to_default: bool,
     pub halt_at_cup_height: Option<bool>,
@@ -611,6 +632,9 @@ impl Service {
     pub async fn create_subnet(&self, arg0: CreateSubnetPayload) -> CallResult<(CreateSubnetResponse,)> {
         ic_cdk::call(self.0, "create_subnet", (arg0,)).await
     }
+    pub async fn delete_subnet(&self, arg0: DeleteSubnetPayload) -> CallResult<(DeleteSubnetResponse,)> {
+        ic_cdk::call(self.0, "delete_subnet", (arg0,)).await
+    }
     pub async fn deploy_guestos_to_all_subnet_nodes(
         &self,
         arg0: DeployGuestosToAllSubnetNodesPayload,
@@ -664,6 +688,9 @@ impl Service {
     }
     pub async fn migrate_canisters(&self, arg0: MigrateCanistersPayload) -> CallResult<(MigrateCanistersResponse,)> {
         ic_cdk::call(self.0, "migrate_canisters", (arg0,)).await
+    }
+    pub async fn migrate_node_operator_directly(&self, arg0: MigrateNodeOperatorPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "migrate_node_operator_directly", (arg0,)).await
     }
     pub async fn prepare_canister_migration(&self, arg0: PrepareCanisterMigrationPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "prepare_canister_migration", (arg0,)).await
