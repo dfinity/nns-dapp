@@ -27,7 +27,6 @@ mod canisters;
 mod constants;
 mod metrics_encoder;
 mod perf;
-mod spawn;
 mod state;
 mod stats;
 mod time;

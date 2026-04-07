@@ -1,7 +1,6 @@
 use crate::{
     canisters::{exchange_rate_canister, governance},
     constants::{E8S_PER_UNIT, NANOS_PER_UNIT},
-    spawn,
     state::{with_state, with_state_mut},
     time,
     timer::{set_timer, set_timer_interval},
@@ -31,25 +30,17 @@ pub fn init_timers() {
 }
 
 pub fn start_updating_exchange_rate_in_background() {
-    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
-        spawn::spawn(update_exchange_rate());
-    });
+    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || update_exchange_rate());
     // `set_timer_interval` does not run the callback immediately so we also
     // call it after 1 second to have an exchange rate available soon.
-    set_timer(Duration::from_secs(1), || {
-        spawn::spawn(update_exchange_rate());
-    });
+    set_timer(Duration::from_secs(1), update_exchange_rate());
 }
 
 fn start_updating_locked_icp_in_the_background() {
-    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || {
-        spawn::spawn(update_locked_icp_e8s());
-    });
+    set_timer_interval(Duration::from_secs(UPDATE_INTERVAL_SECONDS), || update_locked_icp_e8s());
     // `set_timer_interval` does not run the callback immediately so we also
     // call it after 1 second to have an exchange rate available soon.
-    set_timer(Duration::from_secs(1), || {
-        spawn::spawn(update_locked_icp_e8s());
-    });
+    set_timer(Duration::from_secs(1), update_locked_icp_e8s());
 }
 
 /// Converts a number such that it can be interpreted as a fixed-point number

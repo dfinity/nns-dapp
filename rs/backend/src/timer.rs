@@ -9,16 +9,18 @@ pub mod testing {
     use ic_cdk_timers::TimerId;
     use slotmap::SlotMap;
     use std::cell::RefCell;
+    use std::future::Future;
+    use std::pin::Pin;
     use std::time::Duration;
 
     pub struct Timer {
         pub delay: Duration,
-        pub func: Box<dyn FnOnce()>,
+        pub future: Pin<Box<dyn Future<Output = ()>>>,
     }
 
     pub struct TimerInterval {
         pub interval: Duration,
-        pub func: Box<dyn FnMut()>,
+        pub func: Box<dyn FnMut() -> Pin<Box<dyn Future<Output = ()>>>>,
     }
 
     thread_local! {
@@ -26,20 +28,23 @@ pub mod testing {
         pub static TIMER_INTERVALS: RefCell<SlotMap<TimerId, TimerInterval>> = RefCell::default();
     }
 
-    pub fn set_timer(delay: Duration, func: impl FnOnce() + 'static) -> TimerId {
+    pub fn set_timer(delay: Duration, future: impl Future<Output = ()> + 'static) -> TimerId {
         TIMERS.with(|timers| {
             timers.borrow_mut().insert(Timer {
                 delay,
-                func: Box::new(func),
+                future: Box::pin(future),
             })
         })
     }
 
-    pub fn set_timer_interval(interval: Duration, func: impl FnMut() + 'static) -> TimerId {
+    pub fn set_timer_interval<Fut>(interval: Duration, mut func: impl FnMut() -> Fut + 'static) -> TimerId
+    where
+        Fut: Future<Output = ()> + 'static,
+    {
         TIMER_INTERVALS.with(|timer_intervals| {
             timer_intervals.borrow_mut().insert(TimerInterval {
                 interval,
-                func: Box::new(func),
+                func: Box::new(move || Box::pin(func()) as Pin<Box<dyn Future<Output = ()>>>),
             })
         })
     }
