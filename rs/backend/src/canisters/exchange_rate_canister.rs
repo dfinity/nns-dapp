@@ -101,14 +101,13 @@ mod prod {
     use ic_nns_constants::EXCHANGE_RATE_CANISTER_ID;
 
     pub async fn get_exchange_rate(request: GetExchangeRateRequest) -> Result<GetExchangeRateResult, String> {
-        ic_cdk::call::<(GetExchangeRateRequest,), (GetExchangeRateResult,)>(
-            EXCHANGE_RATE_CANISTER_ID.into(),
-            "get_exchange_rate",
-            (request,),
-        )
-        .await
-        .map(|r: (GetExchangeRateResult,)| r.0)
-        .map_err(|e| e.1)
+        ic_cdk::call::Call::unbounded_wait(EXCHANGE_RATE_CANISTER_ID.into(), "get_exchange_rate")
+            .with_arg(request)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple::<(GetExchangeRateResult,)>().map_err(Into::into))
+            .map(|r| r.0)
+            .map_err(|e| format!("{e:?}"))
     }
 }
 

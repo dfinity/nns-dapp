@@ -1,6 +1,7 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
 //! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-04-02_04-48-base/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
+#![allow(deprecated)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
