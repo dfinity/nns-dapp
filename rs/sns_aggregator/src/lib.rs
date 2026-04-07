@@ -126,11 +126,9 @@ fn tail_log(limit: Option<u16>) -> String {
 
 /// Web server
 ///
-/// Note: we use a decoding quota of 10000 corresponding to roughly 10 KB of decoded data incl. overhead,
-/// see the Candid [cost model](https://github.com/dfinity/candid/blob/f324a1686d6f2bd4fba9307a37f8e3f90cc7222b/rust/candid/src/de.rs#L170)
-/// for more details.
+/// Note: the Candid decoding limit is no longer configurable via the query attribute since ic-cdk 0.19.0.
 #[candid_method(query)]
-#[ic_cdk::query(decoding_quota = 10000)]
+#[ic_cdk::query]
 fn http_request(req: HttpRequest) -> HttpResponse {
     match req.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
@@ -244,7 +242,7 @@ fn setup(config: Option<Config>) {
     let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
     crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
     STATE.with(|state| {
-        let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(crate::upstream::update_cache()));
+        let timer_id = set_timer_interval(timer_interval, || crate::upstream::update_cache());
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
         if let Some(id) = old_timer {
             clear_timer(id);
@@ -259,9 +257,7 @@ fn setup(config: Option<Config>) {
     // Getting a list of SNSs typically takes two block heights, so a 4 second delay between
     // the calls will cover all but the most extremely slow networks.
     for i in 0..2 {
-        set_timer(Duration::from_secs(i * 4), || {
-            ic_cdk::spawn(crate::upstream::update_cache());
-        });
+        set_timer(Duration::from_secs(i * 4), crate::upstream::update_cache());
     }
 }
 
