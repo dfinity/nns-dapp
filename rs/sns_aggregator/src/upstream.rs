@@ -116,21 +116,23 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .with_arg(types::EmptyRecord {})
             .await
             .map_err(ic_cdk::call::Error::from)
-            .and_then(|resp| resp.candid_tuple::<(types::ListSnsCanistersResponse,)>().map_err(Into::into))
+            .and_then(|resp| {
+                resp.candid_tuple::<(types::ListSnsCanistersResponse,)>()
+                    .map_err(Into::into)
+            })
             .map(|(r,)| r)
             .map_err(|err| crate::state::log(format!("Call to Root.list_sns_canisters failed: {err:?}")))
             .unwrap_or(existing_data.list_sns_canisters);
 
     crate::state::log(format!("Getting SNS index {index}... get_metadata"));
-    let meta: types::GetMetadataResponse =
-        ic_cdk::call::Call::unbounded_wait(governance_canister_id, "get_metadata")
-            .with_arg(types::EmptyRecord {})
-            .await
-            .map_err(ic_cdk::call::Error::from)
-            .and_then(|resp| resp.candid_tuple::<(types::GetMetadataResponse,)>().map_err(Into::into))
-            .map(|(r,)| r)
-            .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_metadata failed: {err:?}")))
-            .unwrap_or(existing_data.meta);
+    let meta: types::GetMetadataResponse = ic_cdk::call::Call::unbounded_wait(governance_canister_id, "get_metadata")
+        .with_arg(types::EmptyRecord {})
+        .await
+        .map_err(ic_cdk::call::Error::from)
+        .and_then(|resp| resp.candid_tuple::<(types::GetMetadataResponse,)>().map_err(Into::into))
+        .map(|(r,)| r)
+        .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_metadata failed: {err:?}")))
+        .unwrap_or(existing_data.meta);
 
     crate::state::log(format!("Getting SNS index {index}... list_nervous_system_functions"));
     let parameters: types::ListNervousSystemFunctionsResponse =
@@ -220,21 +222,20 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         }
         .or(existing_data.swap_params);
 
-    let init_response: Option<GetInitResponse> =
-        match ic_cdk::call::Call::unbounded_wait(swap_canister_id, "get_init")
-            .with_arg(EmptyRecord {})
-            .await
-            .map_err(ic_cdk::call::Error::from)
-            .and_then(|resp| resp.candid_tuple::<(GetInitResponse,)>().map_err(Into::into))
-            .map(|(r,)| r)
-        {
-            Err(err) => {
-                crate::state::log(format!("Call to Swap.get_init failed: {err:?}"));
-                None
-            }
-            Ok(response) => Some(response),
+    let init_response: Option<GetInitResponse> = match ic_cdk::call::Call::unbounded_wait(swap_canister_id, "get_init")
+        .with_arg(EmptyRecord {})
+        .await
+        .map_err(ic_cdk::call::Error::from)
+        .and_then(|resp| resp.candid_tuple::<(GetInitResponse,)>().map_err(Into::into))
+        .map(|(r,)| r)
+    {
+        Err(err) => {
+            crate::state::log(format!("Call to Swap.get_init failed: {err:?}"));
+            None
         }
-        .or(existing_data.init);
+        Ok(response) => Some(response),
+    }
+    .or(existing_data.init);
 
     let derived_state_response: Option<GetDerivedStateResponse> = get_derived_state(swap_canister_id)
         .await
@@ -329,9 +330,7 @@ pub async fn get_lifecycle(swap_canister_id: Principal) -> CallResult<GetLifecyc
 }
 
 /// Gets the SNS nervous system parameters.
-pub async fn get_nervous_system_parameters(
-    governance_canister_id: Principal,
-) -> CallResult<NervousSystemParameters> {
+pub async fn get_nervous_system_parameters(governance_canister_id: Principal) -> CallResult<NervousSystemParameters> {
     ic_cdk::call::Call::unbounded_wait(governance_canister_id, "get_nervous_system_parameters")
         .await
         .map_err(ic_cdk::call::Error::from)
