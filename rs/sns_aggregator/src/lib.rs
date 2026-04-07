@@ -19,8 +19,6 @@ use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpRes
 use candid::{candid_method, export_service, CandidType, Principal};
 use fast_scheduler::FastScheduler;
 use ic_base_types::CanisterId;
-use ic_cdk::api::call::call;
-use ic_cdk::api::management_canister::main::CanisterIdRecord;
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use serde::Deserialize;
 use state::{Config, StableState, STATE};
@@ -87,13 +85,16 @@ struct CanisterStatusResultV2 {
 #[ic_cdk::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> CanisterStatusResultV2 {
-    let own_canister_id = ic_cdk::api::id();
-    let canister_id_record = CanisterIdRecord {
+    let own_canister_id = ic_cdk::api::canister_self();
+    let canister_id_record = ic_cdk::management_canister::CanisterIdRecord {
         canister_id: own_canister_id,
     };
 
-    let result = call(IC_00.into(), "canister_status", (canister_id_record,))
+    let result = ic_cdk::call::Call::unbounded_wait(IC_00.into(), "canister_status")
+        .with_arg(canister_id_record)
         .await
+        .map_err(ic_cdk::call::Error::from)
+        .and_then(|resp| resp.candid_tuple::<(CanisterStatusResultV2,)>().map_err(Into::into))
         .map(|(r,)| r);
     result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
 }
@@ -242,7 +243,7 @@ fn setup(config: Option<Config>) {
     let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
     crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
     STATE.with(|state| {
-        let timer_id = set_timer_interval(timer_interval, || crate::upstream::update_cache());
+        let timer_id = set_timer_interval(timer_interval, crate::upstream::update_cache);
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
         if let Some(id) = old_timer {
             clear_timer(id);

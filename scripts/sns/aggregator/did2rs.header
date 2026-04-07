@@ -1,4 +1,5 @@
 #![allow(clippy::all)]
+#![allow(deprecated)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]

@@ -14,10 +14,15 @@ mod prod {
     use ic_nns_constants::GOVERNANCE_CANISTER_ID;
 
     pub async fn get_metrics() -> GetMetricsCallResult {
-        ic_cdk::call(GOVERNANCE_CANISTER_ID.into(), "get_metrics", ())
+        ic_cdk::call::Call::unbounded_wait(GOVERNANCE_CANISTER_ID.into(), "get_metrics")
             .await
-            .map(|r: (Result<GovernanceCachedMetrics, GovernanceError>,)| r.0)
-            .map_err(|e| e.1)
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| {
+                resp.candid_tuple::<(Result<GovernanceCachedMetrics, GovernanceError>,)>()
+                    .map_err(Into::into)
+            })
+            .map(|r| r.0)
+            .map_err(|e| format!("{e:?}"))
     }
 }
 

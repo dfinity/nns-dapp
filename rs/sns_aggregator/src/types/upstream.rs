@@ -10,7 +10,7 @@ use super::{CandidType, Deserialize};
 use crate::types::ic_sns_governance::{GetMetricsResponse, RewardEvent};
 use crate::types::ic_sns_swap::{GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse};
 use candid::Nat;
-use ic_cdk::api::management_canister::provisional::CanisterId;
+use candid::Principal as CanisterId;
 use serde::Serialize;
 use std::collections::BTreeMap;
 
