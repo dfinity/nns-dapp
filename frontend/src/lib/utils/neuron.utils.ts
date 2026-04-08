@@ -151,9 +151,11 @@ export const neuronPotentialVotingPower = ({
 }): bigint => {
   const dissolveDelay =
     newDissolveDelayInSeconds ?? neuron.dissolveDelaySeconds;
+  const eightYearGangExtra = getEightYearGangBonusE8s(neuron, new Date());
   const stakeE8s =
     (neuron.fullNeuron?.cachedNeuronStake ?? 0n) +
-    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n);
+    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n) +
+    eightYearGangExtra;
   return votingPower({
     stakeE8s,
     dissolveDelay,
