@@ -1,9 +1,9 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   SECONDS_IN_DAY,
-  SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
-  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_TWO_WEEKS,
+  SECONDS_IN_TWO_YEARS,
 } from "$lib/constants/constants";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
@@ -156,6 +156,7 @@ export const neuronPotentialVotingPower = ({
     stakeE8s,
     dissolveDelay,
     ageSeconds: neuron.ageSeconds,
+    dissolveDelayConvexity: 2,
   });
 };
 
@@ -170,6 +171,7 @@ interface VotingPowerParams {
   maxAgeSeconds?: number;
   maxDissolveDelaySeconds?: number;
   minDissolveDelaySeconds?: number;
+  dissolveDelayConvexity?: number;
 }
 
 /**
@@ -188,9 +190,10 @@ export const votingPower = ({
   ageSeconds,
   maxAgeBonus = MAX_AGE_BONUS,
   maxDissolveDelayBonus = MAX_DISSOLVE_DELAY_BONUS,
-  maxDissolveDelaySeconds = SECONDS_IN_EIGHT_YEARS,
+  maxDissolveDelaySeconds = SECONDS_IN_TWO_YEARS,
   maxAgeSeconds = SECONDS_IN_FOUR_YEARS,
-  minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
+  minDissolveDelaySeconds = SECONDS_IN_TWO_WEEKS,
+  dissolveDelayConvexity = 1,
 }: VotingPowerParams): bigint => {
   if (dissolveDelay < minDissolveDelaySeconds) {
     return 0n;
@@ -199,6 +202,7 @@ export const votingPower = ({
     amount: dissolveDelay,
     maxBonus: maxDissolveDelayBonus,
     amountForMaxBonus: maxDissolveDelaySeconds,
+    convexity: dissolveDelayConvexity,
   });
   const ageMultiplier = bonusMultiplier({
     amount: ageSeconds,
@@ -216,7 +220,8 @@ export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
   bonusMultiplier({
     amount: delayInSeconds,
     maxBonus: MAX_DISSOLVE_DELAY_BONUS,
-    amountForMaxBonus: SECONDS_IN_EIGHT_YEARS,
+    amountForMaxBonus: SECONDS_IN_TWO_YEARS,
+    convexity: 2,
   });
 
 export const ageMultiplier = (ageSeconds: bigint): number =>
@@ -238,30 +243,25 @@ export const activityMultiplier = ({ fullNeuron }: NeuronInfo) => {
   return Number(decidingVotingPower) / Number(potentialVotingPower);
 };
 
-// Calculates the bonus multiplier for an amount (such as dissolve delay or age)
-// which results in bonus eligibility which scales linearly from 1 to
-// `maxBonus`. For example for dissolve delay, the values
-//   amount: 4 years
-//   amountForMaxBonus: 8 years
-//   maxBonus: 1
-// Would mean that there is a maximum bonus of 1 = 100% (which means a
-// multiplier of 2) but with a dissolve delay of 4 years out of a maximum of
-// 8 years, the bonus would be 50%, which means a multiplier of 1.5.
-// So in this case the return value would be 1.5.
+// Calculates the bonus multiplier for an amount (such as dissolve delay or age).
+// With convexity=1 (default), scales linearly. With convexity=2, scales quadratically
+// (Mission 70 NNS dissolve delay bonus).
 export const bonusMultiplier = ({
   amount,
   amountForMaxBonus,
   maxBonus,
+  convexity = 1,
 }: {
   amount: bigint;
   amountForMaxBonus: number;
   maxBonus: number;
+  convexity?: number;
 }): number => {
   const bonusProportion =
     amountForMaxBonus === 0
       ? 0
       : Math.min(Number(amount), amountForMaxBonus) / amountForMaxBonus;
-  return 1 + maxBonus * bonusProportion;
+  return 1 + maxBonus * bonusProportion ** convexity;
 };
 
 // TODO: Do we need this? What does it mean to have a valid stake?
