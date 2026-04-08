@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       # Helps with debugging
       - name: Show versions
         run: |
@@ -33,13 +33,13 @@ jobs:
       - name: Build
         run: ./scripts/docker-build
       - name: 'Upload nns-dapp wasm module'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: nns-dapp-mainnet-wasm
           path: nns-dapp.wasm.gz
           retention-days: 3
       - name: 'Upload assets'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: nns-dapp-assets
           path: assets.tar.xz
@@ -52,7 +52,7 @@ jobs:
         run: |
           sha256sum assets.tar.xz > "hashes/assets_sha256.txt"
       - name: 'Upload hashes'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: hashes
           path: hashes/*.txt
@@ -61,7 +61,7 @@ jobs:
     needs: [docker_build]
     steps:
       - name: Get hashes
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: hashes
           path: hashes
@@ -77,12 +77,12 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/needs_success
         with:
           needs: '${{ toJson(needs) }}'
       - name: Notify Slack on failure
-        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        uses: dfinity/internet-identity/.github/actions/slack@b278eab440b6adfcb561f18fe24bdea66c1987c3 # release-2023-08-28
         if: ${{ failure() }}
         with:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
