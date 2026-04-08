@@ -122,18 +122,18 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo =>
  * The actual voting power of the neuron can be found in the decidingVotingPower field,
  * as it accounts for missing voting rewards due to user inactivity (votingPowerRefreshedTimestampSeconds).
  *
- * If neuron's dissolve delay is less than 6 months, the voting power is 0.
+ * If neuron's dissolve delay is less than 2 weeks, the voting power is 0.
  *
  * Else:
- * votingPower = (stake + staked maturity) * dissolve_delay_bonus * age_bonus
- * dissolve_delay_bonus = 1 + (dissolve_delay_multiplier * neuron dissolve delay / 8 years)
+ * votingPower = (stake + staked maturity + 8y gang bonus) * dissolve_delay_bonus * age_bonus
+ * dissolve_delay_bonus = 1 + dissolve_delay_multiplier * (dissolve_delay / max_delay)^convexity
  * age_bonus = 1 + (age_multiplier * ageSeconds / 4 years)
  *
- * dissolve_delay_multiplier is 1 in NNS
+ * Mission 70 NNS: convexity=2 (quadratic), max_delay=2 years, dissolve_delay_multiplier=2
  * age_multiplier is 0.25 in NNS
  *
  * ageSeconds is capped at 4 years
- * neuron dissolve delay is capped at 8 years
+ * neuron dissolve delay is capped at 2 years
  *
  * Reference: https://internetcomputer.org/docs/current/tokenomics/sns/rewards#recap-on-nns-voting-rewards
  *
