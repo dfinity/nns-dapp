@@ -1,5 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  EIGHT_YEAR_GANG_BONUS_EXPIRY_SECONDS,
+  EIGHT_YEAR_GANG_BONUS_RATE,
   SECONDS_IN_DAY,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_TWO_WEEKS,
@@ -262,6 +264,29 @@ export const bonusMultiplier = ({
       ? 0
       : Math.min(Number(amount), amountForMaxBonus) / amountForMaxBonus;
   return 1 + maxBonus * bonusProportion ** convexity;
+};
+
+/**
+ * Returns the 8-year gang bonus in e8s to add to the effective stake.
+ * bonus = eightYearGangBonusBaseE8s * EIGHT_YEAR_GANG_BONUS_RATE, subject to:
+ * - The neuron is not dissolving (bonus lost on dissolve)
+ * - The field is > 0 (neuron has the 8y gang flag)
+ * - The reference date is before the expiry (end of 2030)
+ */
+export const getEightYearGangBonusE8s = (
+  neuron: NeuronInfo,
+  referenceDate: Date
+): bigint => {
+  if (neuron.state === NeuronState.Dissolving) return 0n;
+
+  const referenceDateSeconds = Math.floor(referenceDate.getTime() / 1000);
+  if (referenceDateSeconds > EIGHT_YEAR_GANG_BONUS_EXPIRY_SECONDS) return 0n;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- field not yet in SDK types
+  const base: bigint = (neuron.fullNeuron as any)?.eightYearGangBonusBaseE8s ?? 0n;
+  if (base <= 0n) return 0n;
+
+  return BigInt(Math.floor(Number(base) * EIGHT_YEAR_GANG_BONUS_RATE));
 };
 
 // TODO: Do we need this? What does it mean to have a valid stake?
