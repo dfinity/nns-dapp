@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
-    SECONDS_IN_EIGHT_YEARS,
-    SECONDS_IN_HALF_YEAR,
+    SECONDS_IN_TWO_WEEKS,
+    SECONDS_IN_TWO_YEARS,
   } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -37,8 +37,8 @@
   neuronState={neuron.state}
   neuronDissolveDelaySeconds={neuron.dissolveDelaySeconds}
   {neuronStake}
-  minProjectDelayInSeconds={SECONDS_IN_HALF_YEAR}
-  maxDelayInSeconds={SECONDS_IN_EIGHT_YEARS}
+  minProjectDelayInSeconds={SECONDS_IN_TWO_WEEKS}
+  maxDelayInSeconds={SECONDS_IN_TWO_YEARS}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.min_dissolve_delay_description}
 >
