@@ -1,6 +1,6 @@
 //! Tests for stable memory layout code.
-use super::*;
 use super::WASM_PAGE_SIZE_IN_BYTES;
+use super::*;
 use pretty_assertions::assert_eq;
 use std::rc::Rc;
 
