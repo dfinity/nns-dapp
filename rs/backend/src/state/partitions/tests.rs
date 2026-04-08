@@ -1,6 +1,6 @@
 //! Tests for stable memory layout code.
 use super::*;
-use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
+use super::WASM_PAGE_SIZE_IN_BYTES;
 use pretty_assertions::assert_eq;
 use std::rc::Rc;
 
