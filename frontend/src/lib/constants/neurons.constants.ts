@@ -1,6 +1,6 @@
 import {
   SECONDS_IN_7_DAYS,
-  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_TWO_WEEKS,
 } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@icp-sdk/canisters/nns";
@@ -31,10 +31,11 @@ export const MIN_DISBURSEMENT_WITH_VARIANCE_ICP =
 // Neuron ids are random u64. Max digits of a u64 is 20.
 export const MAX_NEURON_ID_DIGITS = 20;
 
-export const MAX_DISSOLVE_DELAY_BONUS = 1; // = +100%
+// Mission 70: quadratic dissolve delay bonus up to 3x over 2 years
+export const MAX_DISSOLVE_DELAY_BONUS = 2; // = +200% (total multiplier = 1 + 2 = 3x)
 export const MAX_AGE_BONUS = 0.25; // = +25%
 export const NNS_MINIMUM_DISSOLVE_DELAY = SECONDS_IN_7_DAYS;
-export const NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE = SECONDS_IN_HALF_YEAR;
+export const NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE = SECONDS_IN_TWO_WEEKS;
 
 const FIRST_TOPICS = [
   Topic.Unspecified,
