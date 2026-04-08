@@ -26,7 +26,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Skip build for testing
         # Set to true and set a recent `run_id` below to reuse an existing build
         # instead of building.
@@ -45,31 +45,31 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload nns-dapp wasm module'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: nns-dapp
           path: out/nns-dapp.wasm.gz
           retention-days: 3
       - name: 'Upload nns-dapp test wasm module'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: nns-dapp_test
           path: out/nns-dapp_test.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator wasm module'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: sns_aggregator
           path: out/sns_aggregator.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator_dev wasm module'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: sns_aggregator_dev
           path: out/sns_aggregator_dev.wasm.gz
           retention-days: 3
       - name: 'Upload whole out directory'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: out
           path: out
@@ -80,7 +80,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Run Playwright e2e test shard 1/2
         uses: ./.github/actions/test-e2e
         with:
@@ -92,7 +92,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
@@ -104,17 +104,17 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get nns-dapp_test
         # Note: This may be performed manually with ./scripts/docker-build --network local
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: out
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
       - name: Install tools
         run: |
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
@@ -127,16 +127,16 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get nns-dapp_test
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: out
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
       - name: Install tools
         run: |
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
@@ -147,7 +147,7 @@ jobs:
         run: ./scripts/nns-dapp/migration-test --accounts 1000 --chunk 100
       - name: Upload dfx logs
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
@@ -157,9 +157,9 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get nns-dapp_test
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: nns-dapp_test
       - name: Start empty nns-dapp
@@ -177,17 +177,17 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get nns-dapp
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: nns-dapp
       - name: Get sns_aggregator
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: sns_aggregator
       - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: sns_aggregator_dev
       - name: Start snapshot environment
@@ -197,7 +197,7 @@ jobs:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
           logfile: 'dfx-test-rest.log'
       - name: Setup Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
           go-version: '1.25'
       - name: Add go and SNS scripts to the path
@@ -297,7 +297,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
       - name: Check dockerfile for changes
@@ -309,12 +309,12 @@ jobs:
           fi
       - name: Set up docker buildx
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4
       - name: Create a blank global config
         run: echo "{}" > global-config.json
       - name: Build wasms
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         with:
           context: .
           file: Dockerfile
@@ -326,19 +326,19 @@ jobs:
           outputs: ./out-mainnet
       - name: Get nns-dapp
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: nns-dapp
           path: out-local
       - name: Get sns_aggregator
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: sns_aggregator
           path: out-local
       - name: Get sns_aggregator_dev
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: sns_aggregator_dev
           path: out-local
@@ -363,9 +363,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: sns_aggregator_dev
       - name: Start snapshot environment
@@ -467,9 +467,9 @@ jobs:
     needs: build
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get docker build outputs
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: out
           path: out
@@ -478,7 +478,7 @@ jobs:
       - name: 'Record the git commit and any tags'
         run: git log | head -n1 > out/commit.txt
       - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: nns-dapp for ${{ matrix.BUILD_NAME }}
           path: |
@@ -489,7 +489,7 @@ jobs:
             out/frontend-config.sh
             out/deployment-config.json
       - name: 'Upload sns_aggregator wasm module'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: sns_aggregator for ${{ matrix.BUILD_NAME }}
           path: |
@@ -501,7 +501,7 @@ jobs:
           assets_dir: 'out'
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload frontend assets'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: NNS frontend assets
           path: |
@@ -538,7 +538,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/needs_success
         with:
           needs: '${{ toJson(needs) }}'
