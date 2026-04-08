@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         id: app-token
         with:
           app-id: ${{ vars.PR_AUTOMATION_BOT_PUBLIC_APP_ID }}
           private-key: ${{ secrets.PR_AUTOMATION_BOT_PUBLIC_PRIVATE_KEY }}
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         # First, check `didc` releases (on the candid repo) for a new version.
       - name: Check new didc version
         id: update
@@ -50,7 +50,7 @@ jobs:
         # If `config.json` was updated, create a PR.
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
           token: ${{ steps.app-token.outputs.token }}
           base: main
@@ -81,7 +81,7 @@ jobs:
           # Since this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
-        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        uses: dfinity/internet-identity/.github/actions/slack@b278eab440b6adfcb561f18fe24bdea66c1987c3 # release-2023-08-28
         if: ${{ failure() }}
         with:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
