@@ -14,12 +14,12 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get cargo sort version
         run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' config.json >> $GITHUB_ENV
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install shfmt
@@ -43,14 +43,14 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Checks for the presence of relative imports
         run: ./scripts/check-relative-imports
   spelling:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install spellcheck
         run: |
           sudo apt-get update
@@ -63,8 +63,8 @@ jobs:
   cargo-tests:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/cache@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: |
             ~/.cargo/registry
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest-m
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Run vitest shard 1/2
         uses: ./.github/actions/vitest
         with:
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest-m
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Run vitest shard 2/2
         uses: ./.github/actions/vitest
         with:
@@ -108,10 +108,10 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
@@ -128,7 +128,7 @@ jobs:
     name: ShellCheck
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Run ShellCheck
         run: |
           sudo apt-get update
@@ -138,7 +138,7 @@ jobs:
     name: IC Commit
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install didc
         run: scripts/install-didc
       - name: Check didc
@@ -158,7 +158,7 @@ jobs:
     name: Release template
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
       - name: Install didc
@@ -166,7 +166,7 @@ jobs:
       - name: Check didc
         run: command -v didc
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
       - name: Verify template creation
         run: |
           echo Create a fake wasm
@@ -180,9 +180,9 @@ jobs:
     name: Config is as expected
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install tools
@@ -194,7 +194,7 @@ jobs:
     name: Migration test utilities work
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install idl2json
@@ -206,14 +206,14 @@ jobs:
   minor-version-bump-works:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install yq
         run: sudo snap install yq
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Bumping the package versions works
@@ -238,7 +238,7 @@ jobs:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Backend and frontend have the same version
         run: |
           backend_version="$(cargo metadata | jq -r '.packages[] | select(.name == "nns-dapp").version')"
@@ -259,7 +259,7 @@ jobs:
       # Used by download-ci-wasm.test
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install tools on Linux
         run: |
           if command -v apt-get; then
@@ -276,7 +276,7 @@ jobs:
             brew install bash coreutils moreutils
           fi
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
       - name: Install didc
         run: |
           scripts/install-didc
@@ -343,7 +343,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/needs_success
         with:
           needs: "${{ toJson(needs) }}"
