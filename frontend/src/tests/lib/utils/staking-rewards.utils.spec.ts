@@ -1733,8 +1733,8 @@ const getInitialMockedParams = (): TestStakingRewardCalcParams => ({
     },
   },
   fxRates: { [LEDGER_CANISTER_ID.toText()]: 9 },
-  governanceMetrics: { metrics: { totalSupplyIcp: 534_809_202n } }, // 24 Jun 2025
-  nnsTotalVotingPower: 50_276_005_084_190_970n, // 24 Jun 2025
+  governanceMetrics: { metrics: { totalSupplyIcp: 534_809_202n } },
+  nnsTotalVotingPower: 88_150_266_299_091_680n, // Mission 70 (Jan 2026 snapshot)
 });
 
 let neuronCounter = 0n;

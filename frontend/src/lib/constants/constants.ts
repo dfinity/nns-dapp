@@ -33,7 +33,7 @@ export const PRICE_NOT_AVAILABLE = "price-not-available";
 export const NNS_GENESIS_TIMESTAMP_SECONDS = 1_620_604_800; // May 10, 2021
 export const NNS_INITIAL_REWARD_RATE = 0.1; // 10%
 export const NNS_FINAL_REWARD_RATE = 0.05; // 5%
-export const POOL_REDUCTION_FACTOR = 0.635;
+export const POOL_REDUCTION_FACTOR = 0.6329;
 
 // 8-year gang bonus: 10% of snapshotted base, expires end of 2030
 export const EIGHT_YEAR_GANG_BONUS_RATE = 0.1;
