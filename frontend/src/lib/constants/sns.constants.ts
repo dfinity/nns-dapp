@@ -10,7 +10,6 @@ export const WATCH_SALE_STATE_EVERY_MILLISECONDS = 10_000;
 export const AGGREGATOR_METRICS_TIME_WINDOW_SECONDS = 2 * 30 * 24 * 3600;
 
 export const FEATURED_SNS_PROJECTS = [
-  "ormnc-tiaaa-aaaaq-aadyq-cai",
   "csyra-haaaa-aaaaq-aacva-cai",
   "tw2vt-hqaaa-aaaaq-aab6a-cai",
   "x4kx5-ziaaa-aaaaq-aabeq-cai",
