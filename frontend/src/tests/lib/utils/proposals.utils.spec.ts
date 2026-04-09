@@ -1003,6 +1003,17 @@ describe("proposals-utils", () => {
         getUniversalProposalStatus(proposalWithStatus(ProposalStatus.Failed))
       ).toBe("failed");
     });
+
+    it("should return 'unknown' for unrecognized status values", () => {
+      const proposalWithStatus = (status: ProposalStatus): ProposalInfo => ({
+        ...mockProposalInfo,
+        status,
+      });
+
+      expect(
+        getUniversalProposalStatus(proposalWithStatus(999 as ProposalStatus))
+      ).toBe("unknown");
+    });
   });
 
   describe("getVoteDisplay", () => {
