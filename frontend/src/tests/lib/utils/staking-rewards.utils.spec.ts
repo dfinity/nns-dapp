@@ -336,10 +336,10 @@ describe("neuron-utils", () => {
     };
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(1.13);
+    ).toBe(0.59);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.13);
+    ).toBe(0.07);
 
     // Double the stake, the reward estimate should double
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
@@ -347,10 +347,10 @@ describe("neuron-utils", () => {
     );
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(2.26);
+    ).toBe(1.18);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.25);
+    ).toBe(0.13);
 
     // In case of no voting power (e.g. data unavailable), the reward estimate should be 0
     const old = params.nnsTotalVotingPower;
@@ -380,19 +380,19 @@ describe("neuron-utils", () => {
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 1.23;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(0.15);
+    ).toBe(0.08);
     // But not the maturity
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.13);
+    ).toBe(0.07);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 500;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(62.82);
+    ).toBe(32.67);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.13);
+    ).toBe(0.07);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 0;
     expect(
@@ -419,36 +419,36 @@ describe("neuron-utils", () => {
     });
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(4.52);
+    ).toBe(2.35);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.5);
+    ).toBe(0.26);
 
     // Remove the last neuron, the reward estimate should be 3/4 of before
     params.nnsNeurons.neurons.pop();
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(3.39);
+    ).toBe(1.76);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.38);
+    ).toBe(0.2);
 
     // Token balance should not affect the reward estimate
     params.tokens[0].balanceInUsd = 1000;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(3.39);
+    ).toBe(1.76);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.38);
+    ).toBe(0.2);
 
     params.tokens[0].balanceInUsd = 0;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(3.39);
+    ).toBe(1.76);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.38);
+    ).toBe(0.2);
 
     // Add a SNS project without a neuron
     params.snsProjects.data.push(getTestSns());
@@ -459,19 +459,19 @@ describe("neuron-utils", () => {
     params.fxRates[TEST_SNS_IDS[0]] = 100;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(3.39);
+    ).toBe(1.76);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.38);
+    ).toBe(0.2);
 
     // Neuron fees should affect the reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(2.26);
+    ).toBe(1.18);
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.25);
+    ).toBe(0.13);
 
     // Add a couple of SNS neuron with a stake
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -489,42 +489,42 @@ describe("neuron-utils", () => {
     });
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(37.59);
+    ).toBe(36.5);
     // SNSs should not affect the ICP-only reward estimates
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.25);
+    ).toBe(0.13);
 
     // Change the stake of one of the SNS neurons
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
       BigInt(200 * E8S_RATE);
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(49.36);
+    ).toBe(48.28);
     // SNSs should not affect the ICP-only reward estimates
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.25);
+    ).toBe(0.13);
 
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
       BigInt(400 * E8S_RATE);
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(72.92);
+    ).toBe(71.83);
     // SNSs should not affect the ICP-only reward estimates
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.25);
+    ).toBe(0.13);
 
     // Change the FX rate of the SNS project
     params.fxRates[TEST_SNS_IDS[0]] = 1.23;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(3.13);
+    ).toBe(2.04);
     // SNSs should not affect the ICP-only reward estimates
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.25);
+    ).toBe(0.13);
 
     // Add fees to the SNS neuron
     params.snsNeurons[TEST_SNS_IDS[0]].neurons.forEach((n) => {
@@ -532,11 +532,11 @@ describe("neuron-utils", () => {
     });
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
-    ).toBe(2.26);
+    ).toBe(1.18);
     // SNSs should not affect the ICP-only reward estimates
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    ).toBe(0.25);
+    ).toBe(0.13);
   });
 
   /////////////////
@@ -889,15 +889,15 @@ describe("neuron-utils", () => {
       WhenDissolvedTimestampSeconds:
         BigInt(referenceDateSeconds) + BigInt(0.5 * SECONDS_IN_YEAR),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0.02)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 1.08)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // The neuron APY should be the same as the NNS total APY since there is only one neuron
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 0.02)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 1.08)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)
     ).toBe(true);
 
     // Locked neuron (6 months dissolve delay)
@@ -907,21 +907,21 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(0.5 * SECONDS_IN_YEAR),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.53)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Different token balance have no effect on APY
     params.tokens[0].balanceInUsd = 10;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.53)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.tokens[0].balanceInUsd = 10 * 10 ** 10;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.53)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.tokens[0].balanceInUsd = 987654321;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.53)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // In case of no voting power (e.g. data unavailable), the APY should be 0
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -935,33 +935,33 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       100 * E8S_RATE
     );
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.53)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       10000 * E8S_RATE
     );
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.53)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       987654321 * E8S_RATE
     );
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.53)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       50 * E8S_RATE
     );
 
     // Auto-stake new maturity
     params.nnsNeurons.neurons[0].fullNeuron.autoStakeMaturity = true;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.1)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
-    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 7.1)).toBe(
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.57)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
+    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 2.57)).toBe(
       true
     );
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)
     ).toBe(true);
 
     // 1 Week of dissolve delay
@@ -970,70 +970,70 @@ describe("neuron-utils", () => {
         BigInt(referenceDateSeconds) + BigInt(SECONDS_IN_7_DAYS),
     };
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0.0)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
-    // 4 Weeks of dissolve delay
+    // 4 Weeks of dissolve delay (above 2-week minimum)
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(4 * SECONDS_IN_7_DAYS),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0.0)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.29)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // 6 Months of dissolve delay
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.1)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.57)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
-    // 10 Years of dissolve delay
+    // 2 Years of dissolve delay (max)
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
-      DissolveDelaySeconds: BigInt(10 * SECONDS_IN_YEAR),
+      DissolveDelaySeconds: BigInt(SECONDS_IN_TWO_YEARS),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 13.75)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.99)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // The FX rate should not affect the APY
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 1.23;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 13.75)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.99)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 987654.321;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 13.75)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.99)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 0.000001;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 13.75)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.99)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 6.99)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)
     ).toBe(true);
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 9;
 
     // Changes in the minimium dissolve delay are accounted
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
-      DissolveDelaySeconds: BigInt(4 * SECONDS_IN_YEAR),
+      DissolveDelaySeconds: BigInt(SECONDS_IN_TWO_YEARS),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 10.15)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.99)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 10.15)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 6.99)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)
     ).toBe(true);
     params.nnsEconomics.parameters.votingPowerEconomics = {
       neuronMinimumDissolveDelayToVoteSeconds: BigInt(
-        4 * SECONDS_IN_YEAR + SECONDS_IN_DAY
+        SECONDS_IN_TWO_YEARS + SECONDS_IN_DAY
       ),
     };
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 0)).toBe(true);
     params.nnsEconomics.parameters.votingPowerEconomics = {
-      neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+      neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_TWO_WEEKS),
     };
 
     // Changes in the minimium stake are accounted
@@ -1042,30 +1042,30 @@ describe("neuron-utils", () => {
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 0)).toBe(true);
     params.nnsEconomics.parameters.neuronMinimumStake = BigInt(1 * E8S_RATE);
 
-    // Dissolving neuron with 10 years dissolve delay
+    // Dissolving neuron with 2 years dissolve delay (max)
     params.nnsNeurons.neurons[0].state = NeuronState.Dissolving;
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       WhenDissolvedTimestampSeconds:
-        BigInt(referenceDateSeconds) + BigInt(10 * SECONDS_IN_YEAR),
+        BigInt(referenceDateSeconds) + BigInt(SECONDS_IN_TWO_YEARS),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 13.3)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 4.88)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Dissolving neuron with 1 year dissolve delay
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       WhenDissolvedTimestampSeconds:
         BigInt(referenceDateSeconds) + BigInt(1 * SECONDS_IN_YEAR),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.55)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.51)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
-    // Dissolving neuron with 1 month dissolve delay
+    // Dissolving neuron with 1 month dissolve delay (above 2-week minimum)
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       WhenDissolvedTimestampSeconds:
         BigInt(referenceDateSeconds) + BigInt(1 * SECONDS_IN_MONTH),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0.11)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Staked maturity should not affect the APY (more stake, more rewards, same APY ratio)
     params.nnsNeurons.neurons[0].state = NeuronState.Locked;
@@ -1078,38 +1078,38 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent =
       BigInt(50 * E8S_RATE);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent =
       BigInt(987654321 * E8S_RATE);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent = 0n;
 
     // Un-staked maturity should not affect the current APY (the reward is compared to the staked amount)
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = BigInt(
       50 * E8S_RATE
     );
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = BigInt(
       987654321 * E8S_RATE
     );
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = 0n;
 
     // Auto-stake maturity should positively affect the APY (the reward is compared to the INITIAL staked amount)
     params.nnsNeurons.neurons[0].fullNeuron.autoStakeMaturity = true;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.5)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.44)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Handles multiple neurons
     params.nnsNeurons.neurons.push(getTestNeuronNns());
@@ -1128,57 +1128,57 @@ describe("neuron-utils", () => {
     });
 
     // Same neurons, same APY
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 7.25)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 3.38)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 7.25)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 3.38)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 6.99)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 7.25)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 3.38)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 6.99)
     ).toBe(true);
 
     // Let's modify the 1st neuron in order not to generate rewards
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(SECONDS_IN_7_DAYS),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, (7.25 / 3) * 2)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, (3.38 / 3) * 2)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Let's modify also the 2nd neuron in order not to generate rewards
     params.nnsNeurons.neurons[1].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(SECONDS_IN_7_DAYS),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25 / 3)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38 / 3)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 0)).toBe(
       true
     );
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)
     ).toBe(true);
     expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 0)).toBe(
       true
     );
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 6.99)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 7.25)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 3.38)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 6.99)
     ).toBe(true);
 
     // All of them are not generating rewards
@@ -1186,7 +1186,7 @@ describe("neuron-utils", () => {
       DissolveDelaySeconds: BigInt(SECONDS_IN_7_DAYS),
     };
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
     params.nnsNeurons.neurons.forEach((n) => {
       n.fullNeuron.dissolveState = {
         DissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
@@ -1197,39 +1197,39 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       5000 * E8S_RATE
     );
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Let's modify the 1st neuron to have auto-staking, should have a positive effect, weigthed by the stake (10x)
     params.nnsNeurons.neurons[0].fullNeuron.autoStakeMaturity = true;
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.45)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.44)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Let's reduce the stake of the 1st neuron, the positive effect, weigthed by the stake (0.1x), is now negligible
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       5 * E8S_RATE
     );
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
-    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 3.38)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // The changes of a single neuron should not affect the APY of the others
-    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 7.5)).toBe(
+    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 3.44)).toBe(
       true
     );
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 7.25)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 3.38)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 6.99)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 7.25)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 3.38)
     ).toBe(true);
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 13.75)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 6.99)
     ).toBe(true);
 
     // Let's remove some vital data, the APY should be 0 and we should see an error
