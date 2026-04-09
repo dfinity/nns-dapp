@@ -10,6 +10,8 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
+  SECONDS_IN_TWO_WEEKS,
+  SECONDS_IN_TWO_YEARS,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
@@ -110,7 +112,7 @@ type TestStakingRewardCalcParams = {
   nnsTotalVotingPower: bigint;
 };
 
-const referenceDate = new Date("2025-07-04T00:00:00Z"); // 4 Jul 2025
+const referenceDate = new Date("2026-04-08T00:00:00Z"); // 8 Apr 2026
 const referenceDateSeconds = referenceDate.getTime() / 1000;
 
 describe("neuron-utils", () => {
@@ -330,7 +332,7 @@ describe("neuron-utils", () => {
       BigInt(referenceDateSeconds);
     params.nnsNeurons.neurons[0].fullNeuron.autoStakeMaturity = true;
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
-      DissolveDelaySeconds: BigInt(8 * SECONDS_IN_YEAR),
+      DissolveDelaySeconds: BigInt(SECONDS_IN_TWO_YEARS),
     };
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
@@ -412,7 +414,7 @@ describe("neuron-utils", () => {
       n.fullNeuron.agingSinceTimestampSeconds = BigInt(referenceDateSeconds);
       n.fullNeuron.autoStakeMaturity = false;
       n.fullNeuron.dissolveState = {
-        DissolveDelaySeconds: BigInt(8 * SECONDS_IN_YEAR),
+        DissolveDelaySeconds: BigInt(SECONDS_IN_TWO_YEARS),
       };
     });
     expect(
@@ -1728,12 +1730,12 @@ const getInitialMockedParams = (): TestStakingRewardCalcParams => ({
     parameters: {
       neuronMinimumStake: BigInt(1 * E8S_RATE),
       votingPowerEconomics: {
-        neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+        neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_TWO_WEEKS),
       },
     },
   },
   fxRates: { [LEDGER_CANISTER_ID.toText()]: 9 },
-  governanceMetrics: { metrics: { totalSupplyIcp: 534_809_202n } },
+  governanceMetrics: { metrics: { totalSupplyIcp: 550_775_607n } },
   nnsTotalVotingPower: 88_150_266_299_091_680n, // Mission 70 (Jan 2026 snapshot)
 });
 
@@ -1742,7 +1744,7 @@ const getTestNeuronNns =
   (): TestStakingRewardCalcParams["nnsNeurons"]["neurons"][0] => ({
     neuronId: neuronCounter++,
     state: NeuronState.Locked,
-    dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+    dissolveDelaySeconds: BigInt(SECONDS_IN_TWO_YEARS),
     fullNeuron: {
       maturityE8sEquivalent: BigInt(0),
       stakedMaturityE8sEquivalent: BigInt(0),
@@ -1750,7 +1752,7 @@ const getTestNeuronNns =
       neuronFees: BigInt(0),
       agingSinceTimestampSeconds: BigInt(referenceDateSeconds),
       dissolveState: {
-        DissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+        DissolveDelaySeconds: BigInt(SECONDS_IN_TWO_YEARS),
       },
       autoStakeMaturity: true,
     },
