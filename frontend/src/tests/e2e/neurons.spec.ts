@@ -53,8 +53,8 @@ test("Test neuron voting", async ({ page, context }) => {
       .getVotingPower()
   );
 
-  // vp=stake*2 when max dissolve delay (https://support.dfinity.org/hc/en-us/articles/4404284534420-What-is-voting-power-)
-  expect(neuronAVotingPower).toBe(stake * 2);
+  // vp=stake*3 when max dissolve delay (Mission 70: quadratic bonus, 3x at 2 years)
+  expect(neuronAVotingPower).toBe(stake * 3);
 
   step("Open proposals list");
   await appPo.goToProposals();
