@@ -1,5 +1,5 @@
 import NnsNeuronDissolveDelayItemAction from "$lib/components/neuron-detail/NnsNeuronDissolveDelayItemAction.svelte";
-import { SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_7_DAYS, SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -50,7 +50,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     expect(await po.getDissolveState()).toBe(
       "Dissolve Delay: 2 years, 12 hours"
     );
-    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +25%");
+    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +200%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
 
@@ -69,15 +69,15 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDissolveState()).toBe("Remaining: 2 years, 12 hours");
-    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +25%");
+    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +200%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
 
-  it("should render no bonus text if neuron is dissolving less than 6 months", async () => {
+  it("should render no bonus text if neuron is dissolving less than 2 weeks", async () => {
     const neuron: NeuronInfo = {
       ...controlledNeuron,
       state: NeuronState.Dissolving,
-      dissolveDelaySeconds: BigInt(SECONDS_IN_MONTH * 4),
+      dissolveDelaySeconds: BigInt(SECONDS_IN_7_DAYS),
     };
     const po = renderComponent(neuron);
 
