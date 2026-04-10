@@ -43,8 +43,8 @@ import {
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getEightYearGangBonusE8s } from "$lib/utils/neuron.utils";
-import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 
 /////////////////
@@ -611,13 +611,9 @@ const getNeuronsRewardEstimationUSD = (params: {
       ) {
         const referenceDate = getDate(i, forceInitialDate);
         const baseStake = getNeuronTotalStakeAfterFeesE8s(neuron);
-        const eightYearGangExtra =
-          !sns
-            ? getEightYearGangBonusE8s(
-                neuron as NeuronInfo,
-                referenceDate
-              )
-            : 0n;
+        const eightYearGangExtra = !sns
+          ? getEightYearGangBonusE8s(neuron as NeuronInfo, referenceDate)
+          : 0n;
         const fullStake = baseStake + eightYearGangExtra;
         if (fullStake > 0n) {
           const votingPowerRatio =

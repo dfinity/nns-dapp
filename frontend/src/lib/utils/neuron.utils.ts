@@ -285,7 +285,8 @@ export const getEightYearGangBonusE8s = (
   if (referenceDateSeconds > EIGHT_YEAR_GANG_BONUS_EXPIRY_SECONDS) return 0n;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- field not yet in SDK types
-  const base: bigint = (neuron.fullNeuron as any)?.eightYearGangBonusBaseE8s ?? 0n;
+  const base: bigint =
+    (neuron.fullNeuron as any)?.eightYearGangBonusBaseE8s ?? 0n;
   if (base <= 0n) return 0n;
 
   return BigInt(Math.floor(Number(base) * EIGHT_YEAR_GANG_BONUS_RATE));
