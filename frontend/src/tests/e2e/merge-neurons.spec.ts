@@ -23,7 +23,7 @@ test("Test merge neurons", async ({ page, context }) => {
 
   step("Stake a neuron");
   const initialStake1 = 1;
-  const dissolveDelayDays1 = 3 * 365;
+  const dissolveDelayDays1 = 365;
   await appPo.getStakingPo().stakeFirstNnsNeuron({
     amount: initialStake1,
     dissolveDelayDays: dissolveDelayDays1,
@@ -37,7 +37,7 @@ test("Test merge neurons", async ({ page, context }) => {
 
   step("Stake a second neuron");
   const stake2 = 7;
-  const dissolveDelayDays2 = 7 * 365;
+  const dissolveDelayDays2 = 2 * 365;
   await footerPo.stakeNeuron({
     amount: stake2,
     dissolveDelayDays: dissolveDelayDays2,
