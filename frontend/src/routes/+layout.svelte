@@ -14,6 +14,7 @@
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { i18n } from "$lib/stores/i18n";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
@@ -81,8 +82,14 @@
       nnsNeurons: $neuronsStore,
       nnsEconomics: $networkEconomicsStore,
       fxRates: $tickersStore,
-      governanceMetrics: $governanceMetricsStore,
-      nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+      governanceMetrics: IS_TESTNET
+        ? ({
+            metrics: { totalSupplyIcp: 550_775_607n },
+          } as typeof $governanceMetricsStore)
+        : $governanceMetricsStore,
+      nnsTotalVotingPower: IS_TESTNET
+        ? 88_150_266_299_091_680n
+        : $nnsTotalVotingPowerStore,
     });
   }
 </script>
