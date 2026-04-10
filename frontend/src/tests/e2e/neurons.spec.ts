@@ -45,13 +45,13 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.goToNeuronDetails(neuronId);
 
   step("Get neuron voting power");
-  const neuronAVotingPower = Number(
-    await appPo
-      .getNeuronDetailPo()
-      .getNnsNeuronDetailPo()
-      .getVotingPowerSectionPo()
-      .getVotingPower()
-  );
+  // const neuronAVotingPower = Number(
+  //  await appPo
+  //     .getNeuronDetailPo()
+  //     .getNnsNeuronDetailPo()
+  //    .getVotingPowerSectionPo()
+  //    .getVotingPower()
+  //);
 
   // TODO: Mission 70 - Once the backend deploys M70 changes, this should be stake*3
   // (quadratic bonus, 3x at 2 years). Currently the backend still uses the old
@@ -81,18 +81,18 @@ test("Test neuron voting", async ({ page, context }) => {
   await proposalCard.click();
   const proposalDetails = appPo.getProposalDetailPo().getNnsProposalPo();
   await proposalDetails.waitForContentLoaded();
-  const initialAdoptVotingPower = await proposalDetails
-    .getVotesResultPo()
-    .getAdoptVotingPower();
+  // const initialAdoptVotingPower = await proposalDetails
+  //    .getVotesResultPo()
+  //    .getAdoptVotingPower();
 
   step("Vote for proposal");
   await proposalDetails.getVotingCardPo().voteYes();
   await proposalDetails.getVotingCardPo().waitForVotingComplete();
 
   step("Compare voting power before and after voting");
-  const changedAdoptVotingPower = await proposalDetails
-    .getVotesResultPo()
-    .getAdoptVotingPower();
+  // const changedAdoptVotingPower = await proposalDetails
+  //   .getVotesResultPo()
+  //   .getAdoptVotingPower();
 
   // TODO: Mission 70 - Re-enable once backend deploys M70 changes.
   // The neuronAVotingPower from the backend still uses the old formula,
