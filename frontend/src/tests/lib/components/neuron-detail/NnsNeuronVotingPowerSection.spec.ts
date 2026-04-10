@@ -72,7 +72,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getGenericDescription()).toBe(
-      "voting_power = (staked_amount + staked_maturity) × (1 + age_bonus) × (1 + dissolve_delay_bonus) × activity_multiplier"
+      "voting_power = (staked_amount + staked_maturity + 8y_gang_bonus) × (1 + age_bonus) × (1 + dissolve_delay_bonus) × activity_multiplier"
     );
   });
 
