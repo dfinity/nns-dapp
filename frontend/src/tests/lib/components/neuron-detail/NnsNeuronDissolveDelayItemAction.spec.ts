@@ -1,5 +1,5 @@
 import NnsNeuronDissolveDelayItemAction from "$lib/components/neuron-detail/NnsNeuronDissolveDelayItemAction.svelte";
-import { SECONDS_IN_7_DAYS, SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_7_DAYS, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
