@@ -35,7 +35,7 @@ jobs:
       DFX_WARNING: -mainnet_plaintext_identity
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         # TODO: This builds, it doesn't use a release.  We probably want at least the option of using releases.
       - name: Get versions
         id: tool_versions
@@ -43,7 +43,7 @@ jobs:
       - name: Get dfx version
         run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
         with:
           dfx-version: ${{ env.DFX_VERSION }}
       - name: Set credentials
