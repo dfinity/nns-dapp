@@ -558,13 +558,7 @@ export const getUniversalProposalStatus = (
     [ProposalStatus.Executed]: "executed",
     [ProposalStatus.Failed]: "failed",
   };
-  const statusType = statusTypeMap[proposal.status];
-
-  if (isNullish(statusType)) {
-    throw new Error(`Unknown proposal status: ${proposal.status}`);
-  }
-
-  return statusType;
+  return statusTypeMap[proposal.status] ?? "unknown";
 };
 
 export const getVoteDisplay = (vote: Vote): string => {
