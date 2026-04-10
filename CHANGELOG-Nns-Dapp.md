@@ -11,6 +11,24 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 141231
+
+### Application
+
+#### Added
+
+- Added announcement banner and sidebar link for the new NNS governance app.
+
+#### Removed
+
+- Removed Kong Swap as an exchange rate provider.
+
+#### Fixed
+
+- Made `kongSwapUrl` and `icpSwapUrl` environment variables optional to prevent app crash in environments without them configured.
+
+### Operations
+
 ## Proposal 140953
 
 ### Application
