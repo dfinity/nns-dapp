@@ -91,7 +91,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDescription()).toBe(
-      "voting_power = (30.00 + 0) × 1.00 × 1.00 × 0.50 = 3.07"
+      "voting_power = (30.00 + 0 + 0.00) × 1.00 × 1.00 × 0.50 = 3.07"
     );
   });
 
