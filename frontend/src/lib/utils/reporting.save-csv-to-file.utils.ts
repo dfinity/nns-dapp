@@ -23,7 +23,7 @@ const saveFileWithPicker = async ({
   description: string;
 }) => {
   try {
-    const handle = await window.showSaveFilePicker({
+    const handle = await window.showSaveFilePicker!({
       suggestedName: `${fileName}.csv`,
       types: [
         {
