@@ -8,7 +8,7 @@ declare namespace App {
   // interface Platform {}
 }
 
-/** File System Access API — `showSaveFilePicker` is not yet on `Window` in our TS lib version. */
+/** WICG File System Access — TypeScript's bundled `lib.dom` does not declare `showSaveFilePicker` on `Window`. */
 interface Window {
   showSaveFilePicker?: (options: {
     suggestedName?: string;
