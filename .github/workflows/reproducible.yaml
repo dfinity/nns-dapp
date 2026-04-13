@@ -33,13 +33,13 @@ jobs:
       - name: Build
         run: ./scripts/docker-build
       - name: 'Upload nns-dapp wasm module'
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: nns-dapp-mainnet-wasm
           path: nns-dapp.wasm.gz
           retention-days: 3
       - name: 'Upload assets'
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: nns-dapp-assets
           path: assets.tar.xz
@@ -52,7 +52,7 @@ jobs:
         run: |
           sha256sum assets.tar.xz > "hashes/assets_sha256.txt"
       - name: 'Upload hashes'
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: hashes
           path: hashes/*.txt
