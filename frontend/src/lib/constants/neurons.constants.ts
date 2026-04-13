@@ -1,6 +1,7 @@
 import {
   SECONDS_IN_7_DAYS,
   SECONDS_IN_TWO_WEEKS,
+  SECONDS_IN_TWO_YEARS,
 } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@icp-sdk/canisters/nns";
@@ -36,6 +37,7 @@ export const MAX_DISSOLVE_DELAY_BONUS = 2; // = +200% (total multiplier = 1 + 2 
 export const MAX_AGE_BONUS = 0.25; // = +25%
 export const NNS_MINIMUM_DISSOLVE_DELAY = SECONDS_IN_7_DAYS;
 export const NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE = SECONDS_IN_TWO_WEEKS;
+export const NNS_MAXIMUM_DISSOLVE_DELAY = SECONDS_IN_TWO_YEARS;
 
 const FIRST_TOPICS = [
   Topic.Unspecified,
