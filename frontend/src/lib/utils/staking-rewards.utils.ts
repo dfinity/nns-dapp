@@ -12,11 +12,11 @@ import {
   SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
-  SECONDS_IN_TWO_YEARS,
 } from "$lib/constants/constants";
 import {
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
+  NNS_MAXIMUM_DISSOLVE_DELAY,
 } from "$lib/constants/neurons.constants";
 import type { GovernanceMetricsStoreData } from "$lib/stores/governance-metrics.store";
 import type { NetworkEconomicsStoreData } from "$lib/stores/network-economics.store";
@@ -872,7 +872,7 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
     params.nnsEconomics.parameters?.votingPowerEconomics
       ?.neuronMinimumDissolveDelayToVoteSeconds ?? 0n,
   minStake: params.nnsEconomics.parameters?.neuronMinimumStake ?? 0n,
-  maxDissolve: SECONDS_IN_TWO_YEARS,
+  maxDissolve: NNS_MAXIMUM_DISSOLVE_DELAY,
   maxDissolveBonus: MAX_DISSOLVE_DELAY_BONUS,
   maxAge: SECONDS_IN_FOUR_YEARS,
   maxAgeBonus: MAX_AGE_BONUS,

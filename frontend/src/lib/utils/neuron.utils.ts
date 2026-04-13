@@ -4,8 +4,6 @@ import {
   EIGHT_YEAR_GANG_BONUS_RATE,
   SECONDS_IN_DAY,
   SECONDS_IN_FOUR_YEARS,
-  SECONDS_IN_TWO_WEEKS,
-  SECONDS_IN_TWO_YEARS,
 } from "$lib/constants/constants";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
@@ -18,6 +16,8 @@ import {
   MAX_NEURONS_MERGED,
   MIN_DISBURSEMENT_WITH_VARIANCE,
   MIN_NEURON_STAKE,
+  NNS_MAXIMUM_DISSOLVE_DELAY,
+  NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
@@ -194,9 +194,9 @@ export const votingPower = ({
   ageSeconds,
   maxAgeBonus = MAX_AGE_BONUS,
   maxDissolveDelayBonus = MAX_DISSOLVE_DELAY_BONUS,
-  maxDissolveDelaySeconds = SECONDS_IN_TWO_YEARS,
+  maxDissolveDelaySeconds = NNS_MAXIMUM_DISSOLVE_DELAY,
   maxAgeSeconds = SECONDS_IN_FOUR_YEARS,
-  minDissolveDelaySeconds = SECONDS_IN_TWO_WEEKS,
+  minDissolveDelaySeconds = NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   dissolveDelayConvexity = 1,
 }: VotingPowerParams): bigint => {
   if (dissolveDelay < minDissolveDelaySeconds) {
@@ -224,7 +224,7 @@ export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
   bonusMultiplier({
     amount: delayInSeconds,
     maxBonus: MAX_DISSOLVE_DELAY_BONUS,
-    amountForMaxBonus: SECONDS_IN_TWO_YEARS,
+    amountForMaxBonus: NNS_MAXIMUM_DISSOLVE_DELAY,
     convexity: 2,
   });
 

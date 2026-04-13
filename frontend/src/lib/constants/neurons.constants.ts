@@ -39,6 +39,7 @@ export const NNS_MINIMUM_DISSOLVE_DELAY = SECONDS_IN_7_DAYS;
 export const NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE = SECONDS_IN_TWO_WEEKS;
 export const NNS_MAXIMUM_DISSOLVE_DELAY = SECONDS_IN_TWO_YEARS;
 
+
 const FIRST_TOPICS = [
   Topic.Unspecified,
   Topic.Governance,
