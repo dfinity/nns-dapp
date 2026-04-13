@@ -7,3 +7,14 @@ declare namespace App {
   // interface Error {}
   // interface Platform {}
 }
+
+/** File System Access API — `showSaveFilePicker` is not yet on `Window` in our TS lib version. */
+interface Window {
+  showSaveFilePicker?: (options: {
+    suggestedName?: string;
+    types?: Array<{
+      description: string;
+      accept: Record<string, string[]>;
+    }>;
+  }) => Promise<FileSystemFileHandle>;
+}
