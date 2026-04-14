@@ -82,14 +82,18 @@
       nnsNeurons: $neuronsStore,
       nnsEconomics: $networkEconomicsStore,
       fxRates: $tickersStore,
-      governanceMetrics: IS_TESTNET
-        ? ({
-            metrics: { totalSupplyIcp: 550_775_607n },
-          } as typeof $governanceMetricsStore)
-        : $governanceMetricsStore,
-      nnsTotalVotingPower: IS_TESTNET
-        ? 88_150_266_299_091_680n
-        : $nnsTotalVotingPowerStore,
+      // @TODO UPDATE MISSION 70 force new number until the API catches up, then remove this
+      governanceMetrics:
+        // eslint-disable-next-line no-constant-condition
+        IS_TESTNET || 1
+          ? ({
+              metrics: { totalSupplyIcp: 550_775_607n },
+            } as typeof $governanceMetricsStore)
+          : $governanceMetricsStore,
+      // @TODO UPDATE MISSION 70 force new number until the API catches up, then remove this
+      nnsTotalVotingPower:
+        // eslint-disable-next-line no-constant-condition
+        IS_TESTNET || 1 ? 88_150_266_299_091_680n : $nnsTotalVotingPowerStore,
     });
   }
 </script>
