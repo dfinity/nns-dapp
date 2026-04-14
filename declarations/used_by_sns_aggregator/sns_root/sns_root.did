@@ -1,4 +1,4 @@
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2026-04-02_04-48-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/ac5a702f6da7c9768441dbecf2ea440359dc7a57/rs/sns/root/canister/root.did>
 type CanisterCallError = record {
   code : opt int32;
   description : text;
