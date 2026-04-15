@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
-    SECONDS_IN_EIGHT_YEARS,
-    SECONDS_IN_HALF_YEAR,
-  } from "$lib/constants/constants";
+    NNS_MAXIMUM_DISSOLVE_DELAY,
+    NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
+  } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
   import {
     neuronStake as getNeuronStake,
@@ -37,8 +37,8 @@
   neuronState={neuron.state}
   neuronDissolveDelaySeconds={neuron.dissolveDelaySeconds}
   {neuronStake}
-  minProjectDelayInSeconds={SECONDS_IN_HALF_YEAR}
-  maxDelayInSeconds={SECONDS_IN_EIGHT_YEARS}
+  minProjectDelayInSeconds={NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE}
+  maxDelayInSeconds={NNS_MAXIMUM_DISSOLVE_DELAY}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.min_dissolve_delay_description}
 >

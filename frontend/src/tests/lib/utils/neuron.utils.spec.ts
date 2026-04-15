@@ -5,6 +5,8 @@ import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_HOUR,
   SECONDS_IN_MONTH,
+  SECONDS_IN_TWO_WEEKS,
+  SECONDS_IN_TWO_YEARS,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
@@ -118,9 +120,9 @@ import {
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
-  const enoughDissolveDelayToVote = BigInt(SECONDS_IN_HALF_YEAR);
+  const enoughDissolveDelayToVote = BigInt(SECONDS_IN_TWO_WEEKS);
   const nowSeconds = nowInSeconds();
-  const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
+  const minimumDissolveDelay = BigInt(SECONDS_IN_TWO_WEEKS);
 
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
@@ -141,7 +143,7 @@ describe("neuron-utils", () => {
         cachedNeuronStake: tokenStake.toE8s(),
       },
     };
-    it("should return zero for delays less than six months", () => {
+    it("should return zero for delays less than two weeks", () => {
       expect(
         neuronPotentialVotingPower({
           neuron: mockNeuron,
@@ -150,27 +152,27 @@ describe("neuron-utils", () => {
       ).toBe(0n);
     });
 
-    it("should return more than stake when delay more than six months", () => {
+    it("should return more than stake when delay more than two weeks", () => {
       expect(
         neuronPotentialVotingPower({
           neuron,
           newDissolveDelayInSeconds: BigInt(
-            SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR
+            SECONDS_IN_TWO_WEEKS + SECONDS_IN_HOUR
           ),
         })
       ).toBeGreaterThan(tokenStake.toE8s());
     });
 
-    it("should return the double when delay is eight years", () => {
+    it("should return 3x when delay is two years (max)", () => {
       const agedNeuron = {
         ...neuron,
-        dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_TWO_YEARS),
       };
       expect(
         neuronPotentialVotingPower({
           neuron: agedNeuron,
         })
-      ).toBe(tokenStake.toE8s() * 2n);
+      ).toBe(tokenStake.toE8s() * 3n);
     });
 
     it("should take into account age bonus", () => {
@@ -202,7 +204,7 @@ describe("neuron-utils", () => {
       };
       const powerWithNewDissolve = neuronPotentialVotingPower({
         neuron: agedNeuron,
-        newDissolveDelayInSeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+        newDissolveDelayInSeconds: BigInt(SECONDS_IN_TWO_YEARS),
       });
       const powerWithoutAge = neuronPotentialVotingPower({
         neuron: agedNeuron,
@@ -211,6 +213,9 @@ describe("neuron-utils", () => {
     });
 
     it("should match the calculation", () => {
+      // stake=200M, dissolve=1.5y, age=1y
+      // dissolveBonus = 2 * (1.5/2)^2 = 1.125, ageBonus = 0.25 * (1/4) = 0.0625
+      // VP = 200M * 2.125 * 1.0625 = 451_562_500
       const neuron = {
         ...mockNeuron,
         ageSeconds: BigInt(SECONDS_IN_YEAR),
@@ -223,7 +228,7 @@ describe("neuron-utils", () => {
       const power = neuronPotentialVotingPower({
         neuron,
       });
-      expect(power).toEqual(252_343_750n);
+      expect(power).toEqual(451_562_500n);
     });
   });
 
@@ -252,16 +257,14 @@ describe("neuron-utils", () => {
       expect(dissolveDelayMultiplier(0n)).toBe(1);
     });
 
-    it("be 2 when dissolve is eight years", () => {
-      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS))).toBe(2);
+    it("be 3 when dissolve is two years (max)", () => {
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_TWO_YEARS))).toBe(3);
     });
 
-    it("is a maximum of 2", () => {
+    it("is capped at 3 for delays above max", () => {
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS))).toBe(3);
       expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 2))).toBe(
-        2
-      );
-      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 4))).toBe(
-        2
+        3
       );
     });
 
@@ -272,8 +275,8 @@ describe("neuron-utils", () => {
       expect(dissolveDelayMultiplier(1_000n)).toBeGreaterThan(1);
     });
 
-    it("returns expected multiplier for one year", () => {
-      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.125);
+    it("returns expected quadratic multiplier for one year", () => {
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.5);
     });
   });
 
@@ -4013,9 +4016,8 @@ describe("neuron-utils", () => {
           hasEnoughDissolveDelayToVote(
             {
               ...mockNeuron,
-              dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR - 1),
+              dissolveDelaySeconds: BigInt(SECONDS_IN_TWO_WEEKS - 1),
             },
-
             minimumDissolveDelay
           )
         ).toBe(false);

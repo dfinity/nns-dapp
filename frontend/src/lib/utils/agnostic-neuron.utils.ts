@@ -1,3 +1,4 @@
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { bigIntMax } from "$lib/utils/bigInt.utils";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -212,16 +213,29 @@ export const getNeuronBonusRatio = (
     ageMax: number;
     ageBonus: number;
     referenceDate: Date;
+    dissolveConvexity?: number;
   }
 ) => {
-  const { dissolveMax, dissolveBonus, ageMax, ageBonus, referenceDate } =
-    params;
+  const {
+    dissolveMax,
+    dissolveBonus,
+    ageMax,
+    ageBonus,
+    referenceDate,
+    dissolveConvexity = 1,
+  } = params;
   const ageSeconds = getNeuronAgeSeconds(neuron, referenceDate);
   const agingBonus = Math.min(ageSeconds / ageMax, 1) * ageBonus;
 
   const dissolveSeconds = getNeuronDissolveDelaySeconds(neuron, referenceDate);
-  const dissolvingBonus =
-    Math.min(Number(dissolveSeconds) / dissolveMax, 1) * dissolveBonus;
+  const dissolveMaxYears = dissolveMax / SECONDS_IN_YEAR;
+  const dissolveYears = Math.min(
+    Number(dissolveSeconds) / SECONDS_IN_YEAR,
+    dissolveMaxYears
+  );
+  const a = dissolveBonus / dissolveMaxYears ** dissolveConvexity;
+  const dissolvingBonus = a * dissolveYears ** dissolveConvexity;
+
   return (1 + dissolvingBonus) * (1 + agingBonus) - 1;
 };
 

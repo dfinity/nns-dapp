@@ -16,6 +16,8 @@ export const SECONDS_IN_7_DAYS = 7 * SECONDS_IN_DAY;
 export const SECONDS_IN_YEAR = ((4 * 365 + 1) * SECONDS_IN_DAY) / 4;
 export const SECONDS_IN_HALF_YEAR = SECONDS_IN_YEAR / 2;
 export const SECONDS_IN_MONTH = SECONDS_IN_YEAR / 12;
+export const SECONDS_IN_TWO_WEEKS = SECONDS_IN_DAY * 14;
+export const SECONDS_IN_TWO_YEARS = SECONDS_IN_YEAR * 2;
 export const SECONDS_IN_FOUR_YEARS = SECONDS_IN_YEAR * 4;
 export const SECONDS_IN_EIGHT_YEARS = SECONDS_IN_YEAR * 8;
 
@@ -31,6 +33,13 @@ export const PRICE_NOT_AVAILABLE = "price-not-available";
 export const NNS_GENESIS_TIMESTAMP_SECONDS = 1_620_604_800; // May 10, 2021
 export const NNS_INITIAL_REWARD_RATE = 0.1; // 10%
 export const NNS_FINAL_REWARD_RATE = 0.05; // 5%
+// Mission 70 contraction factor: scales the voting reward pool to match reduced inflation target.
+// Derived from neuron population simulation.
+export const POOL_REDUCTION_FACTOR = 0.6329;
+
+// 8-year gang bonus: 10% of snapshotted base, expires end of 2030
+export const EIGHT_YEAR_GANG_BONUS_RATE = 0.1;
+export const EIGHT_YEAR_GANG_BONUS_EXPIRY_SECONDS = 1_924_991_999; // 2030-12-31T23:59:59Z
 
 export const E8S_PRECISION = 8;
 export const E8S_RATE = 10 ** E8S_PRECISION;

@@ -6,12 +6,14 @@
   import { neuronMinimumDissolveDelayToVoteSeconds } from "$lib/derived/network-economics.derived";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import {
     activityMultiplier,
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
     formattedStakedMaturity,
+    getEightYearGangBonusE8s,
     hasEnoughDissolveDelayToVote,
     neuronDashboardUrl,
     neuronStake,
@@ -77,6 +79,10 @@
                       value: neuronStake(neuron),
                     }),
                     $maturityStaked: formattedStakedMaturity(neuron),
+                    $gangBonus: (
+                      Number(getEightYearGangBonusE8s(neuron, new Date())) /
+                      E8S_PER_ICP
+                    ).toFixed(2),
                     $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
                     $dissolveMultiplier: dissolveDelayMultiplier(
                       neuron.dissolveDelaySeconds

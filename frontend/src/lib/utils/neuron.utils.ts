@@ -1,9 +1,9 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  EIGHT_YEAR_GANG_BONUS_EXPIRY_SECONDS,
+  EIGHT_YEAR_GANG_BONUS_RATE,
   SECONDS_IN_DAY,
-  SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
-  SECONDS_IN_HALF_YEAR,
 } from "$lib/constants/constants";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
@@ -16,6 +16,8 @@ import {
   MAX_NEURONS_MERGED,
   MIN_DISBURSEMENT_WITH_VARIANCE,
   MIN_NEURON_STAKE,
+  NNS_MAXIMUM_DISSOLVE_DELAY,
+  NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
@@ -120,18 +122,18 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo =>
  * The actual voting power of the neuron can be found in the decidingVotingPower field,
  * as it accounts for missing voting rewards due to user inactivity (votingPowerRefreshedTimestampSeconds).
  *
- * If neuron's dissolve delay is less than 6 months, the voting power is 0.
+ * If neuron's dissolve delay is less than 2 weeks, the voting power is 0.
  *
  * Else:
- * votingPower = (stake + staked maturity) * dissolve_delay_bonus * age_bonus
- * dissolve_delay_bonus = 1 + (dissolve_delay_multiplier * neuron dissolve delay / 8 years)
+ * votingPower = (stake + staked maturity + 8y gang bonus) * dissolve_delay_bonus * age_bonus
+ * dissolve_delay_bonus = 1 + dissolve_delay_multiplier * (dissolve_delay / max_delay)^convexity
  * age_bonus = 1 + (age_multiplier * ageSeconds / 4 years)
  *
- * dissolve_delay_multiplier is 1 in NNS
+ * Mission 70 NNS: convexity=2 (quadratic), max_delay=2 years, dissolve_delay_multiplier=2
  * age_multiplier is 0.25 in NNS
  *
  * ageSeconds is capped at 4 years
- * neuron dissolve delay is capped at 8 years
+ * neuron dissolve delay is capped at 2 years
  *
  * Reference: https://internetcomputer.org/docs/current/tokenomics/sns/rewards#recap-on-nns-voting-rewards
  *
@@ -149,13 +151,16 @@ export const neuronPotentialVotingPower = ({
 }): bigint => {
   const dissolveDelay =
     newDissolveDelayInSeconds ?? neuron.dissolveDelaySeconds;
+  const eightYearGangExtra = getEightYearGangBonusE8s(neuron, new Date());
   const stakeE8s =
     (neuron.fullNeuron?.cachedNeuronStake ?? 0n) +
-    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n);
+    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n) +
+    eightYearGangExtra;
   return votingPower({
     stakeE8s,
     dissolveDelay,
     ageSeconds: neuron.ageSeconds,
+    dissolveDelayConvexity: 2,
   });
 };
 
@@ -170,6 +175,7 @@ interface VotingPowerParams {
   maxAgeSeconds?: number;
   maxDissolveDelaySeconds?: number;
   minDissolveDelaySeconds?: number;
+  dissolveDelayConvexity?: number;
 }
 
 /**
@@ -188,9 +194,10 @@ export const votingPower = ({
   ageSeconds,
   maxAgeBonus = MAX_AGE_BONUS,
   maxDissolveDelayBonus = MAX_DISSOLVE_DELAY_BONUS,
-  maxDissolveDelaySeconds = SECONDS_IN_EIGHT_YEARS,
+  maxDissolveDelaySeconds = NNS_MAXIMUM_DISSOLVE_DELAY,
   maxAgeSeconds = SECONDS_IN_FOUR_YEARS,
-  minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
+  minDissolveDelaySeconds = NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
+  dissolveDelayConvexity = 1,
 }: VotingPowerParams): bigint => {
   if (dissolveDelay < minDissolveDelaySeconds) {
     return 0n;
@@ -199,6 +206,7 @@ export const votingPower = ({
     amount: dissolveDelay,
     maxBonus: maxDissolveDelayBonus,
     amountForMaxBonus: maxDissolveDelaySeconds,
+    convexity: dissolveDelayConvexity,
   });
   const ageMultiplier = bonusMultiplier({
     amount: ageSeconds,
@@ -216,7 +224,8 @@ export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
   bonusMultiplier({
     amount: delayInSeconds,
     maxBonus: MAX_DISSOLVE_DELAY_BONUS,
-    amountForMaxBonus: SECONDS_IN_EIGHT_YEARS,
+    amountForMaxBonus: NNS_MAXIMUM_DISSOLVE_DELAY,
+    convexity: 2,
   });
 
 export const ageMultiplier = (ageSeconds: bigint): number =>
@@ -238,30 +247,49 @@ export const activityMultiplier = ({ fullNeuron }: NeuronInfo) => {
   return Number(decidingVotingPower) / Number(potentialVotingPower);
 };
 
-// Calculates the bonus multiplier for an amount (such as dissolve delay or age)
-// which results in bonus eligibility which scales linearly from 1 to
-// `maxBonus`. For example for dissolve delay, the values
-//   amount: 4 years
-//   amountForMaxBonus: 8 years
-//   maxBonus: 1
-// Would mean that there is a maximum bonus of 1 = 100% (which means a
-// multiplier of 2) but with a dissolve delay of 4 years out of a maximum of
-// 8 years, the bonus would be 50%, which means a multiplier of 1.5.
-// So in this case the return value would be 1.5.
+// Calculates the bonus multiplier for an amount (such as dissolve delay or age).
+// With convexity=1 (default), scales linearly. With convexity=2, scales quadratically
+// (Mission 70 NNS dissolve delay bonus).
 export const bonusMultiplier = ({
   amount,
   amountForMaxBonus,
   maxBonus,
+  convexity = 1,
 }: {
   amount: bigint;
   amountForMaxBonus: number;
   maxBonus: number;
+  convexity?: number;
 }): number => {
   const bonusProportion =
     amountForMaxBonus === 0
       ? 0
       : Math.min(Number(amount), amountForMaxBonus) / amountForMaxBonus;
-  return 1 + maxBonus * bonusProportion;
+  return 1 + maxBonus * bonusProportion ** convexity;
+};
+
+/**
+ * Returns the 8-year gang bonus in e8s to add to the effective stake.
+ * bonus = eightYearGangBonusBaseE8s * EIGHT_YEAR_GANG_BONUS_RATE, subject to:
+ * - The neuron is not dissolving (bonus lost on dissolve)
+ * - The field is > 0 (neuron has the 8y gang flag)
+ * - The reference date is before the expiry (end of 2030)
+ */
+export const getEightYearGangBonusE8s = (
+  neuron: NeuronInfo,
+  referenceDate: Date
+): bigint => {
+  if (neuron.state === NeuronState.Dissolving) return 0n;
+
+  const referenceDateSeconds = Math.floor(referenceDate.getTime() / 1000);
+  if (referenceDateSeconds > EIGHT_YEAR_GANG_BONUS_EXPIRY_SECONDS) return 0n;
+
+  const base: bigint =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- field not yet in SDK types
+    (neuron.fullNeuron as any)?.eightYearGangBonusBaseE8s ?? 0n;
+  if (base <= 0n) return 0n;
+
+  return BigInt(Math.floor(Number(base) * EIGHT_YEAR_GANG_BONUS_RATE));
 };
 
 // TODO: Do we need this? What does it mean to have a valid stake?

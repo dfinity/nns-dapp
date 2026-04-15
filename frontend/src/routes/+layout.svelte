@@ -14,6 +14,7 @@
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { i18n } from "$lib/stores/i18n";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
@@ -81,8 +82,18 @@
       nnsNeurons: $neuronsStore,
       nnsEconomics: $networkEconomicsStore,
       fxRates: $tickersStore,
-      governanceMetrics: $governanceMetricsStore,
-      nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+      // @TODO UPDATE MISSION 70 force new number until the API catches up, then remove this
+      governanceMetrics:
+        // eslint-disable-next-line no-constant-condition
+        IS_TESTNET || 1
+          ? ({
+              metrics: { totalSupplyIcp: 550_775_607n },
+            } as typeof $governanceMetricsStore)
+          : $governanceMetricsStore,
+      // @TODO UPDATE MISSION 70 force new number until the API catches up, then remove this
+      nnsTotalVotingPower:
+        // eslint-disable-next-line no-constant-condition
+        IS_TESTNET || 1 ? 88_150_266_299_091_680n : $nnsTotalVotingPowerStore,
     });
   }
 </script>

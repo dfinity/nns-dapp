@@ -150,7 +150,7 @@ describe("VotingCard", () => {
     } as ProposalInfo);
     expect(
       await po.getIneligibleNeuronListPo().getIneligibleReasonTexts()
-    ).toEqual(["dissolve delay < 6 months"]);
+    ).toEqual(["dissolve delay < 14 days"]);
   });
 
   it("should disable action buttons if no neurons selected", async () => {

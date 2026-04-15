@@ -31,7 +31,7 @@ describe("IneligibleNeuronsCard", () => {
     });
     expect(getByTestId("ineligible-neurons-description")).toBeInTheDocument();
     expect(getByTestId("ineligible-neurons-description").textContent).toEqual(
-      "The following neurons are not eligible to vote. They either have dissolve delays of less than 6 months at the time when the proposal was submitted, or they were created after the proposal was submitted."
+      "The following neurons are not eligible to vote. They either have dissolve delays of less than 14 days at the time when the proposal was submitted, or they were created after the proposal was submitted."
     );
   });
 
@@ -50,7 +50,7 @@ describe("IneligibleNeuronsCard", () => {
       },
     });
     expect(getByTestId("ineligible-neurons-description").textContent).toEqual(
-      "The following neurons are not eligible to vote. They either have dissolve delays of less than 10 years at the time when the proposal was submitted, or they were created after the proposal was submitted."
+      "The following neurons are not eligible to vote. They either have dissolve delays of less than 9 months, 7 days at the time when the proposal was submitted, or they were created after the proposal was submitted."
     );
   });
 

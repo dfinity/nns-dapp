@@ -58,7 +58,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDescription()).toBe(
-      "The dissolve delay must be at least 6 months for the neuron to have voting power. Learn more about voting power on the dashboard."
+      "The dissolve delay must be at least 2 weeks for the neuron to have voting power. Learn more about voting power on the dashboard."
     );
   });
 
@@ -72,7 +72,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getGenericDescription()).toBe(
-      "voting_power = (staked_amount + staked_maturity) × (1 + age_bonus) × (1 + dissolve_delay_bonus) × activity_multiplier"
+      "voting_power = (staked_amount + staked_maturity + 8y_gang_bonus) × (1 + age_bonus) × (1 + dissolve_delay_bonus) × activity_multiplier"
     );
   });
 
@@ -91,7 +91,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDescription()).toBe(
-      "voting_power = (30.00 + 0) × 1.00 × 1.06 × 0.50 = 3.07"
+      "voting_power = (30.00 + 0 + 0.00) × 1.00 × 1.00 × 0.50 = 3.07"
     );
   });
 

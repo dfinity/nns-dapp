@@ -8,6 +8,7 @@ import {
   NNS_FINAL_REWARD_RATE,
   NNS_GENESIS_TIMESTAMP_SECONDS,
   NNS_INITIAL_REWARD_RATE,
+  POOL_REDUCTION_FACTOR,
   SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -15,6 +16,7 @@ import {
 import {
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
+  NNS_MAXIMUM_DISSOLVE_DELAY,
 } from "$lib/constants/neurons.constants";
 import type { GovernanceMetricsStoreData } from "$lib/stores/governance-metrics.store";
 import type { NetworkEconomicsStoreData } from "$lib/stores/network-economics.store";
@@ -40,7 +42,9 @@ import {
 } from "$lib/utils/agnostic-neuron.utils";
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { getEightYearGangBonusE8s } from "$lib/utils/neuron.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 
 /////////////////
@@ -605,7 +609,12 @@ const getNeuronsRewardEstimationUSD = (params: {
           getDate(i, forceInitialDate)
         )
       ) {
-        const fullStake = getNeuronTotalStakeAfterFeesE8s(neuron);
+        const referenceDate = getDate(i, forceInitialDate);
+        const baseStake = getNeuronTotalStakeAfterFeesE8s(neuron);
+        const eightYearGangExtra = !sns
+          ? getEightYearGangBonusE8s(neuron as NeuronInfo, referenceDate)
+          : 0n;
+        const fullStake = baseStake + eightYearGangExtra;
         if (fullStake > 0n) {
           const votingPowerRatio =
             1 + getNeuronBonus(otherParams, neuron, i, sns, forceInitialDate);
@@ -689,6 +698,7 @@ const getPoolReward = (params: {
   finalRewardRate: number;
   transitionDurationSeconds: number;
   referenceDate: Date;
+  poolReductionFactor?: number;
 }) => {
   const {
     genesisTimestampSeconds,
@@ -697,6 +707,7 @@ const getPoolReward = (params: {
     finalRewardRate,
     transitionDurationSeconds,
     referenceDate,
+    poolReductionFactor = 1,
   } = params;
 
   let rewardRate = 0;
@@ -715,7 +726,7 @@ const getPoolReward = (params: {
       finalRewardRate + rateDiff * (remainingDays / durationDays) ** 2;
   }
 
-  return (totalSupply * rewardRate) / DAYS_IN_AVG_YEAR;
+  return (totalSupply * rewardRate * poolReductionFactor) / DAYS_IN_AVG_YEAR;
 };
 
 const getTokenReward = (
@@ -745,13 +756,15 @@ const getTokenReward = (
     20
   );
 
+  const rewardParams = getRewardParams(params, sns);
   const poolReward = getPoolReward({
     genesisTimestampSeconds: getGenesisTimestampSeconds(sns),
     referenceDate: getDate(addDays, forceInitialDate),
-    transitionDurationSeconds: getRewardParams(params, sns).rewardTransition,
-    initialRewardRate: getRewardParams(params, sns).initialReward,
-    finalRewardRate: getRewardParams(params, sns).finalReward,
-    totalSupply: getRewardParams(params, sns).totalSupply,
+    transitionDurationSeconds: rewardParams.rewardTransition,
+    initialRewardRate: rewardParams.initialReward,
+    finalRewardRate: rewardParams.finalReward,
+    totalSupply: rewardParams.totalSupply,
+    poolReductionFactor: rewardParams.poolReductionFactor,
   });
 
   if (poolReward === 0) {
@@ -771,14 +784,17 @@ const getNeuronBonus = (
   addDays: number,
   sns?: CachedSnsDto,
   forceInitialDate?: Date
-): number =>
-  getNeuronBonusRatio(neuron, {
-    dissolveMax: getRewardParams(params, sns).maxDissolve,
-    dissolveBonus: getRewardParams(params, sns).maxDissolveBonus,
-    ageMax: getRewardParams(params, sns).maxAge,
-    ageBonus: getRewardParams(params, sns).maxAgeBonus,
+): number => {
+  const rp = getRewardParams(params, sns);
+  return getNeuronBonusRatio(neuron, {
+    dissolveMax: rp.maxDissolve,
+    dissolveBonus: rp.maxDissolveBonus,
+    ageMax: rp.maxAge,
+    ageBonus: rp.maxAgeBonus,
     referenceDate: getDate(addDays, forceInitialDate),
+    dissolveConvexity: rp.dissolveConvexity,
   });
+};
 
 const getGenesisTimestampSeconds = (sns?: CachedSnsDto): number => {
   if (sns) {
@@ -842,6 +858,8 @@ const getSnsRewardParams = (sns: CachedSnsDto) => {
       snsSystemParams.voting_rewards_parameters
         ?.reward_rate_transition_duration_seconds ?? 0,
     totalSupply: Math.trunc(sns.icrc1_total_supply / E8S_RATE),
+    dissolveConvexity: 1,
+    poolReductionFactor: undefined,
   };
 };
 
@@ -854,7 +872,7 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
     params.nnsEconomics.parameters?.votingPowerEconomics
       ?.neuronMinimumDissolveDelayToVoteSeconds ?? 0n,
   minStake: params.nnsEconomics.parameters?.neuronMinimumStake ?? 0n,
-  maxDissolve: SECONDS_IN_EIGHT_YEARS,
+  maxDissolve: NNS_MAXIMUM_DISSOLVE_DELAY,
   maxDissolveBonus: MAX_DISSOLVE_DELAY_BONUS,
   maxAge: SECONDS_IN_FOUR_YEARS,
   maxAgeBonus: MAX_AGE_BONUS,
@@ -862,4 +880,6 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
   finalReward: NNS_FINAL_REWARD_RATE,
   rewardTransition: SECONDS_IN_EIGHT_YEARS,
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
+  dissolveConvexity: 2,
+  poolReductionFactor: POOL_REDUCTION_FACTOR,
 });

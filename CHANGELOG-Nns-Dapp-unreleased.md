@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Mission 70: Updated NNS voting rewards and staking calculations to reflect the Mission 70 changes.
+
 #### Deprecated
 
 #### Removed

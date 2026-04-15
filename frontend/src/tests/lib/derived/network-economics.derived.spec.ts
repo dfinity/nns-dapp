@@ -1,6 +1,7 @@
 import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
+  SECONDS_IN_TWO_WEEKS,
 } from "$lib/constants/constants";
 import {
   clearFollowingAfterSecondsStore,
@@ -53,7 +54,7 @@ describe("network-economics-derived", () => {
       });
 
       expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(
-        BigInt(SECONDS_IN_HALF_YEAR)
+        BigInt(SECONDS_IN_TWO_WEEKS)
       );
     });
 
