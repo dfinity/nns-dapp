@@ -58,7 +58,8 @@
       initiator: "accounts",
     });
 
-    const isBurn = nonNullish(burnAddress) && destinationAddress === burnAddress;
+    const isBurn =
+      nonNullish(burnAddress) && destinationAddress === burnAddress;
 
     const { blockIndex } = await transferTokens({
       source: sourceAccount,
