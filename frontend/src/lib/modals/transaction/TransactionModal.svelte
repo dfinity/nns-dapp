@@ -60,6 +60,7 @@
 
   // Optional transaction memo to include in the submission payload
   export let withMemo: boolean = false;
+  export let burnAddress: string | undefined = undefined;
 
   // Init configuration only once when component is mounting. The configuration should not vary when user interact with the form.
   let canSelectDestination = isNullish(transactionInit.destinationAddress);
@@ -68,6 +69,10 @@
   let memo: string | undefined = undefined;
 
   let selectedDestinationAddress: string | undefined = destinationAddress;
+
+  let isBurnDestination: boolean;
+  $: isBurnDestination =
+    nonNullish(burnAddress) && selectedDestinationAddress === burnAddress;
 
   let showManualAddress = selectDestinationMethods !== "dropdown";
 
@@ -165,6 +170,7 @@
       {showLedgerFee}
       on:nnsOpenQRCodeReader={goQRCode}
       {withMemo}
+      {burnAddress}
     >
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
@@ -182,7 +188,7 @@
       {disableSubmit}
       {token}
       {selectedNetwork}
-      {showLedgerFee}
+      showLedgerFee={showLedgerFee && !isBurnDestination}
       on:nnsSubmit
       on:nnsClose
       {withMemo}

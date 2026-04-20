@@ -364,6 +364,7 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   token_transaction_fee: string;
   transaction_fee: string;
+  burn_address: string;
   review_transaction: string;
   current_balance: string;
   confirm_and_send: string;
