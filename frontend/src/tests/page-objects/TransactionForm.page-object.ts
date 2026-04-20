@@ -151,4 +151,12 @@ export class TransactionFormPo extends BasePageObject {
   async hasManualAddressLink(): Promise<boolean> {
     return this.getManualAddressLink().isPresent();
   }
+
+  hasBurnAddressLabel(): Promise<boolean> {
+    return this.root.byTestId("burn-address-label").isPresent();
+  }
+
+  async hasFee(): Promise<boolean> {
+    return this.getTransactionFormFeePo().isPresent();
+  }
 }
