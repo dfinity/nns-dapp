@@ -67,6 +67,7 @@
   export let validateAmount: ValidateAmountFn = () => undefined;
   export let withMemo: boolean = false;
   export let memo: string | undefined = undefined;
+  export let burnAddress: string | undefined = undefined;
 
   let filterSourceAccounts: (account: Account) => boolean;
   $: filterSourceAccounts = (account: Account) => {
@@ -78,10 +79,19 @@
     return account.identifier !== selectedAccount?.identifier;
   };
 
+  let isBurnDestination: boolean;
+  $: isBurnDestination =
+    nonNullish(burnAddress) && selectedDestinationAddress === burnAddress;
+
+  let effectiveFeeUlps: bigint;
+  $: effectiveFeeUlps = isBurnDestination
+    ? 0n
+    : toTokenAmountV2(transactionFee).toUlps();
+
   let max = 0;
   $: max = getMaxTransactionAmount({
     balance: selectedAccount?.balanceUlps,
-    fee: toTokenAmountV2(transactionFee).toUlps(),
+    fee: effectiveFeeUlps,
     maxAmount,
     token,
   });
@@ -113,7 +123,7 @@
       const tokens = TokenAmountV2.fromNumber({ amount, token });
       assertEnoughAccountFunds({
         account: selectedAccount,
-        amountUlps: tokens.toUlps() + toTokenAmountV2(transactionFee).toUlps(),
+        amountUlps: tokens.toUlps() + effectiveFeeUlps,
       });
       errorMessage = validateAmount({ amount, selectedAccount });
     } catch (error: unknown) {
@@ -328,6 +338,12 @@
     {/if}
   {/if}
 
+  {#if isBurnDestination}
+    <p class="burn-address-label" data-tid="burn-address-label">
+      {$i18n.accounts.burn_address}
+    </p>
+  {/if}
+
   {#if mustSelectNetwork}
     <TransactionFormItemNetwork
       bind:selectedNetwork
@@ -347,7 +363,7 @@
       {balance}
     />
 
-    {#if showLedgerFee}
+    {#if showLedgerFee && !isBurnDestination}
       <TransactionFormFee {transactionFee} />
     {/if}
 
@@ -416,6 +432,12 @@
         color: var(--text-description);
       }
     }
+  }
+
+  .burn-address-label {
+    font-size: var(--font-size-small);
+    color: var(--text-description);
+    margin: 0;
   }
 
   .manual-address-info {

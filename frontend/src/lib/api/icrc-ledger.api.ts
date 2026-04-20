@@ -8,6 +8,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import {
   arrayOfNumberToUint8Array,
+  fromNullable,
   isNullish,
   nonNullish,
   toNullable,
@@ -43,6 +44,24 @@ export const queryIcrcToken = async ({
   }
 
   return token;
+};
+
+export const queryIcrcMintingAccount = async ({
+  certified,
+  identity,
+  canisterId,
+}: {
+  certified: boolean;
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<IcrcAccount | undefined> => {
+  const { canister } = await icrcLedgerCanister({ identity, canisterId });
+  const result = fromNullable(await canister.getMintingAccount({ certified }));
+  if (isNullish(result)) return undefined;
+  return {
+    owner: result.owner,
+    subaccount: fromNullable(result.subaccount),
+  };
 };
 
 export const queryIcrcBalance = async ({

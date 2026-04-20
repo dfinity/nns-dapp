@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { queryIcrcMintingAccount } from "$lib/api/icrc-ledger.api";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
+  import { getCurrentIdentity } from "$lib/services/auth.services";
   import { transferTokens } from "$lib/services/icrc-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -11,7 +13,8 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
+  import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
@@ -25,6 +28,18 @@
   };
 
   let currentStep: WizardStep | undefined;
+  let burnAddress: string | undefined = undefined;
+
+  onMount(async () => {
+    const mintingAccount = await queryIcrcMintingAccount({
+      identity: getCurrentIdentity(),
+      canisterId: ledgerCanisterId,
+      certified: false,
+    });
+    if (nonNullish(mintingAccount)) {
+      burnAddress = encodeIcrcAccount(mintingAccount);
+    }
+  });
 
   $: title =
     currentStep?.name === "Form"
@@ -43,12 +58,14 @@
       initiator: "accounts",
     });
 
+    const isBurn = nonNullish(burnAddress) && destinationAddress === burnAddress;
+
     const { blockIndex } = await transferTokens({
       source: sourceAccount,
       destinationAddress,
       amountUlps: numberToUlps({ amount, token }),
       ledgerCanisterId,
-      fee: transactionFee.toUlps(),
+      fee: isBurn ? 0n : transactionFee.toUlps(),
     });
 
     stopBusy("accounts");
@@ -70,6 +87,7 @@
   {token}
   {transactionFee}
   {transactionInit}
+  {burnAddress}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">
