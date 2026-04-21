@@ -6,6 +6,7 @@
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { formatUsdValue } from "$lib/utils/format.utils";
+  import { formatDissolveDelay } from "$lib/utils/date.utils";
   import {
     formatVotingPower,
     neuronPotentialVotingPower,
@@ -63,7 +64,7 @@
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
-    <h3>{secondsToDuration({ seconds: delayInSeconds, i18n: $i18n.time })}</h3>
+    <h3>{formatDissolveDelay(delayInSeconds)}</h3>
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>

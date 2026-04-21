@@ -7,6 +7,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatDissolveDelay } from "$lib/utils/date.utils";
   import {
     dissolveDelayMultiplier,
     getDissolvingTimeInSeconds,
@@ -51,7 +52,7 @@
   let duration: string;
   $: duration =
     remainingTimeSeconds > 0n
-      ? secondsToDuration({ seconds: remainingTimeSeconds, i18n: $i18n.time })
+      ? formatDissolveDelay(remainingTimeSeconds)
       : "0";
 
   let tooltipText: string | undefined;

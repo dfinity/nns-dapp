@@ -6,6 +6,7 @@ import type {
 } from "$lib/types/reporting";
 import {
   formatDateCompact,
+  formatDissolveDelay,
   getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
   nowInBigIntNanoSeconds,
@@ -468,10 +469,7 @@ export const buildNeuronsDatasets = ({
       }),
       availableMaturity: formatMaturity(availableMaturity),
       stakedMaturity: formatMaturity(stakedMaturity),
-      dissolveDelaySeconds: secondsToDuration({
-        seconds: neuron.dissolveDelaySeconds,
-        i18n: i18n.time,
-      }),
+      dissolveDelaySeconds: formatDissolveDelay(neuron.dissolveDelaySeconds),
       dissolveDate: dissolveDate ?? i18n.core.not_applicable,
       creationDate,
       state: i18n.neuron_state[getStateInfo(neuron.state).textKey],

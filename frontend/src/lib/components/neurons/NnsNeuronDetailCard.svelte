@@ -9,9 +9,10 @@
     neuronAge,
     neuronStake,
   } from "$lib/utils/neuron.utils";
+  import { formatDissolveDelay } from "$lib/utils/date.utils";
   import { Card, KeyValuePair } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
-  import { ICPToken, TokenAmountV2, secondsToDuration } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
   export let testId = "nns-neuron-detail-card-component";
@@ -44,10 +45,7 @@
         >{$i18n.neurons.dissolve_delay_title}</span
       >{/snippet}
     {#snippet value()}<span class="value"
-        >{secondsToDuration({
-          seconds: neuron.dissolveDelaySeconds,
-          i18n: $i18n.time,
-        })}</span
+        >{formatDissolveDelay(neuron.dissolveDelaySeconds)}</span
       >{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="age">
