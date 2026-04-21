@@ -224,6 +224,13 @@ describe("formatDissolveDelay", () => {
       const seconds = BigInt(SECONDS_IN_YEAR * 2) - 3600n;
       expect(formatDissolveDelay(seconds)).toBe("2 years, 11 hours");
     });
+
+    it("keeps 6h for a neuron that has been dissolving for 6h from a 2-year delay", () => {
+      // Previously years = floor((2y - 6h) / 365.25d) = 1, artifact = 6h → false strip.
+      // Fixed: years = floor((2y - 6h) / 365d) = 2, artifact = 12h → no match.
+      const seconds = BigInt(SECONDS_IN_YEAR * 2) - 6n * 3600n;
+      expect(formatDissolveDelay(seconds)).toBe("2 years, 6 hours");
+    });
   });
 
   it("returns empty string for 0 seconds", () => {
