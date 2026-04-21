@@ -51,9 +51,7 @@
 
   let duration: string;
   $: duration =
-    remainingTimeSeconds > 0n
-      ? formatDissolveDelay(remainingTimeSeconds)
-      : "0";
+    remainingTimeSeconds > 0n ? formatDissolveDelay(remainingTimeSeconds) : "0";
 
   let tooltipText: string | undefined;
   $: tooltipText =
