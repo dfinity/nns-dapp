@@ -7,6 +7,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatDissolveDelay } from "$lib/utils/date.utils";
   import {
     dissolveDelayMultiplier,
     getDissolvingTimeInSeconds,
@@ -15,7 +16,7 @@
   } from "$lib/utils/neuron.utils";
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
-  import { ICPToken, secondsToDuration } from "@dfinity/utils";
+  import { ICPToken } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 
@@ -50,9 +51,7 @@
 
   let duration: string;
   $: duration =
-    remainingTimeSeconds > 0n
-      ? secondsToDuration({ seconds: remainingTimeSeconds, i18n: $i18n.time })
-      : "0";
+    remainingTimeSeconds > 0n ? formatDissolveDelay(remainingTimeSeconds) : "0";
 
   let tooltipText: string | undefined;
   $: tooltipText =

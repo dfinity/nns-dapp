@@ -47,9 +47,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getDissolveState()).toBe(
-      "Dissolve Delay: 2 years, 12 hours"
-    );
+    expect(await po.getDissolveState()).toBe("Dissolve Delay: 2 years");
     expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +200%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
@@ -68,7 +66,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getDissolveState()).toBe("Remaining: 2 years, 12 hours");
+    expect(await po.getDissolveState()).toBe("Remaining: 2 years");
     expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +200%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
@@ -152,7 +150,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years."
     );
   });
 
@@ -165,7 +163,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years."
     );
   });
 });
