@@ -19,7 +19,6 @@
     ICPToken,
     isNullish,
     nonNullish,
-    secondsToDuration,
     TokenAmountV2,
   } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
