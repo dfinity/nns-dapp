@@ -12,7 +12,7 @@
   import { formatDissolveDelay } from "$lib/utils/date.utils";
   import { Card, KeyValuePair } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2, secondsToDuration } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
   export let testId = "nns-neuron-detail-card-component";
