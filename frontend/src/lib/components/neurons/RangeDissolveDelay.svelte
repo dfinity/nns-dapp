@@ -25,6 +25,7 @@
     </div>
     <div>
       {#if delayInSeconds > 0}
+        <!-- Math.round guards against BigInt() throwing on non-integer numbers -->
         <p class="label"
           >{formatDissolveDelay(BigInt(Math.round(delayInSeconds)))}</p
         >
