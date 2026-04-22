@@ -195,46 +195,117 @@ describe("secondsToTime", () => {
 });
 
 describe("formatDissolveDelay", () => {
-  describe("strips the 365.25-day artifact for round year values", () => {
-    it("strips 6h artifact for 1 year", () => {
+  it("returns empty string for 0 seconds", () => {
+    expect(formatDissolveDelay(0n)).toBe("");
+  });
+
+  describe("shows exact years for round SECONDS_IN_YEAR multiples", () => {
+    it("1 × SECONDS_IN_YEAR → '1 year'", () => {
       expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR))).toBe("1 year");
     });
 
-    it("strips 12h artifact for 2 years", () => {
+    it("2 × SECONDS_IN_YEAR → '2 years'", () => {
       expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR * 2))).toBe("2 years");
     });
 
-    it("strips 18h artifact for 3 years", () => {
+    it("3 × SECONDS_IN_YEAR → '3 years'", () => {
       expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR * 3))).toBe("3 years");
     });
 
-    it("needs no stripping for 4 years (365.25 × 4 is a whole number of days)", () => {
+    it("4 × SECONDS_IN_YEAR → '4 years'", () => {
       expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR * 4))).toBe("4 years");
     });
   });
 
-  describe("preserves legitimate hours for dissolving neurons", () => {
-    it("keeps hours when sub-day does not match artifact pattern", () => {
-      const seconds = BigInt(SECONDS_IN_DAY + 3 * 3600); // 1 day + 3 hours
-      expect(formatDissolveDelay(seconds)).toBe("1 day, 3 hours");
-    });
-
-    it("keeps hours when dissolving from 2 years with time elapsed", () => {
-      // 2 years minus 1 hour: sub-day = 11h, artifact for 1 year = 6h — no match
+  describe("no upward jump when dissolving from a round year", () => {
+    it('shows "1 year, 365 days" after 1h dissolving from 2 years', () => {
       const seconds = BigInt(SECONDS_IN_YEAR * 2) - 3600n;
-      expect(formatDissolveDelay(seconds)).toBe("2 years, 11 hours");
+      expect(formatDissolveDelay(seconds)).toBe("1 year, 365 days");
     });
 
-    it("keeps 6h for a neuron that has been dissolving for 6h from a 2-year delay", () => {
-      // Previously years = floor((2y - 6h) / 365.25d) = 1, artifact = 6h → false strip.
-      // Fixed: years = floor((2y - 6h) / 365d) = 2, artifact = 12h → no match.
+    it('shows "1 year, 365 days" after 6h dissolving from 2 years', () => {
       const seconds = BigInt(SECONDS_IN_YEAR * 2) - 6n * 3600n;
-      expect(formatDissolveDelay(seconds)).toBe("2 years, 6 hours");
+      expect(formatDissolveDelay(seconds)).toBe("1 year, 365 days");
     });
   });
 
-  it("returns empty string for 0 seconds", () => {
-    expect(formatDissolveDelay(0n)).toBe("");
+  describe("shows at most 2 most significant units", () => {
+    it("drops hours when years and days are both present", () => {
+      // 1 year + 2 days + 5 hours — hours dropped
+      const seconds =
+        BigInt(SECONDS_IN_YEAR) + BigInt(2 * SECONDS_IN_DAY) + 5n * 3600n;
+      expect(formatDissolveDelay(seconds)).toBe("1 year, 2 days");
+    });
+
+    it("drops minutes when days and hours are both present", () => {
+      // 1 day, 3 hours, 30 minutes — minutes dropped
+      const seconds = BigInt(SECONDS_IN_DAY + 3 * 3600 + 30 * 60);
+      expect(formatDissolveDelay(seconds)).toBe("1 day, 3 hours");
+    });
+  });
+
+  describe("year boundary", () => {
+    it("just below 1 year shows days and hours, not years", () => {
+      expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR) - 1n)).toBe(
+        "365 days, 5 hours"
+      );
+    });
+
+    it("just above 1 year shows years and seconds", () => {
+      expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR) + 1n)).toBe(
+        "1 year, 1 second"
+      );
+    });
+  });
+
+  describe("singular forms", () => {
+    it('returns "1 minute" for exactly 60 seconds', () => {
+      expect(formatDissolveDelay(60n)).toBe("1 minute");
+    });
+
+    it('returns "1 second" for exactly 1 second', () => {
+      expect(formatDissolveDelay(1n)).toBe("1 second");
+    });
+
+    it('returns "1 minute, 1 second" for 61 seconds', () => {
+      expect(formatDissolveDelay(61n)).toBe("1 minute, 1 second");
+    });
+  });
+
+  describe("2-week dissolve delay progression", () => {
+    const TWO_WEEKS = BigInt(14 * SECONDS_IN_DAY);
+
+    it('locked at 2 weeks shows "14 days"', () => {
+      expect(formatDissolveDelay(TWO_WEEKS)).toBe("14 days");
+    });
+
+    it('after 1h dissolving shows "13 days, 23 hours"', () => {
+      expect(formatDissolveDelay(TWO_WEEKS - 3600n)).toBe("13 days, 23 hours");
+    });
+
+    it('after 1 day dissolving shows "13 days"', () => {
+      expect(formatDissolveDelay(TWO_WEEKS - BigInt(SECONDS_IN_DAY))).toBe(
+        "13 days"
+      );
+    });
+
+    it('with 1 day remaining shows "1 day"', () => {
+      expect(formatDissolveDelay(BigInt(SECONDS_IN_DAY))).toBe("1 day");
+    });
+
+    it('with 1 day and 1 hour remaining shows "1 day, 1 hour"', () => {
+      expect(formatDissolveDelay(BigInt(SECONDS_IN_DAY) + 3600n)).toBe(
+        "1 day, 1 hour"
+      );
+    });
+
+    it('with 1 hour remaining shows "1 hour"', () => {
+      expect(formatDissolveDelay(3600n)).toBe("1 hour");
+    });
+
+    it('with 30 minutes remaining shows "30 minutes"', () => {
+      expect(formatDissolveDelay(1800n)).toBe("30 minutes");
+    });
   });
 });
 
