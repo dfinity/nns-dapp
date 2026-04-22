@@ -1,16 +1,13 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { daysToDuration, secondsToDays } from "$lib/utils/date.utils";
+  import { formatDissolveDelay } from "$lib/utils/date.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { ProgressBar } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;
   export let maxDelayInSeconds: number;
   export let votingPower: number;
-
-  let delayInDays: number;
-  $: delayInDays = secondsToDays(delayInSeconds);
 </script>
 
 <TestIdWrapper testId="range-dissolve-delay-component">
@@ -28,9 +25,13 @@
     </div>
     <div>
       {#if delayInSeconds > 0}
-        <p class="label">{daysToDuration(delayInDays)}</p>
+        <p class="label" data-tid="dissolve-delay-label"
+          >{formatDissolveDelay(BigInt(delayInSeconds))}</p
+        >
       {:else}
-        <p class="label">{$i18n.neurons.no_delay}</p>
+        <p class="label" data-tid="dissolve-delay-label"
+          >{$i18n.neurons.no_delay}</p
+        >
       {/if}
       <p>{$i18n.neurons.dissolve_delay_title}</p>
     </div>

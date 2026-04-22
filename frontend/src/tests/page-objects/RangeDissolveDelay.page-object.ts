@@ -13,4 +13,8 @@ export class RangeDissolveDelayPo extends BasePageObject {
       await this.root.querySelector("progress").getAttribute("value")
     );
   }
+
+  getDissolveDelayLabel(): Promise<string> {
+    return this.getText("dissolve-delay-label");
+  }
 }
