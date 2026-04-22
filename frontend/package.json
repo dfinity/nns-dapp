@@ -73,7 +73,7 @@
     "@dfinity/gix-components": "next",
     "@dfinity/utils": "next",
     "@icp-sdk/auth": "^5.0.0",
-    "@icp-sdk/canisters": "next",
+    "@icp-sdk/canisters": "3.5.2-next-2026-04-21.1",
     "@icp-sdk/core": "^5.0.0",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.30.16",
     "@ledgerhq/hw-transport-webhid": "^6.30.11",
