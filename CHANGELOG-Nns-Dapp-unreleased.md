@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Fixed dissolve delay showing incorrect hours (e.g. "2 years, 12 hours" now correctly displays as "2 years").
+
 #### Security
 
 #### Not Published
