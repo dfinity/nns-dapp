@@ -39,6 +39,7 @@ export const mockFullNeuron: Neuron = {
   votingPowerRefreshedTimestampSeconds: 0n,
   potentialVotingPower: 0n,
   decidingVotingPower: 0n,
+  eightYearGangBonusBaseE8s: undefined,
 };
 
 export const mockMaturityDisbursement: MaturityDisbursement = {
@@ -65,6 +66,7 @@ export const mockNeuron: NeuronInfo = {
   votingPowerRefreshedTimestampSeconds: 0n,
   decidingVotingPower: 0n,
   potentialVotingPower: 0n,
+  eightYearGangBonusBaseE8s: undefined,
   neuronId: 1n,
   dissolveDelaySeconds: 11_111n,
   recentBallots: [],
