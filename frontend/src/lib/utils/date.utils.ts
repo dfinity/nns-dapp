@@ -117,23 +117,37 @@ export const secondsToTime = (seconds: number): string => {
 export const secondsToDays = (seconds: number): number =>
   seconds / SECONDS_IN_DAY;
 
-// secondsToDuration awards leap days only after full 4-year cycles (floor(N/4)),
-// but SECONDS_IN_YEAR averages the leap day across every year (365.25 days).
-// For non-multiples of 4 years the two definitions diverge by a fractional day
-// (e.g. 2y → 12h) that shows up as a spurious hour in the output.
-// years is computed using 365-day years to match secondsToDuration's internal model,
-// avoiding false strips for dissolving neurons near year boundaries.
+// Uses 365.25-day years (SECONDS_IN_YEAR) throughout so that N * SECONDS_IN_YEAR
+// produces exactly "N years" with no sub-day remainder, eliminating the artifact
+// that secondsToDuration produces when mixing 365.25-day and 365-day year models.
+const SECONDS_IN_YEAR_BIG = BigInt(SECONDS_IN_YEAR);
 const SECONDS_IN_DAY_BIG = BigInt(SECONDS_IN_DAY);
-const SECONDS_IN_365_DAYS = BigInt(365 * SECONDS_IN_DAY);
-const YEAR_ARTIFACT = BigInt(SECONDS_IN_YEAR % SECONDS_IN_DAY); // 21600n (6h per year)
+const SECONDS_IN_HOUR = 3600n;
+const SECONDS_IN_MINUTE = 60n;
 export const formatDissolveDelay = (seconds: bigint): string => {
+  if (seconds === 0n) return "";
   const { time } = get(i18n);
-  const subDay = seconds % SECONDS_IN_DAY_BIG;
-  const years = seconds / SECONDS_IN_365_DAYS;
-  const expectedArtifact = (years * YEAR_ARTIFACT) % SECONDS_IN_DAY_BIG;
-  const corrected =
-    subDay > 0n && subDay === expectedArtifact ? seconds - subDay : seconds;
-  return secondsToDuration({ seconds: corrected, i18n: time });
+
+  const label = (n: bigint, singular: string, plural: string) =>
+    `${n} ${n === 1n ? singular : plural}`;
+
+  const years = seconds / SECONDS_IN_YEAR_BIG;
+  let rem = seconds % SECONDS_IN_YEAR_BIG;
+  const days = rem / SECONDS_IN_DAY_BIG;
+  rem = rem % SECONDS_IN_DAY_BIG;
+  const hours = rem / SECONDS_IN_HOUR;
+  rem = rem % SECONDS_IN_HOUR;
+  const minutes = rem / SECONDS_IN_MINUTE;
+  const secs = rem % SECONDS_IN_MINUTE;
+
+  const parts: string[] = [];
+  if (years > 0n) parts.push(label(years, time.year, time.year_plural));
+  if (days > 0n) parts.push(label(days, time.day, time.day_plural));
+  if (hours > 0n) parts.push(label(hours, time.hour, time.hour_plural));
+  if (minutes > 0n) parts.push(label(minutes, time.minute, time.minute_plural));
+  if (secs > 0n) parts.push(label(secs, time.second, time.second_plural));
+
+  return parts.slice(0, 2).join(", ");
 };
 export const daysToSeconds = (days: number): number =>
   Math.round(days * SECONDS_IN_DAY);
