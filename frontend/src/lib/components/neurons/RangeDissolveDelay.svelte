@@ -29,7 +29,9 @@
           >{formatDissolveDelay(BigInt(delayInSeconds))}</p
         >
       {:else}
-        <p class="label" data-tid="dissolve-delay-label">{$i18n.neurons.no_delay}</p>
+        <p class="label" data-tid="dissolve-delay-label"
+          >{$i18n.neurons.no_delay}</p
+        >
       {/if}
       <p>{$i18n.neurons.dissolve_delay_title}</p>
     </div>
