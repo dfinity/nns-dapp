@@ -232,7 +232,8 @@ describe("formatDissolveDelay", () => {
   describe("shows at most 2 most significant units", () => {
     it("drops hours when years and days are both present", () => {
       // 1 year + 2 days + 5 hours — hours dropped
-      const seconds = BigInt(SECONDS_IN_YEAR) + BigInt(2 * SECONDS_IN_DAY) + 5n * 3600n;
+      const seconds =
+        BigInt(SECONDS_IN_YEAR) + BigInt(2 * SECONDS_IN_DAY) + 5n * 3600n;
       expect(formatDissolveDelay(seconds)).toBe("1 year, 2 days");
     });
 
@@ -245,11 +246,15 @@ describe("formatDissolveDelay", () => {
 
   describe("year boundary", () => {
     it("just below 1 year shows days and hours, not years", () => {
-      expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR) - 1n)).toBe("365 days, 5 hours");
+      expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR) - 1n)).toBe(
+        "365 days, 5 hours"
+      );
     });
 
     it("just above 1 year shows years and seconds", () => {
-      expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR) + 1n)).toBe("1 year, 1 second");
+      expect(formatDissolveDelay(BigInt(SECONDS_IN_YEAR) + 1n)).toBe(
+        "1 year, 1 second"
+      );
     });
   });
 
@@ -279,7 +284,9 @@ describe("formatDissolveDelay", () => {
     });
 
     it('after 1 day dissolving shows "13 days"', () => {
-      expect(formatDissolveDelay(TWO_WEEKS - BigInt(SECONDS_IN_DAY))).toBe("13 days");
+      expect(formatDissolveDelay(TWO_WEEKS - BigInt(SECONDS_IN_DAY))).toBe(
+        "13 days"
+      );
     });
 
     it('with 1 day remaining shows "1 day"', () => {
@@ -287,7 +294,9 @@ describe("formatDissolveDelay", () => {
     });
 
     it('with 1 day and 1 hour remaining shows "1 day, 1 hour"', () => {
-      expect(formatDissolveDelay(BigInt(SECONDS_IN_DAY) + 3600n)).toBe("1 day, 1 hour");
+      expect(formatDissolveDelay(BigInt(SECONDS_IN_DAY) + 3600n)).toBe(
+        "1 day, 1 hour"
+      );
     });
 
     it('with 1 hour remaining shows "1 hour"', () => {
