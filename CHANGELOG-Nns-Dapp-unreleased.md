@@ -17,7 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Bump `@icp-sdk/canisters` to `3.5.2-next-2026-04-21.1` and consume
-  `eightYearGangBonusBaseE8s` from the SDK.
+  `eightYearGangBonusBaseE8s`.
 
 #### Deprecated
 
