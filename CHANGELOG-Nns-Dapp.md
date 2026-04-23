@@ -11,6 +11,27 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 141543
+
+### Application
+
+#### Changed
+
+- Bump `@icp-sdk/canisters` to `3.5.2-next-2026-04-21.1` and consume
+  `eightYearGangBonusBaseE8s`.
+
+#### Removed
+
+- Drop hard-coded Mission 70 overrides for `governanceMetrics.totalSupplyIcp`
+  and `nnsTotalVotingPower` in `+layout.svelte`; values now come from the
+  stores populated by the NNS governance canister.
+
+#### Fixed
+
+- Fixed dissolve delay showing incorrect hours (e.g. "2 years, 12 hours" now correctly displays as "2 years").
+
+### Operations
+
 ## Proposal 141440
 
 ### Application
