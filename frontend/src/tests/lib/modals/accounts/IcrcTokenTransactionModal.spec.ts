@@ -79,19 +79,28 @@ describe("IcrcTokenTransactionModal", () => {
 
     const { container } = await renderModal({
       component: IcrcTokenTransactionModal,
-      props: { ledgerCanisterId, universeId: ledgerCanisterId, token, transactionFee },
+      props: {
+        ledgerCanisterId,
+        universeId: ledgerCanisterId,
+        token,
+        transactionFee,
+      },
     });
 
     const po = IcrcTokenTransactionModalPo.under(
       new JestPageObjectElement(container)
     );
 
-    expect(await po.getTransactionFormPo().isContinueButtonEnabled()).toBe(false);
+    expect(await po.getTransactionFormPo().isContinueButtonEnabled()).toBe(
+      false
+    );
 
     resolveMintingAccount(undefined);
     await runResolvedPromises();
 
-    expect(await po.getTransactionFormPo().isContinueButtonEnabled()).toBe(false); // still disabled without amount/destination
+    expect(await po.getTransactionFormPo().isContinueButtonEnabled()).toBe(
+      false
+    ); // still disabled without amount/destination
   });
 
   it("should render token in the modal title", async () => {
