@@ -29,6 +29,7 @@
 
   let currentStep: WizardStep | undefined;
   let burnAddress: string | undefined = undefined;
+  let mintingAccountLoaded = false;
 
   onMount(async () => {
     const mintingAccount = await queryIcrcMintingAccount({
@@ -39,6 +40,7 @@
     if (nonNullish(mintingAccount)) {
       burnAddress = encodeIcrcAccount(mintingAccount);
     }
+    mintingAccountLoaded = true;
   });
 
   $: title =
@@ -89,6 +91,7 @@
   {transactionFee}
   {transactionInit}
   {burnAddress}
+  disableContinue={!mintingAccountLoaded}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">

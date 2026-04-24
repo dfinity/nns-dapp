@@ -68,6 +68,32 @@ describe("IcrcTokenTransactionModal", () => {
     );
   };
 
+  it("should disable continue until minting account is loaded", async () => {
+    setupAccount();
+    let resolveMintingAccount: (value: undefined) => void;
+    vi.spyOn(ledgerApi, "queryIcrcMintingAccount").mockReturnValue(
+      new Promise((resolve) => {
+        resolveMintingAccount = () => resolve(undefined);
+      })
+    );
+
+    const { container } = await renderModal({
+      component: IcrcTokenTransactionModal,
+      props: { ledgerCanisterId, universeId: ledgerCanisterId, token, transactionFee },
+    });
+
+    const po = IcrcTokenTransactionModalPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.getTransactionFormPo().isContinueButtonEnabled()).toBe(false);
+
+    resolveMintingAccount(undefined);
+    await runResolvedPromises();
+
+    expect(await po.getTransactionFormPo().isContinueButtonEnabled()).toBe(false); // still disabled without amount/destination
+  });
+
   it("should render token in the modal title", async () => {
     const po = await renderModalComponent();
 
