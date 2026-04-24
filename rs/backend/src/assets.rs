@@ -373,7 +373,7 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
     tree.serialize(&mut serializer)
-        .unwrap_or_else(|e| ic_cdk::api::trap(&format!("failed to serialize a hash tree: {e}")));
+        .unwrap_or_else(|e| ic_cdk::api::trap(format!("failed to serialize a hash tree: {e}")));
     (
         "IC-Certificate".to_string(),
         format!(
@@ -462,7 +462,7 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
                 .to_vec();
 
             let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
-                ic_cdk::api::trap(&format!(
+                ic_cdk::api::trap(format!(
                     "non-utf8 file name {}: {}",
                     String::from_utf8_lossy(&name_bytes),
                     e
@@ -506,7 +506,7 @@ impl StableState for Assets {
 
 fn update_root_hash(a: &AssetHashes) {
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.0.root_hash());
-    ic_cdk::api::set_certified_data(&prefixed_root_hash[..]);
+    ic_cdk::api::certified_data_set(&prefixed_root_hash[..]);
 }
 
 #[test]

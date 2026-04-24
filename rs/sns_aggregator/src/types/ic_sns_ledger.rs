@@ -1,6 +1,7 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
 //! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/474a744e63d3920928cb6feea0697ae68b19f304/rs/ledger_suite/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
+#![allow(deprecated)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]

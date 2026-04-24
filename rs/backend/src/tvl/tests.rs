@@ -1,6 +1,6 @@
 use crate::state::{init_state, with_state, with_state_mut};
 use crate::timer;
-use crate::tvl::{self, exchange_rate_canister, governance, spawn, time};
+use crate::tvl::{self, exchange_rate_canister, governance, time};
 use candid::Nat;
 use lazy_static::lazy_static;
 
@@ -398,13 +398,7 @@ async fn start_updating_exchange_rate_in_background() {
             timer.delay,
             std::time::Duration::from_secs(expected_timer_delay_seconds)
         );
-        // The timer calls spawn::spawn, which, during the test, adds the future
-        // to a queue.
-        (timer.func)();
-        // Make sure the spawned future is run.
-        let mut spawned_futures = spawn::testing::drain_spawned_futures();
-        assert_eq!(spawned_futures.len(), 1);
-        spawned_futures.pop().unwrap().await;
+        timer.future.await;
     }
 
     // Step 4: Verify the state after calling the 1-time timer.
@@ -442,13 +436,7 @@ async fn start_updating_exchange_rate_in_background() {
             timer.interval,
             std::time::Duration::from_secs(expected_timer_interval_seconds)
         );
-        // The timer calls spawn::spawn, which, during the test, adds the future
-        // to a queue.
-        (timer.func)();
-        // Make sure the spawned future is run.
-        let mut spawned_futures = spawn::testing::drain_spawned_futures();
-        assert_eq!(spawned_futures.len(), 1);
-        spawned_futures.pop().unwrap().await;
+        (timer.func)().await;
     }
 
     // Step 4: Verify the state after calling interval timer.
@@ -505,13 +493,7 @@ async fn start_updating_locked_icp_in_the_background() {
             timer.delay,
             std::time::Duration::from_secs(expected_timer_delay_seconds)
         );
-        // The timer calls spawn::spawn, which, during the test, adds the future
-        // to a queue.
-        (timer.func)();
-        // Make sure the spawned future is run.
-        let mut spawned_futures = spawn::testing::drain_spawned_futures();
-        assert_eq!(spawned_futures.len(), 1);
-        spawned_futures.pop().unwrap().await;
+        timer.future.await;
     }
 
     // Step 4: Verify the state after calling the 1-time timer.
@@ -534,13 +516,7 @@ async fn start_updating_locked_icp_in_the_background() {
             timer.interval,
             std::time::Duration::from_secs(expected_timer_interval_seconds)
         );
-        // The timer calls spawn::spawn, which, during the test, adds the future
-        // to a queue.
-        (timer.func)();
-        // Make sure the spawned future is run.
-        let mut spawned_futures = spawn::testing::drain_spawned_futures();
-        assert_eq!(spawned_futures.len(), 1);
-        spawned_futures.pop().unwrap().await;
+        (timer.func)().await;
     }
 
     // Step 4: Verify the state after calling interval timer.

@@ -8,9 +8,9 @@ mod tests;
 #[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::memory_size as wasm_memory_size;
 #[cfg(target_arch = "wasm32")]
-use ic_cdk::api::stable::stable_size;
+use ic_cdk::stable::stable_size;
 #[cfg(target_arch = "wasm32")]
-use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
+const WASM_PAGE_SIZE_IN_BYTES: u64 = 65536;
 const GIBIBYTE: u64 = 1 << 30;
 
 /// Returns basic stats for frequent monitoring.

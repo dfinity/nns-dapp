@@ -12,7 +12,7 @@ use crate::{
     types::upstream::SnsCache,
 };
 use anyhow::anyhow;
-use ic_cdk::api::management_canister::provisional::CanisterId;
+use candid::Principal as CanisterId;
 use ic_cdk::api::time;
 use ic_cdk_timers::TimerId;
 use std::cell::RefCell;

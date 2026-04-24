@@ -72,7 +72,7 @@ impl CanisterArguments {
     #[must_use]
     pub fn with_own_canister_id(mut self) -> Self {
         self.args
-            .push(("OWN_CANISTER_ID".to_string(), ic_cdk::api::id().to_string()));
+            .push(("OWN_CANISTER_ID".to_string(), ic_cdk::api::canister_self().to_string()));
         self
     }
 

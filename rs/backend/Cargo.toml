@@ -41,7 +41,7 @@ on_wire = { workspace = true }
 
 [dev-dependencies]
 anyhow = "1.0.95"
-candid_parser = "0.1.2"
+candid_parser = "0.3.0"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
 pretty_assertions = "1.4.0"

@@ -5,7 +5,7 @@ use crate::{
     types::{upstream::SnsCache, upstream::SnsIndex, GetStateResponse},
     upstream::{get_derived_state, get_lifecycle, get_swap_state},
 };
-use ic_cdk::api::management_canister::provisional::CanisterId;
+use candid::Principal as CanisterId;
 use ic_cdk::api::time;
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval, TimerId};
 use std::str::FromStr;
@@ -170,7 +170,7 @@ impl FastScheduler {
 
     /// Start collecting data now.
     pub fn start(&mut self, timer_interval: Duration) {
-        let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::global_update_next()));
+        let timer_id = set_timer_interval(timer_interval, Self::global_update_next);
         let old_timer = self.update_timer.replace(timer_id);
         if let Some(id) = old_timer {
             clear_timer(id);
@@ -192,7 +192,7 @@ impl FastScheduler {
     /// Note: We request both the delay and the timestamp to avoid making a syscall for data that
     /// is almost certainly already available to the caller.
     pub fn global_start_at(start_seconds: u64, delay: Duration) {
-        let start_timer = set_timer(delay, Self::global_start);
+        let start_timer = set_timer(delay, async { Self::global_start() });
         if let Some((_, old_timer)) = STATE.with(|state| {
             state
                 .fast_scheduler
