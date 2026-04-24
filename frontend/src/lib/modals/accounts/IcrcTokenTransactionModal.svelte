@@ -32,15 +32,20 @@
   let mintingAccountLoaded = false;
 
   onMount(async () => {
-    const mintingAccount = await queryIcrcMintingAccount({
-      identity: getCurrentIdentity(),
-      canisterId: ledgerCanisterId,
-      certified: false,
-    });
-    if (nonNullish(mintingAccount)) {
-      burnAddress = encodeIcrcAccount(mintingAccount);
+    try {
+      const mintingAccount = await queryIcrcMintingAccount({
+        identity: getCurrentIdentity(),
+        canisterId: ledgerCanisterId,
+        certified: false,
+      });
+      if (nonNullish(mintingAccount)) {
+        burnAddress = encodeIcrcAccount(mintingAccount);
+      }
+    } catch {
+      // Fall back to treating all addresses as regular (non-burn) transfers.
+    } finally {
+      mintingAccountLoaded = true;
     }
-    mintingAccountLoaded = true;
   });
 
   $: title =
