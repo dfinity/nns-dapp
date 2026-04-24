@@ -36,7 +36,7 @@
       const mintingAccount = await queryIcrcMintingAccount({
         identity: getCurrentIdentity(),
         canisterId: ledgerCanisterId,
-        certified: false,
+        certified: true,
       });
       if (nonNullish(mintingAccount)) {
         burnAddress = encodeIcrcAccount(mintingAccount);

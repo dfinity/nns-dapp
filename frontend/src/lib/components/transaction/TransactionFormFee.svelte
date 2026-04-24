@@ -6,12 +6,18 @@
   import { formatUsdValue } from "$lib/utils/format.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
-  import { isNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import {
+    isNullish,
+    nonNullish,
+    type TokenAmount,
+    TokenAmountV2,
+  } from "@dfinity/utils";
 
   type Props = {
     transactionFee: TokenAmount | TokenAmountV2;
+    description?: string;
   };
-  const { transactionFee }: Props = $props();
+  const { transactionFee, description = undefined }: Props = $props();
 
   const usdValueDisplay = $derived.by(() => {
     const ledgerCanisterId = getLedgerCanisterIdFromUniverse(
@@ -29,6 +35,11 @@
 <div data-tid="transaction-form-fee">
   <p class="fee label no-margin">
     {$i18n.accounts.transaction_fee}
+    {#if nonNullish(description)}
+      <span class="description" data-tid="transaction-form-fee-description"
+        >({description})</span
+      >
+    {/if}
   </p>
 
   <p class="value">
@@ -46,6 +57,10 @@
     padding: var(--padding-0_5x) 0;
     color: var(--text-description);
     @include fonts.small();
+
+    .description {
+      font-style: italic;
+    }
   }
 
   .value {

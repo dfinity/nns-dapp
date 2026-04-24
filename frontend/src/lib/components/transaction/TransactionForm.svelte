@@ -88,6 +88,11 @@
     ? 0n
     : toTokenAmountV2(transactionFee).toUlps();
 
+  let effectiveFee: TokenAmountV2 | TokenAmount;
+  $: effectiveFee = isBurnDestination
+    ? TokenAmountV2.fromUlps({ amount: 0n, token })
+    : transactionFee;
+
   let max = 0;
   $: max = getMaxTransactionAmount({
     balance: selectedAccount?.balanceUlps,
@@ -338,12 +343,6 @@
     {/if}
   {/if}
 
-  {#if isBurnDestination}
-    <p class="burn-address-label" data-tid="burn-address-label">
-      {$i18n.accounts.burn_address}
-    </p>
-  {/if}
-
   {#if mustSelectNetwork}
     <TransactionFormItemNetwork
       bind:selectedNetwork
@@ -363,8 +362,11 @@
       {balance}
     />
 
-    {#if showLedgerFee && !isBurnDestination}
-      <TransactionFormFee {transactionFee} />
+    {#if showLedgerFee}
+      <TransactionFormFee
+        transactionFee={effectiveFee}
+        description={isBurnDestination ? $i18n.accounts.burn_address : undefined}
+      />
     {/if}
 
     <slot name="additional-info" />
@@ -432,12 +434,6 @@
         color: var(--text-description);
       }
     }
-  }
-
-  .burn-address-label {
-    font-size: var(--font-size-small);
-    color: var(--text-description);
-    margin: 0;
   }
 
   .manual-address-info {
