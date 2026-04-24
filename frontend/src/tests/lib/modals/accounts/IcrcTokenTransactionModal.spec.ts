@@ -193,16 +193,18 @@ describe("IcrcTokenTransactionModal", () => {
       expect(await formPo.hasBurnAddressLabel()).toBe(false);
     });
 
-    it("should hide the fee when destination is the minting account", async () => {
+    it("should keep the fee visible and show burn description when destination is the minting account", async () => {
       setupAccount();
       const po = await renderModalComponent();
       const formPo = po.getTransactionFormPo();
 
-      expect(await formPo.hasFee()).toBe(true);
+      expect(await formPo.getTransactionFormFeePo().isPresent()).toBe(true);
+      expect(await formPo.hasBurnAddressLabel()).toBe(false);
 
       await formPo.enterAddress(mintingAccountAddress);
 
-      expect(await formPo.hasFee()).toBe(false);
+      expect(await formPo.getTransactionFormFeePo().isPresent()).toBe(true);
+      expect(await formPo.hasBurnAddressLabel()).toBe(true);
     });
 
     it("should transfer with fee 0 when destination is the minting account", async () => {

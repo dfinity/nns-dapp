@@ -18,6 +18,7 @@
     WizardStep,
     WizardSteps,
   } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@icp-sdk/core/principal";
   import {
     ICPToken,
@@ -73,6 +74,11 @@
   let isBurnDestination: boolean;
   $: isBurnDestination =
     nonNullish(burnAddress) && selectedDestinationAddress === burnAddress;
+
+  let effectiveTransactionFee: TokenAmountV2 | TokenAmount;
+  $: effectiveTransactionFee = isBurnDestination
+    ? TokenAmountV2.fromUlps({ amount: 0n, token })
+    : transactionFee;
 
   let showManualAddress = selectDestinationMethods !== "dropdown";
 
@@ -184,11 +190,14 @@
         memo,
       }}
       handleGoBack={goBack}
-      {transactionFee}
+      transactionFee={effectiveTransactionFee}
       {disableSubmit}
       {token}
       {selectedNetwork}
-      showLedgerFee={showLedgerFee && !isBurnDestination}
+      {showLedgerFee}
+      feeDescription={isBurnDestination
+        ? $i18n.accounts.burn_address
+        : undefined}
       on:nnsSubmit
       on:nnsClose
       {withMemo}
