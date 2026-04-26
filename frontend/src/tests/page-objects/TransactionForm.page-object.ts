@@ -153,8 +153,6 @@ export class TransactionFormPo extends BasePageObject {
   }
 
   hasBurnAddressLabel(): Promise<boolean> {
-    return this.root
-      .byTestId("transaction-form-fee-description")
-      .isPresent();
+    return this.root.byTestId("transaction-form-fee-description").isPresent();
   }
 }

@@ -365,7 +365,9 @@
     {#if showLedgerFee}
       <TransactionFormFee
         transactionFee={effectiveFee}
-        description={isBurnDestination ? $i18n.accounts.burn_address : undefined}
+        description={isBurnDestination
+          ? $i18n.accounts.burn_address
+          : undefined}
       />
     {/if}
 
