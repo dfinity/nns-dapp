@@ -129,10 +129,13 @@ describe("IcrcTokenTransactionModal", () => {
 
     await runResolvedPromises();
 
-    expect(await po.getTransactionFormPo().isContinueButtonEnabled()).toBe(
-      false
-    ); // still disabled without amount/destination, but no longer blocked by loading
-    expect(await po.getTransactionFormPo().hasBurnAddressLabel()).toBe(false);
+    // Loading flag cleared — entering valid inputs should now enable continue
+    const formPo = po.getTransactionFormPo();
+    await formPo.enterAddress(encodeIcrcAccount({ owner: principal(2) }));
+    await formPo.enterAmount(1);
+
+    expect(await formPo.isContinueButtonEnabled()).toBe(true);
+    expect(await formPo.hasBurnAddressLabel()).toBe(false);
   });
 
   it("should render token in the modal title", async () => {
