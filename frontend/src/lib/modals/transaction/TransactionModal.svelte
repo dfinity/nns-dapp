@@ -18,6 +18,7 @@
     WizardStep,
     WizardSteps,
   } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@icp-sdk/core/principal";
   import {
     ICPToken,
@@ -60,6 +61,7 @@
 
   // Optional transaction memo to include in the submission payload
   export let withMemo: boolean = false;
+  export let burnAddress: string | undefined = undefined;
 
   // Init configuration only once when component is mounting. The configuration should not vary when user interact with the form.
   let canSelectDestination = isNullish(transactionInit.destinationAddress);
@@ -68,6 +70,15 @@
   let memo: string | undefined = undefined;
 
   let selectedDestinationAddress: string | undefined = destinationAddress;
+
+  let isBurnDestination: boolean;
+  $: isBurnDestination =
+    nonNullish(burnAddress) && selectedDestinationAddress === burnAddress;
+
+  let effectiveTransactionFee: TokenAmountV2 | TokenAmount;
+  $: effectiveTransactionFee = isBurnDestination
+    ? TokenAmountV2.fromUlps({ amount: 0n, token })
+    : transactionFee;
 
   let showManualAddress = selectDestinationMethods !== "dropdown";
 
@@ -165,6 +176,7 @@
       {showLedgerFee}
       on:nnsOpenQRCodeReader={goQRCode}
       {withMemo}
+      {burnAddress}
     >
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
@@ -178,11 +190,14 @@
         memo,
       }}
       handleGoBack={goBack}
-      {transactionFee}
+      transactionFee={effectiveTransactionFee}
       {disableSubmit}
       {token}
       {selectedNetwork}
       {showLedgerFee}
+      feeDescription={isBurnDestination
+        ? $i18n.accounts.burn_address
+        : undefined}
       on:nnsSubmit
       on:nnsClose
       {withMemo}

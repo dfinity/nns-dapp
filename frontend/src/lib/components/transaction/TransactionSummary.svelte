@@ -17,6 +17,7 @@
 
   type Props = {
     amount: number;
+    feeDescription?: string;
     receivedAmount: Snippet;
     showLedgerFee?: boolean;
     token: Token;
@@ -25,6 +26,7 @@
 
   const {
     amount,
+    feeDescription = undefined,
     receivedAmount,
     showLedgerFee = true,
     token,
@@ -94,7 +96,13 @@
 
   {#if showLedgerFee}
     <KeyValuePair testId="transaction-summary-fee">
-      {#snippet key()}<span class="label">{ledgerFeeLabel}</span>{/snippet}
+      {#snippet key()}<span class="label"
+          >{ledgerFeeLabel}{#if nonNullish(feeDescription)}&nbsp;<span
+              class="fee-description"
+              data-tid="transaction-summary-fee-description"
+              >({feeDescription})</span
+            >{/if}</span
+        >{/snippet}
       {#snippet value()}<div class="value">
           <AmountDisplay
             singleLine
@@ -170,6 +178,11 @@
 
   .subtitle {
     margin: 0 0 var(--padding-0_5x);
+  }
+
+  .fee-description {
+    font-style: italic;
+    color: var(--text-description);
   }
 
   .value {

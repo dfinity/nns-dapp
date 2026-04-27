@@ -17,6 +17,7 @@
     description: Snippet;
     destinationInfo: Snippet;
     disableSubmit: boolean;
+    feeDescription?: string;
     handleGoBack: () => void;
     receivedAmount: Snippet;
     selectedNetwork?: TransactionNetwork;
@@ -32,6 +33,7 @@
     description,
     destinationInfo,
     disableSubmit,
+    feeDescription = undefined,
     handleGoBack,
     receivedAmount,
     selectedNetwork = undefined,
@@ -61,6 +63,7 @@
       {transactionFee}
       {showLedgerFee}
       {receivedAmount}
+      {feeDescription}
     />
 
     <TransactionDescription
