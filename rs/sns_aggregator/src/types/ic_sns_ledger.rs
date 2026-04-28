@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/474a744e63d3920928cb6feea0697ae68b19f304/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/be2f9ca64c0af78da6925f50a9679c30420028ac/rs/ledger_suite/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -47,6 +47,7 @@ pub enum ChangeFeeCollector {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FeatureFlags {
+    pub icrc152: bool,
     pub icrc2: bool,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -176,6 +177,24 @@ pub struct Approve {
     pub spender: Account,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct AuthorizedBurn {
+    pub from: Account,
+    pub mthd: Option<String>,
+    pub caller: Option<Principal>,
+    pub created_at_time: Option<Timestamp>,
+    pub amount: candid::Nat,
+    pub reason: Option<String>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct AuthorizedMint {
+    pub to: Account,
+    pub mthd: Option<String>,
+    pub caller: Option<Principal>,
+    pub created_at_time: Option<Timestamp>,
+    pub amount: candid::Nat,
+    pub reason: Option<String>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FeeCollector {
     pub ts: Option<u64>,
     pub mthd: Option<String>,
@@ -198,6 +217,8 @@ pub struct Transaction {
     pub kind: String,
     pub mint: Option<Mint>,
     pub approve: Option<Approve>,
+    pub authorized_burn: Option<AuthorizedBurn>,
+    pub authorized_mint: Option<AuthorizedMint>,
     pub fee_collector: Option<FeeCollector>,
     pub timestamp: Timestamp,
     pub transfer: Option<Transfer>,
@@ -260,6 +281,45 @@ pub enum GetIndexPrincipalResult {
 pub struct Icrc10SupportedStandardsRetItem {
     pub url: String,
     pub name: String,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc152BurnArgs {
+    pub from: Account,
+    pub created_at_time: u64,
+    pub amount: candid::Nat,
+    pub reason: Option<String>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc152BurnError {
+    InvalidAccount(String),
+    GenericError { message: String, error_code: candid::Nat },
+    Duplicate { duplicate_of: candid::Nat },
+    InsufficientBalance { balance: candid::Nat },
+    Unauthorized(String),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc152BurnResult {
+    Ok(candid::Nat),
+    Err(Icrc152BurnError),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Icrc152MintArgs {
+    pub to: Account,
+    pub created_at_time: u64,
+    pub amount: candid::Nat,
+    pub reason: Option<String>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc152MintError {
+    InvalidAccount(String),
+    GenericError { message: String, error_code: candid::Nat },
+    Duplicate { duplicate_of: candid::Nat },
+    Unauthorized(String),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc152MintResult {
+    Ok(candid::Nat),
+    Err(Icrc152MintError),
 }
 pub type Tokens = candid::Nat;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -492,6 +552,12 @@ impl Service {
     }
     pub async fn icrc_10_supported_standards(&self) -> CallResult<(Vec<Icrc10SupportedStandardsRetItem>,)> {
         ic_cdk::call(self.0, "icrc10_supported_standards", ()).await
+    }
+    pub async fn icrc_152_burn(&self, arg0: Icrc152BurnArgs) -> CallResult<(Icrc152BurnResult,)> {
+        ic_cdk::call(self.0, "icrc152_burn", (arg0,)).await
+    }
+    pub async fn icrc_152_mint(&self, arg0: Icrc152MintArgs) -> CallResult<(Icrc152MintResult,)> {
+        ic_cdk::call(self.0, "icrc152_mint", (arg0,)).await
     }
     pub async fn icrc_1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
