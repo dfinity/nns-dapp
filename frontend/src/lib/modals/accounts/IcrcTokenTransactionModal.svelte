@@ -29,7 +29,7 @@
 
   let currentStep: WizardStep | undefined;
   let burnAddress: string | undefined = undefined;
-  let mintingAccountLoaded = false;
+  let mintingAccountQueryAttempted = false;
 
   onMount(async () => {
     try {
@@ -44,7 +44,7 @@
     } catch {
       // Fall back to treating all addresses as regular (non-burn) transfers.
     } finally {
-      mintingAccountLoaded = true;
+      mintingAccountQueryAttempted = true;
     }
   });
 
@@ -96,7 +96,7 @@
   {transactionFee}
   {transactionInit}
   {burnAddress}
-  disableContinue={!mintingAccountLoaded}
+  disableContinue={!mintingAccountQueryAttempted}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">

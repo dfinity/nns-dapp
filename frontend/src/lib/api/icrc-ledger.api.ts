@@ -57,7 +57,7 @@ export const queryIcrcMintingAccount = async ({
 }): Promise<IcrcAccount | undefined> => {
   const { canister } = await icrcLedgerCanister({ identity, canisterId });
   const result = fromNullable(await canister.getMintingAccount({ certified }));
-  if (isNullish(result)) return undefined;
+  if (isNullish(result)) return;
   return {
     owner: result.owner,
     subaccount: fromNullable(result.subaccount),
