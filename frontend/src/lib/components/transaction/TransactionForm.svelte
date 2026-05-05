@@ -67,6 +67,7 @@
   export let validateAmount: ValidateAmountFn = () => undefined;
   export let withMemo: boolean = false;
   export let memo: string | undefined = undefined;
+  export let burnAddress: string | undefined = undefined;
 
   let filterSourceAccounts: (account: Account) => boolean;
   $: filterSourceAccounts = (account: Account) => {
@@ -78,10 +79,24 @@
     return account.identifier !== selectedAccount?.identifier;
   };
 
+  let isBurnDestination: boolean;
+  $: isBurnDestination =
+    nonNullish(burnAddress) && selectedDestinationAddress === burnAddress;
+
+  let effectiveFeeUlps: bigint;
+  $: effectiveFeeUlps = isBurnDestination
+    ? 0n
+    : toTokenAmountV2(transactionFee).toUlps();
+
+  let effectiveFee: TokenAmountV2 | TokenAmount;
+  $: effectiveFee = isBurnDestination
+    ? TokenAmountV2.fromUlps({ amount: 0n, token })
+    : transactionFee;
+
   let max = 0;
   $: max = getMaxTransactionAmount({
     balance: selectedAccount?.balanceUlps,
-    fee: toTokenAmountV2(transactionFee).toUlps(),
+    fee: effectiveFeeUlps,
     maxAmount,
     token,
   });
@@ -113,7 +128,7 @@
       const tokens = TokenAmountV2.fromNumber({ amount, token });
       assertEnoughAccountFunds({
         account: selectedAccount,
-        amountUlps: tokens.toUlps() + toTokenAmountV2(transactionFee).toUlps(),
+        amountUlps: tokens.toUlps() + effectiveFeeUlps,
       });
       errorMessage = validateAmount({ amount, selectedAccount });
     } catch (error: unknown) {
@@ -348,7 +363,12 @@
     />
 
     {#if showLedgerFee}
-      <TransactionFormFee {transactionFee} />
+      <TransactionFormFee
+        transactionFee={effectiveFee}
+        description={isBurnDestination
+          ? $i18n.accounts.burn_address
+          : undefined}
+      />
     {/if}
 
     <slot name="additional-info" />

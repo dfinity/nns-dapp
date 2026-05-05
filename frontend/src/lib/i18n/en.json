@@ -352,6 +352,7 @@
     "hardware_wallet_text": "Ledger device",
     "token_transaction_fee": "$tokenSymbol Ledger Fee",
     "transaction_fee": "Transaction Fee",
+    "burn_address": "Burn address",
     "review_transaction": "Review Transaction",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
