@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 141734
+
+### Application
+
+#### Added
+
+- When sending SNS tokens to a burn address (minting account), the transaction fee is shown as 0 and labeled as a burn address.
+
+### Operations
+
 ## Proposal 141543
 
 ### Application

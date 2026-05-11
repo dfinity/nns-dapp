@@ -14,8 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- When sending SNS tokens to a burn address (minting account), the transaction fee is shown as 0 and labeled as a burn address.
-
 #### Changed
 
 #### Deprecated
