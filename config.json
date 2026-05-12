@@ -117,7 +117,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2026-05-06",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "2f5d582b29a95f06b96c8611950729e39b408eb6"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "879597ef9a4bb1602ef2d140715f3cd50cca2420"
       },
       "packtool": ""
     }

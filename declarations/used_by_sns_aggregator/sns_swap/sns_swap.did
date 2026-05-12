@@ -1,4 +1,4 @@
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/2f5d582b29a95f06b96c8611950729e39b408eb6/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/879597ef9a4bb1602ef2d140715f3cd50cca2420/rs/sns/swap/canister/swap.did>
 type BuyerState = record {
   icp : opt TransferableAmount;
   has_created_neuron_recipes : opt bool;
