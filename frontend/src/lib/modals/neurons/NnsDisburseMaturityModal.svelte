@@ -1,6 +1,10 @@
 <script lang="ts">
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
+  import {
+    MIN_DISBURSEMENT_WITH_VARIANCE,
+    NNS_MATURITY_MODULATION_BEST_CASE_FACTOR,
+    NNS_MATURITY_MODULATION_WORST_CASE_FACTOR,
+  } from "$lib/constants/neurons.constants";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { analytics } from "$lib/services/analytics.services";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/neurons.services";
@@ -49,6 +53,8 @@
 <DisburseMaturityModal
   {availableMaturityE8s}
   minimumAmountE8s={MIN_DISBURSEMENT_WITH_VARIANCE}
+  worstCaseFactor={NNS_MATURITY_MODULATION_WORST_CASE_FACTOR}
+  bestCaseFactor={NNS_MATURITY_MODULATION_BEST_CASE_FACTOR}
   on:nnsDisburseMaturity={disburseMaturity}
   rootCanisterId={OWN_CANISTER_ID}
   token={ICPToken}

@@ -1,4 +1,8 @@
 <script lang="ts">
+  import {
+    SNS_MATURITY_MODULATION_BEST_CASE_FACTOR,
+    SNS_MATURITY_MODULATION_WORST_CASE_FACTOR,
+  } from "$lib/constants/neurons.constants";
   import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/sns-neurons.services";
@@ -60,6 +64,8 @@
 <DisburseMaturityModal
   availableMaturityE8s={neuron.maturity_e8s_equivalent}
   {minimumAmountE8s}
+  worstCaseFactor={SNS_MATURITY_MODULATION_WORST_CASE_FACTOR}
+  bestCaseFactor={SNS_MATURITY_MODULATION_BEST_CASE_FACTOR}
   on:nnsDisburseMaturity={disburseMaturity}
   {rootCanisterId}
   {token}

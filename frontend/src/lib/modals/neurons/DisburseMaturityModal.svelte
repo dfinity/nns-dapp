@@ -31,6 +31,11 @@
   export let rootCanisterId: Principal;
   export let token: Token;
   export let minimumAmountE8s: bigint;
+  // Worst- and best-case maturity modulation factors used to display the
+  // estimated token range. NNS uses an asymmetric [-10%, +2%] range, SNS uses
+  // a symmetric [-5%, +5%] range.
+  export let worstCaseFactor: number;
+  export let bestCaseFactor: number;
   // Using `undefined` allows only ICRC
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
@@ -89,15 +94,14 @@
   $: maturityToDisburseE8s =
     (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
 
-  // +/- 5%
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatTokenE8s({
-    value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
+    value: BigInt(Math.floor(Number(maturityToDisburseE8s) * worstCaseFactor)),
     roundingMode: "floor",
   });
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatTokenE8s({
-    value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
+    value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * bestCaseFactor)),
     roundingMode: "ceil",
   });
 

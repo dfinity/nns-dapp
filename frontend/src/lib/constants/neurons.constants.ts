@@ -10,24 +10,31 @@ export const ULPS_PER_MATURITY = 100_000_000;
 export const MAX_NEURONS_MERGED = 2;
 export const MIN_NEURON_STAKE = 100_000_000n;
 export const MAX_CONCURRENCY = 10;
-export const MATURITY_MODULATION_VARIANCE_PERCENTAGE = 0.95;
+// NNS maturity modulation range: [-10%, +2%].
+export const NNS_MATURITY_MODULATION_WORST_CASE_FACTOR = 0.9;
+export const NNS_MATURITY_MODULATION_BEST_CASE_FACTOR = 1.02;
+// SNS maturity modulation range: [-5%, +5%].
+// TODO: sync to [-10%, +2%] once https://github.com/dfinity/ic/pull/10239 is
+// merged and scheduled for deployment.
+export const SNS_MATURITY_MODULATION_WORST_CASE_FACTOR = 0.95;
+export const SNS_MATURITY_MODULATION_BEST_CASE_FACTOR = 1.05;
 // The minimum amount of ICP to disburse in a single transaction.
 // https://github.com/dfinity/ic/blob/b9c23dd08c76349a3dd1b422e39988bea8363d33/rs/nns/governance/src/governance/disburse_maturity.rs#L29
 export const MINIMUM_DISBURSEMENT = 100_000_000n;
 // The API will reject new disbursement requests if there are already 10 disbursements in progress.
 // https://github.com/dfinity/ic/blob/3564b37939f037ba4d051ada88251c13954597d2/rs/nns/governance/src/governance/disburse_maturity.rs#L40-L42
 export const MAX_DISBURSEMENTS_IN_PROGRESS = 10;
-// The minimum maturity to disburse with the maturity modulation variance applied.
+// The minimum NNS maturity such that the worst-case modulated amount still meets MINIMUM_DISBURSEMENT.
+// Ceil — not round — so the canister floor is never under-shot.
 export const MIN_DISBURSEMENT_WITH_VARIANCE = BigInt(
-  Math.round(
-    Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+  Math.ceil(
+    Number(MINIMUM_DISBURSEMENT) / NNS_MATURITY_MODULATION_WORST_CASE_FACTOR
   )
 );
-// The minimum maturity ICP equivalent to disburse with the maturity modulation variance applied.
 export const MIN_DISBURSEMENT_WITH_VARIANCE_ICP =
   Number(MINIMUM_DISBURSEMENT) /
   ULPS_PER_MATURITY /
-  MATURITY_MODULATION_VARIANCE_PERCENTAGE;
+  NNS_MATURITY_MODULATION_WORST_CASE_FACTOR;
 
 // Neuron ids are random u64. Max digits of a u64 is 20.
 export const MAX_NEURON_ID_DIGITS = 20;

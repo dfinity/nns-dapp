@@ -1,7 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
-    MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+    NNS_MATURITY_MODULATION_WORST_CASE_FACTOR,
     MIN_NEURON_STAKE,
     ULPS_PER_MATURITY,
   } from "$lib/constants/neurons.constants";
@@ -66,7 +66,7 @@
           $amount: formatNumber(
             Number(MIN_NEURON_STAKE) /
               ULPS_PER_MATURITY /
-              MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+              NNS_MATURITY_MODULATION_WORST_CASE_FACTOR,
             { minFraction: 4, maxFraction: 4 }
           ),
           $min: formatNumber(Number(MIN_NEURON_STAKE) / ULPS_PER_MATURITY, {
@@ -74,7 +74,7 @@
             maxFraction: 0,
           }),
           $variability: formatPercentage(
-            MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+            NNS_MATURITY_MODULATION_WORST_CASE_FACTOR,
             {
               minFraction: 0,
               maxFraction: 0,
