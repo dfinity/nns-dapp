@@ -889,12 +889,12 @@ describe("neuron-utils", () => {
       WhenDissolvedTimestampSeconds:
         BigInt(referenceDateSeconds) + BigInt(0.5 * SECONDS_IN_YEAR),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 1.08)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.29)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // The neuron APY should be the same as the NNS total APY since there is only one neuron
     expect(
-      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 1.08)
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 2.29)
     ).toBe(true);
     expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 6.99)).toBe(
       true
@@ -1056,7 +1056,7 @@ describe("neuron-utils", () => {
       WhenDissolvedTimestampSeconds:
         BigInt(referenceDateSeconds) + BigInt(1 * SECONDS_IN_YEAR),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.51)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.6)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Dissolving neuron with 1 month dissolve delay (above 2-week minimum)
@@ -1064,7 +1064,7 @@ describe("neuron-utils", () => {
       WhenDissolvedTimestampSeconds:
         BigInt(referenceDateSeconds) + BigInt(1 * SECONDS_IN_MONTH),
     };
-    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0.11)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 2.19)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 6.99)).toBe(true);
 
     // Staked maturity should not affect the APY (more stake, more rewards, same APY ratio)
@@ -1295,11 +1295,11 @@ describe("neuron-utils", () => {
           BigInt(referenceDateSeconds) + BigInt(SECONDS_IN_YEAR),
       },
     ];
-    expect(checkApy(TEST_SNS_IDS[0], false, 2.05)).toBe(true);
+    expect(checkApy(TEST_SNS_IDS[0], false, 4.1)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
 
     // The neuron APY should be the same as the Project total APY since there is only one neuron
-    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 2.05)).toBe(
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 4.1)).toBe(
       true
     );
     expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
@@ -1473,7 +1473,7 @@ describe("neuron-utils", () => {
           BigInt(referenceDateSeconds) + BigInt(1 * SECONDS_IN_YEAR),
       },
     ];
-    expect(checkApy(TEST_SNS_IDS[0], false, 2.08)).toBe(true);
+    expect(checkApy(TEST_SNS_IDS[0], false, 4.14)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
 
     // Dissolving neuron with 1 month dissolve delay
