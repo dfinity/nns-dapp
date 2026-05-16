@@ -838,7 +838,7 @@ export const isEnoughMaturityToSpawn = ({
 /** Checks if the neuron has enough maturity to disburse maturity.
  *
  * The function calculates the selected maturity based on the provided percentage
- * and compares it to the minimum required disbursement, adjusted by the maturity modulation variance.
+ * and compares it to the minimum required disbursement, adjusted by the NNS worst-case maturity modulation factor.
  * In the worst case maturity modulation (-1000) the amount should be at least: 100_000_000 e8s
  *
  * @param {Object} params
