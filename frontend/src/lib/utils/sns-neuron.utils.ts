@@ -1,4 +1,4 @@
-import { MATURITY_MODULATION_VARIANCE_PERCENTAGE } from "$lib/constants/neurons.constants";
+import { SNS_MATURITY_MODULATION_WORST_CASE_FACTOR } from "$lib/constants/neurons.constants";
 import {
   HOTKEY_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
@@ -1032,7 +1032,7 @@ export const totalDisbursingMaturity = ({
  * Source: https://sourcegraph.com/github.com/dfinity/ic/-/blob/rs/sns/governance/src/governance.rs?L1651
  */
 export const minimumAmountToDisburseMaturity = (fee: bigint): bigint =>
-  BigInt(Math.ceil(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));
+  BigInt(Math.ceil(Number(fee) / SNS_MATURITY_MODULATION_WORST_CASE_FACTOR));
 
 export const getSnsNeuronAccount = ({
   governanceCanisterId,

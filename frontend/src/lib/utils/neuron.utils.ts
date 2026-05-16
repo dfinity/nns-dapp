@@ -10,12 +10,12 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_DISBURSEMENT_WITH_VARIANCE,
   MIN_NEURON_STAKE,
+  NNS_MATURITY_MODULATION_WORST_CASE_FACTOR,
   NNS_MAXIMUM_DISSOLVE_DELAY,
   NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
@@ -831,15 +831,15 @@ export const isEnoughMaturityToSpawn = ({
   );
   return (
     maturitySelected >=
-    Number(MIN_NEURON_STAKE) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+    Number(MIN_NEURON_STAKE) / NNS_MATURITY_MODULATION_WORST_CASE_FACTOR
   );
 };
 
 /** Checks if the neuron has enough maturity to disburse maturity.
  *
  * The function calculates the selected maturity based on the provided percentage
- * and compares it to the minimum required disbursement, adjusted by the maturity modulation variance.
- * In the worst case maturity modulation (-500) the amount should be at least: 100_000_000 e8s
+ * and compares it to the minimum required disbursement, adjusted by the NNS worst-case maturity modulation factor.
+ * In the worst case maturity modulation (-1000) the amount should be at least: 100_000_000 e8s
  *
  * @param {Object} params
  * @param {NeuronInfo} params.neuron - The neuron whose maturity will be checked.

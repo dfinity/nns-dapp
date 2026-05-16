@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Update NNS maturity modulation range from [-5, 5] to [-10, 2] percent.
+
 #### Deprecated
 
 #### Removed

@@ -64,8 +64,8 @@ describe("NnsDisburseMaturityModal", () => {
     const po = await renderNnsDisburseMaturityModal({
       neuron: testNeuron(minMaturityForDisbursement),
     });
-    // MINIMUM_DISBURSEMENT / MATURITY_MODULATION_VARIANCE_PERCENTAGE
-    expect(await po.getTotalMaturity()).toBe("1.05");
+    // MINIMUM_DISBURSEMENT / NNS_MATURITY_MODULATION_WORST_CASE_FACTOR
+    expect(await po.getTotalMaturity()).toBe("1.11");
   });
 
   it("should display Nns description", async () => {
@@ -119,7 +119,7 @@ describe("NnsDisburseMaturityModal", () => {
     await po.setPercentage(50);
     await po.clickNextButton();
     expect(await po.getConfirmPercentage()).toEqual("50%");
-    expect(await po.getConfirmTokens()).toBe("50.00-55.27 ICP");
+    expect(await po.getConfirmTokens()).toBe("50.00-56.67 ICP");
     expect(await po.getConfirmDestination()).toEqual("Main");
   });
 
