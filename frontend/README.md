@@ -10,14 +10,19 @@ All the Internet computer interactions are done through ic-js or the official [a
 
 ## Installation and local development
 
-Set the node version defined in [config.json](https://github.com/dfinity/nns-dapp/blob/main/config.json#L103).
+### Prerequisites
 
-If you use [nvm](https://github.com/nvm-sh/nvm), you can run the following commands to set up the correct Node.js version:
+We use [Volta](https://volta.sh/) to pin the Node.js and npm versions for this project. Volta reads the `volta` field in [`package.json`](./package.json) and automatically switches Node and npm when you `cd` into the repo.
+
+One-time install:
 
 ```bash
-npm run sync-node-version  # Creates .nvmrc with the required version
-nvm use                    # Switches to the specified version
+curl https://get.volta.sh | bash
 ```
+
+After installing, run `node --version` and `npm --version` from inside the repo to confirm the pinned versions are active.
+
+If you prefer not to use Volta, install the Node and npm versions listed in the `volta` block of `frontend/package.json` manually (e.g. via `nvm install <version>`).
 
 Clone the project on your computer and install the libraries:
 

@@ -33,8 +33,9 @@ SHELL ["bash", "-c"]
 RUN mkdir -p config
 COPY dfx.json dfx.json
 COPY config.json config.json
+COPY frontend/package.json frontend/package.json
 RUN jq -r .dfx dfx.json > config/dfx_version
-RUN jq -r '.defaults.build.config.NODE_VERSION' config.json > config/node_version
+RUN jq -r '.volta.node' frontend/package.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_RELEASE' config.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' config.json > config/optimizer_version
 RUN jq -r '.defaults.build.config.IC_WASM_VERSION' config.json > config/ic_wasm_version
