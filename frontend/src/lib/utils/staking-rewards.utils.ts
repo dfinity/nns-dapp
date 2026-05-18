@@ -360,7 +360,8 @@ const getNnsRewardEstimationUSD = (
   params: StakingRewardCalcParams,
   days: number,
   maximiseParams: boolean = false,
-  forceInitialDate?: Date
+  forceInitialDate?: Date,
+  dayPoolRewards?: number[]
 ): ReturnType<typeof getNeuronsRewardEstimationUSD> => {
   return getNeuronsRewardEstimationUSD({
     neurons: params.nnsNeurons.neurons ?? [],
@@ -368,6 +369,7 @@ const getNnsRewardEstimationUSD = (
     days,
     otherParams: params,
     forceInitialDate,
+    dayPoolRewards,
   });
 };
 
@@ -376,7 +378,8 @@ const getSnsRewardEstimationUSD = (
   days: number,
   sns: CachedSnsDto,
   maximiseParams: boolean = false,
-  forceInitialDate?: Date
+  forceInitialDate?: Date,
+  dayPoolRewards?: number[]
 ): ReturnType<typeof getNeuronsRewardEstimationUSD> => {
   return getNeuronsRewardEstimationUSD({
     neurons:
@@ -386,6 +389,7 @@ const getSnsRewardEstimationUSD = (
     otherParams: params,
     sns,
     forceInitialDate,
+    dayPoolRewards,
   });
 };
 
@@ -430,13 +434,14 @@ const getAPYs = (params: StakingRewardCalcParams, forceInitialDate?: Date) => {
           params,
           snsNeurons[rootPrincipal]?.neurons ?? [],
           ledgerPrincipal,
-          (params, days, maximiseNeuronParams, forceInitialDate) =>
+          (params, days, maximiseNeuronParams, forceInitialDate, dayPool) =>
             getSnsRewardEstimationUSD(
               params,
               days,
               sns,
               maximiseNeuronParams,
-              forceInitialDate
+              forceInitialDate,
+              dayPool
             ),
           forceInitialDate
         )
@@ -460,6 +465,11 @@ const getAPYs = (params: StakingRewardCalcParams, forceInitialDate?: Date) => {
 
   return apy;
 };
+
+// Length of the forward simulation. Integer days because the simulation
+// iterates day-by-day; not interchangeable with DAYS_IN_AVG_YEAR (365.25),
+// which is the calendar-year length used elsewhere for annual-rate conversions.
+const SIMULATED_DAYS = 365;
 
 // Per-neuron APY: (rewards during eligibility / stake) scaled by
 // (fullPoolSum / eligiblePoolSum). For a neuron eligible all year the scaling
@@ -485,24 +495,30 @@ const getAPY = (
     params: StakingRewardCalcParams,
     days: number,
     maximiseParams?: boolean,
-    forceInitialDate?: Date
-  ) => {
-    total: number;
-    neurons: Map<string, number>;
-    eligiblePoolSums: Map<string, number>;
-    fullPoolSum: number;
-  },
+    forceInitialDate?: Date,
+    dayPoolRewards?: number[]
+  ) => ReturnType<typeof getNeuronsRewardEstimationUSD>,
   forceInitialDate?: Date
 ) => {
   const {
     neurons: yearEstimatedRewardNeuronsUSD,
     eligiblePoolSums: yearEstimatedEligiblePoolSums,
     fullPoolSum: yearFullPoolSum,
-  } = rewardEstimationFunction(params, 365, false, forceInitialDate);
+    dayPoolRewards: yearDayPoolRewards,
+  } = rewardEstimationFunction(params, SIMULATED_DAYS, false, forceInitialDate);
+  // The day-by-day pool reward depends only on the date window and reward
+  // params (not on neuron state or maximise flags), so reuse the array from
+  // the cur pass instead of recomputing it for the max pass.
   const {
     neurons: yearEstimatedMaxRewardNeuronsUSD,
     eligiblePoolSums: yearEstimatedMaxEligiblePoolSums,
-  } = rewardEstimationFunction(params, 365, true, forceInitialDate);
+  } = rewardEstimationFunction(
+    params,
+    SIMULATED_DAYS,
+    true,
+    forceInitialDate,
+    yearDayPoolRewards
+  );
 
   let totalUSD = 0;
   let totalMaxUSD = 0;
@@ -597,16 +613,15 @@ const isDataReady = (params: StakingRewardCalcParams) => {
 // it can be reused for the cur/max simulation passes and avoids recomputing
 // inside getTokenReward for every neuron-day.
 const computeDayPoolRewards = (
-  params: StakingRewardCalcParams,
+  rewardParams: ReturnType<typeof getRewardParams>,
   days: number,
   sns?: CachedSnsDto,
   forceInitialDate?: Date
 ): number[] => {
-  const rewardParams = getRewardParams(params, sns);
   const genesis = getGenesisTimestampSeconds(sns);
   const result: number[] = new Array(days);
   for (let i = 0; i < days; i++) {
-    result[i] = getPoolReward({
+    const poolReward = getPoolReward({
       genesisTimestampSeconds: genesis,
       referenceDate: getDate(i, forceInitialDate),
       transitionDurationSeconds: rewardParams.rewardTransition,
@@ -615,6 +630,12 @@ const computeDayPoolRewards = (
       totalSupply: rewardParams.totalSupply,
       poolReductionFactor: rewardParams.poolReductionFactor,
     });
+    if (poolReward === 0) {
+      logWithTimestamp(
+        `Staking rewards: pool reward is 0 for ${sns ? sns.canister_ids.root_canister_id : OWN_CANISTER_ID_TEXT} on day ${i}.`
+      );
+    }
+    result[i] = poolReward;
   }
   return result;
 };
@@ -626,6 +647,10 @@ const getNeuronsRewardEstimationUSD = (params: {
   sns?: CachedSnsDto;
   forceInitialDate?: Date;
   otherParams: StakingRewardCalcParams;
+  // Optional precomputed pool rewards. Callers running the simulation twice
+  // (e.g. getAPY's cur+max passes) can compute it once and thread it through
+  // to avoid the redundant per-day pool calculation.
+  dayPoolRewards?: number[];
 }): {
   total: number;
   neurons: Map<string, number>;
@@ -636,6 +661,7 @@ const getNeuronsRewardEstimationUSD = (params: {
   // doesn't appear to out-earn the equivalent locked neuron.
   eligiblePoolSums: Map<string, number>;
   fullPoolSum: number;
+  dayPoolRewards: number[];
 } => {
   const {
     neurons: _neurons,
@@ -644,25 +670,25 @@ const getNeuronsRewardEstimationUSD = (params: {
     sns,
     forceInitialDate,
     otherParams,
+    dayPoolRewards: precomputedDayPoolRewards,
   } = params;
+
+  const rewardParams = getRewardParams(otherParams, sns);
+  const dayPoolRewards =
+    precomputedDayPoolRewards ??
+    computeDayPoolRewards(rewardParams, days, sns, forceInitialDate);
+  const fullPoolSum = dayPoolRewards.reduce((acc, p) => acc + p, 0);
 
   if (!_neurons || _neurons.length === 0) {
     return {
       total: 0,
       neurons: new Map(),
       eligiblePoolSums: new Map(),
-      fullPoolSum: 0,
+      fullPoolSum,
+      dayPoolRewards,
     };
   }
   const neurons = cloneNeurons(_neurons);
-  const rewardParams = getRewardParams(otherParams, sns);
-  const dayPoolRewards = computeDayPoolRewards(
-    otherParams,
-    days,
-    sns,
-    forceInitialDate
-  );
-  const fullPoolSum = dayPoolRewards.reduce((acc, p) => acc + p, 0);
 
   if (maximiseParams) {
     neurons.forEach((neuron) =>
@@ -741,6 +767,7 @@ const getNeuronsRewardEstimationUSD = (params: {
     neurons: singleNeuronRewardsUSD,
     eligiblePoolSums,
     fullPoolSum,
+    dayPoolRewards,
   };
 };
 
@@ -840,12 +867,6 @@ const getTokenReward = (
     totalVotingPower!,
     20
   );
-
-  if (poolReward === 0) {
-    logWithTimestamp(
-      `Staking rewards: pool reward is 0 for ${sns ? sns.canister_ids.root_canister_id : OWN_CANISTER_ID_TEXT}.`
-    );
-  }
 
   return (
     Math.trunc(poolReward * E8S_RATE * neuronRewardRatioForTheDay) / E8S_RATE
