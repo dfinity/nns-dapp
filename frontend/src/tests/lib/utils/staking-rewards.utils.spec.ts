@@ -1232,6 +1232,50 @@ describe("neuron-utils", () => {
       true
     );
 
+    // Mixed-eligibility portfolio: one dissolving neuron (partial-year
+    // eligibility) alongside two locked neurons. Verifies the bank-style
+    // aggregation — the project total APY is the stake-weighted average of
+    // the per-neuron annualized APYs, not the simulated reward over the
+    // full year divided by stake. Also guards against the old behavior where
+    // the dissolving neuron's APY would be dragged toward 0 by the
+    // post-eligibility tail of the 365-day window.
+    params.nnsNeurons.neurons.forEach((n) => {
+      n.state = NeuronState.Locked;
+      n.fullNeuron.autoStakeMaturity = false;
+      n.fullNeuron.cachedNeuronStake = BigInt(50 * E8S_RATE);
+      n.fullNeuron.dissolveState = {
+        DissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      };
+    });
+    // Neuron 0: dissolving 6 months → annualized over partial-year eligibility.
+    params.nnsNeurons.neurons[0].state = NeuronState.Dissolving;
+    params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
+      WhenDissolvedTimestampSeconds:
+        BigInt(referenceDateSeconds) + BigInt(SECONDS_IN_HALF_YEAR),
+    };
+
+    const mixedApy = getRewardData(params).apy.get(OWN_CANISTER_ID_TEXT);
+    const apyDissolving = mixedApy.neurons.get(
+      getNeuronId(getNeuron(0) as AgnosticNeuron)
+    ).cur;
+    const apyLocked1 = mixedApy.neurons.get(
+      getNeuronId(getNeuron(1) as AgnosticNeuron)
+    ).cur;
+    const apyLocked2 = mixedApy.neurons.get(
+      getNeuronId(getNeuron(2) as AgnosticNeuron)
+    ).cur;
+
+    // Annualized — not dragged toward 0 by the post-eligibility tail.
+    expect(apyDissolving).toBeGreaterThan(0.01);
+    // Locked >= dissolving holds.
+    expect(apyLocked1).toBeGreaterThan(apyDissolving);
+    expect(apyLocked2).toBeGreaterThan(apyDissolving);
+    // Project total = stake-weighted average of per-neuron APYs (equal stakes).
+    const expectedTotal = (apyDissolving + apyLocked1 + apyLocked2) / 3;
+    expect(roundToDecimals(mixedApy.cur * 100, 4)).toBe(
+      roundToDecimals(expectedTotal * 100, 4)
+    );
+
     // Let's remove some vital data, the APY should be 0 and we should see an error
     old = params.nnsTotalVotingPower;
     params.nnsTotalVotingPower = 0n;
