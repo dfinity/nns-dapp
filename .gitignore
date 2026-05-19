@@ -16,7 +16,6 @@ out
 .history
 .svn/
 .gradle/
-.nvmrc
 
 # IntelliJ related
 *.iml

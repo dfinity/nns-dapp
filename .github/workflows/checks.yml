@@ -18,7 +18,7 @@ jobs:
       - name: Get cargo sort version
         run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' config.json >> $GITHUB_ENV
       - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -110,7 +110,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -212,7 +212,7 @@ jobs:
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{ env.NODE_VERSION }}

@@ -23,7 +23,7 @@ jobs:
       - name: Update the SNS aggregator response files
         run: scripts/nns-dapp/replace-sns-aggregator-response.sh
       - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
       - name: Set up Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
