@@ -12,7 +12,7 @@ All the Internet computer interactions are done through ic-js or the official [a
 
 ### Prerequisites
 
-We use [Volta](https://volta.sh/) to pin the Node.js and npm versions for this project. Volta reads the `volta` field in [`package.json`](./package.json) and automatically switches Node and npm when you `cd` into the repo.
+We use [Volta](https://volta.sh/) to pin the Node.js and npm versions for this project. Volta reads the `volta` field in [`package.json`](./package.json) and automatically switches Node and npm when you `cd` into the `frontend/` directory.
 
 One-time install:
 
@@ -20,9 +20,9 @@ One-time install:
 curl https://get.volta.sh | bash
 ```
 
-After installing, run `node --version` and `npm --version` from inside the repo to confirm the pinned versions are active.
+Open a new terminal (or `source` your shell profile) so Volta's shims are on `PATH`. Then, from inside `frontend/`, run `node --version` and `npm --version` to confirm the pinned versions are active.
 
-If you prefer not to use Volta, install the Node and npm versions listed in the `volta` block of `frontend/package.json` manually (e.g. via `nvm install <version>`).
+If you prefer not to use Volta, install the Node and npm versions listed in the `volta` block of `frontend/package.json` manually.
 
 Clone the project on your computer and install the libraries:
 
