@@ -87,6 +87,10 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     println!("END   post-upgrade");
 }
 
+// TODO: add a `decode_with` argument decoder that imposes a Candid decoding
+// quota (see `http_request_decode_arg` in sns_aggregator/src/lib.rs). The
+// previous `decoding_quota` query attribute was removed in ic-cdk 0.19, and
+// this endpoint has no equivalent bound on attacker-controlled payloads.
 #[must_use]
 #[ic_cdk::query]
 pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {

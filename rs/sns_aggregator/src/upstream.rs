@@ -21,6 +21,9 @@ use ic_cdk::call::CallResult;
 const TIME_WINDOW_SECONDS: u64 = 2 * 30 * 24 * 3600;
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
+// TODO: overlapping invocations could race on `sns_to_get.pop()` /
+// `set_list_of_sns_to_get()`. Migrate to `set_timer_interval_serial` once we're
+// comfortable with the API (added in ic-cdk-timers 1.0.0) to serialize ticks.
 pub async fn update_cache() {
     crate::state::log("Getting upstream data...".to_string());
     let sns_maybe = STATE.with(|state| {
