@@ -125,11 +125,22 @@ fn tail_log(limit: Option<u16>) -> String {
     })
 }
 
+/// Decodes the `http_request` argument with a tight Candid quota to limit the
+/// `DoS` surface from oversized attacker-controlled payloads. ic-cdk 0.19 removed
+/// the `decoding_quota` query attribute, so we re-impose it via `decode_with`.
+#[allow(clippy::needless_pass_by_value)] // signature required by ic_cdk::query(decode_with = ...)
+fn http_request_decode_arg(arg_bytes: Vec<u8>) -> HttpRequest {
+    let mut decoder_config = candid::DecoderConfig::new();
+    decoder_config.set_decoding_quota(10_000);
+    decoder_config.set_skipping_quota(10_000);
+    let (req,): (HttpRequest,) = candid::utils::decode_args_with_config(&arg_bytes, &decoder_config)
+        .unwrap_or_else(|e| ic_cdk::api::trap(format!("Failed to decode http_request argument: {e}")));
+    req
+}
+
 /// Web server
-///
-/// Note: the Candid decoding limit is no longer configurable via the query attribute since ic-cdk 0.19.0.
 #[candid_method(query)]
-#[ic_cdk::query]
+#[ic_cdk::query(decode_with = "http_request_decode_arg")]
 fn http_request(req: HttpRequest) -> HttpResponse {
     match req.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),

@@ -76,7 +76,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
                 stuff.instances.len(),
                 serde_json::to_string(&stuff).unwrap_or_else(|_| "Could not serialise response".to_string())
             ));
-            let instances: Vec<_> = (0..).zip(stuff.instances.into_iter()).collect();
+            let instances: Vec<_> = (0..).zip(stuff.instances).collect();
             STATE.with(|state| {
                 state
                     .stable
