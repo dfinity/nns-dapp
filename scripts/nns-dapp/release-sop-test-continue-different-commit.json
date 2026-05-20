@@ -29,7 +29,7 @@
     }
   ],
   "expectedOutput": [
-    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
+    "Checklist file: ./scripts/nns-dapp/Release-2001-02-29.json",
     "Start time: Was already: \u001b[35m2001-02-29 14:15:16\u001b[0m",
     "git fetch --tags --force: Was already done. Skipping.",
     "Release SOP script is newest version: Was already: \u001b[35myes\u001b[0m",
