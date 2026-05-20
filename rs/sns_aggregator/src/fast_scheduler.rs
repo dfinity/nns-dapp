@@ -127,9 +127,9 @@ impl FastScheduler {
                     }
                     match lifecycle_maybe {
                         Ok(lifecycle) => entry.lifecycle = Some(lifecycle),
-                        Err(err) => crate::state::log(format!(
-                            "Failed to get SNS lifecycle; lifecycle is NOT updated: {err}"
-                        )),
+                        Err(err) => {
+                            crate::state::log(format!("Failed to get SNS lifecycle; lifecycle is NOT updated: {err}"))
+                        }
                     }
                 });
         });
