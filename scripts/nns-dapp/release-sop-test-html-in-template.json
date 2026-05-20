@@ -53,7 +53,7 @@
     },
     {
       "command": "npm_audit",
-      "stdout": "found 0 vulnerabilities",
+      "stdout": "https://github.com/advisories/GHSA-77vg-94rm-hx3p https://github.com/advisories/GHSA-pr6f-5x2q-rwfp https://github.com/advisories/GHSA-f3cj-j4f6-wq85 https://github.com/advisories/GHSA-rcqx-6q8c-2c42 https://github.com/advisories/GHSA-9rmh-mm8f-r9h6",
       "stderr": "",
       "exitCode": 0
     },
@@ -104,8 +104,8 @@
     "git push origin -f tags/release-candidate",
     "",
     "git push origin -f tags/release-candidate: \u001b[32mDone\u001b[0m",
-    "Security test: npm audit: \u001b[32mfound 0 vulnerabilities\u001b[0m",
-    "Expected npm audit: \u001b[32mfound 0 vulnerabilities\u001b[0m",
+    "Security test: npm audit: \u001b[32mhttps://github.com/advisories/GHSA-77vg-94rm-hx3p https://github.com/advisories/GHSA-pr6f-5x2q-rwfp https://github.com/advisories/GHSA-f3cj-j4f6-wq85 https://github.com/advisories/GHSA-rcqx-6q8c-2c42 https://github.com/advisories/GHSA-9rmh-mm8f-r9h6\u001b[0m",
+    "Expected npm audit: \u001b[32mhttps://github.com/advisories/GHSA-77vg-94rm-hx3p https://github.com/advisories/GHSA-pr6f-5x2q-rwfp https://github.com/advisories/GHSA-f3cj-j4f6-wq85 https://github.com/advisories/GHSA-rcqx-6q8c-2c42 https://github.com/advisories/GHSA-9rmh-mm8f-r9h6\u001b[0m",
     "Security test: cargo audit: \u001b[32mRUSTSEC-2026-0001,RUSTSEC-2026-0009,RUSTSEC-2026-0067,RUSTSEC-2026-0068\u001b[0m",
     "Expected cargo audit: \u001b[32mRUSTSEC-2026-0001,RUSTSEC-2026-0009,RUSTSEC-2026-0067,RUSTSEC-2026-0068\u001b[0m",
     "Security test: no HTML in templates: Failed"

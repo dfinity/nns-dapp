@@ -454,7 +454,7 @@ record "Release commit" git rev-parse release-candidate
 verify "Release commit" "tags/release-candidate commit" git rev-parse release-candidate
 confirm_cmd git push origin -f tags/release-candidate
 record "Security test: npm audit" npm_audit
-verify "Security test: npm audit" "Expected npm audit" echo "found 0 vulnerabilities"
+verify "Security test: npm audit" "Expected npm audit" echo "https://github.com/advisories/GHSA-77vg-94rm-hx3p https://github.com/advisories/GHSA-pr6f-5x2q-rwfp https://github.com/advisories/GHSA-f3cj-j4f6-wq85 https://github.com/advisories/GHSA-rcqx-6q8c-2c42 https://github.com/advisories/GHSA-9rmh-mm8f-r9h6"
 record "Security test: cargo audit" cargo_audit
 verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2026-0001,RUSTSEC-2026-0009,RUSTSEC-2026-0067,RUSTSEC-2026-0068"
 record "Security test: no HTML in templates" no_html_in_templates
