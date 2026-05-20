@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 141778
+
+### Application
+
+#### Changed
+
+- Update NNS maturity modulation range from [-5, 5] to [-10, 2] percent.
+
+### Operations
+
 ## Proposal 141734
 
 ### Application
