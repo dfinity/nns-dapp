@@ -59,7 +59,7 @@
     }
   ],
   "expectedOutput": [
-    "Checklist file: ./scripts/nns-dapp/Release-2001-02-29.json",
+    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
     "Start time: \u001b[32m2001-02-29 14:15:16\u001b[0m",
     "👇 Press enter to run the following command:",
     "",

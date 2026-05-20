@@ -83,7 +83,7 @@
     }
   ],
   "expectedOutput": [
-    "Checklist file: ./scripts/nns-dapp/Release-2001-02-29.json",
+    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
     "Start time: \u001b[32m2001-02-29 14:15:16\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
@@ -123,11 +123,13 @@
     "Security test: no HTML in templates: \u001b[32mChecked\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
-    "./scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz",
+    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz",
     "",
-    "./scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: \u001b[32mDone\u001b[0m",
-    "No mock behavior for: ./scripts/nns-dapp/get-hash-from-ci-log --commit tags/release-candidate",
-    "CI NNS-dapp WASM hash: Failed"
+    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: \u001b[32mDone\u001b[0m",
+    "CI NNS-dapp WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
+    "Values don't match!",
+    "CI NNS-dapp WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+    "Local WASM hash: 1111111111111111111111111111111111111111111111111111111111111111"
   ],
   "expectedExitCode": 1
 }

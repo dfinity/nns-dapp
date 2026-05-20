@@ -45,7 +45,7 @@
     }
   ],
   "expectedOutput": [
-    "Checklist file: ./scripts/nns-dapp/Release-2001-02-29.json",
+    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
     "Start time: Was already: \u001b[35m2001-02-29 14:15:16\u001b[0m",
     "git fetch --tags --force: Was already done. Skipping.",
     "Release SOP script is newest version: Was already: \u001b[35myes\u001b[0m",
@@ -63,9 +63,16 @@
     "Security test: cargo audit: Was already: \u001b[35mRUSTSEC-2026-0001,RUSTSEC-2026-0009,RUSTSEC-2026-0067,RUSTSEC-2026-0068\u001b[0m",
     "Expected cargo audit: RUSTSEC-2026-0001,RUSTSEC-2026-0009,RUSTSEC-2026-0067,RUSTSEC-2026-0068",
     "Security test: no HTML in templates: Was already: \u001b[35mChecked\u001b[0m",
-    "./scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: Was already done. Skipping.",
-    "No mock behavior for: ./scripts/nns-dapp/get-hash-from-ci-log --commit tags/release-candidate",
-    "CI NNS-dapp WASM hash: Failed"
+    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: Was already done. Skipping.",
+    "CI NNS-dapp WASM hash: Was already: \u001b[35m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
+    "Local WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+    "scripts/canister_ids --remove --network devenv_user --canister nns-dapp: Was already done. Skipping.",
+    "dfx identity: Was already: \u001b[35mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
+    "dfx canister create nns-dapp --network devenv_user --no-wallet: Was already done. Skipping.",
+    "NNS-dapp devenv_user canister ID: Was already: \u001b[35mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
+    "Values don't match!",
+    "NNS-dapp devenv_user canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
+    "Current NNS-dapp devenv_user canister ID: aaaaa-aa"
   ],
   "expectedExitCode": 1
 }
