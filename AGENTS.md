@@ -14,14 +14,14 @@ The project requires **Node.js 25.x** (pinned to 25.8.0 via Volta). The update s
 
 All commands run from `frontend/`:
 
-| Task | Command |
-|------|---------|
-| Install deps | `npm ci` |
-| Dev server | `npm run dev` (serves on http://localhost:5173) |
-| Lint | `npm run lint` (prettier + eslint) |
-| Type + lint check | `npm run check` (svelte-check + lint) |
-| Unit tests | `npm run test` (tsc + vitest, ~670 test files) |
-| Build | `npm run build` |
+| Task              | Command                                         |
+| ----------------- | ----------------------------------------------- |
+| Install deps      | `npm ci`                                        |
+| Dev server        | `npm run dev` (serves on http://localhost:5173) |
+| Lint              | `npm run lint` (prettier + eslint)              |
+| Type + lint check | `npm run check` (svelte-check + lint)           |
+| Unit tests        | `npm run test` (tsc + vitest, ~670 test files)  |
+| Build             | `npm run build`                                 |
 
 ### `.env` file requirement
 
@@ -34,6 +34,7 @@ For frontend-only development (no local IC replica), create `frontend/.env` with
 ### Running without a local IC replica
 
 The frontend dev server will start and render all pages, but:
+
 - Authentication (Internet Identity) will not work
 - Canister calls will fail with network errors
 - The SNS aggregator JSON fetch will return HTML errors (benign)
