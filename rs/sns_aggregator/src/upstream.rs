@@ -40,7 +40,7 @@ pub async fn update_cache() {
         set_list_of_sns_to_get().await
     };
     if let Err(err) = result {
-        crate::state::log(format!("SNS update command failed with: {err:?}"));
+        crate::state::log(format!("SNS update command failed with: {err}"));
     }
 }
 
@@ -66,7 +66,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     crate::state::log("Asked for more SNSs".to_string());
     match result {
         Err(err) => {
-            let message = format!("{err:?}");
+            let message = format!("{err}");
             crate::state::log(format!("Cache update failed: {message}"));
             Err(anyhow!("Cache update failed: {}", message))
         }
@@ -121,7 +121,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
                     .map_err(Into::into)
             })
             .map(|(r,)| r)
-            .map_err(|err| crate::state::log(format!("Call to Root.list_sns_canisters failed: {err:?}")))
+            .map_err(|err| crate::state::log(format!("Call to Root.list_sns_canisters failed: {err}")))
             .unwrap_or(existing_data.list_sns_canisters);
 
     crate::state::log(format!("Getting SNS index {index}... get_metadata"));
@@ -131,7 +131,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(ic_cdk::call::Error::from)
         .and_then(|resp| resp.candid_tuple::<(types::GetMetadataResponse,)>().map_err(Into::into))
         .map(|(r,)| r)
-        .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_metadata failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_metadata failed: {err}")))
         .unwrap_or(existing_data.meta);
 
     crate::state::log(format!("Getting SNS index {index}... list_nervous_system_functions"));
@@ -146,7 +146,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .map(|(r,)| r)
             .map_err(|err| {
                 crate::state::log(format!(
-                    "Call to SnsGovernance.list_nervous_system_functions failed: {err:?}"
+                    "Call to SnsGovernance.list_nervous_system_functions failed: {err}"
                 ));
             })
             .unwrap_or(existing_data.parameters);
@@ -162,21 +162,21 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .and_then(|resp| resp.candid_tuple::<(Option<_>,)>().map_err(Into::into))
         .map(|(r,)| r)
         .map_err(|err| {
-            crate::state::log(format!("Call to SnsGovernance.get_metrics_replicated failed: {err:?}"));
+            crate::state::log(format!("Call to SnsGovernance.get_metrics_replicated failed: {err}"));
         })
         .unwrap_or(existing_data.metrics);
 
     crate::state::log(format!("Getting SNS index {index}... get_latest_reward_event"));
     let latest_reward_event = get_latest_reward_event(governance_canister_id)
         .await
-        .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_latest_reward_event failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_latest_reward_event failed: {err}")))
         .ok()
         .or(existing_data.latest_reward_event);
 
     crate::state::log(format!("Getting SNS index {index}... get_state"));
     let swap_state: GetStateResponse = get_swap_state(swap_canister_id)
         .await
-        .map_err(|err| crate::state::log(format!("Call to Swap.get_state failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to Swap.get_state failed: {err}")))
         .unwrap_or(existing_data.swap_state);
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_metadata"));
@@ -186,7 +186,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .map_err(ic_cdk::call::Error::from)
             .and_then(|resp| resp.candid_tuple::<(Vec<(String, Icrc1Value)>,)>().map_err(Into::into))
             .map(|(r,)| r)
-            .map_err(|err| crate::state::log(format!("Call to Ledger.icrc1_metadata failed: {err:?}")))
+            .map_err(|err| crate::state::log(format!("Call to Ledger.icrc1_metadata failed: {err}")))
             .unwrap_or(existing_data.icrc1_metadata);
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_fee"));
@@ -195,7 +195,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(ic_cdk::call::Error::from)
         .and_then(|resp| resp.candid_tuple::<(SnsTokens,)>().map_err(Into::into))
         .map(|(r,)| r)
-        .map_err(|err| crate::state::log(format!("Call to Ledger.icrc1_fee failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to Ledger.icrc1_fee failed: {err}")))
         .unwrap_or(existing_data.icrc1_fee);
 
     let icrc1_total_supply: SnsTokens = ic_cdk::call::Call::unbounded_wait(ledger_canister_id, "icrc1_total_supply")
@@ -203,7 +203,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(ic_cdk::call::Error::from)
         .and_then(|resp| resp.candid_tuple::<(SnsTokens,)>().map_err(Into::into))
         .map(|(r,)| r)
-        .map_err(|err| crate::state::log(format!("Call to Ledger.icrc1_total_supply failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to Ledger.icrc1_total_supply failed: {err}")))
         .unwrap_or(existing_data.icrc1_total_supply);
 
     let swap_params_response: Option<GetSaleParametersResponse> =
@@ -215,7 +215,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .map(|(r,)| r)
         {
             Err(err) => {
-                crate::state::log(format!("Call to Swap.get_sale_parameters failed: {err:?}"));
+                crate::state::log(format!("Call to Swap.get_sale_parameters failed: {err}"));
                 None
             }
             Ok(response) => Some(response),
@@ -230,7 +230,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map(|(r,)| r)
     {
         Err(err) => {
-            crate::state::log(format!("Call to Swap.get_init failed: {err:?}"));
+            crate::state::log(format!("Call to Swap.get_init failed: {err}"));
             None
         }
         Ok(response) => Some(response),
@@ -239,13 +239,13 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
 
     let derived_state_response: Option<GetDerivedStateResponse> = get_derived_state(swap_canister_id)
         .await
-        .map_err(|err| crate::state::log(format!("Call to Swap.get_derived_state failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to Swap.get_derived_state failed: {err}")))
         .ok()
         .or(existing_data.derived_state);
 
     let lifecycle_response: Option<GetLifecycleResponse> = get_lifecycle(swap_canister_id)
         .await
-        .map_err(|err| crate::state::log(format!("Call to Governance.get_lifecycle failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to Governance.get_lifecycle failed: {err}")))
         .ok()
         .or(existing_data.lifecycle);
 
@@ -254,7 +254,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .await
             .map_err(|err| {
                 crate::state::log(format!(
-                    "Call to SnsGovernance.get_nervous_system_parameters failed: {err:?}"
+                    "Call to SnsGovernance.get_nervous_system_parameters failed: {err}"
                 ));
             })
             .ok()
@@ -291,7 +291,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         topics: list_topics_response,
     };
     State::insert_sns(index, &slow_data)
-        .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err}")))
         .unwrap_or_default();
     crate::state::log(format!("Getting SNS index {index}... DONE"));
     Ok(())

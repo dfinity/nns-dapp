@@ -96,7 +96,7 @@ async fn get_canister_status() -> CanisterStatusResultV2 {
         .map_err(ic_cdk::call::Error::from)
         .and_then(|resp| resp.candid_tuple::<(CanisterStatusResultV2,)>().map_err(Into::into))
         .map(|(r,)| r);
-    result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
+    result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err}"))
 }
 
 /// API method to get the current configuration.

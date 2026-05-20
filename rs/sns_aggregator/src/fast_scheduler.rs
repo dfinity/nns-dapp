@@ -116,19 +116,19 @@ impl FastScheduler {
                     match derived_state_maybe {
                         Ok(derived_state) => entry.derived_state = Some(derived_state),
                         Err(err) => crate::state::log(format!(
-                            "Failed to get derived state; derived state is NOT updated: {err:?}"
+                            "Failed to get derived state; derived state is NOT updated: {err}"
                         )),
                     }
                     match swap_state_maybe {
                         Ok(swap_state) => entry.swap_state = swap_state,
                         Err(err) => {
-                            crate::state::log(format!("Failed to get swap state; swap state is NOT updated: {err:?}"));
+                            crate::state::log(format!("Failed to get swap state; swap state is NOT updated: {err}"));
                         }
                     }
                     match lifecycle_maybe {
                         Ok(lifecycle) => entry.lifecycle = Some(lifecycle),
                         Err(err) => crate::state::log(format!(
-                            "Failed to get SNS lifecycle; lifecycle is NOT updated: {err:?}"
+                            "Failed to get SNS lifecycle; lifecycle is NOT updated: {err}"
                         )),
                     }
                 });
@@ -137,7 +137,7 @@ impl FastScheduler {
         let slow_data =
             STATE.with(|state| state.stable.borrow().sns_cache.borrow_mut().upstream_data[&root_canister_id].clone());
         State::insert_sns(index, &slow_data)
-            .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err:?}")))
+            .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err}")))
             .unwrap_or_default();
         crate::state::log(format!("Updating SNS index {index}... DONE"));
     }

@@ -107,7 +107,7 @@ mod prod {
             .map_err(ic_cdk::call::Error::from)
             .and_then(|resp| resp.candid_tuple::<(GetExchangeRateResult,)>().map_err(Into::into))
             .map(|r| r.0)
-            .map_err(|e| format!("{e:?}"))
+            .map_err(|e| format!("{e}"))
     }
 }
 

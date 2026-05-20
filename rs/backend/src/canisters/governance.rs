@@ -22,7 +22,7 @@ mod prod {
                     .map_err(Into::into)
             })
             .map(|r| r.0)
-            .map_err(|e| format!("{e:?}"))
+            .map_err(|e| format!("{e}"))
     }
 }
 
