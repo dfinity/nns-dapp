@@ -30,11 +30,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Add `sns.internetcomputer.org` to the list of supported domains.
+
 #### Changed
 
 #### Deprecated
 
 #### Removed
+
+- Remove `wallet.internetcomputer.org` and `wallet.ic0.app` from the list of supported domains.
 
 #### Fixed
 
