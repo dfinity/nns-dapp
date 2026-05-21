@@ -434,12 +434,12 @@ const getAPYs = (params: StakingRewardCalcParams, forceInitialDate?: Date) => {
           params,
           snsNeurons[rootPrincipal]?.neurons ?? [],
           ledgerPrincipal,
-          (params, days, maximiseNeuronParams, forceInitialDate, dayPool) =>
+          (params, days, maximiseParams, forceInitialDate, dayPool) =>
             getSnsRewardEstimationUSD(
               params,
               days,
               sns,
-              maximiseNeuronParams,
+              maximiseParams,
               forceInitialDate,
               dayPool
             ),
