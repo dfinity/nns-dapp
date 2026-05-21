@@ -27,7 +27,6 @@ mod canisters;
 mod constants;
 mod metrics_encoder;
 mod perf;
-mod spawn;
 mod state;
 mod stats;
 mod time;
@@ -88,6 +87,10 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     println!("END   post-upgrade");
 }
 
+// TODO: add a `decode_with` argument decoder that imposes a Candid decoding
+// quota (see `http_request_decode_arg` in sns_aggregator/src/lib.rs). The
+// previous `decoding_quota` query attribute was removed in ic-cdk 0.19, and
+// this endpoint has no equivalent bound on attacker-controlled payloads.
 #[must_use]
 #[ic_cdk::query]
 pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
@@ -95,7 +98,7 @@ pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
 }
 
 fn get_caller() -> PrincipalId {
-    let caller = ic_cdk::api::caller();
+    let caller = ic_cdk::api::msg_caller();
     if caller == candid::Principal::anonymous() {
         ic_cdk::api::trap("Anonymous principal is not allowed to call this endpoint.");
     }
@@ -288,7 +291,7 @@ pub fn add_stable_asset(asset_bytes: Vec<u8>) {
             insert_asset("/assets/canvaskit/canvaskit.js", Asset::new_stable(asset_bytes));
         }
         unknown_hash => {
-            ic_cdk::api::trap(&format!("Unknown asset with hash {unknown_hash}"));
+            ic_cdk::api::trap(format!("Unknown asset with hash {unknown_hash}"));
         }
     }
 }
@@ -307,7 +310,7 @@ pub fn add_stable_asset(asset_bytes: Vec<u8>) {
 #[must_use]
 #[ic_cdk::update]
 pub fn create_toy_accounts(num_accounts: u128) -> u64 {
-    let caller = ic_cdk::caller();
+    let caller = ic_cdk::api::msg_caller();
     if !ic_cdk::api::is_controller(&caller) {
         ic_cdk::api::trap("Only the controller may generate toy accounts");
     }
@@ -324,7 +327,7 @@ pub fn create_toy_accounts(num_accounts: u128) -> u64 {
 #[must_use]
 #[ic_cdk::query]
 pub fn get_toy_account(toy_account_index: u64) -> GetAccountResponse {
-    let caller = ic_cdk::caller();
+    let caller = ic_cdk::api::msg_caller();
     if !ic_cdk::api::is_controller(&caller) {
         ic_cdk::api::trap("Only the controller may access toy accounts");
     }

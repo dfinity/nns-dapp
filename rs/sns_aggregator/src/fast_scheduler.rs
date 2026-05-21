@@ -5,7 +5,7 @@ use crate::{
     types::{upstream::SnsCache, upstream::SnsIndex, GetStateResponse},
     upstream::{get_derived_state, get_lifecycle, get_swap_state},
 };
-use ic_cdk::api::management_canister::provisional::CanisterId;
+use candid::Principal as CanisterId;
 use ic_cdk::api::time;
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval, TimerId};
 use std::str::FromStr;
@@ -116,20 +116,20 @@ impl FastScheduler {
                     match derived_state_maybe {
                         Ok(derived_state) => entry.derived_state = Some(derived_state),
                         Err(err) => crate::state::log(format!(
-                            "Failed to get derived state; derived state is NOT updated: {err:?}"
+                            "Failed to get derived state; derived state is NOT updated: {err}"
                         )),
                     }
                     match swap_state_maybe {
                         Ok(swap_state) => entry.swap_state = swap_state,
                         Err(err) => {
-                            crate::state::log(format!("Failed to get swap state; swap state is NOT updated: {err:?}"));
+                            crate::state::log(format!("Failed to get swap state; swap state is NOT updated: {err}"));
                         }
                     }
                     match lifecycle_maybe {
                         Ok(lifecycle) => entry.lifecycle = Some(lifecycle),
-                        Err(err) => crate::state::log(format!(
-                            "Failed to get SNS lifecycle; lifecycle is NOT updated: {err:?}"
-                        )),
+                        Err(err) => {
+                            crate::state::log(format!("Failed to get SNS lifecycle; lifecycle is NOT updated: {err}"));
+                        }
                     }
                 });
         });
@@ -137,7 +137,7 @@ impl FastScheduler {
         let slow_data =
             STATE.with(|state| state.stable.borrow().sns_cache.borrow_mut().upstream_data[&root_canister_id].clone());
         State::insert_sns(index, &slow_data)
-            .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err:?}")))
+            .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err}")))
             .unwrap_or_default();
         crate::state::log(format!("Updating SNS index {index}... DONE"));
     }
@@ -170,7 +170,7 @@ impl FastScheduler {
 
     /// Start collecting data now.
     pub fn start(&mut self, timer_interval: Duration) {
-        let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::global_update_next()));
+        let timer_id = set_timer_interval(timer_interval, Self::global_update_next);
         let old_timer = self.update_timer.replace(timer_id);
         if let Some(id) = old_timer {
             clear_timer(id);
@@ -192,7 +192,7 @@ impl FastScheduler {
     /// Note: We request both the delay and the timestamp to avoid making a syscall for data that
     /// is almost certainly already available to the caller.
     pub fn global_start_at(start_seconds: u64, delay: Duration) {
-        let start_timer = set_timer(delay, Self::global_start);
+        let start_timer = set_timer(delay, async { Self::global_start() });
         if let Some((_, old_timer)) = STATE.with(|state| {
             state
                 .fast_scheduler

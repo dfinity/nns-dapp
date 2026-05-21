@@ -135,7 +135,7 @@ impl State {
         println!("START state::new_restored: ())");
         let bytes = with_partitions(Partitions::read_bytes_from_managed_memory);
         let state =
-            State::decode(bytes).unwrap_or_else(|e| trap(&format!("Decoding stable memory failed. Error: {e:?}")));
+            State::decode(bytes).unwrap_or_else(|e| trap(format!("Decoding stable memory failed. Error: {e:?}")));
         println!("END   state::new_restored: ()");
         state
     }

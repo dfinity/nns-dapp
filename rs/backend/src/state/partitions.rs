@@ -5,12 +5,13 @@
 //!
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
-use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::api::trap;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
+
+const WASM_PAGE_SIZE_IN_BYTES: u64 = 65536;
 #[cfg(test)]
 pub mod tests;
 
@@ -93,7 +94,7 @@ impl Partitions {
         let len = bytes.len();
         let length_field = u64::try_from(len)
             .unwrap_or_else(|e| {
-                trap(&format!(
+                trap(format!(
                     "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
                 ));
             })
