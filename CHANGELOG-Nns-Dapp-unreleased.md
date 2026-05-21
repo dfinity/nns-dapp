@@ -24,6 +24,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Bump `tar` to 0.4.46 to address RUSTSEC-2026-0067 and RUSTSEC-2026-0068.
+
 #### Not Published
 
 ### Operations
