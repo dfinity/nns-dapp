@@ -620,6 +620,7 @@ const computeDayPoolRewards = (
 ): number[] => {
   const genesis = getGenesisTimestampSeconds(sns);
   const result: number[] = new Array(days);
+  let hasZero = false;
   for (let i = 0; i < days; i++) {
     const poolReward = getPoolReward({
       genesisTimestampSeconds: genesis,
@@ -630,12 +631,13 @@ const computeDayPoolRewards = (
       totalSupply: rewardParams.totalSupply,
       poolReductionFactor: rewardParams.poolReductionFactor,
     });
-    if (poolReward === 0) {
-      logWithTimestamp(
-        `Staking rewards: pool reward is 0 for ${sns ? sns.canister_ids.root_canister_id : OWN_CANISTER_ID_TEXT} on day ${i}.`
-      );
-    }
+    if (poolReward === 0) hasZero = true;
     result[i] = poolReward;
+  }
+  if (hasZero) {
+    logWithTimestamp(
+      `Staking rewards: pool reward is 0 for ${sns ? sns.canister_ids.root_canister_id : OWN_CANISTER_ID_TEXT} on one or more simulated days.`
+    );
   }
   return result;
 };
