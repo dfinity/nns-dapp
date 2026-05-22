@@ -115,7 +115,7 @@
         "DIDC_VERSION": "didc 0.5.4",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2026-05-13",
+        "SNSDEMO_RELEASE": "release-2026-05-20",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "f54e1f82c3cf8ae0b4be6b0fc3a940cdcd70dd97"
       },
       "packtool": ""
