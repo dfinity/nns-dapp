@@ -71,7 +71,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
         Err(err) => {
             let message = format!("{err}");
             crate::state::log(format!("Cache update failed: {message}"));
-            Err(anyhow!("Cache update failed: {}", message))
+            Err(anyhow!("Cache update failed: {message}"))
         }
         Ok((stuff,)) => {
             crate::state::log(format!(
