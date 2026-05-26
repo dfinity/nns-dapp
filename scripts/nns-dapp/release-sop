@@ -294,9 +294,8 @@ npm_audit() {
   pushd "$TOP_DIR/frontend" >&2
   audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(" ")')"
   if [ "$audit" ]; then
-    popd >&2
     echo "$audit"
-    return
+    exit
   fi
   # No vulnerabilities reported. Run `npm audit` so a future format change
   # surfaces as a non-zero exit and fails this step.
