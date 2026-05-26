@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Compute per-neuron APY as an annualized rate over the days the neuron is actually eligible to vote, with a pool-decay correction factor (`fullPoolSum / eligiblePoolSum`). For locked neurons the correction collapses to 1 and the displayed APY is unchanged from before. Dissolving neurons that previously displayed a near-zero APY (because the post-eligibility tail dragged the 365-day average toward 0) now display the rate at which they're actually earning during dissolution. The project total APY follows the same methodology: it is the stake-weighted average of the per-neuron annualized APYs (bank-style), rather than the simulated reward over the full year divided by stake.
+- Annualize per-neuron APY over the days the neuron is eligible to vote, so dissolving neurons no longer display a near-zero rate. Locked-neuron APYs are unchanged.
 
 #### Deprecated
 
