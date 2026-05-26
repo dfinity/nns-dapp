@@ -294,14 +294,15 @@ npm_audit() {
   pushd "$TOP_DIR/frontend" >&2
   audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(" ")')"
   if [ "$audit" ]; then
+    popd >&2
     echo "$audit"
-    exit
+    return
   fi
-  # Either there were no vulnerabilities or the format changed.
-  # If there were none, we'll let `npm audit` output "0 vulnerabilities found"
-  # If the format changed, we'll find out because `npm audit` will fail.
-  npm audit
+  # No vulnerabilities reported. Run `npm audit` so a future format change
+  # surfaces as a non-zero exit and fails this step.
+  npm audit >&2
   popd >&2
+  echo "no vulnerabilities"
 }
 
 cargo_audit() {
@@ -454,6 +455,7 @@ record "Release commit" git rev-parse release-candidate
 verify "Release commit" "tags/release-candidate commit" git rev-parse release-candidate
 confirm_cmd git push origin -f tags/release-candidate
 record "Security test: npm audit" npm_audit
+verify "Security test: npm audit" "Expected npm audit" echo "no vulnerabilities"
 record "Security test: cargo audit" cargo_audit
 verify "Security test: cargo audit" "Expected cargo audit" echo "no vulnerabilities"
 record "Security test: no HTML in templates" no_html_in_templates

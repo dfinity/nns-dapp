@@ -53,21 +53,9 @@
     },
     {
       "command": "npm_audit",
-      "stdout": "no vulnerabilities",
+      "stdout": "https://github.com/advisories/XXXX-xxxx-xxxx-xxxx",
       "stderr": "",
       "exitCode": 0
-    },
-    {
-      "command": "cargo_audit",
-      "stdout": "no vulnerabilities",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
-      "command": "no_html_in_templates",
-      "stdout": "Found @html",
-      "stderr": "",
-      "exitCode": 1
     }
   ],
   "expectedOutput": [
@@ -104,11 +92,10 @@
     "git push origin -f tags/release-candidate",
     "",
     "git push origin -f tags/release-candidate: \u001b[32mDone\u001b[0m",
-    "Security test: npm audit: \u001b[32mno vulnerabilities\u001b[0m",
-    "Expected npm audit: \u001b[32mno vulnerabilities\u001b[0m",
-    "Security test: cargo audit: \u001b[32mno vulnerabilities\u001b[0m",
-    "Expected cargo audit: \u001b[32mno vulnerabilities\u001b[0m",
-    "Security test: no HTML in templates: Failed"
+    "Security test: npm audit: \u001b[32mhttps://github.com/advisories/XXXX-xxxx-xxxx-xxxx\u001b[0m",
+    "Values don't match!",
+    "Security test: npm audit: https://github.com/advisories/XXXX-xxxx-xxxx-xxxx",
+    "Expected npm audit: no vulnerabilities"
   ],
   "expectedExitCode": 1
 }
