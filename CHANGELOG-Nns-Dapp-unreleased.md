@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Annualize per-neuron APY over the days the neuron is eligible to vote, so dissolving neurons no longer display a near-zero rate. Locked-neuron APYs are unchanged.
+- Per-neuron APY is now annualized over the days the neuron is eligible to vote, so dissolving neurons no longer display a near-zero rate. Locked-neuron APYs are unchanged.
 
 #### Deprecated
 
