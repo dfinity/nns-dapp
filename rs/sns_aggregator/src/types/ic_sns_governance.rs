@@ -1,6 +1,7 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
 //! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/f54e1f82c3cf8ae0b4be6b0fc3a940cdcd70dd97/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
+#![allow(clippy::pedantic)]
 #![allow(deprecated)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
