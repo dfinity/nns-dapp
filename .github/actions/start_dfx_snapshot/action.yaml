@@ -48,7 +48,7 @@ runs:
       shell: bash
       run: |
         URL="${{ inputs.snapshot_url }}"
-        test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${{ steps.snsdemo_ref.outputs.ref }}/snsdemo_snapshot_ubuntu-22.04.tar.xz"
+        test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${{ steps.snsdemo_ref.outputs.ref }}/snsdemo_snapshot_ubuntu-24.04.tar.xz"
         echo "url=$URL" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
       uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
