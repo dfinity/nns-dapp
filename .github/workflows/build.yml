@@ -26,7 +26,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Skip build for testing
         # Set to true and set a recent `run_id` below to reuse an existing build
         # instead of building.
@@ -80,7 +80,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Run Playwright e2e test shard 1/2
         uses: ./.github/actions/test-e2e
         with:
@@ -92,7 +92,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
@@ -104,7 +104,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Get nns-dapp_test
         # Note: This may be performed manually with ./scripts/docker-build --network local
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -127,7 +127,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Get nns-dapp_test
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -157,7 +157,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Get nns-dapp_test
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -177,7 +177,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Get nns-dapp
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -297,7 +297,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0
       - name: Check dockerfile for changes
@@ -363,7 +363,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Get sns_aggregator_dev
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -467,7 +467,7 @@ jobs:
     needs: build
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Get docker build outputs
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -538,7 +538,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/needs_success
         with:
           needs: '${{ toJson(needs) }}'
