@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   builder:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       # We use `buildx` and its GitHub Actions caching support `type=gha`. For

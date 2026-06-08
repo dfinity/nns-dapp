@@ -9,7 +9,7 @@ defaults:
     shell: bash -euxlo pipefail {0}
 jobs:
   formatting:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       DFX_NETWORK: mainnet
     steps:
@@ -38,7 +38,7 @@ jobs:
                   exit 1
           }
   relative-imports:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       DFX_NETWORK: mainnet
     steps:
@@ -47,7 +47,7 @@ jobs:
       - name: Checks for the presence of relative imports
         run: ./scripts/check-relative-imports
   spelling:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -61,7 +61,7 @@ jobs:
       - name: Spellcheck changelog
         run: scripts/spellcheck-changelog
   cargo-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -100,7 +100,7 @@ jobs:
           shard_number: 2
           shard_count: 2
   svelte-lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
@@ -126,7 +126,7 @@ jobs:
         working-directory: ./frontend
   shell-checks:
     name: ShellCheck
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Run ShellCheck
@@ -136,7 +136,7 @@ jobs:
           ./scripts/lint-sh
   ic-commit-consistency:
     name: IC Commit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Install didc
@@ -156,7 +156,7 @@ jobs:
           fi
   release-templating-works:
     name: Release template
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -178,7 +178,7 @@ jobs:
           ./scripts/nns-dapp/release-check
   config-check:
     name: Config is as expected
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Install dfx
@@ -192,7 +192,7 @@ jobs:
         run: bash -x config.test
   migration-test-utils-work:
     name: Migration test utilities work
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Install cargo binstall
@@ -204,7 +204,7 @@ jobs:
           set +x
           scripts/nns-dapp/migration-test.on-exit.test
   minor-version-bump-works:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Install yq
@@ -236,7 +236,7 @@ jobs:
           # TODO: Verify that the commits contain the expected changes.
   version-match:
     name: The nns-dapp npm and cargo versions should match
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Backend and frontend have the same version
@@ -253,7 +253,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-15-intel]
+        os: [ubuntu-24.04, macos-15-intel]
     runs-on: ${{ matrix.os }}
     env:
       # Used by download-ci-wasm.test
@@ -341,7 +341,7 @@ jobs:
       - version-match
       - small-tests
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/needs_success
