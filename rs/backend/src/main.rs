@@ -12,7 +12,7 @@ use crate::perf::PerformanceCount;
 use crate::state::{init_state, restore_state, save_state, with_state, with_state_mut, StableState};
 use crate::tvl::TvlResponse;
 
-pub use candid::{CandidType, Deserialize};
+pub use candid::{candid_method, CandidType, Deserialize};
 use ic_cdk::println;
 use ic_cdk::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
@@ -87,12 +87,25 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     println!("END   post-upgrade");
 }
 
-// TODO: add a `decode_with` argument decoder that imposes a Candid decoding
-// quota (see `http_request_decode_arg` in sns_aggregator/src/lib.rs). The
-// previous `decoding_quota` query attribute was removed in ic-cdk 0.19, and
-// this endpoint has no equivalent bound on attacker-controlled payloads.
+/// Decodes the `http_request` argument with a tight Candid quota to limit the
+/// `DoS` surface from oversized attacker-controlled payloads. ic-cdk 0.19 removed
+/// the `decoding_quota` query attribute, so we re-impose it via `decode_with`.
+#[allow(clippy::needless_pass_by_value)] // signature required by ic_cdk::query(decode_with = ...)
+fn http_request_decode_arg(arg_bytes: Vec<u8>) -> assets::HttpRequest {
+    let mut decoder_config = candid::DecoderConfig::new();
+    decoder_config.set_decoding_quota(10_000);
+    decoder_config.set_skipping_quota(10_000);
+    let (req,): (assets::HttpRequest,) = candid::utils::decode_args_with_config(&arg_bytes, &decoder_config)
+        .unwrap_or_else(|e| ic_cdk::api::trap(format!("Failed to decode http_request argument: {e}")));
+    req
+}
+
+// `hidden = true` suppresses ic-cdk's auto-generated Candid registration, which
+// (because of `decode_with`) would otherwise export the argument as raw `blob`.
+// The explicit `candid_method` below keeps the published interface as `HttpRequest`.
 #[must_use]
-#[ic_cdk::query]
+#[candid_method(query)]
+#[ic_cdk::query(hidden = true, decode_with = "http_request_decode_arg")]
 pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
     assets::http_request(req)
 }
