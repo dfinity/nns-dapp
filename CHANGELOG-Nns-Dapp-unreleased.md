@@ -26,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Impose a Candid decoding quota on the public `http_request` query to limit the DoS surface from large or maliciously encoded payloads.
+
 #### Not Published
 
 ### Operations
