@@ -33,6 +33,9 @@ describe("env-utils", () => {
 
       setOrigin("https://beta.nns.ic0.app");
       expect(isNnsAlternativeOrigin()).toBeTruthy();
+
+      setOrigin("https://atino-ciaaa-aaaae-agwjq-cai.icp0.io");
+      expect(isNnsAlternativeOrigin()).toBeTruthy();
     });
 
     it("should not be an alternative origin", () => {
