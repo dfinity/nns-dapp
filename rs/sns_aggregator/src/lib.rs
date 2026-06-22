@@ -139,8 +139,14 @@ fn http_request_decode_arg(arg_bytes: Vec<u8>) -> HttpRequest {
 }
 
 /// Web server
+//
+// `hidden = true` suppresses ic-cdk's auto-generated Candid registration, which
+// `decode_with` would otherwise force to `(blob)` and which would collide with
+// the explicit `candid_method` below (last write wins, keyed by method name).
+// The explicit `candid_method` keeps the published interface as `HttpRequest`.
+// The wasm endpoint is exported regardless of `hidden`.
 #[candid_method(query)]
-#[ic_cdk::query(decode_with = "http_request_decode_arg")]
+#[ic_cdk::query(hidden = true, decode_with = "http_request_decode_arg")]
 fn http_request(req: HttpRequest) -> HttpResponse {
     match req.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
@@ -211,8 +217,12 @@ fn post_upgrade(config: Option<Config>) {
 /// Note: This _could_ be exposed in production if limited to the controllers
 ///  - Controllers can be obtained by the async call: `agent.read_state_canister_info(canister_id, "controllers")`
 #[cfg(feature = "reconfigurable")]
-#[ic_cdk::update]
+// `candid_method` must come before `ic_cdk::update`: ic-cdk clones the annotated
+// function to build its own Candid registration, and any `candid_method` left
+// below it would be duplicated onto that clone, registering a spurious
+// `__candid_method_reconfigure` method. This ordering matches the other methods.
 #[candid_method(update)]
+#[ic_cdk::update]
 fn reconfigure(config: Option<Config>) {
     setup(config);
 }
@@ -283,3 +293,9 @@ export_service!();
 fn interface() -> String {
     __export_service()
 }
+
+// Requires the `reconfigurable` feature because the committed `sns_aggregator.did`
+// documents the full interface, including `reconfigure`, which is only compiled
+// in with that feature. CI runs the Rust tests with `--all-features`.
+#[cfg(all(test, feature = "reconfigurable"))]
+mod candid_interface_test;
