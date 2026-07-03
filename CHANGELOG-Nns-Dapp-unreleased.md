@@ -16,8 +16,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Per-neuron APY is now annualized over the days the neuron is eligible to vote, so dissolving neurons no longer display a near-zero rate. Locked-neuron APYs are unchanged.
-
 #### Deprecated
 
 #### Removed
@@ -26,23 +24,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
-- Impose a Candid decoding quota on the public `http_request` query to limit the DoS surface from large or maliciously encoded payloads.
-
 #### Not Published
 
 ### Operations
 
 #### Added
 
-- Add `sns.internetcomputer.org` to the list of supported domains.
-
 #### Changed
 
 #### Deprecated
 
 #### Removed
-
-- Remove `wallet.internetcomputer.org` and `wallet.ic0.app` from the list of supported domains.
 
 #### Fixed
 
