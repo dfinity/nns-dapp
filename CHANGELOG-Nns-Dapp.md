@@ -11,6 +11,28 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 142604
+
+### Application
+
+#### Changed
+
+- Per-neuron APY is now annualized over the days the neuron is eligible to vote, so dissolving neurons no longer display a near-zero rate. Locked-neuron APYs are unchanged.
+
+#### Security
+
+- Impose a Candid decoding quota on the public `http_request` query to limit the DoS surface from large or maliciously encoded payloads.
+
+### Operations
+
+#### Added
+
+- Add `sns.internetcomputer.org` to the list of supported domains.
+
+#### Removed
+
+- Remove `wallet.internetcomputer.org` and `wallet.ic0.app` from the list of supported domains.
+
 ## Proposal 141778
 
 ### Application
