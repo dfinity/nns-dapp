@@ -606,9 +606,9 @@ dependencies = [
 
 [[package]]
 name = "candid_parser"
-version = "0.3.2"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "470a4cf0c110e217e54ab3d21c4a9c290736c4a70ab6263d65155522d4b93fb6"
+checksum = "2e35c12ed409a6c02c6e204db49926c75ceeb622a4a994b828cdd3dea7dfec59"
 dependencies = [
  "anyhow",
  "candid",
@@ -4347,7 +4347,7 @@ dependencies = [
  "anyhow",
  "base64 0.22.1",
  "candid",
- "candid_parser 0.3.2",
+ "candid_parser 0.4.0",
  "cycles-minting-canister",
  "dfn_candid",
  "dfn_protobuf",
