@@ -20,20 +20,50 @@
 
   let worker: CyclesWorker | undefined;
 
-  onDestroy(() => worker?.stopCyclesTimer());
-
-  const initWorker = async () => {
+  const stopAndTerminate = () => {
     worker?.stopCyclesTimer();
+    // Terminate the Web Worker, otherwise it keeps running (and holding memory)
+    // after the card is destroyed, leaking one worker per canister on every
+    // visit to the canisters page.
+    worker?.terminate();
+    worker = undefined;
+  };
 
-    worker = await initCyclesWorker();
+  onDestroy(stopAndTerminate);
 
-    worker.startCyclesTimer({
-      canisterId: canister.canister_id.toText(),
+  // The canister currently handled by the worker. Used to avoid re-creating a
+  // worker when the `canister` prop changes but still points to the same
+  // canister (e.g. when the list is reloaded), and to detect races when a new
+  // init supersedes a pending one.
+  let currentCanisterId: string | undefined;
+
+  const initWorker = async (canisterId: string) => {
+    stopAndTerminate();
+
+    const newWorker = await initCyclesWorker();
+
+    // A newer init superseded this one while we were awaiting: discard the
+    // just-created worker instead of leaking it.
+    if (canisterId !== currentCanisterId) {
+      newWorker.terminate();
+      return;
+    }
+
+    worker = newWorker;
+
+    newWorker.startCyclesTimer({
+      canisterId,
       callback: syncCanisterCallback,
     });
   };
 
-  $: (canister, (async () => await initWorker())());
+  $: {
+    const canisterId = canister.canister_id.toText();
+    if (canisterId !== currentCanisterId) {
+      currentCanisterId = canisterId;
+      initWorker(canisterId);
+    }
+  }
 
   let canisterSync: CanisterSync | undefined = undefined;
 

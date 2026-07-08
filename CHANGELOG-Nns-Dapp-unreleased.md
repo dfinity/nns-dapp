@@ -22,6 +22,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Terminate the per-canister cycles Web Workers when leaving the canisters
+  page, fixing a memory leak that could crash the tab ("Aw, Snap!") after
+  repeatedly navigating in and out of the canisters list with a large fleet.
+
 #### Security
 
 #### Not Published

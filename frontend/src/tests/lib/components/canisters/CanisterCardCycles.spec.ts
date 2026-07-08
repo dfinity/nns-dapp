@@ -9,6 +9,8 @@ import { render, waitFor } from "@testing-library/svelte";
 
 let cyclesCallback: CyclesCallback | undefined;
 
+const { terminateSpy } = vi.hoisted(() => ({ terminateSpy: vi.fn() }));
+
 vitest.mock("$lib/services/worker-cycles.services", () => ({
   initCyclesWorker: vitest.fn(() =>
     Promise.resolve({
@@ -18,6 +20,7 @@ vitest.mock("$lib/services/worker-cycles.services", () => ({
       stopCyclesTimer: () => {
         // Do nothing
       },
+      terminate: terminateSpy,
     })
   ),
 }));
@@ -25,6 +28,7 @@ vitest.mock("$lib/services/worker-cycles.services", () => ({
 describe("CanisterCardCycles", () => {
   beforeEach(() => {
     cyclesCallback = undefined;
+    terminateSpy.mockClear();
   });
 
   const props = { props: { canister: mockCanister } };
@@ -138,5 +142,17 @@ describe("CanisterCardCycles", () => {
     await waitFor(() =>
       expect(getAllByTestId("skeleton-text").length).toEqual(3)
     );
+  });
+
+  it("should terminate the worker when destroyed to avoid leaking it", async () => {
+    const { unmount } = render(CanisterCardCycles, props);
+
+    await waitFor(() => expect(cyclesCallback).toBeDefined());
+
+    expect(terminateSpy).not.toBeCalled();
+
+    unmount();
+
+    expect(terminateSpy).toBeCalledTimes(1);
   });
 });
