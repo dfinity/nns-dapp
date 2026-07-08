@@ -11,6 +11,9 @@ vitest.mock("$lib/services/worker-cycles.services", () => ({
       stopCyclesTimer: () => {
         // Do nothing
       },
+      terminate: () => {
+        // Do nothing
+      },
     })
   ),
 }));
