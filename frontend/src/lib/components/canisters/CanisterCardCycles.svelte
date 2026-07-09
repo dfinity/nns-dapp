@@ -19,21 +19,61 @@
   export let canister: CanisterDetails;
 
   let worker: CyclesWorker | undefined;
+  // Set once the component is destroyed. `initWorker` is async, so the card can
+  // be destroyed while `initCyclesWorker()` is still pending (this happens on
+  // every visit to the canisters list, which briefly clears the store and
+  // remounts the cards). Without this flag `onDestroy` runs while `worker` is
+  // still undefined, and the worker that arrives afterwards is assigned to a
+  // dead component and never terminated - leaking one worker per card per visit.
+  let destroyed = false;
 
-  onDestroy(() => worker?.stopCyclesTimer());
-
-  const initWorker = async () => {
+  const stopAndTerminate = () => {
     worker?.stopCyclesTimer();
+    // Terminate the Web Worker, otherwise it keeps running (and holding memory)
+    // after the card is destroyed, leaking one worker per canister on every
+    // visit to the canisters page.
+    worker?.terminate();
+    worker = undefined;
+  };
 
-    worker = await initCyclesWorker();
+  onDestroy(() => {
+    destroyed = true;
+    stopAndTerminate();
+  });
 
-    worker.startCyclesTimer({
-      canisterId: canister.canister_id.toText(),
+  // The canister currently handled by the worker. Used to avoid re-creating a
+  // worker when the `canister` prop changes but still points to the same
+  // canister (e.g. when the list is reloaded), and to detect races when a new
+  // init supersedes a pending one.
+  let currentCanisterId: string | undefined;
+
+  const initWorker = async (canisterId: string) => {
+    stopAndTerminate();
+
+    const newWorker = await initCyclesWorker();
+
+    // The component was destroyed, or a newer init superseded this one, while
+    // we were awaiting: discard the just-created worker instead of leaking it.
+    if (destroyed || canisterId !== currentCanisterId) {
+      newWorker.terminate();
+      return;
+    }
+
+    worker = newWorker;
+
+    newWorker.startCyclesTimer({
+      canisterId,
       callback: syncCanisterCallback,
     });
   };
 
-  $: (canister, (async () => await initWorker())());
+  $: {
+    const canisterId = canister.canister_id.toText();
+    if (canisterId !== currentCanisterId) {
+      currentCanisterId = canisterId;
+      initWorker(canisterId);
+    }
+  }
 
   let canisterSync: CanisterSync | undefined = undefined;
 

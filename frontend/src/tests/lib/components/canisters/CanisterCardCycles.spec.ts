@@ -1,6 +1,10 @@
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
-import type { CyclesCallback } from "$lib/services/worker-cycles.services";
+import {
+  initCyclesWorker,
+  type CyclesCallback,
+  type CyclesWorker,
+} from "$lib/services/worker-cycles.services";
 import type { CanisterSync } from "$lib/types/canister";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister } from "$tests/mocks/canisters.mock";
@@ -8,6 +12,8 @@ import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
 let cyclesCallback: CyclesCallback | undefined;
+
+const { terminateSpy } = vi.hoisted(() => ({ terminateSpy: vi.fn() }));
 
 vitest.mock("$lib/services/worker-cycles.services", () => ({
   initCyclesWorker: vitest.fn(() =>
@@ -18,6 +24,7 @@ vitest.mock("$lib/services/worker-cycles.services", () => ({
       stopCyclesTimer: () => {
         // Do nothing
       },
+      terminate: terminateSpy,
     })
   ),
 }));
@@ -25,6 +32,7 @@ vitest.mock("$lib/services/worker-cycles.services", () => ({
 describe("CanisterCardCycles", () => {
   beforeEach(() => {
     cyclesCallback = undefined;
+    terminateSpy.mockClear();
   });
 
   const props = { props: { canister: mockCanister } };
@@ -138,5 +146,46 @@ describe("CanisterCardCycles", () => {
     await waitFor(() =>
       expect(getAllByTestId("skeleton-text").length).toEqual(3)
     );
+  });
+
+  it("should terminate the worker when destroyed to avoid leaking it", async () => {
+    const { unmount } = render(CanisterCardCycles, props);
+
+    await waitFor(() => expect(cyclesCallback).toBeDefined());
+
+    expect(terminateSpy).not.toBeCalled();
+
+    unmount();
+
+    expect(terminateSpy).toBeCalledTimes(1);
+  });
+
+  it("should terminate a worker that resolves after the component is destroyed", async () => {
+    // Reproduces the leak seen on the canisters list: the store is briefly
+    // cleared on every visit, so a card can be destroyed while
+    // `initCyclesWorker()` is still pending. The worker that arrives afterwards
+    // must be terminated instead of leaked.
+    let resolveWorker: (worker: CyclesWorker) => void = () => undefined;
+    vi.mocked(initCyclesWorker).mockImplementationOnce(
+      () =>
+        new Promise<CyclesWorker>((resolve) => {
+          resolveWorker = resolve;
+        })
+    );
+
+    const { unmount } = render(CanisterCardCycles, props);
+
+    // The worker init is still pending; destroy the component first.
+    unmount();
+    expect(terminateSpy).not.toBeCalled();
+
+    // The worker resolves only now, after destroy.
+    resolveWorker({
+      startCyclesTimer: () => undefined,
+      stopCyclesTimer: () => undefined,
+      terminate: terminateSpy,
+    });
+
+    await waitFor(() => expect(terminateSpy).toBeCalledTimes(1));
   });
 });

@@ -6,11 +6,15 @@ vi.mock("$lib/workers/cycles.worker?worker");
 
 describe("initCyclesWorker", () => {
   const postMessage = vi.fn();
+  const terminate = vi.fn();
   beforeEach(async () => {
+    postMessage.mockClear();
+    terminate.mockClear();
     const module = await import("$lib/workers/cycles.worker?worker");
     // In Vitest 4, we need to mock default as a constructor (class)
     module.default = class {
       postMessage = postMessage;
+      terminate = terminate;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
   });
@@ -33,5 +37,15 @@ describe("initCyclesWorker", () => {
         fetchRootKey: FETCH_ROOT_KEY,
       },
     });
+  });
+
+  it("terminate terminates the underlying worker", async () => {
+    const cyclesWorker = await initCyclesWorker();
+
+    expect(terminate).not.toBeCalled();
+
+    cyclesWorker.terminate();
+
+    expect(terminate).toBeCalledTimes(1);
   });
 });
