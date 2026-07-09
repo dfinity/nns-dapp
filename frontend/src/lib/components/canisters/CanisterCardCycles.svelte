@@ -19,6 +19,13 @@
   export let canister: CanisterDetails;
 
   let worker: CyclesWorker | undefined;
+  // Set once the component is destroyed. `initWorker` is async, so the card can
+  // be destroyed while `initCyclesWorker()` is still pending (this happens on
+  // every visit to the canisters list, which briefly clears the store and
+  // remounts the cards). Without this flag `onDestroy` runs while `worker` is
+  // still undefined, and the worker that arrives afterwards is assigned to a
+  // dead component and never terminated - leaking one worker per card per visit.
+  let destroyed = false;
 
   const stopAndTerminate = () => {
     worker?.stopCyclesTimer();
@@ -29,7 +36,10 @@
     worker = undefined;
   };
 
-  onDestroy(stopAndTerminate);
+  onDestroy(() => {
+    destroyed = true;
+    stopAndTerminate();
+  });
 
   // The canister currently handled by the worker. Used to avoid re-creating a
   // worker when the `canister` prop changes but still points to the same
@@ -42,9 +52,9 @@
 
     const newWorker = await initCyclesWorker();
 
-    // A newer init superseded this one while we were awaiting: discard the
-    // just-created worker instead of leaking it.
-    if (canisterId !== currentCanisterId) {
+    // The component was destroyed, or a newer init superseded this one, while
+    // we were awaiting: discard the just-created worker instead of leaking it.
+    if (destroyed || canisterId !== currentCanisterId) {
       newWorker.terminate();
       return;
     }
