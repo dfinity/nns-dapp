@@ -50,14 +50,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 12707777371395,
-              "amount_e8s": 713286266244,
+              "amount_e8s": 704113888816,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1782962208
+              "timestamp_seconds": 1783564087
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -75,32 +75,28 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1782962208
+              "timestamp_seconds": 1783564087
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 579793468866206,
-            "timestamp_seconds": 1782962208
+            "governance_total_potential_voting_power": 573388886812263,
+            "timestamp_seconds": 1783564087
           },
-          "last_ledger_block_timestamp": 1782959044,
-          "num_recently_executed_proposals": 36,
-          "num_recently_submitted_proposals": 39,
+          "last_ledger_block_timestamp": 1783565546,
+          "num_recently_executed_proposals": 34,
+          "num_recently_submitted_proposals": 41,
           "genesis_timestamp_seconds": 1746713375
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1782914977,
-      "end_timestamp_seconds": 1782914975,
+      "actual_timestamp_seconds": 1783519777,
+      "end_timestamp_seconds": 1783519775,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 419,
-      "settled_proposals": [
-        {
-          "id": 452
-        }
-      ]
+      "round": 426,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [3007, 3008],
@@ -1158,7 +1154,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777209437465576,
+    "icrc1_total_supply": 777209433025576,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -2222,14 +2218,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 348736271571,
-              "amount_e8s": 208361454876,
+              "amount_e8s": 204361464876,
               "account": {
                 "owner": "kri5s-daaaa-aaaaq-aae6q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1782959187
+              "timestamp_seconds": 1783564008
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -2247,28 +2243,35 @@
               },
               "ledger_canister_id": "kylwo-viaaa-aaaaq-aae7a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1782959187
+              "timestamp_seconds": 1783564008
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 56796181351376,
-            "timestamp_seconds": 1782959187
+            "governance_total_potential_voting_power": 56013924263528,
+            "timestamp_seconds": 1783564008
           },
-          "last_ledger_block_timestamp": 1782853132,
-          "num_recently_executed_proposals": 3,
-          "num_recently_submitted_proposals": 16,
+          "last_ledger_block_timestamp": 1783530462,
+          "num_recently_executed_proposals": 22,
+          "num_recently_submitted_proposals": 43,
           "genesis_timestamp_seconds": 1763609136
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1782876337,
-      "end_timestamp_seconds": 1782876336,
-      "total_available_e8s_equivalent": 107000029886,
-      "distributed_e8s_equivalent": 0,
-      "round": 223,
-      "settled_proposals": []
+      "actual_timestamp_seconds": 1783481139,
+      "end_timestamp_seconds": 1783481136,
+      "total_available_e8s_equivalent": 2226335266,
+      "distributed_e8s_equivalent": 2226335232,
+      "round": 230,
+      "settled_proposals": [
+        {
+          "id": 69
+        },
+        {
+          "id": 70
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -2446,6 +2449,202 @@
               "target_method_name": "icrc55_command"
             }
           }
+        },
+        {
+          "id": 4000,
+          "name": "Unicycle: Setup",
+          "description": "Bootstrap that registers all Unicycle custom functions on this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetupValidate",
+              "target_method_name": "snsSetup"
+            }
+          }
+        },
+        {
+          "id": 4001,
+          "name": "Unicycle: Withdraw",
+          "description": "Withdraw ICP/tcycles from the SNS's Unicycle subaccount.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsWithdrawValidate",
+              "target_method_name": "snsWithdraw"
+            }
+          }
+        },
+        {
+          "id": 4002,
+          "name": "Unicycle: Track Canister",
+          "description": "Register or update a tracked canister's top-up config.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsUpsertCanisterValidate",
+              "target_method_name": "snsUpsertCanister"
+            }
+          }
+        },
+        {
+          "id": 4003,
+          "name": "Unicycle: Set Canister Suspended",
+          "description": "Suspend or resume automatic top-ups for a tracked canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetCanisterSuspendedValidate",
+              "target_method_name": "snsSetCanisterSuspended"
+            }
+          }
+        },
+        {
+          "id": 4004,
+          "name": "Unicycle: Remove Canister",
+          "description": "Stop tracking a canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsRemoveCanisterValidate",
+              "target_method_name": "snsRemoveCanister"
+            }
+          }
+        },
+        {
+          "id": 4005,
+          "name": "Unicycle: Record Cycles Now",
+          "description": "Record a cycle reading now for a tracked canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsRecordCyclesNowValidate",
+              "target_method_name": "snsRecordCyclesNow"
+            }
+          }
+        },
+        {
+          "id": 4006,
+          "name": "Unicycle: Set Proposal Neuron",
+          "description": "Set the neuron Unicycle uses to submit proposals for this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetProposalNeuronValidate",
+              "target_method_name": "snsSetProposalNeuron"
+            }
+          }
+        },
+        {
+          "id": 4007,
+          "name": "Unicycle: Set Deposit Auto-Top-Up",
+          "description": "Configure automatic SNS treasury → Unicycle ICP deposits (min balance, deposit amount, report toggle).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetDepositConfigValidate",
+              "target_method_name": "snsSetDepositConfig"
+            }
+          }
+        },
+        {
+          "id": 4008,
+          "name": "Unicycle: Set Cycle Report Cadence",
+          "description": "Configure recurring cycle-usage report proposals (cadence in days; 0 disables).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetReportConfigValidate",
+              "target_method_name": "snsSetReportConfig"
+            }
+          }
+        },
+        {
+          "id": 4009,
+          "name": "Unicycle: Set Cycle Drain Alerts",
+          "description": "Configure cycle-drain alert proposals (per-window % thresholds; 0 disables a check; cooldown in days).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetDrainAlertConfigValidate",
+              "target_method_name": "snsSetDrainAlertConfig"
+            }
+          }
+        },
+        {
+          "id": 4010,
+          "name": "Unicycle: Grant Admin",
+          "description": "Grant a principal admin access to manage this SNS's Unicycle fleet from the frontend.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsGrantAdminValidate",
+              "target_method_name": "snsGrantAdmin"
+            }
+          }
+        },
+        {
+          "id": 4011,
+          "name": "Unicycle: Revoke Admin",
+          "description": "Revoke a principal's Unicycle admin access for this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsRevokeAdminValidate",
+              "target_method_name": "snsRevokeAdmin"
+            }
+          }
+        },
+        {
+          "id": 4012,
+          "name": "Unicycle: Set Withdraw Destination",
+          "description": "Set the destination account for non-ICP (ICRC) token withdrawals; ICP always returns to the SNS treasury.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetWithdrawDestinationValidate",
+              "target_method_name": "snsSetWithdrawDestination"
+            }
+          }
+        },
+        {
+          "id": 4013,
+          "name": "Unicycle: Deregister",
+          "description": "Offboard this SNS from Unicycle: withdraw all Unicycle-held funds to the SNS, remove every Unicycle custom function, and erase all Unicycle configuration for this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsDeregisterValidate",
+              "target_method_name": "snsDeregister"
+            }
+          }
         }
       ]
     },
@@ -2464,7 +2663,7 @@
       "max_neuron_age_for_age_bonus": 31104000,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 2592000,
-      "reject_cost_e8s": 50000000000,
+      "reject_cost_e8s": 5000000000,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 86400,
       "max_number_of_neurons": 200000,
@@ -2601,7 +2800,7 @@
       ]
     ],
     "icrc1_fee": [420],
-    "icrc1_total_supply": 31029409445641,
+    "icrc1_total_supply": 31029601255563,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2774,7 +2973,204 @@
           "is_critical": false,
           "name": "Application Business Logic",
           "description": "Proposals that are custom to what the governed dapp requires.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 4000,
+              "name": "Unicycle: Setup",
+              "description": "Bootstrap that registers all Unicycle custom functions on this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetupValidate",
+                  "target_method_name": "snsSetup"
+                }
+              }
+            },
+            {
+              "id": 4001,
+              "name": "Unicycle: Withdraw",
+              "description": "Withdraw ICP/tcycles from the SNS's Unicycle subaccount.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsWithdrawValidate",
+                  "target_method_name": "snsWithdraw"
+                }
+              }
+            },
+            {
+              "id": 4002,
+              "name": "Unicycle: Track Canister",
+              "description": "Register or update a tracked canister's top-up config.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsUpsertCanisterValidate",
+                  "target_method_name": "snsUpsertCanister"
+                }
+              }
+            },
+            {
+              "id": 4003,
+              "name": "Unicycle: Set Canister Suspended",
+              "description": "Suspend or resume automatic top-ups for a tracked canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetCanisterSuspendedValidate",
+                  "target_method_name": "snsSetCanisterSuspended"
+                }
+              }
+            },
+            {
+              "id": 4004,
+              "name": "Unicycle: Remove Canister",
+              "description": "Stop tracking a canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsRemoveCanisterValidate",
+                  "target_method_name": "snsRemoveCanister"
+                }
+              }
+            },
+            {
+              "id": 4005,
+              "name": "Unicycle: Record Cycles Now",
+              "description": "Record a cycle reading now for a tracked canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsRecordCyclesNowValidate",
+                  "target_method_name": "snsRecordCyclesNow"
+                }
+              }
+            },
+            {
+              "id": 4006,
+              "name": "Unicycle: Set Proposal Neuron",
+              "description": "Set the neuron Unicycle uses to submit proposals for this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetProposalNeuronValidate",
+                  "target_method_name": "snsSetProposalNeuron"
+                }
+              }
+            },
+            {
+              "id": 4007,
+              "name": "Unicycle: Set Deposit Auto-Top-Up",
+              "description": "Configure automatic SNS treasury → Unicycle ICP deposits (min balance, deposit amount, report toggle).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetDepositConfigValidate",
+                  "target_method_name": "snsSetDepositConfig"
+                }
+              }
+            },
+            {
+              "id": 4008,
+              "name": "Unicycle: Set Cycle Report Cadence",
+              "description": "Configure recurring cycle-usage report proposals (cadence in days; 0 disables).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetReportConfigValidate",
+                  "target_method_name": "snsSetReportConfig"
+                }
+              }
+            },
+            {
+              "id": 4009,
+              "name": "Unicycle: Set Cycle Drain Alerts",
+              "description": "Configure cycle-drain alert proposals (per-window % thresholds; 0 disables a check; cooldown in days).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetDrainAlertConfigValidate",
+                  "target_method_name": "snsSetDrainAlertConfig"
+                }
+              }
+            },
+            {
+              "id": 4010,
+              "name": "Unicycle: Grant Admin",
+              "description": "Grant a principal admin access to manage this SNS's Unicycle fleet from the frontend.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsGrantAdminValidate",
+                  "target_method_name": "snsGrantAdmin"
+                }
+              }
+            },
+            {
+              "id": 4011,
+              "name": "Unicycle: Revoke Admin",
+              "description": "Revoke a principal's Unicycle admin access for this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsRevokeAdminValidate",
+                  "target_method_name": "snsRevokeAdmin"
+                }
+              }
+            },
+            {
+              "id": 4012,
+              "name": "Unicycle: Set Withdraw Destination",
+              "description": "Set the destination account for non-ICP (ICRC) token withdrawals; ICP always returns to the SNS treasury.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetWithdrawDestinationValidate",
+                  "target_method_name": "snsSetWithdrawDestination"
+                }
+              }
+            },
+            {
+              "id": 4013,
+              "name": "Unicycle: Deregister",
+              "description": "Offboard this SNS from Unicycle: withdraw all Unicycle-held funds to the SNS, remove every Unicycle custom function, and erase all Unicycle configuration for this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsDeregisterValidate",
+                  "target_method_name": "snsDeregister"
+                }
+              }
+            }
+          ]
         },
         {
           "extension_operations": [],
