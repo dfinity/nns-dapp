@@ -3,6 +3,11 @@ set -euo pipefail
 
 SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
+# The devenv username, used to derive the default test network and domain.
+# Defaults to $USER, but can be overridden for developers whose local username
+# does not match their devenv name (e.g. DEVENV_USER=jdoe).
+DEVENV_USER="${DEVENV_USER:-$USER}"
+
 print_help() {
   cat <<-EOF
 
@@ -27,8 +32,8 @@ source "$SOURCE_DIR/../clap.bash"
 clap.define long=new desc="Start a new release branch" variable=IS_NEW_RELEASE nargs=0 default="false"
 clap.define long=continue desc="Continue with an existing release branch" variable=CONTINUE nargs=0 default="false"
 clap.define long=name desc="The name of the new release branch" variable=BRANCH_NAME default=""
-clap.define long=test_network desc="The dfx network to deploy the release candidate to for testing" variable=TEST_NETWORK default="devenv_$USER"
-clap.define long=test_domain desc="The domain to use for the Release candidate URL" variable=TEST_DOMAIN default="${USER}-ingress.devenv.dfinity.network"
+clap.define long=test_network desc="The dfx network to deploy the release candidate to for testing" variable=TEST_NETWORK default="devenv_$DEVENV_USER"
+clap.define long=test_domain desc="The domain to use for the Release candidate URL" variable=TEST_DOMAIN default="${DEVENV_USER}-ingress.devenv.dfinity.network"
 clap.define long=mock-json desc="A json file with mock responses for commands during testing" variable=MOCK_JSON default=""
 # Source the output file ------------------------------------------------------
 source "$(clap.build)"

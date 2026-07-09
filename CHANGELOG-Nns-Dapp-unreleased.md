@@ -38,4 +38,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- The `release-sop` script now derives its default test network and domain from
+  `DEVENV_USER` (falling back to `$USER`), so developers whose local username
+  differs from their devenv name can set it without overriding the system
+  `USER` variable.
+
 #### Security
