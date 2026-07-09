@@ -8,6 +8,8 @@ describe("initCyclesWorker", () => {
   const postMessage = vi.fn();
   const terminate = vi.fn();
   beforeEach(async () => {
+    postMessage.mockClear();
+    terminate.mockClear();
     const module = await import("$lib/workers/cycles.worker?worker");
     // In Vitest 4, we need to mock default as a constructor (class)
     module.default = class {
