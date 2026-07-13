@@ -22,10 +22,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-- Terminate the per-canister cycles Web Workers when leaving the canisters
-  page, fixing a memory leak that could crash the tab ("Aw, Snap!") after
-  repeatedly navigating in and out of the canisters list with a large fleet.
-
 #### Security
 
 #### Not Published
@@ -41,10 +37,5 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-- The `release-sop` script now derives its default test network and domain from
-  `DEVENV_USER` (falling back to `$USER`), so developers whose local username
-  differs from their devenv name can set it without overriding the system
-  `USER` variable.
 
 #### Security
