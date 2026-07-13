@@ -4353,7 +4353,7 @@ checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.147"
+version = "2.0.148"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -5836,7 +5836,7 @@ dependencies = [
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.147"
+version = "2.0.148"
 dependencies = [
  "anyhow",
  "base64 0.22.1",

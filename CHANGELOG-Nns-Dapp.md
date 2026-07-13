@@ -11,6 +11,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 142801
+
+### Application
+
+#### Fixed
+
+- Terminate the per-canister cycles Web Workers when leaving the canisters
+  page, fixing a memory leak that could crash the tab ("Aw, Snap!") after
+  repeatedly navigating in and out of the canisters list with a large fleet.
+
+### Operations
+
+#### Fixed
+
+- The `release-sop` script now derives its default test network and domain from
+  `DEVENV_USER` (falling back to `$USER`), so developers whose local username
+  differs from their devenv name can set it without overriding the system
+  `USER` variable.
+
 ## Proposal 142604
 
 ### Application
