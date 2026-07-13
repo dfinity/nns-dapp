@@ -26,7 +26,7 @@ environment. The following steps _should_ build the official Wasm image.
   ```
 - [Docker](https://www.docker.com/) is a container environment. It lets you build the nns-dapp code in a sandbox, fairly reliably, and without you having to install a lot of custom tools that you may not trust. Please use [one of the official installers](https://docs.docker.com/get-docker/).
 - [Docker `buildx`](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in the standard docker installer for Mac desktops. If you have installed docker for an os-x server, please follow [the official guide](https://docs.docker.com/build/install-buildx/).
-- [Rosetta]() allows Mac M1 and M2 processors to run programs that use the AMD64 instruction set. If you have an M1 or M2 CPU, please:
+- [Rosetta](<>) allows Mac M1 and M2 processors to run programs that use the AMD64 instruction set. If you have an M1 or M2 CPU, please:
   - Install Rosetta:
     ```sh
     softwareupdate --install-rosetta
