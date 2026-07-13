@@ -12,7 +12,7 @@ runs:
         echo "IC_WASM_PATH=/home/runner/.cargo/bin/ic-wasm" >> "$GITHUB_OUTPUT"
     - name: Cache ic-wasm
       id: cache-ic-wasm
-      uses: actions/cache@v4
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}
         key: ${{ runner.os }}-${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}-ic-wasm

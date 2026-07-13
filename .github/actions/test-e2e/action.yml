@@ -22,15 +22,15 @@ runs:
     - name: Get node version
       shell: bash
       run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
         node-version: ${{ env.NODE_VERSION }}
     - name: Get nns-dapp
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       with:
         name: nns-dapp
     - name: Get sns_aggregator_dev
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       with:
         name: sns_aggregator_dev
     - name: Start snapshot environment
@@ -67,7 +67,7 @@ runs:
       run: |
         find frontend/playwright-*
     - name: Upload Playwright results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       if: ${{ failure() }}
       with:
         name: playwright-failure-results-${{ inputs.shard_number }}
@@ -90,7 +90,7 @@ runs:
         fi
     - name: Upload screenshots
       if: ${{ steps.check-screenshots.outputs.screenshots }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: updated-screenshots
         path: |
