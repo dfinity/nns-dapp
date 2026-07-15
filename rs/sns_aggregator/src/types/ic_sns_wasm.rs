@@ -10,7 +10,7 @@
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
+use ic_cdk::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
@@ -347,69 +347,129 @@ pub struct UpdateSnsSubnetListResponse {
 pub struct Service(pub Principal);
 impl Service {
     pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
-        ic_cdk::call(self.0, "add_wasm", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "add_wasm")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn deploy_new_sns(&self, arg0: DeployNewSnsRequest) -> CallResult<(DeployNewSnsResponse,)> {
-        ic_cdk::call(self.0, "deploy_new_sns", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "deploy_new_sns")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_allowed_principals(
         &self,
         arg0: GetAllowedPrincipalsArg,
     ) -> CallResult<(GetAllowedPrincipalsResponse,)> {
-        ic_cdk::call(self.0, "get_allowed_principals", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_allowed_principals")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_deployed_sns_by_proposal_id(
         &self,
         arg0: GetDeployedSnsByProposalIdRequest,
     ) -> CallResult<(GetDeployedSnsByProposalIdResponse,)> {
-        ic_cdk::call(self.0, "get_deployed_sns_by_proposal_id", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_deployed_sns_by_proposal_id")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_latest_sns_version_pretty(&self, arg0: ()) -> CallResult<(Vec<(String, String)>,)> {
-        ic_cdk::call(self.0, "get_latest_sns_version_pretty", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_latest_sns_version_pretty")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_next_sns_version(
         &self,
         arg0: GetNextSnsVersionRequest,
     ) -> CallResult<(GetNextSnsVersionResponse,)> {
-        ic_cdk::call(self.0, "get_next_sns_version", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_next_sns_version")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_proposal_id_that_added_wasm(
         &self,
         arg0: GetProposalIdThatAddedWasmRequest,
     ) -> CallResult<(GetProposalIdThatAddedWasmResponse,)> {
-        ic_cdk::call(self.0, "get_proposal_id_that_added_wasm", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_proposal_id_that_added_wasm")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_sns_subnet_ids(&self, arg0: GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
-        ic_cdk::call(self.0, "get_sns_subnet_ids", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_sns_subnet_ids")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_wasm(&self, arg0: GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
-        ic_cdk::call(self.0, "get_wasm", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_wasm")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_wasm_metadata(&self, arg0: GetWasmMetadataRequest) -> CallResult<(GetWasmMetadataResponse,)> {
-        ic_cdk::call(self.0, "get_wasm_metadata", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_wasm_metadata")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn insert_upgrade_path_entries(
         &self,
         arg0: InsertUpgradePathEntriesRequest,
     ) -> CallResult<(InsertUpgradePathEntriesResponse,)> {
-        ic_cdk::call(self.0, "insert_upgrade_path_entries", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "insert_upgrade_path_entries")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_deployed_snses(&self, arg0: ListDeployedSnsesArg) -> CallResult<(ListDeployedSnsesResponse,)> {
-        ic_cdk::call(self.0, "list_deployed_snses", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_deployed_snses")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_upgrade_steps(&self, arg0: ListUpgradeStepsRequest) -> CallResult<(ListUpgradeStepsResponse,)> {
-        ic_cdk::call(self.0, "list_upgrade_steps", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_upgrade_steps")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn update_allowed_principals(
         &self,
         arg0: UpdateAllowedPrincipalsRequest,
     ) -> CallResult<(UpdateAllowedPrincipalsResponse,)> {
-        ic_cdk::call(self.0, "update_allowed_principals", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "update_allowed_principals")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn update_sns_subnet_list(
         &self,
         arg0: UpdateSnsSubnetListRequest,
     ) -> CallResult<(UpdateSnsSubnetListResponse,)> {
-        ic_cdk::call(self.0, "update_sns_subnet_list", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "update_sns_subnet_list")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
 }

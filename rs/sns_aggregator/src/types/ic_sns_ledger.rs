@@ -10,7 +10,7 @@
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
+use ic_cdk::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
@@ -531,93 +531,190 @@ pub struct Icrc3SupportedBlockTypesRetItem {
 pub struct Service(pub Principal);
 impl Service {
     pub async fn archives(&self) -> CallResult<(Vec<ArchiveInfo>,)> {
-        ic_cdk::call(self.0, "archives", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "archives")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
-        ic_cdk::call(self.0, "get_blocks", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_blocks")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_data_certificate(&self) -> CallResult<(DataCertificate,)> {
-        ic_cdk::call(self.0, "get_data_certificate", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_data_certificate")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
-        ic_cdk::call(self.0, "get_transactions", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_transactions")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_103_get_allowances(
         &self,
         arg0: GetAllowancesArgs,
     ) -> CallResult<(Icrc103GetAllowancesResponse,)> {
-        ic_cdk::call(self.0, "icrc103_get_allowances", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc103_get_allowances")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_106_get_index_principal(&self) -> CallResult<(GetIndexPrincipalResult,)> {
-        ic_cdk::call(self.0, "icrc106_get_index_principal", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc106_get_index_principal")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_10_supported_standards(&self) -> CallResult<(Vec<Icrc10SupportedStandardsRetItem>,)> {
-        ic_cdk::call(self.0, "icrc10_supported_standards", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc10_supported_standards")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_152_burn(&self, arg0: Icrc152BurnArgs) -> CallResult<(Icrc152BurnResult,)> {
-        ic_cdk::call(self.0, "icrc152_burn", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc152_burn")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_152_mint(&self, arg0: Icrc152MintArgs) -> CallResult<(Icrc152MintResult,)> {
-        ic_cdk::call(self.0, "icrc152_mint", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc152_mint")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
-        ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_balance_of")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_decimals(&self) -> CallResult<(u8,)> {
-        ic_cdk::call(self.0, "icrc1_decimals", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_decimals")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_fee(&self) -> CallResult<(Tokens,)> {
-        ic_cdk::call(self.0, "icrc1_fee", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_fee")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
-        ic_cdk::call(self.0, "icrc1_metadata", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_metadata")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_minting_account(&self) -> CallResult<(Option<Account>,)> {
-        ic_cdk::call(self.0, "icrc1_minting_account", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_minting_account")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_name(&self) -> CallResult<(String,)> {
-        ic_cdk::call(self.0, "icrc1_name", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_name")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_supported_standards(&self) -> CallResult<(Vec<StandardRecord>,)> {
-        ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_supported_standards")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_symbol(&self) -> CallResult<(String,)> {
-        ic_cdk::call(self.0, "icrc1_symbol", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_symbol")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_total_supply(&self) -> CallResult<(Tokens,)> {
-        ic_cdk::call(self.0, "icrc1_total_supply", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_total_supply")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
-        ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc1_transfer")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_21_canister_call_consent_message(
         &self,
         arg0: Icrc21ConsentMessageRequest,
     ) -> CallResult<(Icrc21ConsentMessageResponse,)> {
-        ic_cdk::call(self.0, "icrc21_canister_call_consent_message", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc21_canister_call_consent_message")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_2_allowance(&self, arg0: AllowanceArgs) -> CallResult<(Allowance,)> {
-        ic_cdk::call(self.0, "icrc2_allowance", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc2_allowance")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_2_approve(&self, arg0: ApproveArgs) -> CallResult<(ApproveResult,)> {
-        ic_cdk::call(self.0, "icrc2_approve", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc2_approve")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_2_transfer_from(&self, arg0: TransferFromArgs) -> CallResult<(TransferFromResult,)> {
-        ic_cdk::call(self.0, "icrc2_transfer_from", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc2_transfer_from")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_3_get_archives(&self, arg0: GetArchivesArgs) -> CallResult<(GetArchivesResult,)> {
-        ic_cdk::call(self.0, "icrc3_get_archives", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc3_get_archives")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_3_get_blocks(&self, arg0: Vec<GetBlocksArgs>) -> CallResult<(GetBlocksResult,)> {
-        ic_cdk::call(self.0, "icrc3_get_blocks", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc3_get_blocks")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_3_get_tip_certificate(&self) -> CallResult<(Option<Icrc3DataCertificate>,)> {
-        ic_cdk::call(self.0, "icrc3_get_tip_certificate", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc3_get_tip_certificate")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn icrc_3_supported_block_types(&self) -> CallResult<(Vec<Icrc3SupportedBlockTypesRetItem>,)> {
-        ic_cdk::call(self.0, "icrc3_supported_block_types", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "icrc3_supported_block_types")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn is_ledger_ready(&self) -> CallResult<(bool,)> {
-        ic_cdk::call(self.0, "is_ledger_ready", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "is_ledger_ready")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
 }
