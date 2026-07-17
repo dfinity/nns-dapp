@@ -231,7 +231,7 @@ fn setup(config: Option<Config>) {
     ));
     // Set configuration, if provided
     if let Some(config) = config {
-        crate::state::log(format!("Setting config to: {:?}", config));
+        crate::state::log(format!("Setting config to: {config:?}"));
         STATE.with(|state| {
             *state.stable.borrow().config.borrow_mut() = config;
         });
