@@ -56,18 +56,6 @@
       "exitCode": 0
     },
     {
-      "command": "npm_audit",
-      "stdout": "no vulnerabilities",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
-      "command": "cargo_audit",
-      "stdout": "RUSTSEC-2023-0071",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
       "command": "no_html_in_templates",
       "stdout": "Checked",
       "stderr": "",
@@ -192,10 +180,6 @@
     "git push origin -f tags/release-candidate",
     "",
     "git push origin -f tags/release-candidate: \u001b[32mDone\u001b[0m",
-    "Security test: npm audit: \u001b[32mno vulnerabilities\u001b[0m",
-    "Expected npm audit: \u001b[32mno vulnerabilities\u001b[0m",
-    "Security test: cargo audit: \u001b[32mRUSTSEC-2023-0071\u001b[0m",
-    "Expected cargo audit: \u001b[32mRUSTSEC-2023-0071\u001b[0m",
     "Security test: no HTML in templates: \u001b[32mChecked\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
