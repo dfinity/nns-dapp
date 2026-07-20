@@ -19,7 +19,7 @@ jobs:
         run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' config.json >> $GITHUB_ENV
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install shfmt
@@ -111,7 +111,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
@@ -213,7 +213,7 @@ jobs:
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.volta.node)"' frontend/package.json >> $GITHUB_ENV
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Bumping the package versions works
