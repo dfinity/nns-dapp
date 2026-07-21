@@ -433,9 +433,6 @@ confirm_cmd git tag -f release-candidate
 record "Release commit" git rev-parse release-candidate
 verify "Release commit" "tags/release-candidate commit" git rev-parse release-candidate
 confirm_cmd git push origin -f tags/release-candidate
-# Dependency vulnerability audits (npm/cargo) are not gated here: we rely on
-# GitHub's automated feedback (Dependabot / security alerts) for that, rather
-# than as a blocking release step.
 record "Security test: no HTML in templates" no_html_in_templates
 confirm_cmd "$SOURCE_DIR/download-ci-wasm" --commit tags/release-candidate --dir "$TOP_DIR/release/ci" --wasm-filename nns-dapp.wasm.gz
 record "CI NNS-dapp WASM hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate
