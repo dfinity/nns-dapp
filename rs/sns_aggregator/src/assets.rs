@@ -202,7 +202,7 @@ pub fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
 
 /// Insert an asset into the state.
 pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
-    crate::state::log(format!("Inserting asset {}", &path.clone().into()));
+    crate::state::log(format!("Inserting asset {}", path.clone().into()));
     STATE.with(|s| {
         let mut asset_hashes = s.asset_hashes.borrow_mut();
         let stable_memory = s.stable.borrow();

@@ -231,7 +231,7 @@ fn setup(config: Option<Config>) {
     ));
     // Set configuration, if provided
     if let Some(config) = config {
-        crate::state::log(format!("Setting config to: {:?}", &config));
+        crate::state::log(format!("Setting config to: {config:?}"));
         STATE.with(|state| {
             *state.stable.borrow().config.borrow_mut() = config;
         });
@@ -252,7 +252,7 @@ fn setup(config: Option<Config>) {
     //
     // Note: Timers are lost on upgrade, so a fresh timer needs to be started after upgrade.
     let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
-    crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
+    crate::state::log(format!("Set interval to {}", timer_interval.as_millis()));
     STATE.with(|state| {
         let timer_id = set_timer_interval(timer_interval, crate::upstream::update_cache);
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
