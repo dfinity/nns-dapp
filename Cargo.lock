@@ -985,7 +985,7 @@ dependencies = [
  "candid",
  "dfn_protobuf",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-crypto-tree-hash",
  "ic-dummy-getrandom-for-wasm",
  "ic-http-types",
@@ -1033,6 +1033,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "darling"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25ae13da2f202d56bd7f91c25fba009e7717a1e4a1cc98a76d844b65ae912e9d"
+dependencies = [
+ "darling_core 0.23.0",
+ "darling_macro 0.23.0",
+]
+
+[[package]]
 name = "darling_core"
 version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1061,6 +1071,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "darling_core"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9865a50f7c335f53564bb694ef660825eb8610e0a53d3e11bf1b0d3df31e03b0"
+dependencies = [
+ "ident_case",
+ "proc-macro2",
+ "quote",
+ "strsim 0.11.1",
+ "syn 2.0.118",
+]
+
+[[package]]
 name = "darling_macro"
 version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1078,6 +1101,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc34b93ccb385b40dc71c6fceac4b2ad23662c7eeb248cf10d529b7e055b6ead"
 dependencies = [
  "darling_core 0.20.11",
+ "quote",
+ "syn 2.0.118",
+]
+
+[[package]]
+name = "darling_macro"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac3984ec7bd6cfa798e62b4a642426a5be0e68f9401cfc2a01e3fa9ea2fcdb8d"
+dependencies = [
+ "darling_core 0.23.0",
  "quote",
  "syn 2.0.118",
 ]
@@ -1989,7 +2023,7 @@ checksum = "818d6d5416a8f0212e1b132703b0da51e36c55f2b96677e96f2bbe7702e1bd85"
 dependencies = [
  "candid",
  "ic-cdk-executor",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.19.0",
  "ic-error-types 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ic-management-canister-types 0.5.0",
  "ic0",
@@ -1997,6 +2031,22 @@ dependencies = [
  "serde",
  "serde_bytes",
  "slotmap",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "ic-cdk"
+version = "0.20.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a7971f4983db147afbbc4e7f87f60b09fcd60ac707af37ff3d2468dcddbf551"
+dependencies = [
+ "candid",
+ "ic-cdk-executor",
+ "ic-cdk-macros 0.20.2",
+ "ic-error-types 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic0",
+ "pin-project-lite",
+ "serde",
  "thiserror 2.0.18",
 ]
 
@@ -2019,6 +2069,19 @@ checksum = "66dad91a214945cb3605bc9ef6901b87e2ac41e3624284c2cabba49d43aa4f43"
 dependencies = [
  "candid",
  "darling 0.20.11",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.118",
+]
+
+[[package]]
+name = "ic-cdk-macros"
+version = "0.20.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7c20c002200c720958f321bb78b4d4987fc2c380bf9ef69ed4404730810f45f"
+dependencies = [
+ "candid",
+ "darling 0.23.0",
  "proc-macro2",
  "quote",
  "syn 2.0.118",
@@ -2392,7 +2455,7 @@ dependencies = [
  "ic-base-types",
  "ic-canister-log",
  "ic-canister-profiler",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-cdk-timers",
  "ic-crypto-sha2",
  "ic-http-types",
@@ -2420,7 +2483,7 @@ dependencies = [
  "hex",
  "ic-base-types",
  "ic-canister-log",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-cdk-timers",
  "ic-certification",
  "ic-http-types",
@@ -2470,7 +2533,7 @@ dependencies = [
  "candid",
  "ic-base-types",
  "ic-canister-log",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-ledger-core",
  "ic-ledger-hash-of",
  "ic-limits",
@@ -2616,7 +2679,7 @@ dependencies = [
  "candid",
  "dfn_core",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-error-types 0.2.0 (git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base)",
  "ic-ledger-core",
  "ic-management-canister-types-private",
@@ -2735,7 +2798,7 @@ version = "0.0.1"
 source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#992628c4f26cc7320396b6b8be37133a666a4386"
 dependencies = [
  "candid",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-nervous-system-temporary",
  "serde",
 ]
@@ -2759,7 +2822,7 @@ version = "0.9.0"
 source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#992628c4f26cc7320396b6b8be37133a666a4386"
 dependencies = [
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
 ]
 
 [[package]]
@@ -2788,7 +2851,7 @@ dependencies = [
  "candid",
  "dfn_core",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-crypto-sha2",
  "ic-management-canister-types-private",
  "ic-nervous-system-clients",
@@ -2809,7 +2872,7 @@ dependencies = [
  "dfn_candid",
  "dfn_core",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
 ]
 
 [[package]]
@@ -2827,7 +2890,7 @@ name = "ic-nervous-system-time-helpers"
 version = "0.9.0"
 source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#992628c4f26cc7320396b6b8be37133a666a4386"
 dependencies = [
- "ic-cdk",
+ "ic-cdk 0.19.0",
 ]
 
 [[package]]
@@ -2838,7 +2901,7 @@ dependencies = [
  "async-trait",
  "candid",
  "futures",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-metrics-encoder",
  "ic-nervous-system-time-helpers",
  "ic-nervous-system-timers",
@@ -2867,7 +2930,7 @@ name = "ic-neurons-fund"
 version = "0.0.1"
 source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#992628c4f26cc7320396b6b8be37133a666a4386"
 dependencies = [
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-nervous-system-common",
  "lazy_static",
  "rust_decimal",
@@ -2884,7 +2947,7 @@ dependencies = [
  "candid",
  "comparable",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-nervous-system-canisters",
  "ic-nns-constants",
  "ic-protobuf",
@@ -2923,7 +2986,7 @@ dependencies = [
  "dyn-clone",
  "futures",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-cdk-timers",
  "ic-crypto-sha2",
  "ic-dummy-getrandom-for-wasm",
@@ -3068,7 +3131,7 @@ dependencies = [
  "async-trait",
  "candid",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-management-canister-types-private",
  "ic-nervous-system-clients",
  "ic-nervous-system-root",
@@ -3129,7 +3192,7 @@ name = "ic-registry-canister-chunkify"
 version = "0.9.0"
 source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#992628c4f26cc7320396b6b8be37133a666a4386"
 dependencies = [
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-nervous-system-chunks",
  "ic-registry-transport",
  "ic-stable-structures 0.6.9",
@@ -3155,7 +3218,7 @@ version = "0.9.0"
 source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#992628c4f26cc7320396b6b8be37133a666a4386"
 dependencies = [
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-protobuf",
 ]
 
@@ -3256,7 +3319,7 @@ dependencies = [
  "ic-base-types",
  "ic-canister-log",
  "ic-canister-profiler",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-cdk-timers",
  "ic-crypto-sha2",
  "ic-http-types",
@@ -3362,7 +3425,7 @@ dependencies = [
  "cycles-minting-canister",
  "futures",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-nervous-system-common",
  "ic-nervous-system-initial-supply",
  "ic-nervous-system-runtime",
@@ -3415,7 +3478,7 @@ dependencies = [
  "futures",
  "ic-base-types",
  "ic-canister-log",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-cdk-timers",
  "ic-http-types",
  "ic-management-canister-types-private",
@@ -3445,7 +3508,7 @@ dependencies = [
  "hex",
  "ic-base-types",
  "ic-canister-log",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-cdk-timers",
  "ic-http-types",
  "ic-ledger-core",
@@ -3496,7 +3559,7 @@ dependencies = [
  "futures",
  "hex",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-crypto-sha2",
  "ic-http-types",
  "ic-management-canister-types-private",
@@ -3696,7 +3759,7 @@ dependencies = [
  "dfn_protobuf",
  "hex",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-crypto-sha2",
  "ic-ledger-canister-core",
  "ic-ledger-core",
@@ -3739,7 +3802,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#99
 dependencies = [
  "async-trait",
  "candid",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "icrc-ledger-client",
 ]
 
@@ -4365,7 +4428,7 @@ dependencies = [
  "flate2",
  "hex",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.20.2",
  "ic-cdk-timers",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha2",
@@ -5293,7 +5356,7 @@ dependencies = [
  "getrandom 0.2.17",
  "hex",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-certified-map 0.3.4",
  "ic-crypto-node-key-validation",
  "ic-crypto-sha2",
@@ -5354,7 +5417,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2026-07-09_04-35-base#99
 dependencies = [
  "chrono",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.19.0",
  "ic-nns-constants",
  "ic-protobuf",
  "itertools 0.12.1",
@@ -5843,7 +5906,7 @@ dependencies = [
  "candid",
  "dfn_candid",
  "ic-base-types",
- "ic-cdk",
+ "ic-cdk 0.20.2",
  "ic-cdk-timers",
  "ic-certified-map 0.3.2",
  "ic-management-canister-types 0.8.0",

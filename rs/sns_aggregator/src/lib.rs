@@ -80,13 +80,23 @@ struct CanisterStatusResultV2 {
     module_hash: Option<serde_bytes::ByteBuf>,
 }
 
+/// Argument for the management canister `canister_status` method.
+///
+/// Previously `ic_cdk::management_canister::CanisterIdRecord`, which moved to the
+/// separate `ic-cdk-management-canister` crate in ic-cdk 0.20.  We only need this
+/// one trivial record, so we mirror it locally as with the types above.
+#[derive(CandidType, Deserialize)]
+struct CanisterIdRecord {
+    canister_id: Principal,
+}
+
 /// API method to get cycle balance and burn rate.
 #[candid_method(update)]
 #[ic_cdk::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> CanisterStatusResultV2 {
     let own_canister_id = ic_cdk::api::canister_self();
-    let canister_id_record = ic_cdk::management_canister::CanisterIdRecord {
+    let canister_id_record = CanisterIdRecord {
         canister_id: own_canister_id,
     };
 
