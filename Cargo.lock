@@ -5841,6 +5841,7 @@ dependencies = [
  "anyhow",
  "base64 0.22.1",
  "candid",
+ "candid_parser 0.3.2",
  "dfn_candid",
  "ic-base-types",
  "ic-cdk",
