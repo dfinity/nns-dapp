@@ -13,20 +13,20 @@ ic-cdk = "0.20.2"
 ic-cdk-timers = "1.0.0"
 ic-management-canister-types = "0.8.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-icrc-ledger-types = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-09_04-35-base" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+icrc-ledger-types = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2026-07-23_04-21-base" }
 
 [profile.release]
 lto = false
