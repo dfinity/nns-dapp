@@ -5,7 +5,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0.22.1"
+base64 = "0.23.0"
 candid = "0.10.29"
 flate2 = "1.1.5"
 hex = "0.4.3"
