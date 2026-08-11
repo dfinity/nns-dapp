@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Use certified token metadata in the ICRC transaction modal.
+
 #### Deprecated
 
 #### Removed
