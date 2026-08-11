@@ -85,6 +85,7 @@
   },
   "overrides": {
     "semver": "^7.5.3",
-    "cookie": "^0.7.0"
+    "cookie": "^0.7.0",
+    "js-yaml": "^4.3.1"
   }
 }
