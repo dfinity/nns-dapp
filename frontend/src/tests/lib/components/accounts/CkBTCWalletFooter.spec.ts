@@ -1,4 +1,5 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -10,6 +11,7 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
+  mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import {
@@ -20,6 +22,7 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/api/ckbtc-minter.api");
+vi.mock("$lib/api/icrc-ledger.api");
 
 describe("CkBTCWalletFooter", () => {
   beforeEach(() => {
@@ -28,6 +31,7 @@ describe("CkBTCWalletFooter", () => {
       mockBTCAddressTestnet
     );
     vi.mocked(ckbtcMinterApi.minterInfo).mockResolvedValue(mockCkBTCMinterInfo);
+    vi.mocked(icrcLedgerApi.queryIcrcToken).mockResolvedValue(mockCkBTCToken);
     vi.spyOn(tokensStore, "subscribe").mockImplementation(
       mockTokensSubscribe(mockUniversesTokens)
     );
