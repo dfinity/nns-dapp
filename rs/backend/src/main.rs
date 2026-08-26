@@ -110,10 +110,6 @@ pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
     assets::http_request(req)
 }
 
-// All structured argument methods below use the same decoding and skipping quotas.
-// Zero-argument methods do not decode argument bytes. `add_stable_asset` accepts a large blob whose
-// decoding cost is proportional to its byte length, so the ingress message limit already bounds it.
-
 fn get_caller() -> PrincipalId {
     let caller = ic_cdk::api::msg_caller();
     if caller == candid::Principal::anonymous() {
