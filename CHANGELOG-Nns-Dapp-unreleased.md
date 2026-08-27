@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- A banner in the swap participation modal states that the participant is responsible for their own legal compliance.
+
 #### Changed
 
 #### Deprecated

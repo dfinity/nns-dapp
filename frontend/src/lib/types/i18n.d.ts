@@ -1069,6 +1069,8 @@ interface I18nSns_project_detail {
   status_unspecified: string;
   status_finalizing: string;
   participate_swap_description: string;
+  legal_banner_title: string;
+  legal_banner_text: string;
   understand_agree: string;
   participate_success: string;
   participate: string;
