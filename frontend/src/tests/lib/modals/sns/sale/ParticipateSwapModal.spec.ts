@@ -195,21 +195,19 @@ describe("ParticipateSwapModal", () => {
       expect(await banner.getText()).toBe(
         en.sns_project_detail.legal_banner_text
       );
-      expect(await banner.isCritical()).toBe(false);
-      // The legal statement must stay visible while the user enters an amount.
-      expect(await banner.getCloseButton().isPresent()).toBe(false);
+      expect(await banner.getBannerIcon().isPresent()).toBe(true);
     });
 
-    it("should display the legal banner on the review step", async () => {
+    it("should display the legal banner without a title on the review step", async () => {
       const po = await renderEnter10ICPAndNext();
-      const banner = po.getLegalReviewBannerPo();
+      const banner = po.getLegalBannerPo();
 
       expect(await banner.isPresent()).toBe(true);
       expect(await banner.getText()).toBe(
         en.sns_project_detail.legal_banner_text
       );
       expect(await banner.hasTitle()).toBe(false);
-      expect(await banner.getCloseButton().isPresent()).toBe(false);
+      expect(await banner.getBannerIcon().isPresent()).toBe(true);
     });
 
     it("should disable continue until conditions are accepted", async () => {

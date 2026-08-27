@@ -2,8 +2,7 @@
   import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
-  import Banner from "$lib/components/ui/Banner.svelte";
-  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
+  import SwapLegalBanner from "$lib/components/sale/SwapLegalBanner.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
@@ -42,7 +41,7 @@
     getCommitmentE8s,
     hasOpenTicketInProcess,
   } from "$lib/utils/sns.utils";
-  import { IconInfo, type WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
   import { ICPToken, nonNullish, TokenAmount } from "@dfinity/utils";
   import {
     createEventDispatcher,
@@ -227,29 +226,14 @@
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
     <div class="additional-info" slot="additional-info-form">
-      <Banner
-        testId="swap-legal-banner"
-        title={$i18n.sns_project_detail.legal_banner_title}
-        text={$i18n.sns_project_detail.legal_banner_text}
-      >
-        <BannerIcon slot="icon">
-          <IconInfo />
-        </BannerIcon>
-      </Banner>
+      <SwapLegalBanner withTitle />
       <AdditionalInfoForm
         {conditionsToAccept}
         bind:areConditionsAccepted={areSwapConditionsAccepted}
       />
     </div>
     <div class="additional-info" slot="additional-info-review">
-      <Banner
-        testId="swap-legal-review-banner"
-        text={$i18n.sns_project_detail.legal_banner_text}
-      >
-        <BannerIcon slot="icon">
-          <IconInfo />
-        </BannerIcon>
-      </Banner>
+      <SwapLegalBanner />
       <AdditionalInfoReview bind:accepted />
     </div>
     <p

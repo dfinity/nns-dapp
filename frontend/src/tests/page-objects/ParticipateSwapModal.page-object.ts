@@ -26,10 +26,6 @@ export class ParticipateSwapModalPo extends TransactionModalBasePo {
     return new BannerPo(this.root.byTestId("swap-legal-banner"));
   }
 
-  getLegalReviewBannerPo(): BannerPo {
-    return new BannerPo(this.root.byTestId("swap-legal-review-banner"));
-  }
-
   getInProgressPo(): InProgressPo {
     return InProgressPo.under(this.root);
   }
