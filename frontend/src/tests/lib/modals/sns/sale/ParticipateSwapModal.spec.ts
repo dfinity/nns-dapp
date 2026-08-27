@@ -196,6 +196,9 @@ describe("ParticipateSwapModal", () => {
         en.sns_project_detail.legal_banner_text
       );
       expect(await banner.getBannerIcon().isPresent()).toBe(true);
+      // A legal statement must stay visible while the user enters an amount, so
+      // this call site must never pass `isClosable`.
+      expect(await banner.getCloseButton().isPresent()).toBe(false);
     });
 
     it("should display the legal banner without a title on the review step", async () => {
