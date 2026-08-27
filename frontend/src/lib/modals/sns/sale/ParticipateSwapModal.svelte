@@ -244,7 +244,7 @@
     <div class="additional-info" slot="additional-info-review">
       <Banner
         testId="swap-legal-review-banner"
-        text={$i18n.sns_project_detail.legal_banner_review_text}
+        text={$i18n.sns_project_detail.legal_banner_text}
       >
         <BannerIcon slot="icon">
           <IconInfo />

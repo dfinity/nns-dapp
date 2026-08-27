@@ -1071,7 +1071,6 @@ interface I18nSns_project_detail {
   participate_swap_description: string;
   legal_banner_title: string;
   legal_banner_text: string;
-  legal_banner_review_text: string;
   understand_agree: string;
   participate_success: string;
   participate: string;

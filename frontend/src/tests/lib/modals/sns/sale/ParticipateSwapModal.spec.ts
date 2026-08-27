@@ -206,8 +206,9 @@ describe("ParticipateSwapModal", () => {
 
       expect(await banner.isPresent()).toBe(true);
       expect(await banner.getText()).toBe(
-        en.sns_project_detail.legal_banner_review_text
+        en.sns_project_detail.legal_banner_text
       );
+      expect(await banner.hasTitle()).toBe(false);
       expect(await banner.getCloseButton().isPresent()).toBe(false);
     });
 
