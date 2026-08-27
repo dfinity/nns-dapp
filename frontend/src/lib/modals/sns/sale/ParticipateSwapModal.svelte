@@ -2,6 +2,8 @@
   import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
+  import Banner from "$lib/components/ui/Banner.svelte";
+  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
@@ -40,7 +42,7 @@
     getCommitmentE8s,
     hasOpenTicketInProcess,
   } from "$lib/utils/sns.utils";
-  import type { WizardStep } from "@dfinity/gix-components";
+  import { IconInfo, type WizardStep } from "@dfinity/gix-components";
   import { ICPToken, nonNullish, TokenAmount } from "@dfinity/utils";
   import {
     createEventDispatcher,
@@ -225,12 +227,29 @@
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
     <div class="additional-info" slot="additional-info-form">
+      <Banner
+        testId="swap-legal-banner"
+        title={$i18n.sns_project_detail.legal_banner_title}
+        text={$i18n.sns_project_detail.legal_banner_text}
+      >
+        <BannerIcon slot="icon">
+          <IconInfo />
+        </BannerIcon>
+      </Banner>
       <AdditionalInfoForm
         {conditionsToAccept}
         bind:areConditionsAccepted={areSwapConditionsAccepted}
       />
     </div>
     <div class="additional-info" slot="additional-info-review">
+      <Banner
+        testId="swap-legal-review-banner"
+        text={$i18n.sns_project_detail.legal_banner_review_text}
+      >
+        <BannerIcon slot="icon">
+          <IconInfo />
+        </BannerIcon>
+      </Banner>
       <AdditionalInfoReview bind:accepted />
     </div>
     <p
@@ -250,5 +269,9 @@
 <style lang="scss">
   .additional-info {
     padding-top: var(--padding-2x);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
   }
 </style>

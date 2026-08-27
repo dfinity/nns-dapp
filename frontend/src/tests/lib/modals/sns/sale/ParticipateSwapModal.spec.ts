@@ -14,6 +14,7 @@ import {
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -181,6 +182,33 @@ describe("ParticipateSwapModal", () => {
       const po = await renderSwapModalPo({ confirmationText });
       const info = po.getAdditionalInfoFormPo();
       expect(await info.hasConditions()).toBe(false);
+    });
+
+    it("should display the legal banner on the form step", async () => {
+      const po = await renderSwapModalPo();
+      const banner = po.getLegalBannerPo();
+
+      expect(await banner.isPresent()).toBe(true);
+      expect(await banner.getTitle()).toBe(
+        en.sns_project_detail.legal_banner_title
+      );
+      expect(await banner.getText()).toBe(
+        en.sns_project_detail.legal_banner_text
+      );
+      expect(await banner.isCritical()).toBe(false);
+      // The legal statement must stay visible while the user enters an amount.
+      expect(await banner.getCloseButton().isPresent()).toBe(false);
+    });
+
+    it("should display the legal banner on the review step", async () => {
+      const po = await renderEnter10ICPAndNext();
+      const banner = po.getLegalReviewBannerPo();
+
+      expect(await banner.isPresent()).toBe(true);
+      expect(await banner.getText()).toBe(
+        en.sns_project_detail.legal_banner_review_text
+      );
+      expect(await banner.getCloseButton().isPresent()).toBe(false);
     });
 
     it("should disable continue until conditions are accepted", async () => {
