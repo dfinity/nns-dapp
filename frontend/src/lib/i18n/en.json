@@ -627,7 +627,6 @@
     "text": "Check back later!"
   },
   "canisters": {
-    "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
     "create_canister": "Create Canister",
     "link_canister": "Link Canister",

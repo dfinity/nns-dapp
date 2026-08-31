@@ -91,10 +91,10 @@ describe("Canisters", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render canister cards for canisters", () => {
+  it("should render a table row for each canister", () => {
     const { queryAllByTestId } = render(Canisters);
 
-    expect(queryAllByTestId("canister-card").length).toBe(2);
+    expect(queryAllByTestId("responsive-table-row-component").length).toBe(2);
   });
 
   it("should open the LinkCanisterModal on click to Link Canister", async () => {
@@ -123,7 +123,7 @@ describe("Canisters", () => {
     );
   });
 
-  it("should not recreate cards when store is repopulated with same canisters", async () => {
+  it("should not recreate rows when store is repopulated with same canisters", async () => {
     const mockCanisterCopy = {
       ...mockCanister,
       // Make sure we have a different instance of the same Principal.

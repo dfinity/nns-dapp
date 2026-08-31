@@ -18,6 +18,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Show the canisters on the Canisters page in a table instead of a card grid.
+
 #### Deprecated
 
 #### Removed
