@@ -5,8 +5,8 @@ import type {
 } from "$lib/types/responsive-table";
 
 export interface CanistersTableRowData extends ResponsiveTableRowData {
+  // Required here: every canister row links to the canister detail page.
   rowHref: string;
-  domKey: string;
   canister: CanisterDetails;
 }
 

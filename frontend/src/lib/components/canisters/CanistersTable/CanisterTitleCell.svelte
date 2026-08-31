@@ -39,7 +39,7 @@
 
     span {
       @include text.clamp(2);
-      word-break: break-word;
+      overflow-wrap: anywhere;
     }
   }
 </style>
