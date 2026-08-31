@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 143733
+
+### Application
+
+#### Added
+
+- A banner in the swap participation modal states that the participant is responsible for their own legal compliance.
+
+### Operations
+
 ## Proposal 143661
 
 ### Application
