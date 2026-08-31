@@ -36,6 +36,18 @@ if [[ -z "${END_INDEX:-}" ]]; then
   exit 1
 fi
 
+# Exits with an error unless the value is a decimal integer.
+# Canister responses are untrusted. Bash evaluates array subscripts in every
+# arithmetic context, including $(( )) and [[ x -lt y ]], so a value such as
+# 'start_index[$(command)]' would run a command.
+assert_nat() {
+  local name="$1" value="$2"
+  if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+    printf 'Error: %s is not a number: %q\n' "$name" "$value" >&2
+    exit 1
+  fi
+}
+
 min() {
   if [[ "$1" -lt "$2" ]]; then
     echo "$1"
@@ -64,6 +76,7 @@ get_transactions() {
       "(record { start = $start_index : nat; length = $length : nat })" |
       idl2json --bytes-as hex)"
     result_length="$(jq -r '.transactions | length' <<<"$json_response")"
+    assert_nat result_length "$result_length"
     start_index="$((start_index + result_length))"
     jq '.transactions[]' <<<"$json_response"
   done
@@ -75,7 +88,10 @@ while read -r archive_canister; do
   #echo "archive_canister: $archive_canister" >&2
   archive_canister_id="$(jq -r '.canister_id' <<<"$archive_canister")"
   archive_start_index="$(jq -r '.block_range_start' <<<"$archive_canister" | sed -e 's/_//g')"
-  archive_end_index="$(($(jq -r '.block_range_end' <<<"$archive_canister" | sed -e 's/_//g') + 1))"
+  assert_nat block_range_start "$archive_start_index"
+  block_range_end="$(jq -r '.block_range_end' <<<"$archive_canister" | sed -e 's/_//g')"
+  assert_nat block_range_end "$block_range_end"
+  archive_end_index="$((block_range_end + 1))"
   #echo "archive_canister_id: $archive_canister_id, archive_start_index: $archive_start_index, archive_end_index: $archive_end_index" >&2
   get_transactions "$archive_canister_id" "$archive_start_index" "$archive_end_index"
   max_archive_end_index="$archive_end_index"
