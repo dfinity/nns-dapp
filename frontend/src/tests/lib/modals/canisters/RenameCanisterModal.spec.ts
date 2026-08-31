@@ -54,7 +54,7 @@ describe("RenameCanisterModal", () => {
     expect(await po.getRenameButton().isDisabled()).toBe(false);
   });
 
-  it("shows disabled button when input is longer than 24 characters", async () => {
+  it("shows disabled button when input is longer than the maximum length", async () => {
     const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
     const po = renderComponent({ canisterId: mockCanisterId, name: "name" });
 

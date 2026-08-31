@@ -8,5 +8,6 @@
   h4 {
     margin: 0;
     font-weight: normal;
+    overflow-wrap: anywhere;
   }
 </style>

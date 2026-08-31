@@ -32,7 +32,7 @@
   {#if nonNullish(name) && name !== ""}
     <KeyValuePair>
       {#snippet key()}<span>{$i18n.canisters.name}</span>{/snippet}
-      {#snippet value()}<span>{name}</span>{/snippet}
+      {#snippet value()}<span class="name">{name}</span>{/snippet}
     </KeyValuePair>
   {/if}
   <p class="conversion">
@@ -84,6 +84,12 @@
 
   .value {
     @include fonts.h3;
+  }
+
+  .name {
+    // A canister name can be one long word without spaces.
+    overflow-wrap: anywhere;
+    text-align: right;
   }
 
   .conversion {
