@@ -170,6 +170,7 @@ interface I18nNavigation {
   privacy_mode_show: string;
   project_page: string;
   address_book: string;
+  search: string;
 }
 
 interface I18nAddress_book {

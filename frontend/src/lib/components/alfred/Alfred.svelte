@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { analytics } from "$lib/services/analytics.services";
+  import { alfredVisibleStore } from "$lib/stores/alfred.store";
   import { authStore } from "$lib/stores/auth.store";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
@@ -12,13 +13,13 @@
   import { tick, type Component } from "svelte";
   import { fade } from "svelte/transition";
 
-  let alfredVisible = $state(false);
   let alfredQuery = $state("");
   let selectedIndex = $state(0);
   let isProcessingKey = $state(false);
   let searchInput = $state<HTMLInputElement>();
   let UtilComponent = $state<Component | null>(null);
 
+  const alfredVisible = $derived($alfredVisibleStore);
   const principalId = $derived($authStore.identity?.getPrincipal().toText());
   const filteredItems = $derived(
     filterAlfredItems(alfredQuery, {
@@ -37,20 +38,23 @@
     if (filteredItems.length > 0) selectedIndex = 0;
   });
 
-  const toggleAlfred = async () => {
-    alfredVisible = !alfredVisible;
+  // Reset the panel whenever it opens, whoever opened it: the keyboard
+  // shortcut or the header button. `searchInput` is read after `tick()`, so the
+  // effect does not re-run when the input leaves the DOM for a util form.
+  $effect(() => {
+    if (!$alfredVisibleStore) return;
+
     alfredQuery = "";
     selectedIndex = 0;
     UtilComponent = null;
 
-    if (alfredVisible) {
-      await tick();
-      searchInput?.focus();
-    }
-  };
+    tick().then(() => searchInput?.focus());
+  });
+
+  const toggleAlfred = () => alfredVisibleStore.update((visible) => !visible);
 
   const hideAlfred = () => {
-    alfredVisible = false;
+    alfredVisibleStore.set(false);
     alfredQuery = "";
     UtilComponent = null;
   };
@@ -139,17 +143,9 @@
     handleKeyNavigation(event);
     processKeyWithDebounce();
   };
-
-  const onmousedown = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    const alfredMenu = document.getElementById("menu");
-
-    if (!alfredVisible) return;
-    if (alfredMenu && !alfredMenu.contains(target)) hideAlfred();
-  };
 </script>
 
-<svelte:window {onkeydown} {onmousedown} />
+<svelte:window {onkeydown} />
 
 {#if alfredVisible}
   <div
@@ -225,6 +221,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/overlay";
   @use "@dfinity/gix-components/dist/styles/mixins/display";
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .overlay {
     position: fixed;
@@ -238,12 +235,20 @@
       position: absolute;
       top: 0;
       left: 50%;
-      padding-top: 15vh;
+      width: 100%;
+      // On a phone the panel starts near the top. The on-screen keyboard takes
+      // the lower half of the viewport as soon as the search input gets focus.
+      padding-top: var(--padding-2x);
       transform: translate(-50%, 0);
+
+      @include media.min-width(medium) {
+        padding-top: 15vh;
+      }
 
       .menu {
         width: 600px;
-        max-width: 90%;
+        // One gutter on each side on a phone.
+        max-width: calc(100% - var(--padding-4x));
         margin: 0 auto;
 
         border-radius: var(--border-radius-2x);
@@ -260,7 +265,9 @@
       }
 
       .results {
-        max-height: 400px;
+        // The on-screen keyboard takes about half of a phone screen and does
+        // not change `dvh`. 45dvh keeps the list above it.
+        max-height: min(400px, 45dvh);
         overflow-y: auto;
 
         padding: var(--padding);
@@ -285,22 +292,21 @@
               display: flex;
               align-items: center;
               gap: var(--padding-2x);
+              // Floor for the touch target (WCAG 2.5.8).
+              min-height: 44px;
               padding: var(--padding-1_5x) var(--padding-2x);
               transition: all 0.15s ease;
               border-radius: var(--border-radius);
 
               &:hover {
-                background-color: var(
-                  --background-secondary,
-                  rgba(0, 0, 0, 0.05)
-                );
+                background-color: var(--card-background-tint);
               }
             }
           }
         }
 
         li.selected .item-button {
-          background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
+          background-color: var(--card-background-tint);
           border-left-color: var(--primary);
 
           .item-title,
@@ -319,7 +325,7 @@
           color: var(--text-color);
           flex-shrink: 0;
           border-radius: var(--padding);
-          background: var(--background-secondary, rgba(0, 0, 0, 0.05));
+          background: var(--card-background-tint);
           transition: all 0.15s ease;
         }
 

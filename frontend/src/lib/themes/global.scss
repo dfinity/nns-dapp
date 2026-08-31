@@ -31,3 +31,18 @@ div.split-pane + div.split-pane {
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
 }
+
+// The gix `Toolbar` gives the start and the end column 15% of the width each.
+// At a 390px viewport that is 59px, and the search button plus the account
+// button need 72px. The end group then overflows to the left and covers the
+// end of the page title. `minmax` lets each side column grow to the width of
+// its own buttons and takes the space from the title column instead. On a wide
+// screen 15% is still the larger value, so the desktop layout does not move.
+// The title column needs a `0` minimum, or its truncated title would force the
+// grid wider than the header.
+header .toolbar[role="toolbar"] {
+  grid-template-columns:
+    minmax(var(--actions-width), max-content)
+    minmax(0, 1fr)
+    minmax(var(--actions-width), max-content);
+}

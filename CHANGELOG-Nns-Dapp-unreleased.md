@@ -14,6 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- A search button in the header opens the quick search panel. Before, only the
+  Ctrl+K (Cmd+K) shortcut opened it, so a touch screen could not reach it.
+
 #### Changed
 
 #### Deprecated
@@ -21,6 +24,11 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
+
+- The quick search panel now fits a phone screen, and its selected row, icon
+  tiles and result boxes now have a visible background color.
+- The page title in the header no longer disappears behind the header buttons on
+  a narrow screen.
 
 #### Security
 

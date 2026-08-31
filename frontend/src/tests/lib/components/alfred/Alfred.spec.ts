@@ -1,8 +1,11 @@
 import Alfred from "$lib/components/alfred/Alfred.svelte";
+import { alfredVisibleStore } from "$lib/stores/alfred.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { AlfredPo } from "$tests/page-objects/Alfred.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("Alfred Component", () => {
   const signedOffOptions = [
@@ -97,5 +100,43 @@ describe("Alfred Component", () => {
 
     const titles = await po.getResultsTitle();
     expect(titles).toEqual(signedInOptions);
+  });
+
+  it("should open when another component sets the store", async () => {
+    const po = renderComponent();
+    expect(await po.isPresent()).toBe(false);
+
+    alfredVisibleStore.set(true);
+    await runResolvedPromises();
+
+    expect(await po.isPresent()).toBe(true);
+  });
+
+  it("should reset the store when it closes", async () => {
+    const po = renderComponent();
+
+    await po.open("mac");
+    expect(get(alfredVisibleStore)).toBe(true);
+
+    await po.close();
+    vi.advanceTimersByTime(500);
+
+    expect(get(alfredVisibleStore)).toBe(false);
+  });
+
+  it("should clear the query when it opens again", async () => {
+    const po = renderComponent();
+    await po.open("mac");
+
+    await po.type("repor");
+    expect(await po.getResultsTitle()).toEqual(["Reporting"]);
+
+    await po.close();
+    vi.advanceTimersByTime(500);
+
+    alfredVisibleStore.set(true);
+    await runResolvedPromises();
+
+    expect(await po.getResultsTitle()).toEqual(signedOffOptions);
   });
 });
