@@ -18,6 +18,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Increase the maximum canister name length from 24 to 64 characters.
+
 #### Deprecated
 
 #### Removed

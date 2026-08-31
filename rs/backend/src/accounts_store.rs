@@ -36,6 +36,9 @@ const MAX_IMPORTED_TOKENS: i32 = 20;
 // Conservatively limit the number of favorite projects to prevent using too much memory.
 const MAX_FAVORITE_PROJECTS: i32 = 20;
 
+// Maximum length for a canister name
+const CANISTER_NAME_MAX_LENGTH: usize = 64;
+
 // Conservatively limit the number of named addresses to prevent using too much memory.
 const MAX_NAMED_ADDRESSES: i32 = 20;
 
@@ -875,8 +878,6 @@ impl AccountsStore {
     }
 
     fn validate_canister_name(name: &str) -> bool {
-        const CANISTER_NAME_MAX_LENGTH: usize = 24;
-
         name.len() <= CANISTER_NAME_MAX_LENGTH
     }
 
