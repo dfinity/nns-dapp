@@ -121,6 +121,7 @@ describe("canisters-api", () => {
       await expect(call).rejects.toThrowError(
         new CanisterNameTooLongError("error__canister.name_too_long", {
           $name: longName,
+          $max: String(MAX_CANISTER_NAME_LENGTH),
         })
       );
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
@@ -150,6 +151,7 @@ describe("canisters-api", () => {
       await expect(call).rejects.toThrowError(
         new CanisterNameTooLongError("error__canister.name_too_long", {
           $name: longName,
+          $max: String(MAX_CANISTER_NAME_LENGTH),
         })
       );
       expect(mockNNSDappCanister.renameCanister).not.toBeCalled();
@@ -352,6 +354,7 @@ describe("canisters-api", () => {
       await expect(call).rejects.toThrowError(
         new CanisterNameTooLongError("error__canister.name_too_long", {
           $name: longName,
+          $max: String(MAX_CANISTER_NAME_LENGTH),
         })
       );
       expect(mockCmcCanister.notifyCreateCanister).not.toBeCalled();

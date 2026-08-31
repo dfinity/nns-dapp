@@ -133,7 +133,9 @@ describe("LinkCanisterModal", () => {
     nameInputElement && (await fireEvent.blur(nameInputElement));
 
     expect(
-      queryByText("Canister name too long. Maximum of 64 characters allowed.")
+      queryByText(
+        `Canister name too long. Maximum of ${MAX_CANISTER_NAME_LENGTH} characters allowed.`
+      )
     ).toBeInTheDocument();
     expect(
       queryByTestId("link-canister-button")?.hasAttribute("disabled")
