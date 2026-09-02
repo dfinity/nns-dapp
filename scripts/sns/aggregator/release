@@ -30,7 +30,7 @@ PROPOSAL_TEXT="./release/AGGREGATOR_PROPOSAL.md"
 
 # Verifies that the proposal text states the hash of the wasm module.
 # The template checks this hash against the hash in the CI build log.
-grep -w "$SHA" "$PROPOSAL_TEXT" >/dev/null || {
+grep -qwF -- "$SHA" "$PROPOSAL_TEXT" || {
   echo "ERROR: The proposal text does not contain the hash of $WASM."
   echo "       Wasm hash: $SHA"
   echo "       Proposal text: $PROPOSAL_TEXT"

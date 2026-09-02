@@ -12,7 +12,7 @@ if test -f "$WASM"; then
   SHA="$(sha256sum "$WASM" | awk '{print $1}')"
 else
   echo "Please populate ${WASM} and run this again."
-  exit 0
+  exit 1
 fi
 
 # The proposal states this hash, so compare it with the hash in the CI build log.
@@ -20,7 +20,7 @@ CI_SHA="$(./scripts/nns-dapp/get-hash-from-ci-log --commit "$COMMIT" --filename 
 if test -z "${CI_SHA:-}"; then
   {
     echo "ERROR: Found no $WASM_FILENAME hash in the CI build log for $COMMIT."
-    echo "       GitHub deletes old logs, so a rebuild of the commit may be necessary."
+    echo "       The CI run may be too old, so a rebuild of the commit may be necessary."
     exit 1
   } >&2
 fi
