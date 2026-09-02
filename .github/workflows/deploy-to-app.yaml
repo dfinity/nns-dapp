@@ -46,12 +46,6 @@ jobs:
         uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
         with:
           dfx-version: ${{ env.DFX_VERSION }}
-      - name: Set credentials
-        run: |
-          printf "%s" "${{ secrets.DFX_IDENTITY_PEM }}" | dfx identity import --storage-mode=plaintext ci /dev/stdin
-          dfx identity use ci
-        env:
-          DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
       - name: Get SNS scripts
         uses: ./.github/actions/checkout_snsdemo
         with:
@@ -62,6 +56,14 @@ jobs:
           sudo apt-get update -yy && sudo apt-get install -yy moreutils
           : Add scripts to the path
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      # Import the deploy key as late as possible.
+      # The key is plaintext on disk from here on.
+      - name: Set credentials
+        run: |
+          printf "%s" "$DFX_IDENTITY_PEM" | dfx identity import --storage-mode=plaintext ci /dev/stdin
+          dfx identity use ci
+        env:
+          DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
       - name: Verify identity
         run: |
           dfx identity whoami
