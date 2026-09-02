@@ -30,6 +30,7 @@ serde_json = "1.0.137"
 sha2 = "0.11.0"
 
 [dev-dependencies]
+candid_parser = "0.3.0"
 pretty_assertions = "1.4.0"
 
 [features]
