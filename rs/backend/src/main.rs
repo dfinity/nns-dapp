@@ -87,25 +87,75 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     println!("END   post-upgrade");
 }
 
-/// Decodes the `http_request` argument with a tight Candid quota to limit the
-/// `DoS` surface from oversized attacker-controlled payloads. ic-cdk 0.19 removed
-/// the `decoding_quota` query attribute, so we re-impose it via `decode_with`.
-#[allow(clippy::needless_pass_by_value)] // signature required by ic_cdk::query(decode_with = ...)
-fn http_request_decode_arg(arg_bytes: Vec<u8>) -> assets::HttpRequest {
+/// The Candid decoding quota for every exported method that takes an argument.
+///
+/// The quota limits the `DoS` surface from a decoding bomb. A bomb is a small
+/// payload that costs a lot to decode. ic-cdk 0.19 removed the `decoding_quota`
+/// attribute, so we re-impose the quota with `decode_with`.
+///
+/// Every argument of the API is small, so a tight quota is safe. The exception
+/// is `add_stable_asset`, which has its own quota below.
+const DECODING_QUOTA: usize = 10_000;
+
+/// The Candid skipping quota for every exported method that takes an argument.
+///
+/// The quota limits the work that the decoder spends on values that the method
+/// does not use.
+const SKIPPING_QUOTA: usize = 10_000;
+
+/// The size limit for one message to the canister, in bytes.
+const MAX_INGRESS_MESSAGE_BYTES: usize = 2 * 1024 * 1024;
+
+/// The Candid cost to decode one byte of a blob.
+const BLOB_BYTE_DECODING_COST: usize = 4;
+
+/// The Candid decoding quota for the `add_stable_asset` argument.
+///
+/// The cost to decode a blob grows with the length of the blob. An asset is
+/// large, so the quota covers a blob of the largest message size. The message
+/// size limit still stops a decoding bomb. A test checks this quota.
+const ASSET_DECODING_QUOTA: usize = BLOB_BYTE_DECODING_COST * MAX_INGRESS_MESSAGE_BYTES + DECODING_QUOTA;
+
+/// Decodes one Candid argument with the given decoding quota.
+///
+/// # Errors
+/// Returns an error if the bytes are not a valid argument, or if the argument
+/// costs more than the quota.
+fn try_decode_one_arg<T>(arg_bytes: &[u8], decoding_quota: usize) -> Result<T, candid::Error>
+where
+    T: CandidType + for<'a> Deserialize<'a>,
+{
     let mut decoder_config = candid::DecoderConfig::new();
-    decoder_config.set_decoding_quota(10_000);
-    decoder_config.set_skipping_quota(10_000);
-    let (req,): (assets::HttpRequest,) = candid::utils::decode_args_with_config(&arg_bytes, &decoder_config)
-        .unwrap_or_else(|e| ic_cdk::api::trap(format!("Failed to decode http_request argument: {e}")));
-    req
+    decoder_config.set_decoding_quota(decoding_quota);
+    decoder_config.set_skipping_quota(SKIPPING_QUOTA);
+    let (arg,): (T,) = candid::utils::decode_args_with_config(arg_bytes, &decoder_config)?;
+    Ok(arg)
 }
 
+/// Decodes one Candid argument with the standard quota, else traps.
+#[allow(clippy::needless_pass_by_value)] // signature required by ic_cdk::query(decode_with = ...)
+fn decode_one_arg<T>(arg_bytes: Vec<u8>) -> T
+where
+    T: CandidType + for<'a> Deserialize<'a>,
+{
+    try_decode_one_arg(&arg_bytes, DECODING_QUOTA)
+        .unwrap_or_else(|e| ic_cdk::api::trap(format!("Failed to decode the argument: {e}")))
+}
+
+/// Decodes an asset argument with the asset quota, else traps.
+#[allow(clippy::needless_pass_by_value)] // signature required by ic_cdk::update(decode_with = ...)
+fn decode_asset_arg(arg_bytes: Vec<u8>) -> Vec<u8> {
+    try_decode_one_arg(&arg_bytes, ASSET_DECODING_QUOTA)
+        .unwrap_or_else(|e| ic_cdk::api::trap(format!("Failed to decode the asset argument: {e}")))
+}
+
+// Every method that takes an argument decodes it with a quota.
 // `hidden = true` suppresses ic-cdk's auto-generated Candid registration, which
 // (because of `decode_with`) would otherwise export the argument as raw `blob`.
-// The explicit `candid_method` below keeps the published interface as `HttpRequest`.
+// The explicit `candid_method` keeps the published interface unchanged.
 #[must_use]
 #[candid_method(query)]
-#[ic_cdk::query(hidden = true, decode_with = "http_request_decode_arg")]
+#[ic_cdk::query(hidden = true, decode_with = "decode_one_arg")]
 pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
     assets::http_request(req)
 }
@@ -151,7 +201,8 @@ pub fn add_account() -> AccountIdentifier {
 /// user's principal (the fact that it is controlled by the same principal as the user's other
 /// ledger accounts is not derivable externally).
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.create_sub_account(principal, sub_account_name))
@@ -161,7 +212,8 @@ pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse 
 ///
 /// These aliases are not visible externally or to anyone else.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn rename_sub_account(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.rename_sub_account(principal, request))
@@ -173,7 +225,8 @@ pub fn rename_sub_account(request: RenameSubAccountRequest) -> RenameSubAccountR
 /// the IC from the account, the user must use the hardware wallet to sign each request.
 /// Some read-only calls do not require signing, e.g. viewing the account's ICP balance.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn register_hardware_wallet(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.register_hardware_wallet(principal, request))
@@ -189,7 +242,8 @@ pub fn get_canisters() -> Vec<NamedCanister> {
 
 /// Attaches a canister to the user's account.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn attach_canister(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.attach_canister(principal, request))
@@ -197,7 +251,8 @@ pub fn attach_canister(request: AttachCanisterRequest) -> AttachCanisterResponse
 
 /// Renames a canister of the user.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn rename_canister(request: RenameCanisterRequest) -> RenameCanisterResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.rename_canister(principal, request))
@@ -205,14 +260,16 @@ pub fn rename_canister(request: RenameCanisterRequest) -> RenameCanisterResponse
 
 /// Detaches a canister from the user's account.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn detach_canister(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.detach_canister(principal, request))
 }
 
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn set_imported_tokens(settings: ImportedTokens) -> SetImportedTokensResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.set_imported_tokens(principal, settings))
@@ -226,7 +283,8 @@ pub fn get_imported_tokens() -> GetImportedTokensResponse {
 }
 
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn set_fav_projects(settings: FavProjects) -> SetFavProjectsResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.set_fav_projects(principal, settings))
@@ -240,7 +298,8 @@ pub fn get_fav_projects() -> GetFavProjectsResponse {
 }
 
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn set_address_book(addresses: AddressBook) -> SetAddressBookResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.set_address_book(principal, addresses))
@@ -286,7 +345,8 @@ pub fn get_histogram() -> AccountsStoreHistogram {
 /// Add an asset to be served by the canister.
 ///
 /// Only a whitelist of assets are accepted.
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_asset_arg")]
 pub fn add_stable_asset(asset_bytes: Vec<u8>) {
     let hash_bytes = hash_bytes(&asset_bytes);
     match hex::encode(hash_bytes).as_str() {
@@ -321,7 +381,8 @@ pub fn add_stable_asset(asset_bytes: Vec<u8>) {
 /// - If the requested number of accounts is too large, the call will run out of cycles and be killed.
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(hidden = true, decode_with = "decode_one_arg")]
 pub fn create_toy_accounts(num_accounts: u128) -> u64 {
     let caller = ic_cdk::api::msg_caller();
     if !ic_cdk::api::is_controller(&caller) {
@@ -338,7 +399,8 @@ pub fn create_toy_accounts(num_accounts: u128) -> u64 {
 /// Gets any toy account by toy account index.
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[must_use]
-#[ic_cdk::query]
+#[candid_method(query)]
+#[ic_cdk::query(hidden = true, decode_with = "decode_one_arg")]
 pub fn get_toy_account(toy_account_index: u64) -> GetAccountResponse {
     let caller = ic_cdk::api::msg_caller();
     if !ic_cdk::api::is_controller(&caller) {
@@ -361,6 +423,76 @@ pub fn get_tvl() -> TvlResponse {
 pub enum GetAccountResponse {
     Ok(AccountDetails),
     AccountNotFound,
+}
+
+#[cfg(test)]
+mod decoding_quota_tests {
+    use super::{
+        try_decode_one_arg, AddressBook, CandidType, ASSET_DECODING_QUOTA, DECODING_QUOTA, MAX_INGRESS_MESSAGE_BYTES,
+    };
+
+    /// A copy of `accounts_store::AddressType`, because the fields of the
+    /// original are private.
+    #[derive(CandidType)]
+    #[allow(dead_code)] // the test builds one variant, but both must exist
+    enum TestAddressType {
+        Icp(String),
+        Icrc1(String),
+    }
+
+    /// A copy of `accounts_store::NamedAddress`, because the fields of the
+    /// original are private.
+    #[derive(CandidType)]
+    struct TestNamedAddress {
+        address: TestAddressType,
+        name: String,
+    }
+
+    /// A copy of `accounts_store::AddressBook`, because the fields of the
+    /// original are private.
+    #[derive(CandidType)]
+    struct TestAddressBook {
+        named_addresses: Vec<TestNamedAddress>,
+    }
+
+    #[test]
+    fn quota_stops_a_decoding_bomb() {
+        // 14 bytes that claim a vector of 2^30 nulls.
+        let bomb: [u8; 14] = [
+            b'D', b'I', b'D', b'L', // magic
+            1,    // one type in the type table
+            0x6d, 0x7f, // vec null
+            1,    // one argument
+            0,    // of the type at index 0
+            0x80, 0x80, 0x80, 0x80, 0x04, // the length, 2^30
+        ];
+        let result = try_decode_one_arg::<Vec<()>>(&bomb, DECODING_QUOTA);
+        assert!(result.is_err(), "The decoder accepted a bomb of 2^30 values.");
+    }
+
+    #[test]
+    fn quota_accepts_a_full_address_book() {
+        // The store allows 20 named addresses. The name limit is 64 characters.
+        let named_addresses = (0..20)
+            .map(|_| TestNamedAddress {
+                address: TestAddressType::Icp("a".repeat(64)),
+                name: "n".repeat(64),
+            })
+            .collect();
+        let arg_bytes = candid::utils::encode_one(TestAddressBook { named_addresses }).unwrap();
+        let result = try_decode_one_arg::<AddressBook>(&arg_bytes, DECODING_QUOTA);
+        assert!(result.is_ok(), "The decoder rejected a valid address book: {result:?}");
+    }
+
+    #[test]
+    fn asset_quota_accepts_the_largest_ingress_message() {
+        let asset = vec![0u8; MAX_INGRESS_MESSAGE_BYTES];
+        let arg_bytes = candid::utils::encode_one(&asset).unwrap();
+        let result = try_decode_one_arg::<Vec<u8>>(&arg_bytes, ASSET_DECODING_QUOTA);
+        assert_eq!(result.unwrap(), asset);
+        // The standard quota is too small for an asset.
+        assert!(try_decode_one_arg::<Vec<u8>>(&arg_bytes, DECODING_QUOTA).is_err());
+    }
 }
 
 // This has to be at the end of the file for the test to be able to find all
