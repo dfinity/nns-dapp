@@ -1128,7 +1128,7 @@
   "error__canister": {
     "already_attached": "Canister ($canisterId) is already linked",
     "name_taken": "The name $name is already in use. Names must be unique.",
-    "name_too_long": "The name $name is too long (max. 24 characters). Please, choose a shorter name.",
+    "name_too_long": "The name $name is too long (max. $max characters). Please, choose a shorter name.",
     "limit_exceeded": "The limit of canisters that can be linked has been exceeded.",
     "unlink_not_found": "Error unlinking, canister ($canisterId) not found.",
     "unknown_link": "Error linking canister.",
