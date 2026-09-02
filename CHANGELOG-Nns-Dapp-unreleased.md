@@ -27,8 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 - The quick search panel now fits a phone screen, and its selected row, icon
   tiles and result boxes now have a visible background color.
-- The page title in the header no longer disappears behind the header buttons on
-  a narrow screen.
+- On a narrow screen the header buttons no longer shrink while the app loads
+  data.
 
 #### Security
 
