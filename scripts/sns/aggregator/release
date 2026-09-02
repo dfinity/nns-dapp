@@ -28,6 +28,16 @@ ARG_SHA=$(sha256sum <"$ARG_PATH" | awk '{print $1}')
 
 PROPOSAL_TEXT="./release/AGGREGATOR_PROPOSAL.md"
 
+# Verifies that the proposal text states the hash of the wasm module.
+# The template checks this hash against the hash in the CI build log.
+grep -w "$SHA" "$PROPOSAL_TEXT" >/dev/null || {
+  echo "ERROR: The proposal text does not contain the hash of $WASM."
+  echo "       Wasm hash: $SHA"
+  echo "       Proposal text: $PROPOSAL_TEXT"
+  echo "       Please run scripts/sns/aggregator/release-template again."
+  exit 1
+} >&2
+
 # Verifies that the forum link placeholder has been replaced.
 FORUM_PLACEHOLDER="FORUM_LINK"
 # ... Verifies that the template contains the placeholder:
