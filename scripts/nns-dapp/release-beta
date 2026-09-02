@@ -143,8 +143,8 @@ echo "Downloading wasm from CI..."
 
 # The Orbit request states this hash, so compare it with the hash in the CI build log.
 LOCAL_SHA="$(sha256sum "$WASM_PATH" | awk '{print $1}')"
-CI_SHA="$("$SOURCE_DIR/nns-dapp/get-hash-from-ci-log" --commit "$COMMIT")"
-if test -z "${CI_SHA:-}"; then
+# The helper exits non-zero if the log holds no hash, so test the status here.
+if ! CI_SHA="$("$SOURCE_DIR/nns-dapp/get-hash-from-ci-log" --commit "$COMMIT")" || test -z "${CI_SHA:-}"; then
   {
     echo "ERROR: Found no nns-dapp.wasm.gz hash in the CI build log for $COMMIT."
     echo "       The CI run may be too old, so a rebuild of the commit may be necessary."

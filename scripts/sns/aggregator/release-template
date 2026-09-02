@@ -16,8 +16,8 @@ else
 fi
 
 # The proposal states this hash, so compare it with the hash in the CI build log.
-CI_SHA="$(./scripts/nns-dapp/get-hash-from-ci-log --commit "$COMMIT" --filename "$WASM_FILENAME")"
-if test -z "${CI_SHA:-}"; then
+# The helper exits non-zero if the log holds no hash, so test the status here.
+if ! CI_SHA="$(./scripts/nns-dapp/get-hash-from-ci-log --commit "$COMMIT" --filename "$WASM_FILENAME")" || test -z "${CI_SHA:-}"; then
   {
     echo "ERROR: Found no $WASM_FILENAME hash in the CI build log for $COMMIT."
     echo "       The CI run may be too old, so a rebuild of the commit may be necessary."
