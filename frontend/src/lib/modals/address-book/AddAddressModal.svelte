@@ -1,18 +1,21 @@
 <script lang="ts">
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { saveAddressBook } from "$lib/services/address-book.services";
+  import {
+    getCertifiedNamedAddresses,
+    saveAddressBook,
+  } from "$lib/services/address-book.services";
   import { addressBookStore } from "$lib/stores/address-book.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import {
     invalidIcpAddress,
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { getAddressString } from "$lib/utils/address-book.utils";
   import { Modal, busy } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   interface Props {
     onClose: () => void;
@@ -144,28 +147,49 @@
       address: addressType,
     };
 
-    // Create temporary array with the updated addresses
-    const currentAddresses = $addressBookStore.namedAddresses ?? [];
-    let updatedAddresses: NamedAddress[];
-
-    if (isEditMode) {
-      // In edit mode, find and replace the existing entry
-      updatedAddresses = currentAddresses.map((entry) =>
-        normalizeName(entry.name) === normalizeName(namedAddress?.name ?? "")
-          ? updatedAddress
-          : entry
-      );
-    } else {
-      // In add mode, append the new address
-      updatedAddresses = [...currentAddresses, updatedAddress];
-    }
-
     const initiator = isEditMode
       ? "edit-address-book-entry"
       : "add-address-book-entry";
     startBusy({ initiator });
 
     try {
+      // The save replaces the whole address book. Build the replacement from
+      // certified entries only. A single replica can forge or drop entries in a
+      // query response, and a write would make that response permanent.
+      const currentAddresses = await getCertifiedNamedAddresses();
+
+      if (isNullish(currentAddresses)) {
+        toastsError({ labelKey: "error__address_book.not_certified" });
+        return;
+      }
+
+      let updatedAddresses: NamedAddress[];
+
+      if (isEditMode) {
+        const previousName = normalizeName(namedAddress?.name ?? "");
+        const isPresent = currentAddresses.some(
+          (entry) => normalizeName(entry.name) === previousName
+        );
+
+        // The certified address book no longer holds the entry to edit.
+        // Report it instead of saving an unchanged address book.
+        if (!isPresent) {
+          toastsError({
+            labelKey: "error__address_book.entry_not_found",
+            substitutions: { $name: namedAddress?.name ?? "" },
+          });
+          return;
+        }
+
+        // In edit mode, find and replace the existing entry
+        updatedAddresses = currentAddresses.map((entry) =>
+          normalizeName(entry.name) === previousName ? updatedAddress : entry
+        );
+      } else {
+        // In add mode, append the new address
+        updatedAddresses = [...currentAddresses, updatedAddress];
+      }
+
       const result = await saveAddressBook(updatedAddresses);
 
       if (!result?.err) {

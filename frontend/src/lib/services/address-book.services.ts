@@ -17,7 +17,10 @@ import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { addressBookStore } from "$lib/stores/address-book.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { isAddressBookCertified } from "$lib/utils/address-book.utils";
 import { isLastCall } from "$lib/utils/env.utils";
+import { isNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 
 /**
  * Load address book from the `nns-dapp` backend and update the `addressBookStore` store.
@@ -65,6 +68,31 @@ export const loadAddressBook = async ({
     },
     logMessage: "Get Address Book",
   });
+};
+
+/**
+ * Return the address book entries that a certified call produced.
+ *
+ * A write replaces the whole address book. It must never build the replacement
+ * from a query response, because a single replica can forge or drop entries.
+ * If the store holds a query response, reload the address book first.
+ *
+ * Return `undefined` when certified entries are not available.
+ */
+export const getCertifiedNamedAddresses = async (): Promise<
+  NamedAddress[] | undefined
+> => {
+  if (!isAddressBookCertified(get(addressBookStore).certified)) {
+    await loadAddressBook({ ignoreAccountNotFoundError: true });
+  }
+
+  const { namedAddresses, certified } = get(addressBookStore);
+
+  if (!isAddressBookCertified(certified) || isNullish(namedAddresses)) {
+    return undefined;
+  }
+
+  return namedAddresses;
 };
 
 /**
