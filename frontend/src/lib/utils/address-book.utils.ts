@@ -1,5 +1,17 @@
 import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { isForceCallStrategy } from "$lib/utils/call.utils";
 import { ICPToken, isNullish, type Token } from "@dfinity/utils";
+
+/**
+ * Tell if the address book in the store comes from a certified call.
+ *
+ * A session that forces the `query` strategy never gets certified data.
+ * Such a session accepts the query response instead.
+ */
+export const isAddressBookCertified = (
+  certified: boolean | undefined
+): boolean =>
+  certified === true || (certified === false && isForceCallStrategy());
 
 /**
  * Helper function to extract address string from AddressType

@@ -24,6 +24,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+* Build the address book replacement from certified data when the user
+  adds, edits or removes an entry. A save no longer writes back a query
+  response.
+
 #### Not Published
 
 ### Operations
