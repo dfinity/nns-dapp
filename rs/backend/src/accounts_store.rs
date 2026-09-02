@@ -36,7 +36,7 @@ const MAX_IMPORTED_TOKENS: i32 = 20;
 // Conservatively limit the number of favorite projects to prevent using too much memory.
 const MAX_FAVORITE_PROJECTS: i32 = 20;
 
-// Maximum length for a canister name
+// Maximum length in UTF-8 bytes for a canister name
 const CANISTER_NAME_MAX_LENGTH: usize = 64;
 
 // Conservatively limit the number of named addresses to prevent using too much memory.
