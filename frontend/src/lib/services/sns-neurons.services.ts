@@ -28,7 +28,10 @@ import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.deri
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
-import { queryAndUpdate } from "$lib/services/utils.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -157,16 +160,32 @@ const getNeuronFromStoreByIdHex = ({
   };
 };
 
+/**
+ * Loads one SNS neuron and calls `onLoad` for each response.
+ *
+ * `strategy` selects the calls to make. The default makes a query call and an
+ * update call. The returned promise then settles on the first response, which
+ * is normally the query response. A query response is not certified. One
+ * replica can forge it, and it can also show the neuron from before a recent
+ * change.
+ *
+ * `"update"` makes only the update call, so the returned promise settles on
+ * the certified response. A caller that makes a security decision from the
+ * neuron must use `"update"`. Such a caller also skips the neuron in the
+ * store, because the store can hold a query response.
+ */
 export const getSnsNeuron = async ({
   neuronIdHex,
   rootCanisterId,
   forceFetch = false,
+  strategy,
   onLoad,
   onError,
 }: {
   neuronIdHex: string;
   rootCanisterId: Principal;
   forceFetch?: boolean;
+  strategy?: QueryAndUpdateStrategy;
   onLoad: ({
     certified,
     neuron,
@@ -182,7 +201,7 @@ export const getSnsNeuron = async ({
     error: unknown;
   }) => void;
 }): Promise<void> => {
-  if (!forceFetch) {
+  if (!forceFetch && strategy !== "update") {
     const { neuron, certified } = getNeuronFromStoreByIdHex({
       neuronIdHex,
       rootCanisterId,
@@ -210,6 +229,7 @@ export const getSnsNeuron = async ({
     onError: ({ certified, error }) => {
       onError?.({ certified, error });
     },
+    strategy,
     logMessage: `Getting Sns Neuron ${neuronIdHex}`,
   });
 };
