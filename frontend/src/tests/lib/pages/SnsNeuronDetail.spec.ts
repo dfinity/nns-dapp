@@ -12,6 +12,7 @@ import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import {
+  getSnsNeuronHotkeyPermissionsFor,
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
@@ -332,6 +333,79 @@ describe("SnsNeuronDetail", () => {
       });
       const po = await renderComponent(props);
 
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+      await po.removeHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+    });
+
+    it("removes ManageVotingPermission with the hotkey", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+        ],
+      });
+      const po = await renderComponent(props);
+
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+      await po.removeHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+
+      const neuron = await snsGovernanceApi.getSnsNeuron({
+        identity: mockIdentity,
+        rootCanisterId,
+        neuronId: validNeuronId,
+        certified: true,
+      });
+      expect(
+        getSnsNeuronHotkeyPermissionsFor({
+          neuron,
+          principal: hotkeyPrincipal,
+        })
+      ).toEqual([]);
+    });
+
+    it("keeps a principal with residual permissions in the list", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+        ],
+      });
+      const po = await renderComponent(props);
+
+      // The principal keeps power over the neuron, so the card must show it.
       expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
 
       await po.removeHotkey(hotkeyPrincipal);

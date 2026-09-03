@@ -5,6 +5,7 @@ import {
 } from "$lib/constants/constants";
 import {
   HOTKEY_PERMISSIONS,
+  HOTKEY_REVOCABLE_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
@@ -24,8 +25,10 @@ import {
   getSnsLockedTimeInSeconds,
   getSnsNeuronAvailableMaturity,
   getSnsNeuronByHexId,
+  getSnsNeuronHotkeyPermissionsFor,
   getSnsNeuronHotkeys,
   getSnsNeuronIdAsHexString,
+  getSnsNeuronPartialHotkeys,
   getSnsNeuronStake,
   getSnsNeuronStakedMaturity,
   getSnsNeuronState,
@@ -731,6 +734,171 @@ describe("sns-neuron utils", () => {
       const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
       expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
       expect(expectedHotkeys.includes(hotkey)).toBe(true);
+    });
+  });
+
+  describe("getSnsNeuronHotkeyPermissionsFor", () => {
+    const principal =
+      "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
+    const neuronWith = (
+      permissions: SnsNeuronPermissionType[]
+    ): SnsGovernanceDid.Neuron => ({
+      ...mockSnsNeuron,
+      permissions: [
+        {
+          principal: [Principal.fromText(principal)] as [Principal],
+          permission_type: Int32Array.from(permissions),
+        },
+      ],
+    });
+
+    it("returns the hotkey permissions of the principal", () => {
+      expect(
+        getSnsNeuronHotkeyPermissionsFor({
+          neuron: neuronWith(HOTKEY_PERMISSIONS),
+          principal,
+        })
+      ).toEqual(HOTKEY_PERMISSIONS);
+    });
+
+    it("returns ManageVotingPermission", () => {
+      expect(
+        getSnsNeuronHotkeyPermissionsFor({
+          neuron: neuronWith([
+            ...HOTKEY_PERMISSIONS,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+          ]),
+          principal,
+        })
+      ).toEqual(HOTKEY_REVOCABLE_PERMISSIONS);
+    });
+
+    it("ignores permissions that are not hotkey permissions", () => {
+      expect(
+        getSnsNeuronHotkeyPermissionsFor({
+          neuron: neuronWith([
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+          ]),
+          principal,
+        })
+      ).toEqual([SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE]);
+    });
+
+    it("returns an empty array for an unknown principal", () => {
+      expect(
+        getSnsNeuronHotkeyPermissionsFor({
+          neuron: neuronWith(HOTKEY_PERMISSIONS),
+          principal: mockPrincipal.toText(),
+        })
+      ).toEqual([]);
+    });
+  });
+
+  describe("getSnsNeuronPartialHotkeys", () => {
+    const partial =
+      "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
+    const hotkey =
+      "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
+    const controllerPermission = {
+      principal: [mockPrincipal] as [Principal],
+      permission_type: Int32Array.from(enumValues(SnsNeuronPermissionType)),
+    };
+
+    it("returns a principal that keeps only ManageVotingPermission", () => {
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(partial)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+          controllerPermission,
+        ],
+      };
+      expect(getSnsNeuronPartialHotkeys(neuron)).toEqual([partial]);
+    });
+
+    it("returns a principal that keeps only Vote", () => {
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(partial)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+          controllerPermission,
+        ],
+      };
+      expect(getSnsNeuronPartialHotkeys(neuron)).toEqual([partial]);
+    });
+
+    it("does not return a complete hotkey", () => {
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+          controllerPermission,
+        ],
+      };
+      expect(getSnsNeuronPartialHotkeys(neuron)).toEqual([]);
+    });
+
+    it("does not return a CF hotkey with ManageVotingPermission", () => {
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+          controllerPermission,
+        ],
+      };
+      expect(getSnsNeuronPartialHotkeys(neuron)).toEqual([]);
+    });
+
+    it("does not return a principal with ManagePrincipals", () => {
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(partial)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+          controllerPermission,
+        ],
+      };
+      expect(getSnsNeuronPartialHotkeys(neuron)).toEqual([]);
+    });
+
+    it("does not return a principal without hotkey permissions", () => {
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(partial)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
+            ]),
+          },
+          controllerPermission,
+        ],
+      };
+      expect(getSnsNeuronPartialHotkeys(neuron)).toEqual([]);
     });
   });
 

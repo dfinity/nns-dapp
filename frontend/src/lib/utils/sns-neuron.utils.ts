@@ -1,6 +1,7 @@
 import { SNS_MATURITY_MODULATION_WORST_CASE_FACTOR } from "$lib/constants/neurons.constants";
 import {
   HOTKEY_PERMISSIONS,
+  HOTKEY_REVOCABLE_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
@@ -418,6 +419,99 @@ export const getSnsNeuronHotkeys = ({
     })
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
+};
+
+/**
+ * Returns the permissions that a principal holds on a neuron.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {string} params.principal the principal as text
+ * @returns {SnsNeuronPermissionType[]} the permissions of the principal
+ */
+export const getSnsNeuronPermissionsFor = ({
+  neuron: { permissions },
+  principal,
+}: {
+  neuron: SnsGovernanceDid.Neuron;
+  principal: string;
+}): SnsNeuronPermissionType[] => [
+  // A neuron can hold more than one entry for the same principal.
+  // The principal holds the union of those permissions.
+  ...new Set(
+    permissions
+      .filter(
+        ({ principal: entryPrincipal }) =>
+          fromNullable(entryPrincipal)?.toText() === principal
+      )
+      .flatMap(({ permission_type }) => Array.from(permission_type))
+  ),
+];
+
+/**
+ * Returns the hotkey permissions that a principal still holds on a neuron.
+ *
+ * The remove flow must revoke every one of these permissions. A principal that
+ * keeps `ManageVotingPermission` can grant `Vote` and `SubmitProposal` back to
+ * itself.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {string} params.principal the principal as text
+ * @returns {SnsNeuronPermissionType[]} the hotkey permissions of the principal
+ */
+export const getSnsNeuronHotkeyPermissionsFor = ({
+  neuron,
+  principal,
+}: {
+  neuron: SnsGovernanceDid.Neuron;
+  principal: string;
+}): SnsNeuronPermissionType[] => {
+  const principalPermissions = new Set(
+    getSnsNeuronPermissionsFor({ neuron, principal })
+  );
+  return HOTKEY_REVOCABLE_PERMISSIONS.filter((permission) =>
+    principalPermissions.has(permission)
+  );
+};
+
+/**
+ * Returns the principals that hold some, but not all, of the hotkey
+ * permissions.
+ *
+ * `getSnsNeuronHotkeys` returns only the exact hotkey permission combinations.
+ * A principal with a partial combination keeps power over the neuron, so the
+ * UI must still show it. A principal with `ManagePrincipals` controls the
+ * neuron and is not a hotkey.
+ *
+ * @param {SnsNeuron} neuron
+ * @returns {string[]} principals with partial hotkey permissions
+ */
+export const getSnsNeuronPartialHotkeys = (
+  neuron: SnsGovernanceDid.Neuron
+): string[] => {
+  const hotkeys = new Set(getSnsNeuronHotkeys(neuron));
+  const principals = new Set(
+    neuron.permissions
+      .map(({ principal }) => fromNullable(principal)?.toText())
+      .filter(nonNullish)
+  );
+  return [...principals]
+    .filter((principal) => !hotkeys.has(principal))
+    .filter((principal) => {
+      const principalPermissions = getSnsNeuronPermissionsFor({
+        neuron,
+        principal,
+      });
+      if (
+        principalPermissions.includes(
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS
+        )
+      ) {
+        return false;
+      }
+      return getSnsNeuronHotkeyPermissionsFor({ neuron, principal }).length > 0;
+    });
 };
 
 export const isUserHotkey = ({

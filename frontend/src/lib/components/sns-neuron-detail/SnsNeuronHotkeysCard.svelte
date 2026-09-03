@@ -12,14 +12,16 @@
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsShow } from "$lib/stores/toasts.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import {
     canIdentityManageHotkeys,
+    getSnsNeuronHotkeyPermissionsFor,
     getSnsNeuronHotkeys,
+    getSnsNeuronPartialHotkeys,
   } from "$lib/utils/sns-neuron.utils";
   import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
@@ -46,12 +48,28 @@
           parameters,
         })
       : false;
-  let hotkeys: string[];
-  $: hotkeys =
-    neuron !== undefined && neuron !== null ? getSnsNeuronHotkeys(neuron) : [];
+  type HotkeyRow = { principal: string; complete: boolean };
+
+  // A row is incomplete when the principal holds only some of the hotkey
+  // permissions. The card shows it with a warning, so no principal keeps power
+  // over the neuron without the user seeing it.
+  let rows: HotkeyRow[];
+  $: rows =
+    neuron !== undefined && neuron !== null
+      ? [
+          ...getSnsNeuronHotkeys(neuron).map((principal) => ({
+            principal,
+            complete: true,
+          })),
+          ...getSnsNeuronPartialHotkeys(neuron).map((principal) => ({
+            principal,
+            complete: false,
+          })),
+        ]
+      : [];
 
   let showTooltip: boolean;
-  $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
+  $: showTooltip = rows.length > 0 && canManageHotkeys;
 
   let currentIdentityString: string | undefined;
   $: currentIdentityString = $authStore.identity?.getPrincipal().toText();
@@ -71,14 +89,14 @@
 
   const remove = async (hotkey: string) => {
     // Edge case: Remove button is shwon only when neuron is defined
-    if (neuronId === undefined) {
+    if (neuron === undefined || neuron === null || neuronId === undefined) {
       return;
     }
     startBusy({
       initiator: "remove-sns-hotkey-neuron",
     });
     const { success } = await removeHotkey({
-      neuronId,
+      neuron,
       hotkey,
       rootCanisterId: $selectedUniverseIdStore,
     });
@@ -94,6 +112,21 @@
     }
     if (success) {
       await reload();
+      // The removal is complete only when the principal keeps no hotkey
+      // permission. Tell the user if some permission remains.
+      const reloadedNeuron = $store.neuron;
+      const remaining =
+        reloadedNeuron !== undefined && reloadedNeuron !== null
+          ? getSnsNeuronHotkeyPermissionsFor({
+              neuron: reloadedNeuron,
+              principal: hotkey,
+            })
+          : [];
+      if (remaining.length > 0) {
+        toastsError({
+          labelKey: "error__sns.sns_remove_hotkey_incomplete",
+        });
+      }
     }
     stopBusy("remove-sns-hotkey-neuron");
   };
@@ -111,7 +144,7 @@
           />
         {/if}
       </div>
-      {#if hotkeys.length === 0}
+      {#if rows.length === 0}
         {#if canManageHotkeys}
           <div class="warning">
             <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
@@ -122,14 +155,24 @@
         {/if}
       {:else}
         <ul>
-          {#each hotkeys as hotkey (hotkey)}
+          {#each rows as { principal, complete } (principal)}
             <li data-tid="hotkey-row">
-              <Value testId="hotkey-principal">{hotkey}</Value>
+              <div class="principal">
+                <Value testId="hotkey-principal">{principal}</Value>
+                {#if !complete}
+                  <p
+                    class="partial-permissions"
+                    data-tid="partial-hotkey-warning"
+                  >
+                    {$i18n.sns_neuron_detail.partial_hotkey_warning}
+                  </p>
+                {/if}
+              </div>
               {#if canManageHotkeys}
                 <button
                   class="text"
                   aria-label={$i18n.core.remove}
-                  on:click={() => maybeRemove(hotkey)}
+                  on:click={() => maybeRemove(principal)}
                   data-tid="remove-hotkey-button"
                   ><IconClose size="18px" /></button
                 >
@@ -194,6 +237,19 @@
     button {
       display: flex;
     }
+  }
+
+  .principal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
+    min-width: 0;
+  }
+
+  .partial-permissions {
+    margin: 0;
+    color: var(--warning-emphasis);
+    font-size: var(--font-size-small);
   }
 
   .actions {
