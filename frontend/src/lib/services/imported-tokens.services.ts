@@ -16,11 +16,17 @@ import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
-import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import {
+  toastsError,
+  toastsShow,
+  toastsSuccess,
+} from "$lib/stores/toasts.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { isLastCall } from "$lib/utils/env.utils";
 import {
   fromImportedTokenData,
+  isImportedToken,
+  isImportedTokensCertified,
   toImportedTokenData,
 } from "$lib/utils/imported-tokens.utils";
 import { isNullish } from "@dfinity/utils";
@@ -76,6 +82,33 @@ export const loadImportedTokens = async ({
   });
 };
 
+/**
+ * Return the imported tokens that a certified call produced.
+ *
+ * A write replaces the whole imported-token list. It must never build the
+ * replacement from a query response, because a single replica can forge or drop
+ * entries. If the store holds a query response, reload the imported tokens
+ * first.
+ *
+ * Return `undefined` when certified imported tokens are not available. An empty
+ * list is a valid result. An absent list is not.
+ */
+export const getCertifiedImportedTokens = async (): Promise<
+  ImportedTokenData[] | undefined
+> => {
+  if (!isImportedTokensCertified(get(importedTokensStore).certified)) {
+    await loadImportedTokens({ ignoreAccountNotFoundError: true });
+  }
+
+  const { importedTokens, certified } = get(importedTokensStore);
+
+  if (!isImportedTokensCertified(certified) || isNullish(importedTokens)) {
+    return undefined;
+  }
+
+  return importedTokens;
+};
+
 // Save imported tokens to the nns-dapp backend.
 // Returns an error if the operation fails.
 const saveImportedToken = async ({
@@ -101,11 +134,32 @@ const saveImportedToken = async ({
  */
 export const addImportedToken = async ({
   tokenToAdd,
-  importedTokens,
 }: {
   tokenToAdd: ImportedTokenData;
-  importedTokens: ImportedTokenData[];
 }): Promise<{ success: boolean }> => {
+  const importedTokens = await getCertifiedImportedTokens();
+
+  if (isNullish(importedTokens)) {
+    toastsError({ labelKey: "error__imported_tokens.not_certified" });
+    return { success: false };
+  }
+
+  // The certified list already holds the token. Report it instead of saving a
+  // duplicate entry.
+  if (
+    isImportedToken({
+      ledgerCanisterId: tokenToAdd.ledgerCanisterId,
+      importedTokens,
+      filterOutImportantCkToken: false,
+    })
+  ) {
+    toastsShow({
+      level: "warn",
+      labelKey: "error__imported_tokens.is_duplication",
+    });
+    return { success: false };
+  }
+
   const tokens = [...importedTokens, tokenToAdd];
   const { err } = await saveImportedToken({ tokens });
 
@@ -142,12 +196,30 @@ export const addImportedToken = async ({
 export const addIndexCanister = async ({
   ledgerCanisterId,
   indexCanisterId,
-  importedTokens,
 }: {
   ledgerCanisterId: Principal;
   indexCanisterId: Principal;
-  importedTokens: ImportedTokenData[];
 }): Promise<{ success: boolean }> => {
+  const importedTokens = await getCertifiedImportedTokens();
+
+  if (isNullish(importedTokens)) {
+    toastsError({ labelKey: "error__imported_tokens.not_certified" });
+    return { success: false };
+  }
+
+  // The certified list does not hold the token to update. Report it instead of
+  // saving an unchanged list.
+  if (
+    !isImportedToken({
+      ledgerCanisterId,
+      importedTokens,
+      filterOutImportantCkToken: false,
+    })
+  ) {
+    toastsError({ labelKey: "error__imported_tokens.token_not_found" });
+    return { success: false };
+  }
+
   const tokens = importedTokens.map((token) =>
     token.ledgerCanisterId.toText() === ledgerCanisterId.toText()
       ? { ...token, indexCanisterId }
@@ -187,9 +259,27 @@ export const removeImportedTokens = async (
       labelKey: "import_token.removing",
     });
 
-    const remainingTokens = (
-      get(importedTokensStore).importedTokens ?? []
-    ).filter(
+    const importedTokens = await getCertifiedImportedTokens();
+
+    if (isNullish(importedTokens)) {
+      toastsError({ labelKey: "error__imported_tokens.not_certified" });
+      return { success: false };
+    }
+
+    // The certified list does not hold the token to remove. Report it instead
+    // of saving an unchanged list.
+    if (
+      !isImportedToken({
+        ledgerCanisterId,
+        importedTokens,
+        filterOutImportantCkToken: false,
+      })
+    ) {
+      toastsError({ labelKey: "error__imported_tokens.token_not_found" });
+      return { success: false };
+    }
+
+    const remainingTokens = importedTokens.filter(
       ({ ledgerCanisterId: id }) => id.toText() !== ledgerCanisterId.toText()
     );
     const { err } = await saveImportedToken({ tokens: remainingTokens });
