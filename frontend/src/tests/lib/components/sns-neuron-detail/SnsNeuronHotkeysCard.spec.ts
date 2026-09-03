@@ -2,6 +2,7 @@ import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHot
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
+import * as toastsStore from "$lib/stores/toasts.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
@@ -102,7 +103,64 @@ describe("SnsNeuronHotkeysCard", () => {
     fireEvent.click(removeButtons[0]);
 
     await waitFor(() => expect(reload).toBeCalledWith());
-    expect(removeHotkey).toBeCalled();
+    expect(removeHotkey).toBeCalledWith({
+      neuron: controlledNeuron,
+      hotkey: hotkeys[0],
+      rootCanisterId: expect.anything(),
+    });
+  });
+
+  it("lists a principal that keeps only ManageVotingPermission", () => {
+    const partialPrincipal = hotkeys[0];
+    const neuron: SnsGovernanceDid.Neuron = {
+      ...mockSnsNeuron,
+      permissions: [
+        {
+          principal: [Principal.fromText(partialPrincipal)] as [Principal],
+          permission_type: Int32Array.from([
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+          ]),
+        },
+        {
+          principal: [mockIdentity.getPrincipal()],
+          permission_type: Int32Array.from(enumValues(SnsNeuronPermissionType)),
+        },
+      ],
+    };
+    const { queryByText, queryByTestId } = renderCard(neuron);
+
+    expect(queryByText(partialPrincipal)).toBeInTheDocument();
+    expect(queryByTestId("partial-hotkey-warning")).toBeInTheDocument();
+    expect(queryByTestId("partial-hotkey-warning").textContent.trim()).toBe(
+      en.sns_neuron_detail.partial_hotkey_warning
+    );
+  });
+
+  it("does not warn for a complete hotkey", () => {
+    const { queryByTestId } = renderCard(controlledNeuron);
+
+    expect(queryByTestId("partial-hotkey-warning")).toBeNull();
+  });
+
+  it("does not list the neuron controller as a partial hotkey", () => {
+    const { queryByText } = renderCard(controlledNeuron);
+
+    expect(queryByText(mockIdentity.getPrincipal().toText())).toBeNull();
+  });
+
+  it("shows an error when the removal leaves permissions behind", async () => {
+    const spyToastsError = vi.spyOn(toastsStore, "toastsError");
+    const { queryAllByTestId } = renderCard(controlledNeuron);
+
+    const removeButtons = queryAllByTestId("remove-hotkey-button");
+    fireEvent.click(removeButtons[0]);
+
+    // `reload` is mocked, so the neuron in the store still has the
+    // permissions. The card must report the incomplete removal.
+    await waitFor(() => expect(spyToastsError).toBeCalledTimes(1));
+    expect(spyToastsError).toBeCalledWith({
+      labelKey: "error__sns.sns_remove_hotkey_incomplete",
+    });
   });
 
   it("shows confirmation modal if hotkey is the current user", async () => {

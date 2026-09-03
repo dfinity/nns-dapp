@@ -12,6 +12,13 @@ export const MANAGE_HOTKEY_PERMISSIONS = [
   // gives permission for all actions
   SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
 ];
+// The permissions that a hotkey can hold.
+// `ManageVotingPermission` lets a principal grant `Vote` and `SubmitProposal`
+// back to itself. The remove flow must revoke all of these permissions.
+export const HOTKEY_REVOCABLE_PERMISSIONS = [
+  ...HOTKEY_PERMISSIONS,
+  SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+];
 
 export const UNSPECIFIED_FUNCTION_ID = 0n;
 
