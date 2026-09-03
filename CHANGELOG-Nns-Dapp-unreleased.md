@@ -31,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
+<<<<<<< HEAD
 - Impose a Candid decoding quota on every exported method that takes an argument. The quota limits the DoS surface from decoding bombs.
 - The sign-out message in the URL is now limited to known messages. Before, a
   crafted link could show any text as an official toast.
@@ -43,6 +44,8 @@ proposal is successful, the changes it released will be moved from this file to
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+=======
+>>>>>>> a5dd193d (test(frontend): add an e2e guard for the token price symbol lookup)
 - Stop an imported token from spoofing the USD price of ICP or of an SNS token.
 
 #### Not Published
