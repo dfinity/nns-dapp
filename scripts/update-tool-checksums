@@ -52,11 +52,16 @@ entries=(
 # Checksums
 ###############
 # Prints the sha256 checksum of the file named by the first argument.
+# macOS has shasum but it does not have sha256sum.
 sha256_of() {
   if command -v sha256sum >/dev/null 2>&1; then
     sha256sum <"$1" | cut -d ' ' -f 1
-  else
+  elif command -v shasum >/dev/null 2>&1; then
     shasum -a 256 <"$1" | cut -d ' ' -f 1
+  else
+    echo "ERROR: This script needs sha256sum or shasum to verify a checksum." >&2
+    echo "ERROR: Install one of them and run the script again." >&2
+    return 1
   fi
 }
 
@@ -69,7 +74,7 @@ for entry in "${entries[@]}"; do
   echo "Downloading $url"
   curl --fail --location --show-error --silent --retry 5 \
     --proto '=https' --tlsv1.2 --output "$tmpdir/artefact" "$url"
-  checksum="$(sha256_of "$tmpdir/artefact")"
+  checksum="$(sha256_of "$tmpdir/artefact")" || exit 1
   echo "$key $checksum"
   KEY="$key" CHECKSUM="$checksum" \
     jq '.defaults.build.config[env.KEY] = env.CHECKSUM' config.json >"$tmpdir/config.json"

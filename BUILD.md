@@ -118,6 +118,7 @@ If you change a version but forget step 2, the Docker build fails on the
 checksum check. It does not build with an unverified tool.
 
 To re-derive a checksum by hand, download the artefact and run `sha256sum` on it.
+On macOS, run `shasum -a 256` instead. macOS has no `sha256sum`.
 The URLs are listed in `scripts/update-tool-checksums`. Upstream also publishes
 checksums for `rustup-init`, `node` and `dfx`:
 
