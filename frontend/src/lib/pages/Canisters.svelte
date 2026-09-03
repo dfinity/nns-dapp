@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
+  import CanistersTable from "$lib/components/canisters/CanistersTable/CanistersTable.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
@@ -16,6 +15,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { toastsError } from "$lib/stores/toasts.store";
+  import type { CanistersTableRowData } from "$lib/types/canisters-table";
   import {
     buildCanisterUrl,
     reloadRouteData,
@@ -49,11 +49,18 @@
     await loadCanisters();
   });
 
-  const buildCanisterDetailsHref = (canisterId: CanisterId): string =>
-    buildCanisterUrl({
-      universe: $pageStore.universe,
-      canister: canisterId.toText(),
-    });
+  let canistersTableData: CanistersTableRowData[];
+  $: canistersTableData = ($canistersStore.canisters ?? []).map((canister) => {
+    const canisterId = canister.canister_id.toText();
+    return {
+      domKey: canisterId,
+      rowHref: buildCanisterUrl({
+        universe: $pageStore.universe,
+        canister: canisterId,
+      }),
+      canister,
+    };
+  });
 
   let loading: boolean;
   $: loading = $canistersStore.canisters === undefined;
@@ -77,23 +84,15 @@
       </div>
     </div>
 
-    <div class="card-grid">
-      {#each $canistersStore.canisters ?? [] as canister (canister.canister_id.toText())}
-        <CanisterCard
-          ariaLabel={$i18n.canisters.aria_label_canister_card}
-          href={buildCanisterDetailsHref(canister.canister_id)}
-          {canister}
-        />
-      {/each}
-
-      {#if loading}
+    {#if loading}
+      <div class="card-grid">
         <SkeletonCard />
         <SkeletonCard />
-      {/if}
-    </div>
-
-    {#if noCanisters}
+      </div>
+    {:else if noCanisters}
       <p class="description empty">{$i18n.canisters.text}</p>
+    {:else}
+      <CanistersTable rowData={canistersTableData} />
     {/if}
   </main>
 

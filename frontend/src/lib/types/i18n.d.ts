@@ -653,7 +653,6 @@ interface I18nActionable_proposals_empty {
 }
 
 interface I18nCanisters {
-  aria_label_canister_card: string;
   text: string;
   create_canister: string;
   link_canister: string;

@@ -46,12 +46,12 @@ test("Test canisters", async ({ page, context }) => {
   await appPo.getToastsPo().closeAll();
 
   step("Rename canister");
-  const canisterCards = await canistersPo.getCanisterCardPos();
-  expect(canisterCards).toHaveLength(2);
-  let [myCanisterCard, linkedCanisterCard] = canisterCards;
-  expect(await myCanisterCard.getCanisterName()).toBe(canisterName);
-  expect(await linkedCanisterCard.getCanisterName()).toBe(linkedCanisterName);
-  await myCanisterCard.click();
+  const canisterRows = await canistersPo.getCanisterRowPos();
+  expect(canisterRows).toHaveLength(2);
+  let [myCanisterRow, linkedCanisterRow] = canisterRows;
+  expect(await myCanisterRow.getCanisterName()).toBe(canisterName);
+  expect(await linkedCanisterRow.getCanisterName()).toBe(linkedCanisterName);
+  await myCanisterRow.click();
 
   const newCanisterName = "MyCanister2";
   const canisterDetail = appPo.getCanisterDetailPo();
@@ -74,11 +74,11 @@ test("Test canisters", async ({ page, context }) => {
   step("Verify name");
   await appPo.goBack();
   await canistersPo.waitForContentLoaded();
-  [myCanisterCard, linkedCanisterCard] = await canistersPo.getCanisterCardPos();
-  expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
+  [myCanisterRow, linkedCanisterRow] = await canistersPo.getCanisterRowPos();
+  expect(await myCanisterRow.getCanisterName()).toBe(newCanisterName);
 
   step("Open linked canister");
-  await linkedCanisterCard.click();
+  await linkedCanisterRow.click();
   expect(await appPo.getCanisterDetailPo().getErrorMessage()).toBe(
     "You are not the controller of this canister. Only controllers have access to its cycles and controllers."
   );

@@ -1,4 +1,5 @@
-import { CanisterCardPo } from "$tests/page-objects/CanisterCard.page-object";
+import { CanistersTablePo } from "$tests/page-objects/CanistersTable.page-object";
+import type { CanistersTableRowPo } from "$tests/page-objects/CanistersTableRow.page-object";
 import { CreateCanisterModalPo } from "$tests/page-objects/CreateCanisterModal.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import { LinkCanisterModalPo } from "$tests/page-objects/LinkCanisterModal.page-object";
@@ -18,8 +19,12 @@ export class CanistersPo extends BasePageObject {
     return SkeletonCardPo.under(this.root);
   }
 
-  getCanisterCardPos(): Promise<CanisterCardPo[]> {
-    return CanisterCardPo.allUnder(this.root);
+  getCanistersTablePo(): CanistersTablePo {
+    return CanistersTablePo.under(this.root);
+  }
+
+  getCanisterRowPos(): Promise<CanistersTableRowPo[]> {
+    return this.getCanistersTablePo().getRows();
   }
 
   getCreateCanisterModalPo(): CreateCanisterModalPo {

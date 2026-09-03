@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Increase the maximum canister name length from 24 to 64 characters.
+- Show the canisters on the Canisters page in a table instead of a card grid.
 
 #### Deprecated
 
