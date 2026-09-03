@@ -163,7 +163,8 @@
     "privacy_mode_hide": "Hide Balance",
     "privacy_mode_show": "Show Balance",
     "project_page": "Project Page",
-    "address_book": "Address Book"
+    "address_book": "Address Book",
+    "search": "Search"
   },
   "address_book": {
     "add_address": "Add New Address",
