@@ -765,7 +765,12 @@ describe("IcrcWallet", () => {
             },
           ],
         });
-        expect(spyOnGetImportedTokens).toBeCalledTimes(2);
+        // The reload after a write uses the `"update"` strategy.
+        expect(spyOnGetImportedTokens).toBeCalledTimes(1);
+        expect(spyOnGetImportedTokens).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          certified: true,
+        });
         expect(get(busyStore)).toEqual([]);
         expect(get(importedTokensStore).importedTokens).toEqual([
           {

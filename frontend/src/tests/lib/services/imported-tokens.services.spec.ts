@@ -43,11 +43,40 @@ describe("imported-tokens-services", () => {
   };
   // A token that only a query response holds.
   // It stands for a token that a single replica forged.
+  const forgedToken: ImportedToken = {
+    ledger_canister_id: principal(9),
+    index_canister_id: [],
+  };
   const forgedTokenData: ImportedTokenData = {
     ledgerCanisterId: principal(9),
     indexCanisterId: undefined,
   };
   const testError = new Error("test");
+
+  // The certified response always lands after the query response in
+  // production, because an update call runs consensus. Reproduce that order
+  // here.
+  const QUERY_RESPONSE_DELAY_MS = 0;
+  const CERTIFIED_RESPONSE_DELAY_MS = 50;
+
+  const delay = (ms: number): Promise<void> =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  // The query response holds a forged token. The certified response does not.
+  const mockSlowCertifiedGetImportedTokens = (
+    certifiedTokens: ImportedToken[]
+  ) =>
+    vi
+      .spyOn(importedTokensApi, "getImportedTokens")
+      .mockImplementation(async ({ certified }) => {
+        if (certified) {
+          await delay(CERTIFIED_RESPONSE_DELAY_MS);
+          return { imported_tokens: certifiedTokens };
+        }
+
+        await delay(QUERY_RESPONSE_DELAY_MS);
+        return { imported_tokens: [...certifiedTokens, forgedToken] };
+      });
 
   beforeEach(() => {
     resetIdentity();
@@ -250,7 +279,12 @@ describe("imported-tokens-services", () => {
         tokenToAdd: importedTokenDataB,
       });
 
-      expect(spyGetImportedTokens).toBeCalledTimes(2);
+      // The reload after a write uses the `"update"` strategy.
+      expect(spyGetImportedTokens).toBeCalledTimes(1);
+      expect(spyGetImportedTokens).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+      });
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA, importedTokenDataB],
         certified: true,
@@ -498,7 +532,12 @@ describe("imported-tokens-services", () => {
       });
       expect(spySetImportedTokens).toBeCalledTimes(1);
       // should reload imported tokens to update the store
-      expect(spyGetImportedTokens).toBeCalledTimes(2);
+      // The reload after a write uses the `"update"` strategy.
+      expect(spyGetImportedTokens).toBeCalledTimes(1);
+      expect(spyGetImportedTokens).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+      });
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA, expectedTokenDataB],
         certified: true,
@@ -576,14 +615,30 @@ describe("imported-tokens-services", () => {
         importedTokens: [importedTokenDataA, forgedTokenData],
         certified: false,
       });
-      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
-        imported_tokens: [importedTokenA],
-      });
+      mockSlowCertifiedGetImportedTokens([importedTokenA]);
 
       expect(await getCertifiedImportedTokens()).toEqual([importedTokenDataA]);
       expect(get(importedTokensStore)).toEqual({
         importedTokens: [importedTokenDataA],
         certified: true,
+      });
+    });
+
+    it("should reload with the update strategy and make no query call", async () => {
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, forgedTokenData],
+        certified: false,
+      });
+      const spyGetImportedTokens = mockSlowCertifiedGetImportedTokens([
+        importedTokenA,
+      ]);
+
+      await getCertifiedImportedTokens();
+
+      expect(spyGetImportedTokens).toBeCalledTimes(1);
+      expect(spyGetImportedTokens).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
       });
     });
 
@@ -621,10 +676,8 @@ describe("imported-tokens-services", () => {
         ],
         certified: false,
       });
-      // The certified response drops the forged token.
-      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
-        imported_tokens: [importedTokenA, importedTokenB],
-      });
+      // The certified response drops the forged token, and it lands last.
+      mockSlowCertifiedGetImportedTokens([importedTokenA, importedTokenB]);
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockResolvedValue(undefined);
@@ -668,6 +721,36 @@ describe("imported-tokens-services", () => {
       ]);
     });
 
+    it("should remove a token while the store holds a query response", async () => {
+      // The store holds the query response of a fresh load. The certified
+      // response is still on its way. The remove must still go through.
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: false,
+      });
+      mockSlowCertifiedGetImportedTokens([importedTokenA, importedTokenB]);
+      const spySetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue(undefined);
+
+      const { success } = await removeImportedTokens(
+        importedTokenDataA.ledgerCanisterId
+      );
+
+      expect(success).toEqual(true);
+      expect(spySetImportedTokens).toBeCalledTimes(1);
+      expect(spySetImportedTokens).toBeCalledWith({
+        identity: mockIdentity,
+        importedTokens: [importedTokenB],
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "The token has been successfully removed!",
+        },
+      ]);
+    });
+
     it("should not remove a token that the certified list does not hold", async () => {
       // The query response holds a forged token that the certified list omits.
       importedTokensStore.set({
@@ -700,9 +783,7 @@ describe("imported-tokens-services", () => {
         importedTokens: [forgedTokenData],
         certified: false,
       });
-      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
-        imported_tokens: [importedTokenA],
-      });
+      mockSlowCertifiedGetImportedTokens([importedTokenA]);
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockResolvedValue(undefined);
@@ -778,9 +859,7 @@ describe("imported-tokens-services", () => {
         ],
         certified: false,
       });
-      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
-        imported_tokens: [importedTokenA, importedTokenB],
-      });
+      mockSlowCertifiedGetImportedTokens([importedTokenA, importedTokenB]);
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockResolvedValue(undefined);
