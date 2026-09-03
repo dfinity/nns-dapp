@@ -12,4 +12,8 @@ fn main() {
     let bytes = fs::read(path).expect("Failed to read path");
     let arg = Decode!(&bytes, Option<CanisterArguments>).expect("Binary is not valid candid");
     println!("Parsed as:\n{arg:#?}");
+    // The canister makes the same check at install time.  It traps if the check fails.
+    if let Some(arg) = &arg {
+        arg.validate().expect("Arguments are not safe to put in a page");
+    }
 }
