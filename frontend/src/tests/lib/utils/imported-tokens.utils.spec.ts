@@ -120,10 +120,16 @@ describe("imported tokens utils", () => {
       expect(isImportedTokensCertified(undefined)).toBe(false);
     });
 
-    it("should accept a query response when the session forces the query strategy", () => {
+    it("should reject a query response when the session forces the query strategy", () => {
       mockedConstants.FORCE_CALL_STRATEGY = "query";
 
-      expect(isImportedTokensCertified(false)).toBe(true);
+      expect(isImportedTokensCertified(false)).toBe(false);
+    });
+
+    it("should accept a certified response when the session forces the query strategy", () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+
+      expect(isImportedTokensCertified(true)).toBe(true);
     });
 
     it("should reject imported tokens that were never loaded when the session forces the query strategy", () => {
