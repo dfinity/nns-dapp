@@ -499,18 +499,19 @@ export const getSnsNeuronPartialHotkeys = (
   return [...principals]
     .filter((principal) => !hotkeys.has(principal))
     .filter((principal) => {
-      const principalPermissions = getSnsNeuronPermissionsFor({
-        neuron,
-        principal,
-      });
+      const principalPermissions = new Set(
+        getSnsNeuronPermissionsFor({ neuron, principal })
+      );
       if (
-        principalPermissions.includes(
+        principalPermissions.has(
           SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS
         )
       ) {
         return false;
       }
-      return getSnsNeuronHotkeyPermissionsFor({ neuron, principal }).length > 0;
+      return HOTKEY_REVOCABLE_PERMISSIONS.some((permission) =>
+        principalPermissions.has(permission)
+      );
     });
 };
 

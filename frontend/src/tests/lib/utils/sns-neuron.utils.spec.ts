@@ -793,6 +793,30 @@ describe("sns-neuron utils", () => {
         })
       ).toEqual([]);
     });
+
+    it("unites the permissions of two entries for the same principal", () => {
+      // A neuron can hold more than one entry for the same principal. The
+      // principal holds the union of those permissions.
+      const neuron: SnsGovernanceDid.Neuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(principal)] as [Principal],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(principal)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+        ],
+      };
+
+      expect(getSnsNeuronHotkeyPermissionsFor({ neuron, principal })).toEqual(
+        HOTKEY_REVOCABLE_PERMISSIONS
+      );
+    });
   });
 
   describe("getSnsNeuronPartialHotkeys", () => {
