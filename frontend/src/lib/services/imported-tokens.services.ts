@@ -10,7 +10,10 @@ import type { ImportedTokens } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { queryAndUpdate } from "$lib/services/utils.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import {
   failedImportedTokenLedgerIdsStore,
@@ -35,15 +38,21 @@ import { get } from "svelte/store";
 
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
  * - Displays an error toast if the operation fails.
+ * - `strategy` selects the calls to make. The default makes a query call and an
+ *   update call, and the returned promise settles on the first response.
+ *   `"update"` makes only the update call, so the returned promise settles on
+ *   the certified response.
  */
 export const loadImportedTokens = async ({
   ignoreAccountNotFoundError,
+  strategy = FORCE_CALL_STRATEGY,
 }: {
   ignoreAccountNotFoundError?: boolean;
+  strategy?: QueryAndUpdateStrategy;
 } = {}) => {
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
-    strategy: FORCE_CALL_STRATEGY,
+    strategy,
     onLoad: ({ response: { imported_tokens: importedTokens }, certified }) => {
       importedTokensStore.set({
         importedTokens: importedTokens.map(toImportedTokenData),
@@ -90,6 +99,11 @@ export const loadImportedTokens = async ({
  * entries. If the store holds a query response, reload the imported tokens
  * first.
  *
+ * The reload uses the `"update"` strategy. A `"query_and_update"` reload
+ * settles on the query response, which leaves the store uncertified and blocks
+ * a normal write. A session that forces the `query` strategy keeps its query
+ * response, because `isImportedTokensCertified` accepts it.
+ *
  * Return `undefined` when certified imported tokens are not available. An empty
  * list is a valid result. An absent list is not.
  */
@@ -97,7 +111,15 @@ export const getCertifiedImportedTokens = async (): Promise<
   ImportedTokenData[] | undefined
 > => {
   if (!isImportedTokensCertified(get(importedTokensStore).certified)) {
-    await loadImportedTokens({ ignoreAccountNotFoundError: true });
+    try {
+      await loadImportedTokens({
+        ignoreAccountNotFoundError: true,
+        strategy: "update",
+      });
+    } catch (err) {
+      console.error(err);
+      return undefined;
+    }
   }
 
   const { importedTokens, certified } = get(importedTokensStore);
@@ -164,7 +186,10 @@ export const addImportedToken = async ({
   const { err } = await saveImportedToken({ tokens });
 
   if (isNullish(err)) {
-    await loadImportedTokens();
+    // Reload with the `"update"` strategy. A query call can still return the
+    // imported tokens from before this write. The `"update"` strategy also
+    // leaves the store certified, so the next write needs no extra reload.
+    await loadImportedTokens({ strategy: "update" });
     toastsSuccess({
       labelKey: "tokens.add_imported_token_success",
     });
@@ -229,7 +254,10 @@ export const addIndexCanister = async ({
   const { err } = await saveImportedToken({ tokens });
 
   if (isNullish(err)) {
-    await loadImportedTokens();
+    // Reload with the `"update"` strategy. A query call can still return the
+    // imported tokens from before this write. The `"update"` strategy also
+    // leaves the store certified, so the next write needs no extra reload.
+    await loadImportedTokens({ strategy: "update" });
     toastsSuccess({
       labelKey: "tokens.update_imported_token_success",
     });
