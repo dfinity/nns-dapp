@@ -2,7 +2,9 @@ import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { tokenPriceStore } from "$lib/derived/token-price.derived";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -103,6 +105,94 @@ describe("token-price.derived", () => {
 
       const store = tokenPriceStore(snsToken);
       expect(get(store)).toBe(0.1);
+    });
+
+    describe("symbol collisions", () => {
+      const importedLedgerCanisterIdText = "mxzaz-hqaaa-aaaar-qaada-cai";
+      const importedLedgerCanisterId = Principal.fromText(
+        importedLedgerCanisterIdText
+      );
+
+      beforeEach(() => {
+        // Drop the mock tokens, so that the genuine ICP token comes from the
+        // NNS universe, as it does in the app. tokensByLedgerCanisterIdStore
+        // then places ICP after every other token, which is the order that
+        // makes the spoof possible.
+        tokensStore.reset();
+      });
+
+      const importToken = (token: IcrcTokenMetadata) => {
+        tokensStore.setToken({
+          canisterId: importedLedgerCanisterId,
+          token,
+          certified: true,
+        });
+        importedTokensStore.set({
+          importedTokens: [
+            {
+              ledgerCanisterId: importedLedgerCanisterId,
+              indexCanisterId: undefined,
+            },
+          ],
+          certified: true,
+        });
+      };
+
+      it("should ignore an imported token that copies the ICP symbol", () => {
+        importToken({
+          name: "Fake Internet Computer",
+          symbol: "ICP",
+          decimals: 8,
+          fee: 10_000n,
+        });
+
+        setTickers({
+          [LEDGER_CANISTER_ID.toText()]: 12.4,
+          [importedLedgerCanisterIdText]: 999,
+        });
+
+        const store = tokenPriceStore(ICPToken);
+        expect(get(store)).toBe(12.4);
+      });
+
+      it("should ignore an imported token that copies an SNS symbol", () => {
+        setSnsProjects([
+          {
+            rootCanisterId: Principal.fromText(snsRootCanisterIdText),
+            ledgerCanisterId: Principal.fromText(snsLedgerCanisterIdText),
+            tokenMetadata: snsToken,
+          },
+        ]);
+
+        importToken({ ...snsToken });
+
+        setTickers({
+          [LEDGER_CANISTER_ID.toText()]: 12.4,
+          [snsLedgerCanisterIdText]: 0.1,
+          [importedLedgerCanisterIdText]: 999,
+        });
+
+        const store = tokenPriceStore(snsToken);
+        expect(get(store)).toBe(0.1);
+      });
+
+      it("should return the price of an imported token without a collision", () => {
+        const importedToken: IcrcTokenMetadata = {
+          name: "Imported Token",
+          symbol: "IMPORTED",
+          decimals: 8,
+          fee: 10_000n,
+        };
+        importToken(importedToken);
+
+        setTickers({
+          [LEDGER_CANISTER_ID.toText()]: 12.4,
+          [importedLedgerCanisterIdText]: 3.5,
+        });
+
+        const store = tokenPriceStore(importedToken);
+        expect(get(store)).toBe(3.5);
+      });
     });
   });
 });
