@@ -19,6 +19,7 @@ import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import * as dfinityUtils from "@dfinity/utils";
@@ -134,6 +135,19 @@ describe("imported-tokens-services", () => {
           text: "There was an unexpected issue while loading imported tokens.",
         },
       ]);
+    });
+
+    it("should display no error toast when the caller asks for silent errors", async () => {
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
+        testError
+      );
+
+      await loadImportedTokens({
+        silentErrorMessages: true,
+        strategy: "update",
+      });
+
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should not display toast on uncertified error", async () => {
@@ -652,7 +666,24 @@ describe("imported-tokens-services", () => {
       );
 
       expect(await getCertifiedImportedTokens()).toBeUndefined();
-      toastsStore.reset();
+    });
+
+    it("should show no toast when the reload fails", async () => {
+      // The caller shows one message for the whole failed write. The reload
+      // must not add a second toast.
+      importedTokensStore.set({
+        importedTokens: [forgedTokenData],
+        certified: false,
+      });
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockRejectedValue(
+        testError
+      );
+
+      expect(get(toastsStore)).toHaveLength(0);
+
+      await getCertifiedImportedTokens();
+
+      expect(get(toastsStore)).toHaveLength(0);
     });
 
     it("should return undefined when the imported tokens were never loaded", async () => {
@@ -661,7 +692,29 @@ describe("imported-tokens-services", () => {
       );
 
       expect(await getCertifiedImportedTokens()).toBeUndefined();
-      toastsStore.reset();
+    });
+
+    it("should reload with the update strategy when the session forces the query strategy", async () => {
+      // A forced-query session never gets certified data from its own loads.
+      // A write must still build on certified tokens, so it makes one update
+      // call of its own.
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, forgedTokenData],
+        certified: false,
+      });
+      const spyGetImportedTokens = mockSlowCertifiedGetImportedTokens([
+        importedTokenA,
+      ]);
+
+      expect(await getCertifiedImportedTokens()).toEqual([importedTokenDataA]);
+
+      expect(spyGetImportedTokens).toBeCalledTimes(1);
+      expect(spyGetImportedTokens).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+      });
     });
   });
 
@@ -709,11 +762,9 @@ describe("imported-tokens-services", () => {
 
       expect(success).toEqual(false);
       expect(spySetImportedTokens).toBeCalledTimes(0);
+      // The failed reload shows no toast of its own. The caller shows one
+      // message for the whole failed write.
       expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: "There was an unexpected issue while loading imported tokens.",
-        },
         {
           level: "error",
           text: en.error__imported_tokens.not_certified,
@@ -749,6 +800,37 @@ describe("imported-tokens-services", () => {
           text: "The token has been successfully removed!",
         },
       ]);
+    });
+
+    it("should not write the query snapshot when the session forces the query strategy", async () => {
+      // The store holds a query response with a forged token, and the session
+      // never makes an update call of its own. The remove must still build on
+      // certified tokens.
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+
+      importedTokensStore.set({
+        importedTokens: [
+          importedTokenDataA,
+          importedTokenDataB,
+          forgedTokenData,
+        ],
+        certified: false,
+      });
+      mockSlowCertifiedGetImportedTokens([importedTokenA, importedTokenB]);
+      const spySetImportedTokens = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue(undefined);
+
+      const { success } = await removeImportedTokens(
+        importedTokenDataA.ledgerCanisterId
+      );
+
+      expect(success).toEqual(true);
+      expect(spySetImportedTokens).toBeCalledTimes(1);
+      expect(spySetImportedTokens).toBeCalledWith({
+        identity: mockIdentity,
+        importedTokens: [importedTokenB],
+      });
     });
 
     it("should not remove a token that the certified list does not hold", async () => {
@@ -814,11 +896,9 @@ describe("imported-tokens-services", () => {
 
       expect(success).toEqual(false);
       expect(spySetImportedTokens).toBeCalledTimes(0);
+      // The failed reload shows no toast of its own. The caller shows one
+      // message for the whole failed write.
       expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: "There was an unexpected issue while loading imported tokens.",
-        },
         {
           level: "error",
           text: en.error__imported_tokens.not_certified,
@@ -895,11 +975,9 @@ describe("imported-tokens-services", () => {
 
       expect(success).toEqual(false);
       expect(spySetImportedTokens).toBeCalledTimes(0);
+      // The failed reload shows no toast of its own. The caller shows one
+      // message for the whole failed write.
       expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: "There was an unexpected issue while loading imported tokens.",
-        },
         {
           level: "error",
           text: en.error__imported_tokens.not_certified,

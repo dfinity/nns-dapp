@@ -37,17 +37,24 @@ import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
- * - Displays an error toast if the operation fails.
- * - `strategy` selects the calls to make. The default makes a query call and an
- *   update call, and the returned promise settles on the first response.
- *   `"update"` makes only the update call, so the returned promise settles on
+ * - Displays an error toast if the operation fails. `silentErrorMessages`
+ *   suppresses that toast, so the caller can show its own message.
+ * - `strategy` selects the calls to make. The default is `FORCE_CALL_STRATEGY`.
+ *   That constant is `undefined` for a normal session, which makes a query
+ *   call and an update call. It is `"query"` for a forced-query session, which
+ *   makes only a query call. So the default can give uncertified data.
+ * - `"update"` makes only the update call. The returned promise then settles on
  *   the certified response.
+ * - For the other strategies the returned promise settles on the first
+ *   response, which is normally the query response.
  */
 export const loadImportedTokens = async ({
   ignoreAccountNotFoundError,
+  silentErrorMessages,
   strategy = FORCE_CALL_STRATEGY,
 }: {
   ignoreAccountNotFoundError?: boolean;
+  silentErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 } = {}) => {
   return queryAndUpdate<ImportedTokens, unknown>({
@@ -82,6 +89,10 @@ export const loadImportedTokens = async ({
       importedTokensStore.reset();
       failedImportedTokenLedgerIdsStore.reset();
 
+      if (silentErrorMessages === true) {
+        return;
+      }
+
       toastsError({
         labelKey: "error__imported_tokens.load_imported_tokens",
         err,
@@ -96,13 +107,17 @@ export const loadImportedTokens = async ({
  *
  * A write replaces the whole imported-token list. It must never build the
  * replacement from a query response, because a single replica can forge or drop
- * entries. If the store holds a query response, reload the imported tokens
- * first.
+ * entries. If the store does not hold a certified response, reload the imported
+ * tokens first.
  *
- * The reload uses the `"update"` strategy. A `"query_and_update"` reload
- * settles on the query response, which leaves the store uncertified and blocks
- * a normal write. A session that forces the `query` strategy keeps its query
- * response, because `isImportedTokensCertified` accepts it.
+ * The reload always uses the `"update"` strategy. Only an update call gives
+ * certified data. A `"query_and_update"` reload settles on the query response
+ * and leaves the store uncertified. A forced-query session gets no certified
+ * data from its own loads. Such a session takes this path on every write. One
+ * update call per write keeps the imported-token list usable there.
+ *
+ * The reload shows no error toast. The caller shows one message for the whole
+ * failed write instead.
  *
  * Return `undefined` when certified imported tokens are not available. An empty
  * list is a valid result. An absent list is not.
@@ -114,6 +129,7 @@ export const getCertifiedImportedTokens = async (): Promise<
     try {
       await loadImportedTokens({
         ignoreAccountNotFoundError: true,
+        silentErrorMessages: true,
         strategy: "update",
       });
     } catch (err) {
