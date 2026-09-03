@@ -24,9 +24,16 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+<<<<<<< HEAD
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
+=======
+- Build the imported-token replacement from certified data when the user imports
+  a token, adds an index canister, or removes a token. A save no longer writes
+  back a query response, and a save can no longer clear the list because the
+  tokens were not loaded.
+>>>>>>> f659c319c (fix(imported-tokens): build the saved list from certified data)
 
 #### Not Published
 
