@@ -24,13 +24,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
-<<<<<<< HEAD
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
-=======
 - Stop an imported token from spoofing the USD price of ICP or of an SNS token.
->>>>>>> 5c48eff34 (fix(frontend): stop imported tokens from spoofing USD prices)
 
 #### Not Published
 
