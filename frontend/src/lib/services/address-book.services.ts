@@ -14,7 +14,10 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { queryAndUpdate } from "$lib/services/utils.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import { addressBookStore } from "$lib/stores/address-book.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { isAddressBookCertified } from "$lib/utils/address-book.utils";
@@ -25,15 +28,21 @@ import { get } from "svelte/store";
 /**
  * Load address book from the `nns-dapp` backend and update the `addressBookStore` store.
  * - Displays an error toast if the operation fails.
+ * - `strategy` selects the calls to make. The default makes a query call and an
+ *   update call, and the returned promise settles on the first response.
+ *   `"update"` makes only the update call, so the returned promise settles on
+ *   the certified response.
  */
 export const loadAddressBook = async ({
   ignoreAccountNotFoundError,
+  strategy = FORCE_CALL_STRATEGY,
 }: {
   ignoreAccountNotFoundError?: boolean;
+  strategy?: QueryAndUpdateStrategy;
 } = {}) => {
   return queryAndUpdate<AddressBook, unknown>({
     request: getAddressBook,
-    strategy: FORCE_CALL_STRATEGY,
+    strategy,
     onLoad: ({ response: { named_addresses: namedAddresses }, certified }) => {
       addressBookStore.set({
         namedAddresses,
@@ -77,13 +86,26 @@ export const loadAddressBook = async ({
  * from a query response, because a single replica can forge or drop entries.
  * If the store holds a query response, reload the address book first.
  *
+ * The reload uses the `"update"` strategy. A `"query_and_update"` reload
+ * settles on the query response, which leaves the store uncertified and blocks
+ * a normal save. A session that forces the `query` strategy never reaches the
+ * reload, because `isAddressBookCertified` accepts its query response.
+ *
  * Return `undefined` when certified entries are not available.
  */
 export const getCertifiedNamedAddresses = async (): Promise<
   NamedAddress[] | undefined
 > => {
   if (!isAddressBookCertified(get(addressBookStore).certified)) {
-    await loadAddressBook({ ignoreAccountNotFoundError: true });
+    try {
+      await loadAddressBook({
+        ignoreAccountNotFoundError: true,
+        strategy: "update",
+      });
+    } catch (err) {
+      console.error(err);
+      return undefined;
+    }
   }
 
   const { namedAddresses, certified } = get(addressBookStore);
@@ -108,7 +130,10 @@ export const saveAddressBook = async (
   try {
     const identity = await getAuthenticatedIdentity();
     await setAddressBook({ identity, namedAddresses });
-    await loadAddressBook();
+    // Reload with the `"update"` strategy. A query call can still return the
+    // address book from before this write. The `"update"` strategy also leaves
+    // the store certified, so the next save needs no extra reload.
+    await loadAddressBook({ strategy: "update" });
   } catch (err) {
     const error = err as Error;
 
