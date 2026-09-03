@@ -27,6 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Stop an imported token from spoofing the USD price of ICP or of an SNS token.
+
 #### Not Published
 
 ### Operations

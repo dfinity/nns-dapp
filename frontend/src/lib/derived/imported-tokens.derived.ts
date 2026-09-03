@@ -3,7 +3,7 @@ import {
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
 import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
-import { derived } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
 
 /**
  * A store that contains the existing ledger canister IDs of imported tokens that
@@ -33,3 +33,20 @@ export const loadedImportedTokensStore = derived(
     );
   }
 );
+
+/**
+ * The ledger canister IDs of every token the user imported.
+ *
+ * An imported token is user supplied. Its metadata, including its symbol, is
+ * not vetted. Use this store to tell imported tokens apart from genuine ones.
+ */
+export const importedTokenLedgerCanisterIdsStore: Readable<Set<string>> =
+  derived(
+    importedTokensStore,
+    ({ importedTokens }) =>
+      new Set(
+        (importedTokens ?? []).map(({ ledgerCanisterId }) =>
+          ledgerCanisterId.toText()
+        )
+      )
+  );
