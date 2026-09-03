@@ -41,7 +41,21 @@ curl --fail --location --show-error --silent --retry 5 \
 ###############
 # Verify
 ###############
-actual_sha256="$(sha256sum <"$tmpfile" | cut -d ' ' -f 1)"
+# Prints the sha256 checksum of the file named by the first argument.
+# macOS has shasum but it does not have sha256sum.
+sha256_of() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum <"$1" | cut -d ' ' -f 1
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 <"$1" | cut -d ' ' -f 1
+  else
+    echo "ERROR: This script needs sha256sum or shasum to verify a checksum." >&2
+    echo "ERROR: Install one of them and run the script again." >&2
+    return 1
+  fi
+}
+
+actual_sha256="$(sha256_of "$tmpfile")" || exit 1
 
 [[ "$actual_sha256" == "$expected_sha256" ]] || {
   echo "ERROR: The checksum of the downloaded file is wrong."
