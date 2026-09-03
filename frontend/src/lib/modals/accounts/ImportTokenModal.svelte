@@ -202,10 +202,7 @@
 
   const onConfirm = async () => {
     // Just for type safety. This should never happen.
-    if (
-      isNullish(ledgerCanisterId) ||
-      isNullish($importedTokensStore.importedTokens)
-    ) {
+    if (isNullish(ledgerCanisterId)) {
       return;
     }
 
@@ -215,12 +212,12 @@
         labelKey: "import_token.importing",
       });
 
+      // The service builds the replacement list from certified data.
       const { success } = await addImportedToken({
         tokenToAdd: {
           ledgerCanisterId,
           indexCanisterId,
         },
-        importedTokens: $importedTokensStore.importedTokens,
       });
       if (success) {
         close();
