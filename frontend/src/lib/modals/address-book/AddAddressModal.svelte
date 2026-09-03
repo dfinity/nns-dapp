@@ -55,7 +55,11 @@
       return $i18n.address_book.nickname_too_long;
     }
 
-    // Check uniqueness: normalize both sides (trim + lowercase) for comparison
+    // Check uniqueness: normalize both sides (trim + lowercase) for comparison.
+    // This check reads the store, which can hold a query response. A query
+    // response can hide a duplicate. The backend then rejects the save with
+    // `DuplicateAddressNameError` and the user gets a toast. The save itself
+    // always builds on certified entries, so this check is a hint only.
     const isNicknameAlreadyUsed = $addressBookStore.namedAddresses?.some(
       (entry) => {
         if (

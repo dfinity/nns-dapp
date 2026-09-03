@@ -1,5 +1,9 @@
 import * as addressBookApi from "$lib/api/address-book.api";
-import { getCertifiedNamedAddresses } from "$lib/services/address-book.services";
+import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  getCertifiedNamedAddresses,
+  saveAddressBook,
+} from "$lib/services/address-book.services";
 import { addressBookStore } from "$lib/stores/address-book.store";
 import {
   mockForgedNamedAddress,
@@ -8,6 +12,29 @@ import {
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import * as dfinityUtils from "@dfinity/utils";
 import { get } from "svelte/store";
+
+// The query response of a single replica can hold a forged entry. The certified
+// response always lands later than the query response in production, because
+// an update call runs consensus. Reproduce that order here.
+const QUERY_RESPONSE_DELAY_MS = 0;
+const CERTIFIED_RESPONSE_DELAY_MS = 50;
+
+const delay = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+// The query response holds a forged entry. The certified response does not.
+const mockSlowCertifiedGetAddressBook = () =>
+  vi
+    .spyOn(addressBookApi, "getAddressBook")
+    .mockImplementation(async ({ certified }) => {
+      if (certified) {
+        await delay(CERTIFIED_RESPONSE_DELAY_MS);
+        return { named_addresses: [mockNamedAddressIcp] };
+      }
+
+      await delay(QUERY_RESPONSE_DELAY_MS);
+      return { named_addresses: [mockNamedAddressIcp, mockForgedNamedAddress] };
+    });
 
 describe("address-book-services", () => {
   beforeEach(() => {
@@ -37,12 +64,39 @@ describe("address-book-services", () => {
         certified: false,
       });
 
-      vi.spyOn(addressBookApi, "getAddressBook").mockResolvedValue({
-        named_addresses: [mockNamedAddressIcp],
-      });
+      mockSlowCertifiedGetAddressBook();
 
       expect(await getCertifiedNamedAddresses()).toEqual([mockNamedAddressIcp]);
       expect(get(addressBookStore).certified).toBe(true);
+    });
+
+    it("should reload with the update strategy and make no query call", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockForgedNamedAddress],
+        certified: false,
+      });
+
+      const getAddressBookSpy = mockSlowCertifiedGetAddressBook();
+
+      await getCertifiedNamedAddresses();
+
+      expect(getAddressBookSpy).toHaveBeenCalledTimes(1);
+      expect(getAddressBookSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ certified: true })
+      );
+    });
+
+    it("should return an empty address book for a user who has no account yet", async () => {
+      // A new user has no account in the nns-dapp canister until the first
+      // write. The certified call then fails with `AccountNotFoundError`.
+      vi.spyOn(addressBookApi, "getAddressBook").mockImplementation(
+        async () => {
+          await delay(CERTIFIED_RESPONSE_DELAY_MS);
+          throw new AccountNotFoundError("Account not found");
+        }
+      );
+
+      expect(await getCertifiedNamedAddresses()).toEqual([]);
     });
 
     it("should return undefined when the reload fails", async () => {
@@ -64,6 +118,20 @@ describe("address-book-services", () => {
       );
 
       expect(await getCertifiedNamedAddresses()).toBeUndefined();
+    });
+  });
+
+  describe("saveAddressBook", () => {
+    it("should leave the store certified after a save", async () => {
+      vi.spyOn(addressBookApi, "setAddressBook").mockResolvedValue(undefined);
+      mockSlowCertifiedGetAddressBook();
+
+      expect(await saveAddressBook([mockNamedAddressIcp])).toBeUndefined();
+
+      expect(get(addressBookStore)).toEqual({
+        namedAddresses: [mockNamedAddressIcp],
+        certified: true,
+      });
     });
   });
 });
