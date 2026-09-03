@@ -27,17 +27,24 @@ import { get } from "svelte/store";
 
 /**
  * Load address book from the `nns-dapp` backend and update the `addressBookStore` store.
- * - Displays an error toast if the operation fails.
- * - `strategy` selects the calls to make. The default makes a query call and an
- *   update call, and the returned promise settles on the first response.
- *   `"update"` makes only the update call, so the returned promise settles on
+ * - Displays an error toast if the operation fails. `silentErrorMessages`
+ *   suppresses that toast, so the caller can show its own message.
+ * - `strategy` selects the calls to make. The default is `FORCE_CALL_STRATEGY`.
+ *   That constant is `undefined` for a normal session, which makes a query
+ *   call and an update call. It is `"query"` for a forced-query session, which
+ *   makes only a query call. So the default can give uncertified data.
+ * - `"update"` makes only the update call. The returned promise then settles on
  *   the certified response.
+ * - For the other strategies the returned promise settles on the first
+ *   response, which is normally the query response.
  */
 export const loadAddressBook = async ({
   ignoreAccountNotFoundError,
+  silentErrorMessages,
   strategy = FORCE_CALL_STRATEGY,
 }: {
   ignoreAccountNotFoundError?: boolean;
+  silentErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 } = {}) => {
   return queryAndUpdate<AddressBook, unknown>({
@@ -70,6 +77,10 @@ export const loadAddressBook = async ({
       // Explicitly handle only UPDATE errors
       addressBookStore.reset();
 
+      if (silentErrorMessages === true) {
+        return;
+      }
+
       toastsError({
         labelKey: "error__address_book.load_address_book",
         err,
@@ -84,12 +95,17 @@ export const loadAddressBook = async ({
  *
  * A write replaces the whole address book. It must never build the replacement
  * from a query response, because a single replica can forge or drop entries.
- * If the store holds a query response, reload the address book first.
+ * If the store does not hold a certified response, reload the address book
+ * first.
  *
- * The reload uses the `"update"` strategy. A `"query_and_update"` reload
- * settles on the query response, which leaves the store uncertified and blocks
- * a normal save. A session that forces the `query` strategy never reaches the
- * reload, because `isAddressBookCertified` accepts its query response.
+ * The reload always uses the `"update"` strategy. Only an update call gives
+ * certified data. A `"query_and_update"` reload settles on the query response
+ * and leaves the store uncertified. A forced-query session gets no certified
+ * data from its own loads. Such a session takes this path on every save. One
+ * update call per save keeps the address book usable there.
+ *
+ * The reload shows no error toast. The caller shows one message for the whole
+ * failed save instead.
  *
  * Return `undefined` when certified entries are not available.
  */
@@ -100,6 +116,7 @@ export const getCertifiedNamedAddresses = async (): Promise<
     try {
       await loadAddressBook({
         ignoreAccountNotFoundError: true,
+        silentErrorMessages: true,
         strategy: "update",
       });
     } catch (err) {
