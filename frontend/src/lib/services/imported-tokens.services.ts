@@ -45,8 +45,12 @@ import { get } from "svelte/store";
  *   makes only a query call. So the default can give uncertified data.
  * - `"update"` makes only the update call. The returned promise then settles on
  *   the certified response.
- * - For the other strategies the returned promise settles on the first
- *   response, which is normally the query response.
+ * - For the other strategies the returned promise settles as soon as one call
+ *   completes. A call that fails also counts as complete, because
+ *   `queryAndUpdate` catches the error and calls `onError`. The first call to
+ *   complete is normally the query call. The other call can still write to the
+ *   store later. So the store can hold uncertified data, or no data at all,
+ *   when the returned promise settles.
  */
 export const loadImportedTokens = async ({
   ignoreAccountNotFoundError,
