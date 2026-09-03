@@ -88,7 +88,7 @@
   };
 
   const remove = async (hotkey: string) => {
-    // Edge case: Remove button is shwon only when neuron is defined
+    // Edge case: Remove button is shown only when neuron is defined
     if (neuron === undefined || neuron === null) {
       return;
     }
