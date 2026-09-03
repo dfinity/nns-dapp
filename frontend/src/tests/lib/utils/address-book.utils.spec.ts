@@ -15,10 +15,16 @@ describe("address-book.utils", () => {
       expect(isAddressBookCertified(undefined)).toBe(false);
     });
 
-    it("should accept a query response when the session forces the query strategy", () => {
+    it("should reject a query response when the session forces the query strategy", () => {
       mockedConstants.FORCE_CALL_STRATEGY = "query";
 
-      expect(isAddressBookCertified(false)).toBe(true);
+      expect(isAddressBookCertified(false)).toBe(false);
+    });
+
+    it("should accept a certified response when the session forces the query strategy", () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+
+      expect(isAddressBookCertified(true)).toBe(true);
     });
 
     it("should reject an address book that was never loaded when the session forces the query strategy", () => {
