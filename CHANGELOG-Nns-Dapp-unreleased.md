@@ -30,6 +30,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Not Published
 
+- Update the TESTNET permissions card when the neuron changes. The card read the neuron once, so it showed stale data.
+
 ### Operations
 
 #### Added

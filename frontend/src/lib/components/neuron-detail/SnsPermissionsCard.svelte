@@ -17,7 +17,8 @@
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let neuron: SnsGovernanceDid.Neuron | undefined | null = $store.neuron;
+  let neuron: SnsGovernanceDid.Neuron | undefined | null;
+  $: neuron = $store.neuron;
 
   const openAddPermissionsModal = async () => {
     openSnsNeuronModal({ type: "dev-add-permissions" });
@@ -27,7 +28,7 @@
   };
 </script>
 
-<!-- ONLY FOR TESTNET. NO UNIT TESTS -->
+<!-- ONLY FOR TESTNET -->
 <CardInfo noMargin>
   <h3 slot="start">Permissions TESTNET ONLY</h3>
 

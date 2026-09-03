@@ -7,17 +7,26 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
-// NOT RUN YET. The local dfx replica is broken and a human must restore it.
-//
 // This spec proves that the removal of an SNS hotkey revokes every voting
 // permission. The old code revoked only `Vote` and `SubmitProposal`. A hotkey
 // that also held `ManageVotingPermission` kept that permission, vanished from
 // the hotkey list, and could grant the other permissions back to itself.
 //
-// The test SNS must allow `ManageVotingPermission` in
-// `neuron_grantable_permissions`. If it does not, the governance canister
-// rejects the grant in "Grant ManageVotingPermission to the hotkey" and the
-// test fails in that step.
+// The spec is `test.fixme`, so Playwright skips it in CI. Nobody has run it
+// yet, because the local dfx replica is broken. A human must run it once, fix
+// what the first run shows, and then remove the `fixme`.
+//
+// Four things are still unproven.
+//
+// 1. The test SNS must allow `ManageVotingPermission` in
+//    `neuron_grantable_permissions`. If it does not, the governance canister
+//    rejects the grant in "Grant ManageVotingPermission to the hotkey".
+// 2. `grantPermissions` clicks the checkbox input of the TESTNET modal by its
+//    id. A label may cover that input.
+// 3. `permissionsOf` reads the TESTNET permissions card through an XPath
+//    sibling, because that card has no test id of its own.
+// 4. The toast assertions read the toast list once. A toast from an earlier
+//    step may still be on screen.
 
 // The numbers are the values of `SnsNeuronPermissionType`.
 const SUBMIT_PROPOSAL = 3;
@@ -92,7 +101,7 @@ const grantPermissions = async ({
   await page.getByRole("button", { name: "Confirm" }).click();
 };
 
-test("Test SNS hotkey revocation", async ({ page, context }) => {
+test.fixme("Test SNS hotkey revocation", async ({ page, context }) => {
   await page.goto("/tokens");
   await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
