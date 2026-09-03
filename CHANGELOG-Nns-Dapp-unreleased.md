@@ -24,9 +24,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+<<<<<<< HEAD
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
+=======
+- Remove all voting permissions when a user removes an SNS neuron hotkey. The removal kept `ManageVotingPermission`, so the removed principal could grant the permissions back. The hotkey list now also shows a principal that keeps some voting permissions.
+>>>>>>> 9e5b5946d (fix(sns): revoke all voting permissions when a user removes a hotkey)
 
 #### Not Published
 

@@ -1,6 +1,9 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  HOTKEY_REVOCABLE_PERMISSIONS,
+} from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-neurons.services";
@@ -334,24 +337,96 @@ describe("sns-neurons-services", () => {
   });
 
   describe("removeHotkey", () => {
-    it("should call api.addNeuronPermissions", async () => {
-      const spyAdd = vi
+    const hotkey = "aaaaa-aa";
+    const neuronWithHotkeyPermissions = (
+      permissions: SnsNeuronPermissionType[]
+    ): SnsGovernanceDid.Neuron => ({
+      ...mockSnsNeuron,
+      permissions: [
+        {
+          principal: [Principal.fromText(hotkey)] as [Principal],
+          permission_type: Int32Array.from(permissions),
+        },
+      ],
+    });
+
+    it("should call api.removeNeuronPermissions", async () => {
+      const spyRemove = vi
         .spyOn(governanceApi, "removeNeuronPermissions")
         .mockImplementation(() => Promise.resolve());
-      const hotkey = "aaaaa-aa";
       const { success } = await removeHotkey({
-        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
+        neuron: neuronWithHotkeyPermissions(HOTKEY_PERMISSIONS),
         hotkey,
         rootCanisterId: mockPrincipal,
       });
       expect(success).toBeTruthy();
-      expect(spyAdd).toBeCalledWith({
+      expect(spyRemove).toBeCalledWith({
         neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
         identity: mockIdentity,
         principal: Principal.fromText(hotkey),
         rootCanisterId: mockPrincipal,
         permissions: HOTKEY_PERMISSIONS,
       });
+    });
+
+    it("should also remove ManageVotingPermission", async () => {
+      const spyRemove = vi
+        .spyOn(governanceApi, "removeNeuronPermissions")
+        .mockImplementation(() => Promise.resolve());
+      const { success } = await removeHotkey({
+        neuron: neuronWithHotkeyPermissions([
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+          ...HOTKEY_PERMISSIONS,
+        ]),
+        hotkey,
+        rootCanisterId: mockPrincipal,
+      });
+      expect(success).toBeTruthy();
+      expect(spyRemove).toBeCalledWith({
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
+        identity: mockIdentity,
+        principal: Principal.fromText(hotkey),
+        rootCanisterId: mockPrincipal,
+        permissions: HOTKEY_REVOCABLE_PERMISSIONS,
+      });
+    });
+
+    it("should remove only the permissions that the principal holds", async () => {
+      const spyRemove = vi
+        .spyOn(governanceApi, "removeNeuronPermissions")
+        .mockImplementation(() => Promise.resolve());
+      const { success } = await removeHotkey({
+        neuron: neuronWithHotkeyPermissions([
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+        ]),
+        hotkey,
+        rootCanisterId: mockPrincipal,
+      });
+      expect(success).toBeTruthy();
+      expect(spyRemove).toBeCalledWith({
+        neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
+        identity: mockIdentity,
+        principal: Principal.fromText(hotkey),
+        rootCanisterId: mockPrincipal,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+        ],
+      });
+    });
+
+    it("should not call the api when the principal holds no hotkey permission", async () => {
+      const spyRemove = vi
+        .spyOn(governanceApi, "removeNeuronPermissions")
+        .mockImplementation(() => Promise.resolve());
+      const { success } = await removeHotkey({
+        neuron: neuronWithHotkeyPermissions([
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
+        ]),
+        hotkey,
+        rootCanisterId: mockPrincipal,
+      });
+      expect(success).toBeTruthy();
+      expect(spyRemove).not.toBeCalled();
     });
   });
 

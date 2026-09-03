@@ -44,6 +44,7 @@ import {
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
+  getSnsNeuronHotkeyPermissionsFor,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
   nextMemo,
@@ -245,20 +246,35 @@ export const addHotkey = async ({
   }
 };
 
+/**
+ * Removes every hotkey permission that the principal holds on the neuron.
+ *
+ * The call revokes `ManageVotingPermission` as well as `Vote` and
+ * `SubmitProposal`. A principal that keeps `ManageVotingPermission` can grant
+ * the other permissions back to itself.
+ */
 export const removeHotkey = async ({
-  neuronId,
+  neuron,
   hotkey,
   rootCanisterId,
 }: {
-  neuronId: SnsGovernanceDid.NeuronId;
+  neuron: SnsGovernanceDid.Neuron;
   hotkey: string;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
+    const neuronId = fromDefinedNullable(neuron.id);
+    const permissions = getSnsNeuronHotkeyPermissionsFor({
+      neuron,
+      principal: hotkey,
+    });
+    if (permissions.length === 0) {
+      return { success: true };
+    }
     const identity = await getSnsNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
-      permissions: HOTKEY_PERMISSIONS,
+      permissions,
       identity,
       principal,
       rootCanisterId,
