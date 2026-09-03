@@ -26,6 +26,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   deploy-app:
+    # The environment gates the deploy secret and the mainnet deployment.
+    # A reinstall wipes canister state, so it uses a separate, stricter environment.
+    # The protection rules live in the repository settings, not in this file.
+    # An environment with no rules gives no protection.
+    environment: ${{ inputs.mode == 'reinstall' && 'app-deploy-reinstall' || 'app-deploy' }}
     runs-on: ubuntu-latest-m
     timeout-minutes: 60
     env:
