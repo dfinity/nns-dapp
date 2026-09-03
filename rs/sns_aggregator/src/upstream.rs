@@ -30,10 +30,29 @@ const TIME_WINDOW_SECONDS: u64 = 2 * 30 * 24 * 3600;
 /// copies most of them into shared pages of ten SNSs.  The Internet Computer limits a reply to
 /// about two megabytes, so one huge field can make a shared page too large to serve.
 ///
-/// Each limit is at least three times the largest value that mainnet SNSs use today.  The source
-/// is the mainnet snapshot in `frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json`, taken
-/// on 2026-08-28.  It holds 54 SNSs.  Each comment gives the observed maximum.  A limit that is
-/// too low would empty a field of a real SNS, so each limit keeps a large margin.
+/// Each limit is a round binary size above the largest value that mainnet SNSs use today.  The
+/// source is the mainnet snapshot in `frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json`,
+/// taken on 2026-08-28.  It holds 54 SNSs.  Each comment below gives the observed maximum.
+///
+/// The margin is not the same for every field.  It runs from 1.8 times to 195 times.  The margin
+/// follows the cost that the field puts on a shared page.
+///
+/// * A small field keeps a large margin, because a large limit costs almost nothing.  `META_NAME`
+///   keeps 195 times and `META_URL` keeps 85 times.
+/// * A large field that a page carries keeps a margin near three times.  `TOPICS` keeps 2.9 times,
+///   `PARAMETERS` 3.0 times, `SWAP_STATE` 3.5 times and `INIT` 3.6 times.
+/// * `ICRC1_METADATA` keeps the smallest margin, 1.8 times, and stops at 524288 bytes.  One real
+///   SNS already puts 291921 bytes in it, and a token logo makes up almost all of that size.  A
+///   limit of 1048576 bytes would let two such SNSs fill a whole page of ten.
+/// * `META_LOGO` keeps the same 1.8 times and the same 524288 bytes.  It reaches no shared page,
+///   because the aggregator serves the governance logo as a separate asset.  It has no
+///   measurement, so it copies the `ICRC1_METADATA` margin.
+///
+/// `mainnet_sns_data_is_within_the_limits` reads the snapshot and fails if a real SNS passes a
+/// limit.  That test guards the limits before the first release only.  After the release the
+/// aggregator empties a field over its limit before it serves the field.  The snapshot then never
+/// holds a value over a limit.  `tail_log` names each field that a limit empties, so the canister
+/// log is the signal after the release.
 pub mod limits {
     /// Canister IDs from the SNS root canister.  Mainnet maximum: 1106 bytes.
     /// The limit holds about 220 dapp canister IDs.
