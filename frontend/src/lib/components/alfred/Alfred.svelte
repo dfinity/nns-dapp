@@ -267,6 +267,9 @@
       .results {
         // The on-screen keyboard takes about half of a phone screen and does
         // not change `dvh`. 45dvh keeps the list above it.
+        // A browser without `dvh` support drops the second declaration and
+        // uses the `vh` one.
+        max-height: min(400px, 45vh);
         max-height: min(400px, 45dvh);
         overflow-y: auto;
 
