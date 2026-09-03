@@ -14,6 +14,8 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Removed
 ### Fixed
 ### Security
+- Limit the size of each SNS controlled field before the aggregator caches it. One SNS can no longer make a shared page too large to serve.
+- Stop caching the swap buyers, the neuron recipes and the Neurons' Fund participants. The aggregator never serves these lists and they grow without limit.
 
 ## [Proposal 137283](https://dashboard.internetcomputer.org/proposal/137283)
 ### Added
