@@ -115,16 +115,16 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
-  step("The search button is in the header before sign in");
+  await step("The search button is in the header before sign in");
   await expect(searchButton).toBeVisible();
   await expect(searchButton).toHaveAttribute("aria-label", "Search");
 
-  step("One tap opens the palette");
+  await step("One tap opens the palette");
   await expect(palette).toBeHidden();
   await searchButton.click();
   await expect(palette).toBeVisible();
 
-  step("The panel fits the narrow viewport");
+  await step("The panel fits the narrow viewport");
   const menuBox = await boxOf(paletteMenu);
   // One gutter of --padding-2x (16px) on each side.
   expect(menuBox.x).toBeGreaterThanOrEqual(15);
@@ -134,7 +134,7 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
   // 16px from the top of the viewport, not 15vh.
   expect(menuBox.y).toBeLessThanOrEqual(20);
 
-  step("The result list leaves room for the on-screen keyboard");
+  await step("The result list leaves room for the on-screen keyboard");
   const resultsMaxHeight = await results.evaluate(
     (element) => getComputedStyle(element).maxHeight
   );
@@ -142,7 +142,7 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
     NARROW_VIEWPORT.height * 0.45 + 1
   );
 
-  step("Every result row is a 44px touch target");
+  await step("Every result row is a 44px touch target");
   const rowHeights = await palette
     .locator('[data-tid="alfred-result-button"]')
     .evaluateAll((elements) =>
@@ -153,7 +153,7 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
     expect(height).toBeGreaterThanOrEqual(44);
   }
 
-  step("The selected row has a visible background in both themes");
+  await step("The selected row has a visible background in both themes");
   // The app reads the theme once, at load. `dark` is the default of the app,
   // so both themes must be checked and dark must not be skipped.
   for (const theme of ["light", "dark"] as const) {
@@ -188,13 +188,13 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
     await expect(palette).toBeHidden();
   }
 
-  step("A tap outside closes the palette");
+  await step("A tap outside closes the palette");
   await searchButton.click();
   await expect(palette).toBeVisible();
   await page.mouse.click(NARROW_VIEWPORT.width - 5, NARROW_VIEWPORT.height - 5);
   await expect(palette).toBeHidden();
 
-  step("A util form opens and Escape returns to the search");
+  await step("A util form opens and Escape returns to the search");
   // The panel resets itself when it opens. The reset must not run again when
   // the search input leaves the DOM for a util form.
   await searchButton.click();
@@ -211,35 +211,35 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
   await page.keyboard.press("Escape");
   await expect(palette).toBeHidden();
 
-  step("A result navigates and closes the palette");
+  await step("A result navigates and closes the palette");
   await searchButton.click();
   await palette.getByTestId("alfred-input").fill("settings");
   await palette.locator('[data-tid="alfred-result-button"]').first().click();
   await expect(palette).toBeHidden();
   await expect(page).toHaveURL(/\/settings/);
 
-  step("Sign in");
+  await step("Sign in");
   await signInWithNewUser({ page, context: browser.contexts()[0] });
   await page.setViewportSize(NARROW_VIEWPORT);
 
-  step("The search button is still in the header after sign in");
+  await step("The search button is still in the header after sign in");
   await page.goto("/staking");
   await expect(searchButton).toBeVisible();
 
-  step("The buttons do not cover the page title");
+  await step("The buttons do not cover the page title");
   expect(await titleGap(page)).toBeGreaterThanOrEqual(0);
 
-  step("The buttons do not cover a very long page title");
+  await step("The buttons do not cover a very long page title");
   await setHeaderTitle({ page, title: LONG_TITLE });
   expect(await titleGap(page)).toBeGreaterThanOrEqual(0);
 
-  step("The header never widens the page");
+  await step("The header never widens the page");
   const scrollWidth = await page.evaluate(
     () => document.documentElement.scrollWidth
   );
   expect(scrollWidth).toBeLessThanOrEqual(NARROW_VIEWPORT.width);
 
-  step("No header button is squashed, not even with the sync indicator");
+  await step("No header button is squashed, not even with the sync indicator");
   // The toolbar buttons can shrink, so a column that is too narrow makes them
   // slivers instead of pushing them out. The sync indicator only appears while
   // data loads, so a copy of a button stands in for the 3 button case.
@@ -252,7 +252,7 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
   ]);
   await page.reload();
 
-  step("The palette opens from the button when signed in");
+  await step("The palette opens from the button when signed in");
   await searchButton.click();
   await expect(palette).toBeVisible();
   const signedInTitles = await palette
@@ -261,17 +261,17 @@ test("Command palette on a narrow screen", async ({ page, browser }) => {
   expect(signedInTitles).toContain("Copy principal ID");
   expect(signedInTitles).toContain("Log Out");
 
-  step("Escape closes the palette");
+  await step("Escape closes the palette");
   await page.keyboard.press("Escape");
   await expect(palette).toBeHidden();
 
-  step("The keyboard shortcut still works");
+  await step("The keyboard shortcut still works");
   await page.keyboard.press("Control+k");
   await expect(palette).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(palette).toBeHidden();
 
-  step("The header is unchanged on a wide screen");
+  await step("The header is unchanged on a wide screen");
   await page.setViewportSize({ width: 1440, height: 900 });
   await expect(searchButton).toBeVisible();
   const wideColumns = await page
