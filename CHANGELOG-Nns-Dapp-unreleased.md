@@ -35,6 +35,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- The Encode ICRC-1 Account utility now reads a large decimal subaccount ID as
+  a decimal number. Before, it read it as hexadecimal and returned a different
+  account.
+
 #### Not Published
 
 ### Operations
