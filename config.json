@@ -108,6 +108,7 @@
     "build": {
       "config": {
         "IC_WASM_VERSION": "0.6.0",
+        "RUSTUP_INIT_VERSION": "1.28.1",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
@@ -116,7 +117,12 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2026-09-02",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "f54e1f82c3cf8ae0b4be6b0fc3a940cdcd70dd97"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "f54e1f82c3cf8ae0b4be6b0fc3a940cdcd70dd97",
+        "RUSTUP_INIT_SHA256": "a3339fb004c3d0bb9862ba0bce001861fe5cbde9c10d16591eb3f39ee6cd3e7f",
+        "NODE_SHA256": "2ae6f70d74a459c0a96456e486dc60f3e7e65d7752ad302771834e58b27500af",
+        "DFX_SHA256": "218dad11e0519e11c7a310b5c7cb1eadff109bb5db1ea3432f08c870432a80fc",
+        "DIDC_SHA256": "32693c76d9c6fe0f273f2c1ebf7e48ba3c383e925e5afd17dd264a06aed9fbcc",
+        "IC_WASM_SHA256": "9dde8926efdef5910653d034b002bce37206cb77ea94a38ad2b6f7cefe5f4776"
       },
       "packtool": ""
     }

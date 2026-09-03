@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+###############
+# Hjelpe meg!
+###############
+print_help() {
+  cat <<-EOF
+	Records the sha256 checksum of every tool that the release build downloads.
+
+	The Dockerfile downloads each tool at a pinned version.  It then verifies
+	the tool against a checksum in config.json.  The build fails if the
+	checksum does not match.
+
+	This script reads the pinned versions, downloads the linux/amd64
+	artefacts, and writes the checksums into config.json.
+
+	Run this script after you change a pinned tool version.  Review the new
+	checksums in the pull request diff before you merge them.
+
+	Usage:
+	    $(basename "$0")
+	EOF
+}
+[[ "${1:-}" != "--help" ]] || {
+  print_help
+  exit 0
+}
+
+cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+
+###############
+# Pinned versions
+###############
+dfx_version="$(jq -r .dfx dfx.json)"
+node_version="$(jq -r .volta.node frontend/package.json)"
+didc_release="$(jq -r .defaults.build.config.DIDC_RELEASE config.json)"
+ic_wasm_version="$(jq -r .defaults.build.config.IC_WASM_VERSION config.json)"
+rustup_init_version="$(jq -r .defaults.build.config.RUSTUP_INIT_VERSION config.json)"
+
+# Each entry is a config.json key, a "|", and the URL of the artefact.
+# The Dockerfile downloads the same URLs.
+entries=(
+  "RUSTUP_INIT_SHA256|https://static.rust-lang.org/rustup/archive/${rustup_init_version}/x86_64-unknown-linux-gnu/rustup-init"
+  "NODE_SHA256|https://nodejs.org/dist/v${node_version}/node-v${node_version}-linux-x64.tar.gz"
+  "DFX_SHA256|https://github.com/dfinity/sdk/releases/download/${dfx_version}/dfx-${dfx_version}-x86_64-linux.tar.gz"
+  "DIDC_SHA256|https://github.com/dfinity/candid/releases/download/${didc_release}/didc-linux64"
+  "IC_WASM_SHA256|https://github.com/dfinity/ic-wasm/releases/download/${ic_wasm_version}/ic-wasm-linux64"
+)
+
+###############
+# Checksums
+###############
+# Prints the sha256 checksum of the file named by the first argument.
+sha256_of() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum <"$1" | cut -d ' ' -f 1
+  else
+    shasum -a 256 <"$1" | cut -d ' ' -f 1
+  fi
+}
+
+tmpdir="$(mktemp -d)"
+trap 'rm -rf "$tmpdir"' EXIT
+
+for entry in "${entries[@]}"; do
+  key="${entry%%|*}"
+  url="${entry#*|}"
+  echo "Downloading $url"
+  curl --fail --location --show-error --silent --retry 5 \
+    --proto '=https' --tlsv1.2 --output "$tmpdir/artefact" "$url"
+  checksum="$(sha256_of "$tmpdir/artefact")"
+  echo "$key $checksum"
+  KEY="$key" CHECKSUM="$checksum" \
+    jq '.defaults.build.config[env.KEY] = env.CHECKSUM' config.json >"$tmpdir/config.json"
+  mv "$tmpdir/config.json" config.json
+done
+
+echo "Updated the tool checksums in config.json."

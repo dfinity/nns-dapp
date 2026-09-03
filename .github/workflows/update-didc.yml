@@ -36,6 +36,8 @@ jobs:
             DIDC_RELEASE="$latest_didc_release" jq '.defaults.build.config.DIDC_RELEASE=(env.DIDC_RELEASE)' config.json  | sponge config.json
             scripts/install-didc
             DIDC_VERSION="$(didc --version)" jq '.defaults.build.config.DIDC_VERSION=(env.DIDC_VERSION)' config.json  | sponge config.json
+            # The release build verifies didc against a checksum in config.json.
+            scripts/update-tool-checksums
             echo "updated=1" >> "$GITHUB_OUTPUT"
             echo "version=$latest_didc_release" >> "$GITHUB_OUTPUT"
           else
@@ -71,6 +73,7 @@ jobs:
             # Changes
             ## Changes made by a bot triggered by ${{ github.actor }}
             - Update the version of `didc` specified in `config.json`.
+            - Update the sha256 checksums of the release build tools in `config.json`.
 
             ## Changes made by a human (delete if inapplicable)
 

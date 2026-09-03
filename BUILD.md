@@ -94,6 +94,37 @@ Our CI also performs these steps; you can compare the SHA256 with the output the
 
 TODO: When we make a proposal, we should have a corresponding release that voters can download. E.g. https://github.com/dfinity/nns-dapp/releases/tag/release-candidate exists but it doesn't have build artefacts.
 
+### Build toolchain integrity
+
+The `Dockerfile` downloads `node`, `rustup-init`, `dfx`, `didc` and `ic-wasm`.
+Each tool is pinned to an exact version.
+Each download is verified against a sha256 checksum that is stored in `config.json`.
+`scripts/download-verified` does the download and the check.
+The build fails if a checksum does not match.
+
+This matters because `ic-wasm shrink` is the last step that changes the released
+code. See `build-rs.sh`. A tampered tool would change `nns-dapp.wasm.gz`, and
+every verifier would reproduce the same tampered output.
+
+To change a pinned version:
+
+1. Change the version. The versions live in `dfx.json` (`dfx`),
+   `frontend/package.json` (`volta.node`) and `config.json` (the rest).
+2. Run `scripts/update-tool-checksums`. It downloads the artefacts and writes the
+   new checksums into `config.json`.
+3. Review the new checksums in the pull request diff.
+
+If you change a version but forget step 2, the Docker build fails on the
+checksum check. It does not build with an unverified tool.
+
+To re-derive a checksum by hand, download the artefact and run `sha256sum` on it.
+The URLs are listed in `scripts/update-tool-checksums`. Upstream also publishes
+checksums for `rustup-init`, `node` and `dfx`:
+
+- `https://static.rust-lang.org/rustup/archive/<version>/x86_64-unknown-linux-gnu/rustup-init.sha256`
+- `https://nodejs.org/dist/v<version>/SHASUMS256.txt`
+- The `.sha256` asset next to each `dfx` release asset.
+
 ### Build flavors
 
 The build creates several different `nns-dapp` and `sns_aggregator` Wasms. These builds target specific use cases:
