@@ -103,7 +103,11 @@ const DECODING_QUOTA: usize = 10_000;
 /// does not use.
 const SKIPPING_QUOTA: usize = 10_000;
 
-/// The size limit for one message to the canister, in bytes.
+/// The target maximum size of a blob, in bytes.
+///
+/// This value sizes the decoding quota for an asset. It is not the exact
+/// maximum ingress payload size. The IC limit applies to the encoded ingress
+/// message, which also holds the Candid header.
 const MAX_INGRESS_MESSAGE_BYTES: usize = 2 * 1024 * 1024;
 
 /// The Candid cost to decode one byte of a blob.
@@ -484,6 +488,8 @@ mod decoding_quota_tests {
         assert!(result.is_ok(), "The decoder rejected a valid address book: {result:?}");
     }
 
+    // The test uses the target maximum blob size. The encoded message is
+    // slightly larger, because Candid adds a header.
     #[test]
     fn asset_quota_accepts_the_largest_ingress_message() {
         let asset = vec![0u8; MAX_INGRESS_MESSAGE_BYTES];

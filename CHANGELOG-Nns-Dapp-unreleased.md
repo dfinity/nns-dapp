@@ -24,13 +24,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
-<<<<<<< HEAD
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
-=======
 - Impose a Candid decoding quota on every exported method that takes an argument. The quota limits the DoS surface from decoding bombs.
->>>>>>> 9046f900b (docs(changelog): record the Candid decoding quota)
 
 #### Not Published
 
