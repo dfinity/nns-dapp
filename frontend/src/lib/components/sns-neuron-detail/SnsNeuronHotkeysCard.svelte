@@ -89,7 +89,7 @@
 
   const remove = async (hotkey: string) => {
     // Edge case: Remove button is shwon only when neuron is defined
-    if (neuron === undefined || neuron === null || neuronId === undefined) {
+    if (neuron === undefined || neuron === null) {
       return;
     }
     startBusy({
@@ -100,35 +100,45 @@
       hotkey,
       rootCanisterId: $selectedUniverseIdStore,
     });
-    // If the user removes itself from the hotkeys, it has no more access to the detail page.
-    if (currentIdentityString === hotkey && success) {
+    if (!success) {
+      stopBusy("remove-sns-hotkey-neuron");
+      return;
+    }
+    // The reload uses the "update" strategy, so it settles on the certified
+    // response. The default strategy settles on the query response. One
+    // replica can forge a query response, and a query response can also show
+    // the neuron from before the removal.
+    await reload({ strategy: "update" });
+    // The removal is complete only when the principal keeps no hotkey
+    // permission. A neuron that the reload did not deliver counts as
+    // incomplete.
+    const reloadedNeuron = $store.neuron;
+    const complete =
+      reloadedNeuron !== undefined &&
+      reloadedNeuron !== null &&
+      getSnsNeuronHotkeyPermissionsFor({
+        neuron: reloadedNeuron,
+        principal: hotkey,
+      }).length === 0;
+    stopBusy("remove-sns-hotkey-neuron");
+    if (!complete) {
+      // The card keeps the user on the page. The list shows the principal with
+      // a warning, so the user can try again.
+      toastsError({
+        labelKey: "error__sns.sns_remove_hotkey_incomplete",
+      });
+      return;
+    }
+    // The user removed its own hotkey. It has no more access to the neuron, so
+    // the card reports the result and leaves the page.
+    if (currentIdentityString === hotkey) {
       toastsShow({
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
 
       await goto($neuronsPathStore);
-      return;
     }
-    if (success) {
-      await reload();
-      // The removal is complete only when the principal keeps no hotkey
-      // permission. Tell the user if some permission remains.
-      const reloadedNeuron = $store.neuron;
-      const remaining =
-        reloadedNeuron !== undefined && reloadedNeuron !== null
-          ? getSnsNeuronHotkeyPermissionsFor({
-              neuron: reloadedNeuron,
-              principal: hotkey,
-            })
-          : [];
-      if (remaining.length > 0) {
-        toastsError({
-          labelKey: "error__sns.sns_remove_hotkey_incomplete",
-        });
-      }
-    }
-    stopBusy("remove-sns-hotkey-neuron");
   };
 </script>
 
