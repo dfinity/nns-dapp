@@ -56,14 +56,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 12707777371395,
-              "amount_e8s": 500975073849,
+              "amount_e8s": 491841214814,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1787805199
+              "timestamp_seconds": 1788406768
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -81,15 +81,15 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1787805199
+              "timestamp_seconds": 1788406768
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 594010250834415,
-            "timestamp_seconds": 1787805199
+            "governance_total_potential_voting_power": 608372006118699,
+            "timestamp_seconds": 1788406768
           },
-          "last_ledger_block_timestamp": 1787801830,
-          "num_recently_executed_proposals": 49,
+          "last_ledger_block_timestamp": 1788406733,
+          "num_recently_executed_proposals": 46,
           "num_recently_submitted_proposals": 49,
           "genesis_timestamp_seconds": 1746713375
         }
@@ -97,11 +97,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1787753380,
-      "end_timestamp_seconds": 1787753375,
+      "actual_timestamp_seconds": 1788358176,
+      "end_timestamp_seconds": 1788358175,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 475,
+      "round": 482,
       "settled_proposals": []
     },
     "parameters": {
@@ -1356,7 +1356,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777009227367606,
+    "icrc1_total_supply": 776722679988864,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -2600,13 +2600,14 @@
         "aalgg-jaaaa-aaaak-afkwq-cai",
         "hjfd4-eqaaa-aaaam-adkmq-cai",
         "e4tvt-6yaaa-aaaao-a3sdq-cai",
-        "3gxmg-2aaaa-aaaak-apgwq-cai"
+        "3gxmg-2aaaa-aaaak-apgwq-cai",
+        "74e7j-niaaa-aaaap-quxkq-cai"
       ],
       "archives": ["bg5eq-oaaaa-aaaaq-aafaq-cai"]
     },
     "meta": {
       "url": "https://waifu.ic0.ai/",
-      "name": "Waifu.ai",
+      "name": "Delulu DAO",
       "description": "A rude chicken",
       "logo": "/v1/sns/root/kwj3g-oyaaa-aaaaq-aae6a-cai/logo.png"
     },
@@ -2617,14 +2618,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 348736271571,
-              "amount_e8s": 200713310032,
+              "amount_e8s": 100752043608,
               "account": {
                 "owner": "kri5s-daaaa-aaaaq-aae6q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1787802937
+              "timestamp_seconds": 1788404837
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -2642,28 +2643,62 @@
               },
               "ledger_canister_id": "kylwo-viaaa-aaaaq-aae7a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1787802937
+              "timestamp_seconds": 1788404837
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 60124584796147,
-            "timestamp_seconds": 1787802937
+            "governance_total_potential_voting_power": 61042415429330,
+            "timestamp_seconds": 1788404837
           },
-          "last_ledger_block_timestamp": 1787773027,
-          "num_recently_executed_proposals": 22,
-          "num_recently_submitted_proposals": 46,
+          "last_ledger_block_timestamp": 1788333607,
+          "num_recently_executed_proposals": 17,
+          "num_recently_submitted_proposals": 19,
           "genesis_timestamp_seconds": 1763609136
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1787801137,
-      "end_timestamp_seconds": 1787801136,
-      "total_available_e8s_equivalent": 22030073914,
-      "distributed_e8s_equivalent": 0,
-      "round": 280,
-      "settled_proposals": []
+      "actual_timestamp_seconds": 1788405946,
+      "end_timestamp_seconds": 1788405936,
+      "total_available_e8s_equivalent": 1944783276,
+      "distributed_e8s_equivalent": 1944783244,
+      "round": 287,
+      "settled_proposals": [
+        {
+          "id": 101
+        },
+        {
+          "id": 103
+        },
+        {
+          "id": 104
+        },
+        {
+          "id": 105
+        },
+        {
+          "id": 106
+        },
+        {
+          "id": 107
+        },
+        {
+          "id": 108
+        },
+        {
+          "id": 109
+        },
+        {
+          "id": 110
+        },
+        {
+          "id": 111
+        },
+        {
+          "id": 112
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -2826,6 +2861,146 @@
           "description": "Proposal to upgrade the WASM of a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1001,
+          "name": "icpswap_claim",
+          "description": "claim lp fees to treasury",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_icpswap_claim",
+              "target_method_name": "icpswap_claim"
+            }
+          }
+        },
+        {
+          "id": 1002,
+          "name": "transfer_icpswap_lp_position",
+          "description": "transfer an lp position",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_transfer_icpswap_lp_position",
+              "target_method_name": "transfer_icpswap_lp_position"
+            }
+          }
+        },
+        {
+          "id": 1003,
+          "name": "icpswap_decrease_liquidity",
+          "description": "decrease lp liquidity",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_icpswap_decrease_liquidity",
+              "target_method_name": "icpswap_decrease_liquidity"
+            }
+          }
+        },
+        {
+          "id": 1004,
+          "name": "icpswap_increase_liquidity",
+          "description": "increase lp liquidity",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_icpswap_increase_liquidity",
+              "target_method_name": "icpswap_increase_liquidity"
+            }
+          }
+        },
+        {
+          "id": 1005,
+          "name": "mint_full_range_position",
+          "description": "mint a full range lp position",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_mint_full_range_position",
+              "target_method_name": "mint_full_range_position"
+            }
+          }
+        },
+        {
+          "id": 1006,
+          "name": "send_icrc1_tokens",
+          "description": "send tokens from the vault",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_send_icrc1_tokens",
+              "target_method_name": "send_icrc1_tokens"
+            }
+          }
+        },
+        {
+          "id": 1007,
+          "name": "emergency_pull_icpswap_lp",
+          "description": "emergency pull to the vault",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_emergency_pull_icpswap_lp",
+              "target_method_name": "emergency_pull_icpswap_lp"
+            }
+          }
+        },
+        {
+          "id": 1008,
+          "name": "set_lp_fee_claim_schedule",
+          "description": "set the fee harvest schedule",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_set_lp_fee_claim_schedule",
+              "target_method_name": "set_lp_fee_claim_schedule"
+            }
+          }
+        },
+        {
+          "id": 1009,
+          "name": "claim_and_route_lp_fees",
+          "description": "harvest lp fees now",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_claim_and_route_lp_fees",
+              "target_method_name": "claim_and_route_lp_fees"
+            }
+          }
+        },
+        {
+          "id": 1010,
+          "name": "set_config",
+          "description": "reconfigure the vault",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+              "validator_method_name": "validate_set_config",
+              "target_method_name": "set_config"
+            }
           }
         },
         {
@@ -3192,7 +3367,7 @@
       ]
     ],
     "icrc1_fee": [420],
-    "icrc1_total_supply": 31053893958672,
+    "icrc1_total_supply": 31053893928012,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3366,6 +3541,34 @@
           "name": "Application Business Logic",
           "description": "Proposals that are custom to what the governed dapp requires.",
           "custom_functions": [
+            {
+              "id": 1008,
+              "name": "set_lp_fee_claim_schedule",
+              "description": "set the fee harvest schedule",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_set_lp_fee_claim_schedule",
+                  "target_method_name": "set_lp_fee_claim_schedule"
+                }
+              }
+            },
+            {
+              "id": 1010,
+              "name": "set_config",
+              "description": "reconfigure the vault",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_set_config",
+                  "target_method_name": "set_config"
+                }
+              }
+            },
             {
               "id": 4000,
               "name": "Unicycle: Setup",
@@ -3607,6 +3810,118 @@
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
           "custom_functions": [
+            {
+              "id": 1001,
+              "name": "icpswap_claim",
+              "description": "claim lp fees to treasury",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_icpswap_claim",
+                  "target_method_name": "icpswap_claim"
+                }
+              }
+            },
+            {
+              "id": 1002,
+              "name": "transfer_icpswap_lp_position",
+              "description": "transfer an lp position",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_transfer_icpswap_lp_position",
+                  "target_method_name": "transfer_icpswap_lp_position"
+                }
+              }
+            },
+            {
+              "id": 1003,
+              "name": "icpswap_decrease_liquidity",
+              "description": "decrease lp liquidity",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_icpswap_decrease_liquidity",
+                  "target_method_name": "icpswap_decrease_liquidity"
+                }
+              }
+            },
+            {
+              "id": 1004,
+              "name": "icpswap_increase_liquidity",
+              "description": "increase lp liquidity",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_icpswap_increase_liquidity",
+                  "target_method_name": "icpswap_increase_liquidity"
+                }
+              }
+            },
+            {
+              "id": 1005,
+              "name": "mint_full_range_position",
+              "description": "mint a full range lp position",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_mint_full_range_position",
+                  "target_method_name": "mint_full_range_position"
+                }
+              }
+            },
+            {
+              "id": 1006,
+              "name": "send_icrc1_tokens",
+              "description": "send tokens from the vault",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_send_icrc1_tokens",
+                  "target_method_name": "send_icrc1_tokens"
+                }
+              }
+            },
+            {
+              "id": 1007,
+              "name": "emergency_pull_icpswap_lp",
+              "description": "emergency pull to the vault",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_emergency_pull_icpswap_lp",
+                  "target_method_name": "emergency_pull_icpswap_lp"
+                }
+              }
+            },
+            {
+              "id": 1009,
+              "name": "claim_and_route_lp_fees",
+              "description": "harvest lp fees now",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "target_canister_id": "74e7j-niaaa-aaaap-quxkq-cai",
+                  "validator_method_name": "validate_claim_and_route_lp_fees",
+                  "target_method_name": "claim_and_route_lp_fees"
+                }
+              }
+            },
             {
               "id": 3000,
               "name": "Neuron Pylon: ICRC55 Command",
@@ -4214,7 +4529,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1787803919
+              "timestamp_seconds": 1788405409
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -4232,12 +4547,12 @@
               },
               "ledger_canister_id": "a6urt-aaaaa-aaaaq-aafeq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1787803919
+              "timestamp_seconds": 1788405409
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 34857078566699,
-            "timestamp_seconds": 1787803919
+            "governance_total_potential_voting_power": 35022648757149,
+            "timestamp_seconds": 1788405409
           },
           "last_ledger_block_timestamp": 1787414930,
           "num_recently_executed_proposals": 0,
@@ -4248,11 +4563,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1787760529,
-      "end_timestamp_seconds": 1787760528,
+      "actual_timestamp_seconds": 1788365338,
+      "end_timestamp_seconds": 1788365328,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 4,
+      "round": 11,
       "settled_proposals": []
     },
     "parameters": {
@@ -4535,8 +4850,8 @@
         "decentralization_sale_open_timestamp_seconds": 1787587200
       },
       "derived": {
-        "buyer_total_icp_e8s": 20100000000,
-        "sns_tokens_per_icp": 1492.5374
+        "buyer_total_icp_e8s": 61791939573,
+        "sns_tokens_per_icp": 485.5002
       }
     },
     "icrc1_metadata": [
@@ -4676,12 +4991,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1492.537353515625,
-      "buyer_total_icp_e8s": 20100000000,
+      "sns_tokens_per_icp": 485.5002136230469,
+      "buyer_total_icp_e8s": 61791939573,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 20100000000,
-      "direct_participant_count": 4,
+      "direct_participation_icp_e8s": 61791939573,
+      "direct_participant_count": 17,
       "cf_neuron_count": 0
     },
     "lifecycle": {
