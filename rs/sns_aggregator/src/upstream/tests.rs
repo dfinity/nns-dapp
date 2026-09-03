@@ -3,8 +3,16 @@
 #![allow(clippy::expect_used)]
 #![allow(clippy::unwrap_used)]
 
-use super::{bound, limits, strip_unserved_swap_state};
-use crate::types::ic_sns_swap::{BuyerState, CfParticipant, GetStateResponse, SnsNeuronRecipe, Swap};
+use super::{bound, bound_upstream_data, fill_unreadable_nulls, limits, strip_unserved_swap_state};
+use crate::types::ic_sns_governance::{GetMetadataResponse, NervousSystemParameters, NeuronPermissionList};
+use crate::types::ic_sns_swap::{
+    BuyerState, CfParticipant, DerivedState, GetDerivedStateResponse, GetInitResponse, GetSaleParametersResponse,
+    GetStateResponse, SnsNeuronRecipe, Swap,
+};
+use crate::types::slow::SlowSnsData;
+use crate::types::upstream::UpstreamData;
+use crate::Icrc1Value;
+use serde_bytes::ByteBuf;
 use serde_json::Value;
 use std::fs;
 use std::path::PathBuf;
@@ -234,4 +242,181 @@ fn mainnet_sns_data_is_within_the_limits() {
             );
         }
     }
+}
+
+/// The places in the served JSON that the launchpad reads without a check for `null`.
+///
+/// `frontend/src/lib/utils/sns-aggregator-converters.utils.ts` reads `swap_state.swap`,
+/// `derived_state`, `init` and `swap_params` without a check.  It converts
+/// `derived_state.buyer_total_icp_e8s` to a `BigInt`, which fails on `null`.
+/// `frontend/src/lib/derived/sns-parameters.derived.ts` reads the fields of
+/// `nervous_system_parameters` without a check.
+///
+/// Each of those reads happens inside a store that maps EVERY SNS.  A `null` in one SNS therefore
+/// empties the whole launchpad.
+const PLACES_THAT_MUST_NOT_BE_NULL: &[&[&str]] = &[
+    &["swap_state", "swap"],
+    &["derived_state"],
+    &["derived_state", "buyer_total_icp_e8s"],
+    &["derived_state", "sns_tokens_per_icp"],
+    &["init"],
+    &["swap_params"],
+    &["nervous_system_parameters"],
+];
+
+/// Converts the record to the JSON that the aggregator serves, and fails on an unreadable null.
+fn assert_the_launchpad_can_read(data: &UpstreamData) {
+    let served = serde_json::to_value(SlowSnsData::from(data)).expect("Failed to serialise the served record");
+    for path in PLACES_THAT_MUST_NOT_BE_NULL {
+        let mut value = &served;
+        for key in *path {
+            value = &value[*key];
+        }
+        assert!(
+            !value.is_null(),
+            "The served JSON holds null at '{}'.  One such null empties the whole launchpad.  The record is: {served}",
+            path.join(".")
+        );
+    }
+}
+
+/// A record in which four SNS controlled fields are far over their limits.
+///
+/// `swap_params`, `init` and `derived_state` hold only numbers, so no test can make them
+/// too large today.  `an_empty_record_serves_no_null_that_the_launchpad_cannot_read` covers the
+/// state that those three reach when a bound does trip.
+fn oversized_upstream_data() -> UpstreamData {
+    UpstreamData {
+        meta: GetMetadataResponse {
+            url: None,
+            logo: None,
+            name: None,
+            description: Some("d".repeat(limits::META_DESCRIPTION + 1)),
+        },
+        icrc1_metadata: vec![(
+            "icrc1:logo".to_string(),
+            Icrc1Value::Text("A".repeat(limits::ICRC1_METADATA + 1)),
+        )],
+        nervous_system_parameters: Some(NervousSystemParameters {
+            neuron_claimer_permissions: Some(NeuronPermissionList {
+                permissions: vec![1; limits::NERVOUS_SYSTEM_PARAMETERS],
+            }),
+            ..Default::default()
+        }),
+        swap_state: GetStateResponse {
+            swap: Some(Swap {
+                purge_old_tickets_next_principal: Some(ByteBuf::from(vec![7u8; limits::SWAP_STATE])),
+                ..Default::default()
+            }),
+            derived: None,
+        },
+        ..Default::default()
+    }
+}
+
+#[test]
+fn an_oversized_record_serves_no_null_that_the_launchpad_cannot_read() {
+    let (data, reasons) = bound_upstream_data(oversized_upstream_data());
+
+    // Each bound must have tripped, and each trip must be reported.
+    assert_eq!(reasons.len(), 4, "Expected four reports, got: {reasons:?}");
+    assert!(data.meta.description.is_none(), "The description must be emptied");
+    assert!(data.icrc1_metadata.is_empty(), "The ledger metadata must be emptied");
+    let parameters = data
+        .nervous_system_parameters
+        .as_ref()
+        .expect("The nervous system parameters must be an object");
+    assert!(
+        parameters.neuron_claimer_permissions.is_none(),
+        "The nervous system parameters must be emptied"
+    );
+    let swap = data.swap_state.swap.as_ref().expect("The swap must be an object");
+    assert!(
+        swap.purge_old_tickets_next_principal.is_none(),
+        "The swap state must be emptied"
+    );
+    assert!(swap.params.is_none(), "The emptied swap holds no parameters");
+
+    assert_the_launchpad_can_read(&data);
+}
+
+#[test]
+fn an_empty_record_serves_no_null_that_the_launchpad_cannot_read() {
+    // Every field of a default record is empty.  A field reaches this state when its bound trips,
+    // because `bound` replaces an oversized value with the default value of its type.
+    let (data, reasons) = bound_upstream_data(UpstreamData::default());
+    assert!(reasons.is_empty(), "An empty record trips no bound: {reasons:?}");
+    assert_the_launchpad_can_read(&data);
+}
+
+#[test]
+fn an_empty_record_serves_zero_for_the_two_derived_numbers() {
+    let (data, _reasons) = bound_upstream_data(UpstreamData::default());
+    let derived_state = data.derived_state.expect("The derived state must be an object");
+    assert_eq!(derived_state.buyer_total_icp_e8s, Some(0));
+    assert_eq!(derived_state.sns_tokens_per_icp, Some(0.0));
+}
+
+#[test]
+fn fill_unreadable_nulls_keeps_the_values_that_the_sns_supplied() {
+    let data = UpstreamData {
+        swap_state: GetStateResponse {
+            swap: Some(Swap {
+                lifecycle: 2,
+                ..Default::default()
+            }),
+            derived: Some(DerivedState {
+                buyer_total_icp_e8s: 7,
+                sns_tokens_per_icp: 3.0,
+                ..Default::default()
+            }),
+        },
+        derived_state: Some(GetDerivedStateResponse {
+            buyer_total_icp_e8s: Some(11),
+            sns_tokens_per_icp: Some(5.0),
+            ..Default::default()
+        }),
+        init: Some(GetInitResponse { init: None }),
+        swap_params: Some(GetSaleParametersResponse { params: None }),
+        nervous_system_parameters: Some(NervousSystemParameters {
+            reject_cost_e8s: Some(13),
+            ..Default::default()
+        }),
+        ..Default::default()
+    };
+    let filled = fill_unreadable_nulls(data);
+    assert_eq!(filled.swap_state.swap.expect("A swap").lifecycle, 2);
+    assert_eq!(
+        filled.swap_state.derived.expect("A derived state").buyer_total_icp_e8s,
+        7
+    );
+    let derived_state = filled.derived_state.expect("A derived state response");
+    assert_eq!(derived_state.buyer_total_icp_e8s, Some(11));
+    assert_eq!(derived_state.sns_tokens_per_icp, Some(5.0));
+    assert_eq!(
+        filled
+            .nervous_system_parameters
+            .expect("Nervous system parameters")
+            .reject_cost_e8s,
+        Some(13)
+    );
+}
+
+#[test]
+fn bound_upstream_data_keeps_a_record_that_is_within_the_limits() {
+    let data = UpstreamData {
+        meta: GetMetadataResponse {
+            url: Some("https://example.com".to_string()),
+            logo: None,
+            name: Some("A name".to_string()),
+            description: Some("A description".to_string()),
+        },
+        icrc1_metadata: vec![("icrc1:symbol".to_string(), Icrc1Value::Text("TOK".to_string()))],
+        ..Default::default()
+    };
+    let (bounded_data, reasons) = bound_upstream_data(data);
+    assert!(reasons.is_empty(), "No bound must trip: {reasons:?}");
+    assert_eq!(bounded_data.meta.name.as_deref(), Some("A name"));
+    assert_eq!(bounded_data.meta.description.as_deref(), Some("A description"));
+    assert_eq!(bounded_data.icrc1_metadata.len(), 1);
 }

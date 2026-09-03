@@ -6,7 +6,7 @@ use crate::fast_scheduler::FastScheduler;
 use crate::state::{State, STATE};
 use crate::types::ic_sns_governance::{self as sns_gov, ListTopicsRequest, NervousSystemParameters};
 use crate::types::ic_sns_swap::{
-    GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
+    DerivedState, GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse, Swap,
 };
 use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 use crate::types::upstream::UpstreamData;
@@ -47,8 +47,9 @@ pub mod limits {
     /// The project logo, as a data URL, in the governance metadata.
     ///
     /// The snapshot holds no governance logo, because the aggregator serves it as a separate
-    /// asset.  The largest logo in the snapshot is the ledger logo, at 291585 bytes.  The limit
-    /// gives that logo a margin of 1.8 times.
+    /// asset.  This limit therefore has no measurement behind it, and
+    /// `mainnet_sns_data_is_within_the_limits` cannot guard it.  The largest logo in the snapshot
+    /// is the ledger logo, at 291585 bytes.  The limit gives that logo a margin of 1.8 times.
     pub const META_LOGO: usize = 512 * 1024;
     /// Governance metrics.  Mainnet maximum: 950 bytes.
     pub const METRICS: usize = 16 * 1024;
@@ -73,6 +74,9 @@ pub mod limits {
     /// The ledger total supply.  Mainnet maximum: 19 bytes.
     pub const ICRC1_TOTAL_SUPPLY: usize = 128;
     /// The swap parameters.  Mainnet maximum: 471 bytes.
+    ///
+    /// `INIT` and `SWAP_STATE` are much larger because they hold lists.  `Params` holds only
+    /// numbers, so it cannot grow past about 600 bytes.  This limit stays small on purpose.
     pub const SWAP_PARAMS: usize = 8 * 1024;
     /// The initialization parameters of the swap.  Mainnet maximum: 36294 bytes.
     pub const INIT: usize = 128 * 1024;
@@ -90,7 +94,10 @@ pub mod limits {
 /// An SNS controls the fields that the aggregator caches and serves.  A field that is too large
 /// makes a shared page too large to serve, and it makes the cache grow without limit.  The
 /// aggregator empties one field instead of dropping the whole SNS.  The SNS keeps its place in
-/// the list, so the launchpad still shows it.
+/// the list, so no other SNS moves to a different page.
+///
+/// An empty value is `None` for an optional field.  `fill_unreadable_nulls` then replaces that
+/// `None` where the launchpad cannot read a `null`.
 fn bound<T: Serialize + Default>(value: T, max_bytes: usize) -> (T, Option<String>) {
     match serde_json::to_vec(&value) {
         Ok(json) if json.len() <= max_bytes => (value, None),
@@ -105,27 +112,49 @@ fn bound<T: Serialize + Default>(value: T, max_bytes: usize) -> (T, Option<Strin
     }
 }
 
-/// Applies `bound` and writes any reason to the canister log.
-fn bounded<T: Serialize + Default>(index: u64, field: &str, value: T, max_bytes: usize) -> T {
-    let (value, reason) = bound(value, max_bytes);
-    if let Some(reason) = reason {
-        crate::state::log(format!(
-            "SNS index {index}: field '{field}' {reason}.  The aggregator empties the field."
-        ));
-    }
-    value
+/// Applies the size limits for one SNS and collects a reason for each field that it empties.
+///
+/// The caller writes the reasons to the canister log.  The canister log needs a canister, so this
+/// split lets a test call the whole bounding pass outside a canister.
+struct Bounder {
+    /// The index of the SNS in the list from the nns-sns-wasm canister.
+    index: u64,
+    /// One line for each field that a limit emptied.
+    reasons: Vec<String>,
 }
 
-/// Limits the size of each part of the governance metadata.
-///
-/// The logo is much larger than the other parts, and the aggregator serves it as a separate
-/// asset.  Each part therefore gets its own limit.
-fn bounded_metadata(index: u64, meta: types::GetMetadataResponse) -> types::GetMetadataResponse {
-    types::GetMetadataResponse {
-        url: bounded(index, "meta.url", meta.url, limits::META_URL),
-        logo: bounded(index, "meta.logo", meta.logo, limits::META_LOGO),
-        name: bounded(index, "meta.name", meta.name, limits::META_NAME),
-        description: bounded(index, "meta.description", meta.description, limits::META_DESCRIPTION),
+impl Bounder {
+    /// Creates a bounder for one SNS.
+    fn new(index: u64) -> Self {
+        Bounder {
+            index,
+            reasons: Vec::new(),
+        }
+    }
+
+    /// Applies `bound` and keeps any reason.
+    fn bound<T: Serialize + Default>(&mut self, field: &str, value: T, max_bytes: usize) -> T {
+        let (value, reason) = bound(value, max_bytes);
+        if let Some(reason) = reason {
+            let index = self.index;
+            self.reasons.push(format!(
+                "SNS index {index}: field '{field}' {reason}.  The aggregator empties the field."
+            ));
+        }
+        value
+    }
+
+    /// Limits the size of each part of the governance metadata.
+    ///
+    /// The logo is much larger than the other parts, and the aggregator serves it as a separate
+    /// asset.  Each part therefore gets its own limit.
+    fn bound_metadata(&mut self, meta: types::GetMetadataResponse) -> types::GetMetadataResponse {
+        types::GetMetadataResponse {
+            url: self.bound("meta.url", meta.url, limits::META_URL),
+            logo: self.bound("meta.logo", meta.logo, limits::META_LOGO),
+            name: self.bound("meta.name", meta.name, limits::META_NAME),
+            description: self.bound("meta.description", meta.description, limits::META_DESCRIPTION),
+        }
     }
 }
 
@@ -141,6 +170,94 @@ fn strip_unserved_swap_state(mut swap_state: GetStateResponse) -> GetStateRespon
         swap.cf_participants = Vec::new();
     }
     swap_state
+}
+
+/// Replaces a `null` with a minimal object in each field that the launchpad reads without a check.
+///
+/// The launchpad reads `swap_state.swap`, `derived_state`, `init`, `swap_params` and
+/// `nervous_system_parameters` without a check for `null`.  It also converts
+/// `derived_state.buyer_total_icp_e8s` to a number without a check.  A `null` in any of them
+/// raises a `TypeError` inside a store that maps every SNS, so the launchpad then shows NO SNS at
+/// all.  One SNS would hide every other SNS.
+///
+/// A field becomes `null` in two cases:  A size limit emptied it, or the first call for a new SNS
+/// failed and the cache held nothing.  This function makes both cases safe.  The launchpad reads
+/// the minimal object, finds no swap parameters, and drops that one SNS.  Every other SNS keeps
+/// its card.
+///
+/// Each replacement is minimal on purpose.  It carries no value that the SNS did not supply,
+/// except the two numbers in `derived_state`, which the launchpad requires to be numbers.
+fn fill_unreadable_nulls(mut data: UpstreamData) -> UpstreamData {
+    if data.swap_state.swap.is_none() {
+        data.swap_state.swap = Some(Swap::default());
+    }
+    if data.swap_state.derived.is_none() {
+        data.swap_state.derived = Some(DerivedState::default());
+    }
+    let mut derived_state = data.derived_state.unwrap_or_default();
+    derived_state.sns_tokens_per_icp = Some(derived_state.sns_tokens_per_icp.unwrap_or(0.0));
+    derived_state.buyer_total_icp_e8s = Some(derived_state.buyer_total_icp_e8s.unwrap_or(0));
+    data.derived_state = Some(derived_state);
+    data.init = Some(data.init.unwrap_or(GetInitResponse { init: None }));
+    data.swap_params = Some(data.swap_params.unwrap_or(GetSaleParametersResponse { params: None }));
+    data.nervous_system_parameters = Some(data.nervous_system_parameters.unwrap_or_default());
+    data
+}
+
+/// Limits the size of every SNS controlled field, then makes the record safe for the launchpad.
+///
+/// The limit applies to the value that the aggregator is about to cache.  That value is the new
+/// response, or the previous cached value when the call failed.  A cache that an earlier release
+/// filled with data over a limit therefore recovers on the next update.
+///
+/// `fill_unreadable_nulls` runs after the limits.  It adds only fixed empty objects, never a
+/// value that the SNS supplied, so it adds at most a few hundred bytes to the record.
+///
+/// The second return value holds one line for each field that a limit emptied.  The caller writes
+/// those lines to the canister log.
+fn bound_upstream_data(data: UpstreamData) -> (UpstreamData, Vec<String>) {
+    let index = data.index;
+    let mut bounder = Bounder::new(index);
+    let bounded_data = UpstreamData {
+        index,
+        canister_ids: data.canister_ids,
+        list_sns_canisters: bounder.bound(
+            "list_sns_canisters",
+            data.list_sns_canisters,
+            limits::LIST_SNS_CANISTERS,
+        ),
+        meta: bounder.bound_metadata(data.meta),
+        metrics: bounder.bound("metrics", data.metrics, limits::METRICS),
+        latest_reward_event: bounder.bound(
+            "latest_reward_event",
+            data.latest_reward_event,
+            limits::LATEST_REWARD_EVENT,
+        ),
+        parameters: bounder.bound("parameters", data.parameters, limits::PARAMETERS),
+        nervous_system_parameters: bounder.bound(
+            "nervous_system_parameters",
+            data.nervous_system_parameters,
+            limits::NERVOUS_SYSTEM_PARAMETERS,
+        ),
+        swap_state: bounder.bound(
+            "swap_state",
+            strip_unserved_swap_state(data.swap_state),
+            limits::SWAP_STATE,
+        ),
+        icrc1_metadata: bounder.bound("icrc1_metadata", data.icrc1_metadata, limits::ICRC1_METADATA),
+        icrc1_fee: bounder.bound("icrc1_fee", data.icrc1_fee, limits::ICRC1_FEE),
+        icrc1_total_supply: bounder.bound(
+            "icrc1_total_supply",
+            data.icrc1_total_supply,
+            limits::ICRC1_TOTAL_SUPPLY,
+        ),
+        swap_params: bounder.bound("swap_params", data.swap_params, limits::SWAP_PARAMS),
+        init: bounder.bound("init", data.init, limits::INIT),
+        derived_state: bounder.bound("derived_state", data.derived_state, limits::DERIVED_STATE),
+        lifecycle: bounder.bound("lifecycle", data.lifecycle, limits::LIFECYCLE),
+        topics: bounder.bound("topics", data.topics, limits::TOPICS),
+    };
+    (fill_unreadable_nulls(bounded_data), bounder.reasons)
 }
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
@@ -395,56 +512,8 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
 
     crate::state::log("Yay, got an SNS status".to_string());
 
-    // Limit the size of every SNS controlled field before the aggregator caches it.
-    //
-    // The limit applies to the value that the aggregator is about to cache.  That value is the
-    // new response, or the previous cached value when the call failed.  A cache that an earlier
-    // release filled with oversized data therefore recovers on the next update.
-    let list_sns_canisters = bounded(
-        index,
-        "list_sns_canisters",
-        list_sns_canisters,
-        limits::LIST_SNS_CANISTERS,
-    );
-    let meta = bounded_metadata(index, meta);
-    let metrics = bounded(index, "metrics", metrics, limits::METRICS);
-    let latest_reward_event = bounded(
-        index,
-        "latest_reward_event",
-        latest_reward_event,
-        limits::LATEST_REWARD_EVENT,
-    );
-    let parameters = bounded(index, "parameters", parameters, limits::PARAMETERS);
-    let nervous_system_parameters = bounded(
-        index,
-        "nervous_system_parameters",
-        nervous_system_parameters,
-        limits::NERVOUS_SYSTEM_PARAMETERS,
-    );
-    let swap_state = bounded(
-        index,
-        "swap_state",
-        strip_unserved_swap_state(swap_state),
-        limits::SWAP_STATE,
-    );
-    let icrc1_metadata = bounded(index, "icrc1_metadata", icrc1_metadata, limits::ICRC1_METADATA);
-    let icrc1_fee = bounded(index, "icrc1_fee", icrc1_fee, limits::ICRC1_FEE);
-    let icrc1_total_supply = bounded(
-        index,
-        "icrc1_total_supply",
-        icrc1_total_supply,
-        limits::ICRC1_TOTAL_SUPPLY,
-    );
-    let swap_params_response = bounded(index, "swap_params", swap_params_response, limits::SWAP_PARAMS);
-    let init_response = bounded(index, "init", init_response, limits::INIT);
-    let derived_state_response = bounded(index, "derived_state", derived_state_response, limits::DERIVED_STATE);
-    let lifecycle_response = bounded(index, "lifecycle", lifecycle_response, limits::LIFECYCLE);
-    let list_topics_response = bounded(index, "topics", list_topics_response, limits::TOPICS);
-
-    // If the SNS sale will open, collect data when it does.
-    FastScheduler::global_schedule_sns(&swap_state);
-    // Save the data in the state.
-    let slow_data = UpstreamData {
+    // Limit the size of every SNS controlled field before the aggregator caches the record.
+    let (slow_data, reasons) = bound_upstream_data(UpstreamData {
         index,
         canister_ids: sns_canister_ids,
         list_sns_canisters,
@@ -462,7 +531,14 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         derived_state: derived_state_response,
         lifecycle: lifecycle_response,
         topics: list_topics_response,
-    };
+    });
+    for reason in reasons {
+        crate::state::log(reason);
+    }
+
+    // If the SNS sale will open, collect data when it does.
+    FastScheduler::global_schedule_sns(&slow_data.swap_state);
+    // Save the data in the state.
     State::insert_sns(index, &slow_data)
         .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err}")))
         .unwrap_or_default();

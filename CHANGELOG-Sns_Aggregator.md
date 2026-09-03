@@ -14,8 +14,9 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Removed
 ### Fixed
 ### Security
-- Limit the size of each SNS controlled field before the aggregator caches it. One SNS can no longer make a shared page too large to serve.
+- Limit the size of each SNS controlled field before the aggregator caches it. One SNS can no longer grow a cached record without limit. A field over its limit becomes empty, and the SNS keeps its place in the list.
 - Stop caching the swap buyers, the neuron recipes and the Neurons' Fund participants. The aggregator never serves these lists and they grow without limit.
+- Never serve `null` for `swap_state.swap`, `derived_state`, `init`, `swap_params` or `nervous_system_parameters`. The NNS dapp reads these fields without a check for `null`. One `null` made the NNS dapp show no SNS at all.
 
 ## [Proposal 137283](https://dashboard.internetcomputer.org/proposal/137283)
 ### Added
