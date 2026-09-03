@@ -1,8 +1,20 @@
 import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
+import { isForceCallStrategy } from "$lib/utils/call.utils";
 import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
 import { fromNullable, nonNullish, toNullable } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
+
+/**
+ * Tell if the imported tokens in the store come from a certified call.
+ *
+ * A session that forces the `query` strategy never gets certified data.
+ * Such a session accepts the query response instead.
+ */
+export const isImportedTokensCertified = (
+  certified: boolean | undefined
+): boolean =>
+  certified === true || (certified === false && isForceCallStrategy());
 
 export const toImportedTokenData = ({
   ledger_canister_id,
