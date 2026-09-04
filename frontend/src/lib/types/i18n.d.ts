@@ -1188,6 +1188,8 @@ interface I18nError__imported_tokens {
   add_imported_token: string;
   remove_imported_token: string;
   update_imported_token: string;
+  not_certified: string;
+  token_not_found: string;
   too_many: string;
   ledger_canister_loading: string;
   is_duplication: string;

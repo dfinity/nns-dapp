@@ -35,6 +35,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Build the imported-token replacement from certified data when the user imports
+  a token, adds an index canister, or removes a token. A save no longer writes
+  back a query response, and a save can no longer clear the list because the
+  tokens were not loaded.
+
 #### Not Published
 
 ### Operations
