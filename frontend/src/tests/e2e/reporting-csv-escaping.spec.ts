@@ -125,6 +125,9 @@ test("Test the CSV export escapes formula characters", async ({
   const download = await downloadPromise;
 
   const downloadPath = await download.path();
+  if (downloadPath === null) {
+    throw new Error("The download produced no local file path.");
+  }
   const csvText = readFileSync(downloadPath, "utf-8");
   const cells = parseCsv(csvText).flat();
 
