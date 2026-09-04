@@ -65,8 +65,13 @@ test("The ICP price comes from the most liquid ICPSwap pool", async ({
   });
 
   let tickersRequested = false;
+  let markTickersRequested: () => void;
+  const tickersRequestedPromise = new Promise<void>((resolve) => {
+    markTickersRequested = resolve;
+  });
   await page.route("**/tickers", async (route) => {
     tickersRequested = true;
+    markTickersRequested();
     await route.fulfill({
       // The attacker pool comes first, the order an attacker would want.
       json: [attackerCkusdcTicker, realCkusdcTicker],
@@ -89,8 +94,9 @@ test("The ICP price comes from the most liquid ICPSwap pool", async ({
 
   // The app asks ICPSwap for the tickers only when the network configures an
   // ICPSwap URL. `dfx.json` gives that URL to mainnet, app and beta, not to
-  // the local network, so the local app shows no price at all.
-  await page.waitForTimeout(5_000);
+  // the local network, so the local app shows no price at all. Wait for the
+  // request, with a 5s cap for a network that never sends it.
+  await Promise.race([tickersRequestedPromise, page.waitForTimeout(5_000)]);
   test.skip(
     !tickersRequested,
     "This network configures no ICPSwap URL, so the app requests no tickers."
