@@ -28,6 +28,10 @@ proposal is successful, the changes it released will be moved from this file to
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
 
+- The import token validation no longer sends the user principal to the entered
+  canisters. The ledger and index canister IDs come from the form or from the
+  URL, so the two validation calls now use the anonymous identity.
+
 #### Not Published
 
 ### Operations

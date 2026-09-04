@@ -20,6 +20,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
@@ -552,6 +553,74 @@ describe("ImportTokenModal", () => {
           },
         ],
       });
+    });
+
+    it("validates the URL canisters with the anonymous identity", async () => {
+      const getLedgerIdSpy = vi
+        .spyOn(icrcIndexApi, "getLedgerId")
+        .mockResolvedValue(ledgerCanisterId);
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+      const setImportedTokensSpy = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue();
+
+      const po = renderComponent();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      // The modal validates as soon as the imported tokens are loaded, without
+      // a click. The canister IDs come from the URL, so both validation calls
+      // must stay anonymous.
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+      await runResolvedPromises();
+
+      expect(await reviewPo.isPresent()).toEqual(true);
+
+      expect(queryIcrcTokenSpy).toBeCalledTimes(1);
+      expect(queryIcrcTokenSpy).toBeCalledWith(
+        expect.objectContaining({
+          identity: new AnonymousIdentity(),
+          canisterId: ledgerCanisterId,
+        })
+      );
+      expect(getLedgerIdSpy).toBeCalledTimes(1);
+      expect(getLedgerIdSpy).toBeCalledWith(
+        expect.objectContaining({
+          identity: new AnonymousIdentity(),
+          indexCanisterId,
+        })
+      );
+
+      const validationIdentities = [
+        ...queryIcrcTokenSpy.mock.calls,
+        ...getLedgerIdSpy.mock.calls,
+      ].map(([{ identity }]) => identity.getPrincipal().toText());
+      expect(validationIdentities).toEqual([
+        new AnonymousIdentity().getPrincipal().toText(),
+        new AnonymousIdentity().getPrincipal().toText(),
+      ]);
+      expect(validationIdentities).not.toContain(
+        mockIdentity.getPrincipal().toText()
+      );
+
+      // The import itself still runs with the user identity.
+      expect(setImportedTokensSpy).toBeCalledTimes(0);
+
+      await reviewPo.getConfirmButtonPo().click();
+      await runResolvedPromises();
+
+      expect(setImportedTokensSpy).toBeCalledTimes(1);
+      expect(setImportedTokensSpy).toBeCalledWith(
+        expect.objectContaining({
+          identity: mockIdentity,
+        })
+      );
     });
 
     it("removes the URL parameters on cancel click", async () => {
