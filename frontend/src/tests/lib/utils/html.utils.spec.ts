@@ -139,6 +139,33 @@ describe("html.utils", () => {
       );
     });
 
+    it("should drop a link that hides an unsafe scheme behind a control character", () => {
+      // The HTML parser turns a control character of an attribute into a
+      // replacement character, so the value is set on the element directly.
+      const sanitizeHref = (href: string): string | null => {
+        const root = document.createElement("div");
+        const link = document.createElement("a");
+        link.setAttribute("href", href);
+        link.textContent = "x";
+        root.appendChild(link);
+        sanitizeRenderedMarkdown(root);
+        return root.querySelector("a")?.getAttribute("href") ?? null;
+      };
+
+      // Every value below resolves to the `javascript` scheme in the URL
+      // parser of the browser.
+      expect(sanitizeHref("java\tscript:alert(1)")).toBeNull();
+      expect(sanitizeHref("java\nscript:alert(1)")).toBeNull();
+      expect(sanitizeHref("java\rscript:alert(1)")).toBeNull();
+      expect(sanitizeHref("\u0000javascript:alert(1)")).toBeNull();
+      expect(sanitizeHref(" javascript:alert(1)")).toBeNull();
+
+      expect(sanitizeHref("https://internetcomputer.org/")).toBe(
+        "https://internetcomputer.org/"
+      );
+      expect(sanitizeHref("/proposal/1")).toBe("/proposal/1");
+    });
+
     it("should drop the attributes that imitate the app", () => {
       expect(
         sanitize(
