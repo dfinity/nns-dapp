@@ -3,7 +3,6 @@ import * as locationApi from "$lib/api/location.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
-import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -64,14 +63,6 @@ vi.mock("$lib/api/sns.api", async (importOriginal) => {
   };
 });
 
-vi.mock("$lib/api/sns-swap-metrics.api", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("$lib/api/sns-swap-metrics.api")>();
-  return {
-    ...actual,
-  };
-});
-
 vi.mock("$lib/api/sns-sale.api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("$lib/api/sns-sale.api")>();
   return {
@@ -110,11 +101,6 @@ describe("ProjectDetail", () => {
   const userCountryCode = "CH";
   const notUserCountryCode = "US";
   const newBalance = 10_000_000_000n;
-  const saleBuyerCount = 1_000_000;
-  const rawMetricsText = `
-# TYPE sale_buyer_count gauge
-sale_buyer_count ${saleBuyerCount} 1677707139456
-# HELP sale_cf_participants_count`;
   const now = Date.now();
   const nowInSeconds = Math.floor(now / 1000);
 
@@ -145,10 +131,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     vi.spyOn(snsSaleApi, "queryFinalizationStatus").mockResolvedValue(
       snsFinalizationStatusResponseMock
     );
-
-    vi.spyOn(snsMetricsApi, "querySnsSwapMetrics").mockResolvedValue(
-      rawMetricsText
-    );
   });
 
   const renderComponent = ({
@@ -177,7 +159,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       setNoIdentity();
     });
 
-    // TODO: Remove once all SNSes support buyers count in derived state
     describe("Open project without buyers count on derived state", () => {
       const props = {
         rootCanisterId: rootCanisterId.toText(),
@@ -194,15 +175,23 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         ]);
       });
 
-      it("should fetch swap metrics on load", async () => {
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
+      it("should not fetch the swap metrics from the raw domain", async () => {
         renderComponent(props);
 
         await runResolvedPromises();
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledWith({
-          swapCanisterId,
-        });
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+
+        const fetchedUrls = vi
+          .mocked(global.fetch)
+          .mock.calls.map(([url]) => String(url));
+        expect(
+          fetchedUrls.filter((url) => url.includes("raw.icp0.io"))
+        ).toEqual([]);
+      });
+
+      it("should render status section", async () => {
+        const po = renderComponent(props);
+
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
       });
     });
 
@@ -219,19 +208,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             certified: true,
           },
         ]);
-      });
-
-      it("should NOT start watching swap metrics", async () => {
-        renderComponent(props);
-
-        await runResolvedPromises();
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
-
-        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
-        await advanceTime(retryDelay);
-        await runResolvedPromises();
-
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
       });
 
       it("should start watching derived state and stop on unmounting", async () => {
@@ -287,38 +263,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
     });
 
-    // TODO: Remove once all SNSes support buyers count in derived state
-    describe("Committed project without buyers in derived state", () => {
-      const props = {
-        rootCanisterId: rootCanisterId.toText(),
-      };
-      beforeEach(() => {
-        setSnsProjects([
-          {
-            rootCanisterId,
-            lifecycle: SnsSwapLifecycle.Committed,
-            directParticipantCount: [],
-            certified: true,
-          },
-        ]);
-      });
-
-      it("should query metrics but not watch them", async () => {
-        const po = renderComponent(props);
-
-        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
-
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
-
-        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
-
-        // Even after waiting a long time there shouldn't be more calls.
-        await advanceTime(99 * retryDelay);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
-      });
-    });
-
     describe("Committed project with buyers count in derived state", () => {
       const props = {
         rootCanisterId: rootCanisterId.toText(),
@@ -333,20 +277,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             swapDueTimestampSeconds: nowInSeconds - SECONDS_IN_DAY,
           },
         ]);
-      });
-
-      it("should NOT query metrics nor watch them", async () => {
-        const po = renderComponent(props);
-
-        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
-
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
-
-        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
-
-        // Even after waiting a long time there shouldn't be more calls.
-        await advanceTime(99 * retryDelay);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
       });
 
       it("should not query total commitments, nor start watching them", async () => {
@@ -752,43 +682,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
     });
 
-    describe("Committed project", () => {
-      const props = {
-        rootCanisterId: rootCanisterId.toText(),
-      };
-      beforeEach(() => {
-        setSnsProjects([
-          {
-            rootCanisterId,
-            lifecycle: SnsSwapLifecycle.Committed,
-            directParticipantCount: [],
-            certified: true,
-          },
-        ]);
-        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
-          rootCanisterId,
-          myCommitment: {
-            icp: [],
-            has_created_neuron_recipes: [],
-          },
-        });
-      });
-
-      it("should query metrics but not watch them", async () => {
-        const po = renderComponent(props);
-
-        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
-
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
-
-        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
-
-        // Even after waiting a long time there shouldn't be more calls.
-        await advanceTime(99 * retryDelay);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
-      });
-    });
-
     describe("Committed project with buyers count in state", () => {
       const props = {
         rootCanisterId: rootCanisterId.toText(),
@@ -818,20 +711,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             has_created_neuron_recipes: [],
           },
         });
-      });
-
-      it("should NOT query metrics nor watch them", async () => {
-        const po = renderComponent(props);
-
-        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
-
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
-
-        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
-
-        // Even after waiting a long time there shouldn't be more calls.
-        await advanceTime(99 * retryDelay);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
       });
 
       it("should not query total commitments, nor start watching them", async () => {
