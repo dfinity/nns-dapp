@@ -35,7 +35,10 @@ export class ProjectCommitmentPo extends BasePageObject {
     return this.isPresent("sns-project-current-sale-buyer-count");
   }
 
-  async getGoalReachedMessage(): Promise<string> {
+  async getGoalReachedMessage(): Promise<string | null> {
+    if (!(await this.isPresent("min-participation-reached"))) {
+      return null;
+    }
     return this.getText("min-participation-reached");
   }
 
