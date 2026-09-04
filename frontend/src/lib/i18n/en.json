@@ -1058,7 +1058,8 @@
   "sns_neuron_detail": {
     "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
     "add_hotkey_info": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey.",
-    "add_hotkey_tooltip": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey."
+    "add_hotkey_tooltip": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey.",
+    "partial_hotkey_warning": "This principal keeps some voting permissions. Remove it to revoke them."
   },
   "sns_neurons": {
     "text": "You have no $project neurons. Create a neuron by staking $tokenSymbol to vote on $project proposals.",
@@ -1168,6 +1169,7 @@
     "load_sale_total_commitments": "There was an unexpected error while loading the commitments of the project.",
     "load_sale_lifecycle": "There was an unexpected error while loading the status of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
+    "sns_remove_hotkey_incomplete": "The hotkey keeps some permissions on the neuron. Try again to remove them.",
     "sns_split_neuron": "There was an error while splitting the neuron.",
     "sns_disburse": "There was an error while disbursing the neuron.",
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",

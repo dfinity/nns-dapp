@@ -35,7 +35,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Remove all voting permissions when a user removes an SNS neuron hotkey. The removal kept `ManageVotingPermission`, so the removed principal could grant the permissions back. The hotkey list now also shows a principal that keeps some voting permissions. After the removal, the dapp reads the certified neuron and reports a permission that remains.
+
 #### Not Published
+
+- Update the TESTNET permissions card when the neuron changes. The card read the neuron once, so it showed stale data.
 
 ### Operations
 

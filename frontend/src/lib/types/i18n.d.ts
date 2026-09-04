@@ -1099,6 +1099,7 @@ interface I18nSns_neuron_detail {
   vesting_period_tooltip: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
+  partial_hotkey_warning: string;
 }
 
 interface I18nSns_neurons {
@@ -1219,6 +1220,7 @@ interface I18nError__sns {
   load_sale_total_commitments: string;
   load_sale_lifecycle: string;
   sns_remove_hotkey: string;
+  sns_remove_hotkey_incomplete: string;
   sns_split_neuron: string;
   sns_disburse: string;
   sns_start_dissolving: string;
