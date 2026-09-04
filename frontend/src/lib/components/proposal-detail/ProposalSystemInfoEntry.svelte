@@ -39,6 +39,8 @@
 
   {#snippet info()}
     <TestIdWrapper testId="info">
+      <!-- TestIdWrapper is a `display: contents` element too, but it exposes no
+      element to bind to, so the sanitizer needs this one. -->
       <div class="contents" bind:this={container}>
         <Html text={description ?? $i18n.proposal_detail.no_more_info} />
       </div>
