@@ -30,6 +30,10 @@ class HeldTokensCardRowPo extends BasePageObject {
   getHeldTokenBalanceInUsd(): Promise<string> {
     return this.getText("balance-in-usd");
   }
+
+  getHeldTokenBalanceInUsdAriaLabel(): Promise<string | null> {
+    return this.getElement("balance-in-usd").getAttribute("aria-label");
+  }
 }
 
 export class HeldTokensCardPo extends BasePageObject {
@@ -55,6 +59,10 @@ export class HeldTokensCardPo extends BasePageObject {
     return this.getText("amount");
   }
 
+  getAmountAriaLabel(): Promise<string | null> {
+    return this.getElement("amount").getAttribute("aria-label");
+  }
+
   getInfoRow(): PageObjectElement {
     return this.getElement("info-row");
   }
@@ -72,6 +80,14 @@ export class HeldTokensCardPo extends BasePageObject {
     const rows = await this.getRows();
 
     return Promise.all(rows.map((row) => row.getHeldTokenBalanceInUsd()));
+  }
+
+  async getHeldTokensBalanceInUsdAriaLabels(): Promise<(string | null)[]> {
+    const rows = await this.getRows();
+
+    return Promise.all(
+      rows.map((row) => row.getHeldTokenBalanceInUsdAriaLabel())
+    );
   }
 
   async getHeldTokensBalanceInNativeCurrency(): Promise<string[]> {
