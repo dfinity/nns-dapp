@@ -1,38 +1,17 @@
-import type { SnsSwapMetricsStoreData } from "$lib/stores/sns-swap-metrics.store";
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
-import type { Principal } from "@icp-sdk/core/principal";
-
-export const swapSaleBuyerCount = ({
-  swapMetrics,
-  rootCanisterId,
-  derivedState: { direct_participant_count },
-}: {
-  swapMetrics: SnsSwapMetricsStoreData;
-  rootCanisterId: Principal | undefined;
-  derivedState: SnsSwapDid.DerivedState;
-}): number | undefined => {
-  if (nonNullish(fromNullable(direct_participant_count))) {
-    return Number(fromNullable(direct_participant_count));
-  }
-  return rootCanisterId === undefined
-    ? undefined
-    : swapMetrics?.[rootCanisterId.toText()]?.saleBuyerCount;
-};
 
 /**
- * Returns whether the derived state has a buyers count.
+ * Returns the number of direct participants of a swap.
  *
- * It returns undefined if the derived state is undefined or null.
- *
- * If the field is not set, we want to trigger a call to the raw canister metrics.
- * Therefore, we don't want to return `false` while the derived state is not present.
+ * The value comes from the certified `get_derived_state` call. It is undefined
+ * when the swap canister does not report the field.
  */
-export const hasBuyersCount = (
-  derived: SnsSwapDid.DerivedState | undefined | null
-): undefined | boolean => {
-  if (derived === undefined || derived === null) {
-    return undefined;
-  }
-  return nonNullish(fromNullable(derived.direct_participant_count));
+export const swapSaleBuyerCount = ({
+  derivedState: { direct_participant_count },
+}: {
+  derivedState: SnsSwapDid.DerivedState;
+}): number | undefined => {
+  const count = fromNullable(direct_participant_count);
+  return nonNullish(count) ? Number(count) : undefined;
 };

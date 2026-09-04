@@ -13,7 +13,6 @@ import {
   isSnsGenericNervousSystemTypeProposal,
   isSnsLedgerCanisterId,
   isSnsNativeNervousSystemFunction,
-  parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -174,41 +173,6 @@ describe("sns-utils", () => {
         "This is the beginning of the error. The swap has already reached its target ..."
       );
       expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
-    });
-
-    it("returns false on unknown error", () => {
-      const error = new Error("Fake the swap has already reached its target");
-      expect(isInternalRefreshBuyerTokensError(error)).toBe(false);
-    });
-
-    it("returns false on not error argument", () => {
-      expect(isInternalRefreshBuyerTokensError(null)).toBe(false);
-      expect(isInternalRefreshBuyerTokensError(undefined)).toBe(false);
-      expect(
-        isInternalRefreshBuyerTokensError(
-          "The swap has already reached its target"
-        )
-      ).toBe(false);
-    });
-  });
-
-  describe("parseSnsSwapSaleBuyerCount", () => {
-    const saleBuyerCount = 1_000_000;
-    const RAW_METRICS = `
-# TYPE sale_buyer_count gauge
-sale_buyer_count ${saleBuyerCount} 1677707139456
-# HELP sale_cf_participants_count`;
-
-    it("returns sale_buyer_count value", () => {
-      expect(parseSnsSwapSaleBuyerCount(RAW_METRICS)).toEqual(saleBuyerCount);
-    });
-
-    it("returns undefined when sale_buyer_count not found", () => {
-      const WRONG_METRICS = `
-# TYPE sale_buyer_count gauge
-sale_participants_count ${saleBuyerCount} 1677707139456
-# HELP sale_cf_participants_count`;
-      expect(parseSnsSwapSaleBuyerCount(WRONG_METRICS)).toBeUndefined();
     });
 
     it("returns false on unknown error", () => {
