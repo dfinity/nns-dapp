@@ -5,12 +5,17 @@
 #![deny(clippy::expect_used)]
 #![deny(clippy::unwrap_used)]
 pub mod assets;
+#[cfg(any(test, feature = "reconfigurable"))]
+mod auth;
 mod conversion;
 mod state;
 mod types;
 mod upstream;
 
 mod fast_scheduler;
+
+#[cfg(test)]
+mod tests;
 
 use std::collections::VecDeque;
 use std::time::Duration;
@@ -218,13 +223,30 @@ fn post_upgrade(config: Option<Config>) {
 
 /// Method to allow reconfiguration without a WASM change.
 ///
-/// Note: This _could_ be exposed in production if limited to the controllers
-///  - Controllers can be obtained by the async call: `agent.read_state_canister_info(canister_id, "controllers")`
-#[cfg(feature = "reconfigurable")]
+/// Only a controller of this canister may call this method.  Every other caller
+/// gets a trap and the configuration stays as it is.
+#[cfg(any(test, feature = "reconfigurable"))]
 #[ic_cdk::update]
 #[candid_method(update)]
 fn reconfigure(config: Option<Config>) {
+    crate::auth::assert_caller_is_controller();
     setup(config);
+}
+
+/// Stores the given `Config`, then raises every interval that is too short.
+///
+/// A timer with a very short interval runs the data collection continuously and burns
+/// cycles.  A `Config` reaches this canister from a caller, or from the stable memory of
+/// an older version, so both need the same limit.
+///
+/// Returns `true` if it raised an interval.
+fn apply_config(config: Option<Config>) -> bool {
+    if let Some(config) = config {
+        STATE.with(|state| {
+            *state.stable.borrow().config.borrow_mut() = config;
+        });
+    }
+    STATE.with(|state| state.stable.borrow().config.borrow_mut().raise_short_intervals())
 }
 
 /// Code that needs to be run on `init` and after every upgrade.
@@ -240,13 +262,15 @@ fn setup(config: Option<Config>) {
         ///////////////////////////\n"
     ));
     // Set configuration, if provided
-    if let Some(config) = config {
-        crate::state::log(format!("Setting config to: {config:?}"));
-        STATE.with(|state| {
-            *state.stable.borrow().config.borrow_mut() = config;
-        });
-    } else {
-        crate::state::log("Using existing config.".to_string());
+    match &config {
+        Some(config) => crate::state::log(format!("Setting config to: {config:?}")),
+        None => crate::state::log("Using existing config.".to_string()),
+    }
+    if apply_config(config) {
+        crate::state::log(format!(
+            "Raised the intervals to the minimum of {} ms.",
+            Config::MIN_INTERVAL_MS
+        ));
     }
     // Browsers complain if they don't get pretty pictures.  So do I.
     insert_favicon();

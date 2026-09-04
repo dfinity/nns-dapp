@@ -300,6 +300,23 @@ pub struct Config {
     /// The fast update interval, in milliseconds
     pub fast_interval_ms: u64,
 }
+impl Config {
+    /// The shortest interval that the canister uses between two data collection runs.
+    ///
+    /// Data collection makes several inter-canister calls, so a shorter interval burns
+    /// cycles without collecting more data.
+    pub const MIN_INTERVAL_MS: u64 = 100;
+
+    /// Raises every interval that is shorter than `MIN_INTERVAL_MS` to `MIN_INTERVAL_MS`.
+    ///
+    /// Returns `true` if it changed an interval.
+    pub fn raise_short_intervals(&mut self) -> bool {
+        let original = (self.update_interval_ms, self.fast_interval_ms);
+        self.update_interval_ms = self.update_interval_ms.max(Self::MIN_INTERVAL_MS);
+        self.fast_interval_ms = self.fast_interval_ms.max(Self::MIN_INTERVAL_MS);
+        original != (self.update_interval_ms, self.fast_interval_ms)
+    }
+}
 impl Default for Config {
     fn default() -> Self {
         Config {
