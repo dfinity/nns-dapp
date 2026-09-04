@@ -22,6 +22,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- The proposal detail page no longer breaks on a payload text that nests JSON
+  thousands of levels deep.
+
 #### Security
 
 #### Not Published
