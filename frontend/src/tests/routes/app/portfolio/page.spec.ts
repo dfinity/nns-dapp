@@ -231,57 +231,37 @@ describe("Portfolio route", () => {
 
       await renderPage();
 
-      // Should be called 5 times total (2 ckBTC + 2 ICRC + 1 ImportedToken + 2 SNS)
-      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(7);
+      const ledgerCanisterIds = [
+        CKBTC_UNIVERSE_CANISTER_ID,
+        CKTESTBTC_UNIVERSE_CANISTER_ID,
+        CKETH_UNIVERSE_CANISTER_ID,
+        CKUSDC_UNIVERSE_CANISTER_ID,
+        importedToken1Id,
+        tetrisSNS.ledgerCanisterId,
+        doomSNS.ledgerCanisterId,
+      ];
 
-      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(1, {
-        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
-        certified: false,
-        identity,
-        account,
-      });
+      // 7 ledgers (2 ckBTC + 2 ICRC + 1 ImportedToken + 2 SNS), each with one
+      // query call and one update call.
+      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(
+        2 * ledgerCanisterIds.length
+      );
 
-      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(2, {
-        canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-        certified: false,
-        identity,
-        account,
-      });
+      for (const canisterId of ledgerCanisterIds) {
+        expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledWith({
+          canisterId,
+          certified: false,
+          identity,
+          account,
+        });
 
-      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(3, {
-        canisterId: CKETH_UNIVERSE_CANISTER_ID,
-        certified: false,
-        identity,
-        account,
-      });
-
-      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(4, {
-        canisterId: CKUSDC_UNIVERSE_CANISTER_ID,
-        certified: false,
-        identity,
-        account,
-      });
-
-      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(5, {
-        canisterId: importedToken1Id,
-        certified: false,
-        identity,
-        account,
-      });
-
-      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(6, {
-        canisterId: tetrisSNS.ledgerCanisterId,
-        certified: false,
-        identity,
-        account,
-      });
-
-      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(7, {
-        canisterId: doomSNS.ledgerCanisterId,
-        certified: false,
-        identity,
-        account,
-      });
+        expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledWith({
+          canisterId,
+          certified: true,
+          identity,
+          account,
+        });
+      }
     });
 
     describe("should render the Portfolio page", async () => {
@@ -417,6 +397,59 @@ describe("Portfolio route", () => {
         ]);
 
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
+      });
+
+      it("should show the certified balance when it differs from the query answer", async () => {
+        // TODO: Move this to a helper or similar
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
+
+        // A malicious replica answers the query call with a forged ckBTC
+        // balance. The certified update call answers with the real one.
+        const forgedCkBTCBalanceE8s = 10n * 100_000_000n;
+
+        vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+          async ({ canisterId, certified }) => {
+            if (
+              !certified &&
+              canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()
+            ) {
+              return forgedCkBTCBalanceE8s;
+            }
+
+            const balancesMap = {
+              [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+              [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+              [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+              [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE6s,
+              [tetrisSNS.ledgerCanisterId.toText()]: tetrisBalanceE8s,
+              [doomSNS.ledgerCanisterId.toText()]: doomBalanceE8s,
+              [importedToken1Id.toText()]: importedToken1BalanceE6s,
+            };
+
+            return balancesMap[canisterId.toText()];
+          }
+        );
+
+        const po = await renderPage();
+        await runResolvedPromises();
+        const portfolioPagePo = po.getPortfolioPagePo();
+
+        expect(
+          await portfolioPagePo
+            .getHeldRestTokensCardPo()
+            .getHeldTokensBalanceInNativeCurrency()
+        ).toEqual(["1.00 ckBTC", "1.00 ckTESTBTC", "0.10 ckETH"]);
+
+        // The same total as with an honest query answer. The forged 10 ckBTC
+        // would add $900'000 to it.
+        expect(
+          await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
+        ).toBe("$203’451");
       });
 
       it.skip("should not show failed SNS", async () => {
