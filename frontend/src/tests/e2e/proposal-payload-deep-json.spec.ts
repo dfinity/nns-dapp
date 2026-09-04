@@ -138,11 +138,11 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
     .getActionableProposalsSegmentPo()
     .clickAllProposals();
 
-  await step("Filter the open Subnet Management proposals");
+  await step("Filter the open IC OS Version Deployment proposals");
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
-    .selectTopicFilter([Topic.SubnetManagement]);
+    .selectTopicFilter([Topic.IcOsVersionDeployment]);
   await nnsProposalListPo.waitForContentLoaded();
   await appPo
     .getProposalsPo()
@@ -192,5 +192,5 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
   expect(await nnsProposalPo.getVotingCardPo().isPresent()).toBe(true);
   expect(
     await nnsProposalPo.getProposalSystemInfoSectionPo().getProposalTopicText()
-  ).toBe("Subnet Management");
+  ).toBe("IC OS Version Deployment");
 });
