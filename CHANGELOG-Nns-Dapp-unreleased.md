@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 - The proposal detail page no longer parses the text fields of a payload as
   JSON, so a text that nests JSON thousands of levels deep no longer breaks
   the page.
+- Refuse to import the ledger of any SNS project, whatever its swap state, and
+  wait for the SNS project list before the import form validates a ledger.
 
 #### Security
 
