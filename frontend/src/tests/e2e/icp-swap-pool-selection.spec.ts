@@ -10,11 +10,12 @@ import {
 import { expect, test } from "@playwright/test";
 
 // The ICP price in USD that the banner shows is the `last_price` of the
-// ckUSDC ticker. The app formats it with `Intl.NumberFormat("fr-FR")` and two
-// fraction digits, so 4 becomes "4,00" and 400 becomes "400,00".
+// ckUSDC ticker. The app formats it with `formatNumber`, which replaces the
+// decimal comma from `Intl.NumberFormat("fr-FR")` with a dot, so 4 becomes
+// "4.00" and 400 becomes "400.00".
 const REAL_ICP_PRICE = "4";
 const ATTACKER_ICP_PRICE = "400";
-const REAL_ICP_PRICE_SHOWN = "4,00";
+const REAL_ICP_PRICE_SHOWN = "4.00";
 
 const ticker = (overrides: Partial<IcpSwapTicker>): IcpSwapTicker => ({
   ticker_id: "ne2vj-6yaaa-aaaag-qb3ia-cai",
