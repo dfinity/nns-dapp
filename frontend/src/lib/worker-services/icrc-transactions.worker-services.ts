@@ -1,5 +1,8 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
-import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import {
+  DEFAULT_INDEX_TRANSACTION_MAX_PAGES,
+  DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT,
+} from "$lib/constants/constants";
 
 import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type {
@@ -13,7 +16,7 @@ import type {
   TimerWorkerUtilsJobData,
   TimerWorkerUtilsSyncParams,
 } from "$lib/worker-utils/timer.worker-utils";
-import { jsonReplacer, nonNullish } from "@dfinity/utils";
+import { isNullish, jsonReplacer, nonNullish } from "@dfinity/utils";
 import {
   decodeIcrcAccount,
   type IcrcIndexDid,
@@ -28,7 +31,7 @@ export type GetAccountsTransactionsResults = Omit<
 /**
  * Collect the ICRC transactions for a list of accounts.
  *
- * For each account provided as a parameter, the service ensures that no duplicate transactions are returned and handles fetching all transactions recursively, taking into account the pagination of the backend API calls.
+ * For each account provided as a parameter, the service ensures that no duplicate transactions are returned and fetches the pages of new transactions in a loop, taking into account the pagination of the backend API calls.
  *
  * @param object TimerWorkerUtilsJobData<PostMessageDataRequestTransactions> & { state: DictionaryWorkerState<TransactionsData>; }
  * @param object.identity
@@ -93,7 +96,7 @@ const getIcrcAccountTransactions = async ({
   host,
   state,
 }: GetAccountTransactionsParams): Promise<GetAccountsTransactionsResults> => {
-  const { mostRecentTxId, transactions, ...rest } = await getIcrcTransactions({
+  const { transactions: firstPage, ...rest } = await getIcrcTransactions({
     identity,
     indexCanisterId,
     accountIdentifier,
@@ -103,50 +106,66 @@ const getIcrcAccountTransactions = async ({
     state,
   });
 
-  // We compare IDs because we want to sort and find the oldest transaction ID to notice if we have fetched all new transactions or if there is a remaining gap.
-  //
-  // For example:
-  // New transactions [100, 99, 98]
-  // Most recent transaction ID 95
-  // Therefore, we still need to get between 95 and 98
-  //
-  // Note that  we do not perform a sort based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
-  const oldestTxId: IcrcIndexDid.BlockIndex | undefined = [
-    ...transactions,
-  ].sort(({ id: idA }, { id: idB }) => Number(idA - idB))[0]?.id;
+  // Collect the pages and flatten them once at the end.
+  const pages: IcrcIndexDid.TransactionWithId[][] = [firstPage];
 
-  // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions
-  const fetchMoreTransactions = (): boolean => {
+  let currentStart: bigint | undefined = start;
+  let currentPage: IcrcIndexDid.TransactionWithId[] = firstPage;
+
+  // The Index canister is not trusted, therefore the loop stops after
+  // DEFAULT_INDEX_TRANSACTION_MAX_PAGES pages whatever the canister answers.
+  while (pages.length < DEFAULT_INDEX_TRANSACTION_MAX_PAGES) {
+    // We compare IDs because we want to sort and find the oldest transaction ID to notice if we have fetched all new transactions or if there is a remaining gap.
+    //
+    // For example:
+    // New transactions [100, 99, 98]
+    // Most recent transaction ID 95
+    // Therefore, we still need to get between 95 and 98
+    //
+    // Note that  we do not perform a sort based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
+    const oldestTxId: IcrcIndexDid.BlockIndex | undefined = [
+      ...currentPage,
+    ].sort(({ id: idA }, { id: idB }) => Number(idA - idB))[0]?.id;
+
     const stateMostRecentTxId = state?.mostRecentTxId;
-    return (
-      nonNullish(stateMostRecentTxId) &&
-      nonNullish(oldestTxId) &&
-      oldestTxId > stateMostRecentTxId
-    );
-  };
+
+    // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions
+    if (
+      isNullish(stateMostRecentTxId) ||
+      isNullish(oldestTxId) ||
+      oldestTxId <= stateMostRecentTxId
+    ) {
+      break;
+    }
+
+    // The Index canister can answer a page that does not move the oldest ID
+    // down. Such a page makes no progress, so the loop stops with it.
+    if (nonNullish(currentStart) && oldestTxId >= currentStart) {
+      break;
+    }
+
+    // Two transactions can have the same Id - e.g. a transaction from/to same account.
+    // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
+    // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
+    currentStart = oldestTxId;
+
+    const { transactions } = await getIcrcTransactions({
+      identity,
+      indexCanisterId,
+      accountIdentifier,
+      start: currentStart,
+      fetchRootKey,
+      host,
+      state,
+    });
+
+    pages.push(transactions);
+    currentPage = transactions;
+  }
 
   return {
-    mostRecentTxId,
     ...rest,
-    transactions: [
-      ...transactions,
-      ...(fetchMoreTransactions() && nonNullish(oldestTxId)
-        ? (
-            await getIcrcAccountTransactions({
-              identity,
-              indexCanisterId,
-              accountIdentifier,
-              // Two transactions can have the same Id - e.g. a transaction from/to same account.
-              // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
-              // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
-              start: oldestTxId,
-              fetchRootKey,
-              host,
-              state,
-            })
-          ).transactions
-        : []),
-    ],
+    transactions: pages.flat(),
   };
 };
 
