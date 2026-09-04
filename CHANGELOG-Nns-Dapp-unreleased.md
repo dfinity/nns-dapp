@@ -35,6 +35,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Impose a Candid decoding quota on every exported method that takes an argument. The quota limits the DoS surface from decoding bombs.
+
 #### Not Published
 
 ### Operations
