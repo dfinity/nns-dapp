@@ -38,6 +38,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- The wallet page balance refresh now uses only certified calls. Before, an
+  unverified query answer could stop the certified refresh for the whole
+  session.
+
 #### Not Published
 
 ### Operations
