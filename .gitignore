@@ -4,6 +4,7 @@ assets.tar.xz
 sourcemaps.tar.xz
 build-inputs.txt
 out
+.update-tool-checksums-*
 
 # Miscellaneous
 *.class
