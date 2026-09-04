@@ -1,3 +1,4 @@
+import { MAX_EXPANDED_JSON_DEPTH } from "$lib/constants/proposals.constants";
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
@@ -173,8 +174,8 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
 
   // The text shows as the quoted string it is, the same as any string that is
   // not JSON.
-  expect(treeText).toContain(`"${"[".repeat(64)}`);
-  expect(treeText).toContain(`${"]".repeat(64)}"`);
+  expect(treeText).toContain(`"${"[".repeat(MAX_EXPANDED_JSON_DEPTH)}`);
+  expect(treeText).toContain(`${"]".repeat(MAX_EXPANDED_JSON_DEPTH)}"`);
   expect(treeText).toContain("replica_version_id");
   expect(treeText).not.toContain("Maximum call stack size exceeded");
 
