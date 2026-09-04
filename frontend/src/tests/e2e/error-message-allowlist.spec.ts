@@ -46,7 +46,7 @@ test("An index canister cannot choose the text of the error toast", async ({
   const appPo = new AppPo(pageElement);
   const tokensPagePo = appPo.getTokensPo().getTokensPagePo();
 
-  step("Open the import token modal");
+  await step("Open the import token modal");
 
   await tokensPagePo.getSettingsButtonPo().click();
   const importButtonPo = tokensPagePo.getImportTokenButtonPo();
@@ -58,7 +58,7 @@ test("An index canister cannot choose the text of the error toast", async ({
   const reviewPo = importTokenModalPo.getImportTokenReviewPo();
   await importTokenModalPo.waitFor();
 
-  step("Enter the ledger and index canister ids");
+  await step("Enter the ledger and index canister ids");
 
   await formPo.getLedgerCanisterInputPo().typeText(testLedgerCanisterId);
   await formPo.getIndexCanisterInputPo().typeText(testIndexCanisterId);
@@ -66,7 +66,9 @@ test("An index canister cannot choose the text of the error toast", async ({
   await reviewPo.waitFor();
   expect(await reviewPo.getTokenName()).toBe(TEST_TOKEN_NAME);
 
-  step("Make every call to the index canister fail with an app label key");
+  await step(
+    "Make every call to the index canister fail with an app label key"
+  );
 
   // The import is validated already, so the index canister can start to answer
   // with the text of its choice.
@@ -81,14 +83,14 @@ test("An index canister cannot choose the text of the error toast", async ({
     }
   );
 
-  step("Import the token and open its wallet");
+  await step("Import the token and open its wallet");
 
   await reviewPo.getConfirmButtonPo().click();
 
   const walletPo = appPo.getWalletPo().getIcrcWalletPo();
   await walletPo.waitFor();
 
-  step("The toast shows the app's own transactions error");
+  await step("The toast shows the app's own transactions error");
 
   const toastsPo = appPo.getToastsPo();
   // The import already showed its own success toast. Close it, so the

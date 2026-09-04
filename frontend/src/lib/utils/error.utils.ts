@@ -42,10 +42,15 @@ import {
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 
+// A constructor of an Error subclass. Used instead of the built-in Function
+// type, so I18N_KEY_ERRORS cannot hold a non-constructor such as an arrow
+// function.
+type ErrorClass = abstract new (...args: never[]) => Error;
+
 // The error classes that the app throws with an i18n label key as their
 // message. Every other error carries free text, which can come from a
 // third-party canister, so its message must never select an application text.
-const I18N_KEY_ERRORS: Array<Function> = [
+const I18N_KEY_ERRORS: Array<ErrorClass> = [
   AccountTranslateError,
   SubAccountLimitExceededError,
   HardwareWalletAttachError,
