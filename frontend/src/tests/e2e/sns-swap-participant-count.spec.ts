@@ -68,14 +68,15 @@ test("Test SNS swap participant count", async ({ page, context }) => {
   await projectDetail.participate({ amount: 5, acceptConditions: true });
   expect(await projectDetail.getCommitmentAmount()).toBe("5.00");
 
-  await step(
-    "The participant count rises by one, so it follows the swap state"
-  );
+  await step("The participant count rises, so it follows the swap state");
+  // Another worker can also participate in this sale at the same time
+  // (sns-participation.spec.ts uses the same first upcoming launch), so the
+  // count can rise by more than one. Check for at least one, not exactly one.
   await expect
     .poll(() => projectCommitmentPo.getParticipantsCount(), {
       timeout: POLL_TIMEOUT,
     })
-    .toBe(countBeforeParticipation + 1);
+    .toBeGreaterThanOrEqual(countBeforeParticipation + 1);
 
   await step("No request went to the raw metrics domain at any point");
   expect(rawMetricsRequests()).toEqual([]);
