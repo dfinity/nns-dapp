@@ -17,8 +17,7 @@ SCRIPT_UNDER_TEST="$SOURCE_DIR/find-transaction-from-timestamp"
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
-# The canary file. The injected command creates it. The path has no underscore,
-# because the script under test removes underscores from the canister response.
+# The canary file. The injected command creates it.
 export CANARY="$tmp_dir/canary"
 
 # Stub dfx. It prints a Candid response that the stub idl2json ignores.
@@ -57,30 +56,52 @@ run_script() {
   errout="$(cat "$tmp_dir/stderr")"
 }
 
-# Case 1: a malicious canister returns text with a command in an array
-# subscript.
-# The command substitution must stay unexpanded here. The script under test
-# must not run it.
+# Asserts that the last run_script call rejected the named value. The script
+# must exit non-zero, it must name the value in the error, and it must not have
+# run the injected command.
+expect_rejected() {
+  local name="$1"
+  if [[ "$status" == "0" ]]; then
+    fail "The script accepted a non-numeric $name. Output: $errout"
+  fi
+  if ! grep -q "$name is not a number" <<<"$errout"; then
+    fail "The script printed no error for a non-numeric $name. Output: $errout"
+  fi
+  if [[ -e "$CANARY" ]]; then
+    fail "The $name value ran a command. The canary file $CANARY exists."
+  fi
+}
+
+# The command substitution in the payloads below must stay unexpanded here. The
+# script under test must not run it.
 # shellcheck disable=SC2016
-export IDL2JSON_OUTPUT='{"log_length":"PATH[$(touch $CANARY)]"}'
+payload='PATH[$(touch $CANARY)]'
+
+# A response that the script accepts. The ledger holds 3 transactions. Each one
+# has timestamp 1000 seconds.
+good_output='{"log_length":"3","archived_transactions":[],"transactions":[{"timestamp":"1000000000000"}]}'
+
+# Case 1: a malicious canister returns log_length as text with a command in an
+# array subscript.
+export IDL2JSON_OUTPUT="{\"log_length\":\"$payload\"}"
 run_script 1000
+expect_rejected log_length
 
-if [[ "$status" == "0" ]]; then
-  fail "The script accepted a non-numeric log_length. Output: $errout"
-fi
+# Case 2: a malicious canister returns a valid log_length, then a transaction
+# timestamp with the same payload.
+export IDL2JSON_OUTPUT="{\"log_length\":\"3\",\"archived_transactions\":[],\"transactions\":[{\"timestamp\":\"$payload\"}]}"
+run_script 1000
+expect_rejected timestamp
 
-if ! grep -q "log_length is not a number" <<<"$errout"; then
-  fail "The script printed no error for a non-numeric log_length. Output: $errout"
-fi
+# Case 3: the developer passes the payload as the --timestamp argument. The
+# canister behaves.
+export IDL2JSON_OUTPUT="$good_output"
+run_script "$payload"
+expect_rejected TIMESTAMP
 
-if [[ -e "$CANARY" ]]; then
-  fail "The canister response ran a command. The canary file $CANARY exists."
-fi
-
-# Case 2: a well behaved canister returns numbers, and the script finds the
-# transaction. The ledger holds 3 transactions. Each one has timestamp 1000
-# seconds, so the first transaction at or after 1000 seconds is transaction 0.
-export IDL2JSON_OUTPUT='{"log_length":"3","archived_transactions":[],"transactions":[{"timestamp":"1000000000000"}]}'
+# Case 4: a well behaved canister returns numbers, and the script finds the
+# transaction. The first transaction at or after 1000 seconds is transaction 0.
+export IDL2JSON_OUTPUT="$good_output"
 run_script 1000
 
 if [[ "$status" != "0" ]]; then
@@ -91,7 +112,7 @@ if [[ "$output" != "0" ]]; then
   fail "Expected index 0 but got: $output"
 fi
 
-# Case 3: the canister separates the digits of log_length, as Candid does. The
+# Case 5: the canister separates the digits of log_length, as Candid does. The
 # script removes the separator before it checks the value. The ledger holds 10
 # transactions, and none of them is at or after 1001 seconds, so the answer is
 # the number of transactions.

@@ -48,6 +48,11 @@ assert_nat() {
   fi
 }
 
+# The index arguments reach an arithmetic context in min() and max(). A caller
+# can pass a value that it read from a ledger canister, so guard them here.
+assert_nat START_INDEX "$START_INDEX"
+assert_nat END_INDEX "$END_INDEX"
+
 min() {
   if [[ "$1" -lt "$2" ]]; then
     echo "$1"
