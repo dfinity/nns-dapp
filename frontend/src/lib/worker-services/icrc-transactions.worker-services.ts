@@ -115,17 +115,24 @@ const getIcrcAccountTransactions = async ({
   // The Index canister is not trusted, therefore the loop stops after
   // DEFAULT_INDEX_TRANSACTION_MAX_PAGES pages whatever the canister answers.
   while (pages.length < DEFAULT_INDEX_TRANSACTION_MAX_PAGES) {
-    // We compare IDs because we want to sort and find the oldest transaction ID to notice if we have fetched all new transactions or if there is a remaining gap.
+    // We compare IDs because we want to find the oldest transaction ID to notice if we have fetched all new transactions or if there is a remaining gap.
     //
     // For example:
     // New transactions [100, 99, 98]
     // Most recent transaction ID 95
     // Therefore, we still need to get between 95 and 98
     //
-    // Note that  we do not perform a sort based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
-    const oldestTxId: IcrcIndexDid.BlockIndex | undefined = [
-      ...currentPage,
-    ].sort(({ id: idA }, { id: idB }) => Number(idA - idB))[0]?.id;
+    // Note that we do not compare based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
+    //
+    // We compare the bigint IDs directly, with no Number(...) conversion. A hostile index canister
+    // can answer an ID above Number.MAX_SAFE_INTEGER, and a conversion of that ID to a number loses
+    // precision, which can pick the wrong oldest ID and defeat the progress and cap checks below.
+    const oldestTxId: IcrcIndexDid.BlockIndex | undefined = currentPage.reduce<
+      IcrcIndexDid.BlockIndex | undefined
+    >(
+      (oldest, { id }) => (isNullish(oldest) || id < oldest ? id : oldest),
+      undefined
+    );
 
     const stateMostRecentTxId = state?.mostRecentTxId;
 
