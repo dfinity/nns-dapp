@@ -68,6 +68,11 @@ sha256_of() {
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 
+# Every download and every checksum must succeed before config.json changes.
+# A working copy takes every update. config.json itself is replaced once, at
+# the end, so a failed run leaves config.json untouched.
+cp config.json "$tmpdir/config.json"
+
 for entry in "${entries[@]}"; do
   key="${entry%%|*}"
   url="${entry#*|}"
@@ -77,8 +82,9 @@ for entry in "${entries[@]}"; do
   checksum="$(sha256_of "$tmpdir/artefact")" || exit 1
   echo "$key $checksum"
   KEY="$key" CHECKSUM="$checksum" \
-    jq '.defaults.build.config[env.KEY] = env.CHECKSUM' config.json >"$tmpdir/config.json"
-  mv "$tmpdir/config.json" config.json
+    jq '.defaults.build.config[env.KEY] = env.CHECKSUM' "$tmpdir/config.json" >"$tmpdir/config.json.next"
+  mv "$tmpdir/config.json.next" "$tmpdir/config.json"
 done
 
+mv "$tmpdir/config.json" config.json
 echo "Updated the tool checksums in config.json."
