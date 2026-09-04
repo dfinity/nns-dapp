@@ -65,7 +65,10 @@ sha256_of() {
   fi
 }
 
-tmpdir="$(mktemp -d)"
+# The temp directory sits next to config.json, not under the system temp
+# directory. That keeps the final "mv" below on one filesystem, so it is an
+# atomic rename instead of a copy-then-delete.
+tmpdir="$(mktemp -d ./.update-tool-checksums-XXXXXX)"
 trap 'rm -rf "$tmpdir"' EXIT
 
 # Every download and every checksum must succeed before config.json changes.
