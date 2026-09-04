@@ -85,9 +85,21 @@ const SAFE_LINK_SCHEMES = ["http", "https", "mailto"];
 
 const SAFE_LINK_REL = "noopener noreferrer";
 
+// The URL parser of the browser drops the whitespace and the C0 control
+// characters of a URL, so `java<TAB>script:` and a NUL before `javascript:`
+// both resolve to the `javascript` scheme. Remove those characters before the
+// scheme test, or such a value passes the test as a relative link.
+const stripUrlNoise = (value: string): string =>
+  [...value]
+    .filter((character) => {
+      const code = character.codePointAt(0) ?? 0;
+      return code > 0x20 && code !== 0x7f;
+    })
+    .join("");
+
 // A link without a scheme is relative, so it stays inside the dapp.
 const isSafeHref = (value: string): boolean => {
-  const scheme = value.match(/^\s*([a-zA-Z][a-zA-Z0-9+.-]*):/)?.[1];
+  const scheme = stripUrlNoise(value).match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/)?.[1];
   return isNullish(scheme) || SAFE_LINK_SCHEMES.includes(scheme.toLowerCase());
 };
 
