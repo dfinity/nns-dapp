@@ -35,10 +35,11 @@ proposal is successful, the changes it released will be moved from this file to
   tiles and result boxes now have a visible background color.
 - On a narrow screen the header buttons no longer shrink while the app loads
   data.
-- Refuse to import the ledger of any SNS project, whatever its swap state, and
-  wait for the SNS project list before the import form validates a ledger.
 
 #### Security
+
+- Refuse to import the ledger of any SNS project, whatever its swap state, and
+  wait for the SNS project list before the import form validates a ledger.
 
 #### Not Published
 
