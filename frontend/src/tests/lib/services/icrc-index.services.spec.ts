@@ -23,7 +23,12 @@ describe("icrc-index.services", () => {
         const spyOnQueryIcrcIndexPrincipal = vi
           .spyOn(icrcLedgerApi, "queryIcrcIndexPrincipal")
           .mockResolvedValue(indexCanisterId);
-        const spyOnGetLedgerId = vi.spyOn(icrcIndexApi, "getLedgerId");
+        // The index canister must not be asked at all in this case. Reject so
+        // an unexpected call fails the test immediately, instead of falling
+        // through to the real implementation.
+        const spyOnGetLedgerId = vi
+          .spyOn(icrcIndexApi, "getLedgerId")
+          .mockRejectedValue(new Error("getLedgerId should not be called"));
 
         const result = await matchLedgerIndexPair({
           ledgerCanisterId,
@@ -143,7 +148,12 @@ describe("icrc-index.services", () => {
       vi.spyOn(icrcLedgerApi, "queryIcrcIndexPrincipal").mockRejectedValue(
         error
       );
-      const spyOnGetLedgerId = vi.spyOn(icrcIndexApi, "getLedgerId");
+      // The index canister must not be asked at all in this case. Reject so
+      // an unexpected call fails the test immediately, instead of falling
+      // through to the real implementation.
+      const spyOnGetLedgerId = vi
+        .spyOn(icrcIndexApi, "getLedgerId")
+        .mockRejectedValue(new Error("getLedgerId should not be called"));
 
       const result = await matchLedgerIndexPair({
         ledgerCanisterId,
