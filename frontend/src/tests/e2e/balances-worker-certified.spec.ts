@@ -1,3 +1,4 @@
+import { SYNC_ACCOUNTS_TIMER_INTERVAL_MILLIS } from "$lib/constants/accounts.constants";
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
@@ -9,11 +10,6 @@ import {
 import { expect, test, type Request } from "@playwright/test";
 
 const TEST_TOKEN_NAME = "ckRED";
-
-// Mirrors SYNC_ACCOUNTS_TIMER_INTERVAL_MILLIS in
-// $lib/constants/accounts.constants.ts. A Playwright spec cannot import a
-// frontend constant, so the value is copied.
-const SYNC_ACCOUNTS_TIMER_INTERVAL_MILLIS = 30_000;
 
 // Time to let the wallet page finish its own load calls before the measured
 // window starts.
