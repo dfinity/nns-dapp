@@ -6,7 +6,8 @@ import { Principal } from "@icp-sdk/core/principal";
 /**
  * Load Icrc accounts balances and token.
  *
- * The query answer shows first and the certified answer replaces it.
+ * The query answer shows first and the certified answer replaces it. If the
+ * certified answer arrives first, the query answer is skipped.
  *
  * @param {universeIds: UniverseCanisterIdText[]} params
  * @param {UniverseCanisterIdText[]} params.universeIds The Icrc environment for which the balances should be loaded.
