@@ -168,6 +168,12 @@ describe("html.utils", () => {
       );
     });
 
+    it("should drop an attribute named after a property of Object", () => {
+      expect(
+        sanitize('<p constructor="x" __proto__="y" hasOwnProperty="z">t</p>')
+      ).toBe("<p>t</p>");
+    });
+
     it("should not change an already sanitized tree", () => {
       const html =
         '<p>a <a href="https://internetcomputer.org/" target="_blank" rel="noopener noreferrer">l</a></p>';
