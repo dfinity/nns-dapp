@@ -1,3 +1,4 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { JsonPreviewPo } from "$tests/page-objects/JsonPreview.page-object";
 import { JsonRepresentationModeTogglePo } from "$tests/page-objects/JsonRepresentationModeToggle.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -22,5 +23,9 @@ export class ProposalProposerActionsEntryPo extends BasePageObject {
 
   getJsonPreviewPo(): JsonPreviewPo {
     return JsonPreviewPo.under(this.root);
+  }
+
+  getCopyButtonPo(): ButtonPo {
+    return ButtonPo.under({ element: this.root, testId: "copy-component" });
   }
 }

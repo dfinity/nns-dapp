@@ -43,6 +43,9 @@ proposal is successful, the changes it released will be moved from this file to
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- A proposal payload string that reads `__UNDEFINED__` now shows as that
+  string. Before, it showed as `undefined`. A quote in front of it could also
+  garble the rest of the payload view.
 
 #### Not Published
 
