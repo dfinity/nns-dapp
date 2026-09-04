@@ -74,8 +74,8 @@ const jsonGap = (indentation: number): string =>
  * of any content is written by `JSON.stringify`, so no payload string can read
  * as `undefined`.
  *
- * Transform bigint to string to avoid serialization error.
- * devMode transforms 123n -> "BigInt(123)"
+ * A bigint becomes a string, to avoid a serialization error. With `devMode`,
+ * 123n becomes "BigInt(123)".
  */
 export const stringifyJson = (
   value: unknown,
@@ -85,6 +85,8 @@ export const stringifyJson = (
   }
 ): string => {
   const gap = jsonGap(options?.indentation ?? 0);
+  // `JSON.stringify` writes a space after the key colon only when it indents.
+  const colonSpace = gap === "" ? "" : " ";
   // The chain of objects that are currently open, to detect a circular structure.
   const ancestors: object[] = [];
 
@@ -136,8 +138,11 @@ export const stringifyJson = (
     ancestors.push(value);
     try {
       if (Array.isArray(value)) {
+        // `Array.from` visits every index. `map` skips a hole and keeps it a hole.
         return wrap(
-          value.map((item, index) => serialize(item, `${index}`, level + 1)),
+          Array.from(value, (item, index) =>
+            serialize(item, `${index}`, level + 1)
+          ),
           "[",
           "]",
           level
@@ -147,7 +152,7 @@ export const stringifyJson = (
       return wrap(
         Object.keys(record).map(
           (name) =>
-            `${JSON.stringify(name)}:${gap === "" ? "" : " "}${serialize(
+            `${JSON.stringify(name)}:${colonSpace}${serialize(
               record[name],
               name,
               level + 1
