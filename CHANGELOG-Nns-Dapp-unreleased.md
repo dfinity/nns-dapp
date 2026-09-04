@@ -26,6 +26,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+- Remove the "Buy ICP" button and its modal from the accounts footer. Banxa no
+  longer offers ICP, so the button did not work.
+
 #### Fixed
 
 - The quick search panel now fits a phone screen, and its selected row, icon

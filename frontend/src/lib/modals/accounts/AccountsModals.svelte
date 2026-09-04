@@ -1,6 +1,5 @@
 <script lang="ts">
   import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
-  import BuyIcpModal from "$lib/modals/accounts/BuyIcpModal.svelte";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
   import NnsReceiveModal from "$lib/modals/accounts/NnsReceiveModal.svelte";
@@ -37,10 +36,6 @@
 </script>
 
 <svelte:window on:nnsAccountsModal={onNnsAccountsModal} />
-
-{#if type === "buy-icp" && nonNullish(account)}
-  <BuyIcpModal on:nnsClose={close} {account} />
-{/if}
 
 {#if type === "nns-receive" && nonNullish(data)}
   <NnsReceiveModal on:nnsClose={close} {data} />

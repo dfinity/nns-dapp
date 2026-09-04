@@ -323,13 +323,6 @@ interface I18nAccounts {
   main: string;
   balance: string;
   send: string;
-  buy_icp: string;
-  buy_icp_banxa: string;
-  receiving_icp_address: string;
-  icp_token_utility: string;
-  buy_icp_description: string;
-  buy_icp_note: string;
-  banxa_logo_alt: string;
   icp_transaction_description: string;
   icp_transaction_memo_label: string;
   icp_transaction_memo_hint: string;
