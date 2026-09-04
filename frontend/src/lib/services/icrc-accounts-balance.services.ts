@@ -27,6 +27,6 @@ export const syncIcrcAccountsBalances = async ({
   const error: boolean =
     results.find(({ status }) => status === "rejected") !== undefined;
   if (error) {
-    toastsError({ labelKey: "error.sns_accounts_balance_load" });
+    toastsError({ labelKey: "error.accounts_load" });
   }
 };
