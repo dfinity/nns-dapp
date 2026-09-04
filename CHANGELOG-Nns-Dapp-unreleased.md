@@ -43,6 +43,9 @@ proposal is successful, the changes it released will be moved from this file to
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- A proposal summary now renders only the tags and the attributes that markdown
+  needs. Before, the summary could add page-wide styles, a form with input
+  fields, or the class names of the app, and imitate the wallet UI.
 
 #### Not Published
 
