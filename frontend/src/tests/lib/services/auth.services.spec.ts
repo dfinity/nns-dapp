@@ -231,6 +231,41 @@ describe("auth-services", () => {
       historySpy.mockClear();
     });
 
+    it("should clean a bare level from url with no msg", async () => {
+      const toastSpy = vi.spyOn(toastsStore, "show");
+      const historySpy = vi.spyOn(routeUtils, "replaceHistory");
+
+      const location = window.location;
+      const search = "level=error";
+
+      // cleanUpMsgUrl builds its url from href, so href must carry the query.
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: {
+          ...location,
+          href: `https://nns.internetcomputer.org/accounts?${search}`,
+          search,
+        },
+      });
+
+      await displayAndCleanLogoutMsg();
+
+      expect(toastSpy).not.toHaveBeenCalled();
+      expect(historySpy).toHaveBeenCalledTimes(1);
+
+      const url = historySpy.mock.calls[0][0];
+      expect(url.searchParams.get("msg")).toBeNull();
+      expect(url.searchParams.get("level")).toBeNull();
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { ...location },
+      });
+
+      toastSpy.mockClear();
+      historySpy.mockClear();
+    });
+
     it("should ignore the level from url", async () => {
       const spy = vi.spyOn(toastsStore, "show");
 

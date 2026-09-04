@@ -133,16 +133,13 @@ export const displayAndCleanLogoutMsg = () => {
 
   const msg: string | null = urlParams.get(msgParam);
 
-  if (msg === null) {
+  if (msg === null && !urlParams.has(levelParam)) {
     return;
   }
 
-  if (!isLogoutMsgKey(msg)) {
-    cleanUpMsgUrl();
-    return;
+  if (msg !== null && isLogoutMsgKey(msg)) {
+    toastsShow({ labelKey: msg, level: LOGOUT_MSGS[msg] });
   }
-
-  toastsShow({ labelKey: msg, level: LOGOUT_MSGS[msg] });
 
   cleanUpMsgUrl();
 };
