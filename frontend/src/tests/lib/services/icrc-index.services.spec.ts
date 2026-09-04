@@ -161,10 +161,12 @@ describe("icrc-index.services", () => {
       });
 
       expect(result).toEqual(false);
+      // The failing call targets the ledger canister, so the message must
+      // name the ledger, not the index canister.
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `An error occurred while validating the index canister ID. It appears that ${indexCanisterId} might not be a valid index canister ID.`,
+          text: `An error occurred while validating the ledger canister ID. It appears that ${ledgerCanisterId} might not be a valid ledger canister ID.`,
         },
       ]);
       expect(spyOnGetLedgerId).toBeCalledTimes(0);
