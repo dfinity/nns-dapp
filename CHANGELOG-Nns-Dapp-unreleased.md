@@ -27,6 +27,9 @@ proposal is successful, the changes it released will be moved from this file to
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
+- The transactions sync now stops after a fixed number of pages, and it stops
+  when a page makes no progress. A hostile index canister can no longer make the
+  sync run without an end.
 
 #### Not Published
 
