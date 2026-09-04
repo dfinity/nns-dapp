@@ -24,3 +24,9 @@ export const MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER: BasisPoints = 300n;
  */
 export const MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER: BasisPoints =
   5_000n;
+
+/**
+ * The deepest JSON a string leaf of a payload can hold and still be expanded
+ * into a tree. A string whose JSON nests deeper than this stays a string.
+ */
+export const MAX_EXPANDED_JSON_DEPTH = 64;
