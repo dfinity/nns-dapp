@@ -96,29 +96,38 @@ const matches =
 
 type AttributeGuard = (value: string) => boolean;
 
-const CELL_ATTRIBUTES: Record<string, AttributeGuard> = {
-  align: matches(/^(left|center|right|justify)$/),
-  colspan: matches(/^\d{1,3}$/),
-  rowspan: matches(/^\d{1,3}$/),
-};
+const CELL_ATTRIBUTES = new Map<string, AttributeGuard>([
+  ["align", matches(/^(left|center|right|justify)$/)],
+  ["colspan", matches(/^\d{1,3}$/)],
+  ["rowspan", matches(/^\d{1,3}$/)],
+]);
 
 // Attributes kept per tag. Everything else is removed, the `style`, `class`
-// and `id` attributes included.
-const ALLOWED_ATTRIBUTES: Record<string, Record<string, AttributeGuard>> = {
-  a: {
-    href: isSafeHref,
-    // The Markdown component adds `target` and `type` when it turns a markdown
-    // image into a link.
-    target: matches(/^_blank$/),
-    title: () => true,
-    type: matches(/^[a-zA-Z0-9!#$&^_.+-]+\/[a-zA-Z0-9!#$&^_.+-]+$/),
-  },
+// and `id` attributes included. These are Maps and not objects, so that an
+// attribute named after a property of Object.prototype finds no guard.
+const ALLOWED_ATTRIBUTES = new Map<string, Map<string, AttributeGuard>>([
+  [
+    "a",
+    new Map<string, AttributeGuard>([
+      ["href", isSafeHref],
+      // The Markdown component adds `target` and `type` when it turns a
+      // markdown image into a link.
+      ["target", matches(/^_blank$/)],
+      ["title", () => true],
+      ["type", matches(/^[a-zA-Z0-9!#$&^_.+-]+\/[a-zA-Z0-9!#$&^_.+-]+$/)],
+    ]),
+  ],
   // marked writes the language of a fenced code block into this class.
-  code: { class: matches(/^language-[a-zA-Z0-9+#._-]+$/) },
-  ol: { start: matches(/^\d{1,9}$/) },
-  td: CELL_ATTRIBUTES,
-  th: CELL_ATTRIBUTES,
-};
+  [
+    "code",
+    new Map<string, AttributeGuard>([
+      ["class", matches(/^language-[a-zA-Z0-9+#._-]+$/)],
+    ]),
+  ],
+  ["ol", new Map<string, AttributeGuard>([["start", matches(/^\d{1,9}$/)]])],
+  ["td", CELL_ATTRIBUTES],
+  ["th", CELL_ATTRIBUTES],
+]);
 
 // Move the children of the element up to its parent, then remove the element.
 const unwrapElement = (element: Element): void => {
@@ -139,9 +148,9 @@ const filterAttributes = ({
   element: Element;
   tag: string;
 }): void => {
-  const guards = ALLOWED_ATTRIBUTES[tag] ?? {};
+  const guards = ALLOWED_ATTRIBUTES.get(tag);
   for (const { name, value } of Array.from(element.attributes)) {
-    const guard = guards[name.toLowerCase()];
+    const guard = guards?.get(name.toLowerCase());
     if (isNullish(guard) || !guard(value)) {
       element.removeAttribute(name);
     }
