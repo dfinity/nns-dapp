@@ -99,7 +99,7 @@ const escapeCsvValue = (value: unknown): string => {
 
   // Excel and LibreOffice read a cell that starts with one of these
   // characters as a formula.
-  const formulaInjectionCharacters = "=+-@|\t";
+  const formulaInjectionCharacters = "=+-@|\t\r\n";
   const characterToBreakFormula = "'";
   if (formulaInjectionCharacters.includes(stringValue[0])) {
     stringValue = `${characterToBreakFormula}${stringValue}`;

@@ -108,13 +108,15 @@ describe("reporting utils", () => {
         { formula: "+CMD|' /C calc'!A0", value: 600 },
         { formula: "-2+3+cmd|' /C calc'!A0", value: 700 },
         { formula: "\tSUM(A1)", value: 800 },
+        { formula: "\rSUM(A1)", value: 900 },
+        { formula: "\nSUM(A1)", value: 1000 },
       ];
       const headers: CsvHeader<TestFormulaData>[] = [
         { id: "formula", label: "formula" },
         { id: "value", label: "value" },
       ];
       const expected =
-        "formula,value\n'=SUM(A1:A10),100\n'@SUM(A1),400\n'|MACRO,500\n'+CMD|' /C calc'!A0,600\n'-2+3+cmd|' /C calc'!A0,700\n'\tSUM(A1),800";
+        "formula,value\n'=SUM(A1:A10),100\n'@SUM(A1),400\n'|MACRO,500\n'+CMD|' /C calc'!A0,600\n'-2+3+cmd|' /C calc'!A0,700\n'\tSUM(A1),800\n\"'\rSUM(A1)\",900\n\"'\nSUM(A1)\",1000";
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
