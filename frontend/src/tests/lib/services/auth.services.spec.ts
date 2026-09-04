@@ -168,15 +168,25 @@ describe("auth-services", () => {
       const spy = vi.spyOn(routeUtils, "replaceHistory");
 
       const location = window.location;
+      const search = "msg=warning.auth_sign_out&level=warn";
 
+      // cleanUpMsgUrl builds its url from href, so href must carry the query.
       Object.defineProperty(window, "location", {
         writable: true,
-        value: { ...location, search: "msg=warning.auth_sign_out" },
+        value: {
+          ...location,
+          href: `https://nns.internetcomputer.org/accounts?${search}`,
+          search,
+        },
       });
 
       await displayAndCleanLogoutMsg();
 
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      const url = spy.mock.calls[0][0];
+      expect(url.searchParams.get("msg")).toBeNull();
+      expect(url.searchParams.get("level")).toBeNull();
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -191,10 +201,16 @@ describe("auth-services", () => {
       const historySpy = vi.spyOn(routeUtils, "replaceHistory");
 
       const location = window.location;
+      const search = "msg=Send%20funds%20now&level=error";
 
+      // cleanUpMsgUrl builds its url from href, so href must carry the query.
       Object.defineProperty(window, "location", {
         writable: true,
-        value: { ...location, search: "msg=Send%20funds%20now&level=error" },
+        value: {
+          ...location,
+          href: `https://nns.internetcomputer.org/accounts?${search}`,
+          search,
+        },
       });
 
       await displayAndCleanLogoutMsg();
