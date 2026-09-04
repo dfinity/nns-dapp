@@ -61,15 +61,17 @@ test("Portfolio balances are confirmed with certified update calls", async ({
   const appPo = new AppPo(pageElement);
   const portfolioPagePo = appPo.getPortfolioPo().getPortfolioPagePo();
 
-  step("Wait for the Portfolio page to load the balances");
+  await step("Wait for the Portfolio page to load the balances");
   await portfolioPagePo.getTotalAssetsCardPo().waitForLoaded();
 
-  step("The Portfolio page reads at least one ledger balance");
+  await step("The Portfolio page reads at least one ledger balance");
   await expect
     .poll(() => queriedLedgers.size, { timeout: 60_000 })
     .toBeGreaterThan(0);
 
-  step("Every ledger that got a balance query also gets a balance update");
+  await step(
+    "Every ledger that got a balance query also gets a balance update"
+  );
   // On main this list keeps every queried ledger, because the Portfolio page
   // sends no update call at all.
   await expect
@@ -79,7 +81,7 @@ test("Portfolio balances are confirmed with certified update calls", async ({
     )
     .toEqual([]);
 
-  step("No ledger gets an update call without a query call");
+  await step("No ledger gets an update call without a query call");
   // The query answer must still show first, so an update call alone would mean
   // the page waits for the certified answer to render a balance.
   expect(
