@@ -2,7 +2,7 @@ import { browser } from "$app/environment";
 import { authStore } from "$lib/stores/auth.store";
 import { startBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-import type { ToastMsg } from "$lib/types/toast";
+import type { I18nKeys } from "$lib/utils/i18n.utils";
 import { replaceHistory } from "$lib/utils/route.utils";
 import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
 import type { ToastLevel } from "@dfinity/gix-components";
@@ -12,6 +12,18 @@ import { get } from "svelte/store";
 
 const msgParam = "msg";
 const levelParam = "level";
+
+// The only messages that a sign-out can carry in the url. The app owns the
+// level, so the url cannot pick the styling of the toast.
+const LOGOUT_MSGS = {
+  "error.missing_identity": "error",
+  "warning.auth_sign_out": "warn",
+} as const satisfies Partial<Record<I18nKeys, ToastLevel>>;
+
+export type LogoutMsgKey = keyof typeof LOGOUT_MSGS;
+
+const isLogoutMsgKey = (msg: string): msg is LogoutMsgKey =>
+  Object.hasOwn(LOGOUT_MSGS, msg);
 
 let logoutInProgress = false;
 
@@ -35,11 +47,7 @@ export const login = async () => {
   await authStore.signIn(onError);
 };
 
-export const logout = async ({
-  msg = undefined,
-}: {
-  msg?: Pick<ToastMsg, "labelKey" | "level">;
-}) => {
+export const logout = async ({ msg = undefined }: { msg?: LogoutMsgKey }) => {
   // Prevent re-entrant logout calls. When authStore.signOut() sets identity
   // to null, reactive cascades can cause multiple services to detect the
   // missing identity and each independently call logout() again, appending
@@ -89,7 +97,7 @@ export const getAuthenticatedIdentity = async (): Promise<Identity> => {
 
     if (!identity) {
       await logout({
-        msg: { labelKey: "error.missing_identity", level: "error" },
+        msg: "error.missing_identity",
       });
 
       // We do not resolve on purpose. logout() does reload the browser
@@ -101,17 +109,17 @@ export const getAuthenticatedIdentity = async (): Promise<Identity> => {
 };
 
 /**
- * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timed-out - append the information to the url as query params
+ * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timed-out - append the key to the url as a query param
  */
-const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
-  const { labelKey, level } = msg;
-
+const appendMsgToUrl = (msg: LogoutMsgKey) => {
   if (!browser) return;
 
   const url: URL = new URL(window.location.href);
 
-  url.searchParams.set(msgParam, encodeURI(labelKey));
-  url.searchParams.set(levelParam, level);
+  // Drop a pre-existing level param, so the url never carries an untrusted
+  // level value, even one left over from a crafted or legacy link.
+  url.searchParams.delete(levelParam);
+  url.searchParams.set(msgParam, msg);
 
   replaceHistory(url);
 };
@@ -128,15 +136,13 @@ export const displayAndCleanLogoutMsg = () => {
 
   const msg: string | null = urlParams.get(msgParam);
 
-  if (msg === null) {
+  if (msg === null && !urlParams.has(levelParam)) {
     return;
   }
 
-  // For simplicity reason we assume the level pass as query params is one of the type ToastLevel
-  const level: ToastLevel =
-    (urlParams.get(levelParam) as ToastLevel | null) ?? "success";
-
-  toastsShow({ labelKey: msg, level });
+  if (msg !== null && isLogoutMsgKey(msg)) {
+    toastsShow({ labelKey: msg, level: LOGOUT_MSGS[msg] });
+  }
 
   cleanUpMsgUrl();
 };
