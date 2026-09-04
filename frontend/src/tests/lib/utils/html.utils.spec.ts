@@ -195,6 +195,36 @@ describe("html.utils", () => {
       disconnect();
     });
 
+    it("should stop changing a link that already opens a new tab", async () => {
+      // setAttribute reports a mutation even when the value stays the same, so
+      // a sanitizer that always writes `rel` never settles.
+      const root = document.createElement("div");
+      document.body.appendChild(root);
+
+      let mutations = 0;
+      const counter = new MutationObserver((records) => {
+        mutations += records.length;
+      });
+
+      const disconnect = observeRenderedMarkdown(root);
+      counter.observe(root, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
+
+      root.innerHTML =
+        '<a href="https://internetcomputer.org/" target="_blank">link</a>';
+      for (let index = 0; index < 30; index++) {
+        await Promise.resolve();
+      }
+
+      disconnect();
+      counter.disconnect();
+
+      expect(mutations).toBeLessThan(5);
+    });
+
     it("should stop sanitizing once disconnected", async () => {
       const root = document.createElement("div");
       document.body.appendChild(root);

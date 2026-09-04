@@ -83,6 +83,8 @@ const DROPPED_TAGS = new Set([
 
 const SAFE_LINK_SCHEMES = ["http", "https", "mailto"];
 
+const SAFE_LINK_REL = "noopener noreferrer";
+
 // A link without a scheme is relative, so it stays inside the dapp.
 const isSafeHref = (value: string): boolean => {
   const scheme = value.match(/^\s*([a-zA-Z][a-zA-Z0-9+.-]*):/)?.[1];
@@ -156,8 +158,15 @@ const filterAttributes = ({
     }
   }
   // A link that opens a new tab must not give that tab access to this one.
-  if (tag === "a" && element.getAttribute("target") === "_blank") {
-    element.setAttribute("rel", "noopener noreferrer");
+  // Write the attribute only when it differs, because setAttribute reports a
+  // mutation even when the value stays the same, and the observer below would
+  // then call this function again without end.
+  if (
+    tag === "a" &&
+    element.getAttribute("target") === "_blank" &&
+    element.getAttribute("rel") !== SAFE_LINK_REL
+  ) {
+    element.setAttribute("rel", SAFE_LINK_REL);
   }
 };
 
@@ -203,7 +212,12 @@ export const sanitizeRenderedMarkdown = (root: Element): void => {
 export const observeRenderedMarkdown = (root: Element): (() => void) => {
   sanitizeRenderedMarkdown(root);
 
-  const observer = new MutationObserver(() => sanitizeRenderedMarkdown(root));
+  const observer = new MutationObserver(() => {
+    sanitizeRenderedMarkdown(root);
+    // Drop the mutations that the call above reported, so that the observer
+    // does not run over its own work.
+    observer.takeRecords();
+  });
   observer.observe(root, {
     attributes: true,
     childList: true,
