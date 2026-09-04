@@ -26,8 +26,8 @@
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { removeImportedTokens } from "$lib/services/imported-tokens.services";
-  import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-  import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
+  import { syncSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
+  import { syncIcrcAccountsBalances } from "$lib/services/icrc-accounts-balance.services";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import type { Account } from "$lib/types/account";
@@ -81,7 +81,7 @@
       return;
     }
 
-    await uncertifiedLoadSnsesAccountsBalances({
+    await syncSnsAccountsBalances({
       rootCanisterIds: notLoadedCanisterIds.map((id) => Principal.fromText(id)),
     });
   };
@@ -143,7 +143,7 @@
       return;
     }
 
-    await uncertifiedLoadAccountsBalance({
+    await syncIcrcAccountsBalances({
       universeIds,
     });
   };
@@ -153,7 +153,7 @@
       ({ rootCanisterId }) => rootCanisterId.toText() === universeId.toText()
     );
     if (isSnsProject) {
-      return uncertifiedLoadSnsesAccountsBalances({
+      return syncSnsAccountsBalances({
         rootCanisterIds: [universeId],
       });
     }

@@ -1057,7 +1057,8 @@ describe("Tokens route", () => {
 
         await runResolvedPromises();
         expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(
-          notFailedTokenCount
+          // One query call and one update call per token.
+          2 * notFailedTokenCount
         );
 
         // Add a failed token
@@ -1070,7 +1071,8 @@ describe("Tokens route", () => {
 
         await runResolvedPromises();
         expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(
-          notFailedTokenCount
+          // One query call and one update call per token.
+          2 * notFailedTokenCount
         );
       });
     });

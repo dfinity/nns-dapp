@@ -38,6 +38,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- The Portfolio, Tokens and Staking pages now confirm every token balance with
+  a certified call. Before, they showed the answer of one replica and never
+  checked it.
+
 #### Not Published
 
 ### Operations
