@@ -32,7 +32,10 @@ output_path="$3"
 ###############
 # Download
 ###############
-tmpfile="$(mktemp)"
+# The temp file sits next to output_path, not under the system temp
+# directory. That keeps the final "mv" below on one filesystem, so it is an
+# atomic rename instead of a copy-then-delete.
+tmpfile="$(mktemp "$(dirname "$output_path")/.download-verified-XXXXXX")"
 trap 'rm -f "$tmpfile"' EXIT
 
 curl --fail --location --show-error --silent --retry 5 \
