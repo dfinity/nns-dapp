@@ -789,6 +789,27 @@ describe("icrc-accounts-services", () => {
         fromSubAccount: mockSubAccountArray,
       });
     });
+    it("shows the fee error when the fee is missing", async () => {
+      expect(get(toastsStore)).toEqual([]);
+
+      await transferTokens({
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        // The service guards against a fee that is nullish at runtime.
+        fee: undefined as unknown as bigint,
+        ledgerCanisterId,
+      });
+
+      expect(ledgerApi.icrcTransfer).not.toBeCalled();
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error loading the transaction fee.",
+        },
+      ]);
+    });
+
     it("should load balance after transfer", async () => {
       const initialAccount = {
         ...mockIcrcMainAccount,

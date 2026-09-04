@@ -38,6 +38,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Do not resolve the message of a third-party error as an app text key in error
+  toasts. Only the errors that the app throws with an i18n key select an app
+  text. A canister can no longer choose which app text an error toast shows.
+
 #### Not Published
 
 ### Operations
