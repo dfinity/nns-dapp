@@ -90,6 +90,63 @@ fn create_sub_account_limit_exceeded() {
 }
 
 #[test]
+#[should_panic(expected = "Account limit exceeded 2")]
+fn add_account_at_limit_traps_for_new_account() {
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let mut store = setup_test_store();
+
+    assert_eq!(2, store.accounts_db.len());
+
+    store.add_account_with_limit(principal, 2);
+}
+
+#[test]
+fn add_account_at_limit_returns_false_for_existing_account() {
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+    let mut store = setup_test_store();
+
+    assert_eq!(2, store.accounts_db.len());
+
+    assert!(!store.add_account_with_limit(principal, 2));
+
+    assert_eq!(2, store.accounts_db.len());
+    assert!(store.get_account(principal).is_some());
+}
+
+#[test]
+fn add_account_at_limit_backfills_legacy_principal() {
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let account_identifier = AccountIdentifier::from(principal);
+    let mut store = setup_test_store();
+
+    // An account created before the principal was stored.
+    let mut account = Account::new(principal, account_identifier);
+    account.principal = None;
+    store.accounts_db.insert(account_identifier.to_vec(), account);
+
+    assert_eq!(3, store.accounts_db.len());
+    assert!(store.get_account(principal).is_none());
+
+    assert!(!store.add_account_with_limit(principal, 3));
+
+    assert_eq!(3, store.accounts_db.len());
+    assert_eq!(principal, store.get_account(principal).unwrap().principal);
+}
+
+#[test]
+fn add_account_below_limit_creates_account() {
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let mut store = setup_test_store();
+
+    assert_eq!(2, store.accounts_db.len());
+
+    assert!(store.add_account_with_limit(principal, 3));
+
+    assert_eq!(3, store.accounts_db.len());
+    assert!(store.get_account(principal).is_some());
+}
+
+#[test]
 fn create_sub_account_account_not_found() {
     let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
     let mut store = setup_test_store();
