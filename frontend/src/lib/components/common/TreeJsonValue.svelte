@@ -2,7 +2,6 @@
   import { i18n } from "$lib/stores/i18n";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
   import { splitE8sIntoChunks, stringifyJson } from "$lib/utils/utils.js";
-  import { Html } from "@dfinity/gix-components";
 
   // To avoid having quotes around all the value types
   const formatE8s = (data: unknown): string[] =>
@@ -48,10 +47,9 @@
 </script>
 
 {#if valueType === "base64Encoding"}
-  <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
-  <Html
-    text={`<img class="value ${valueType}" alt="${key}" src="${value}" loading="lazy" />`}
-  />
+  <!-- The key and the value come from the proposal payload. Svelte escapes an
+  attribute value, so the image tag must not be built as a string. -->
+  <img class="value {valueType}" alt={key} src={value} loading="lazy" />
 {:else if valueType === "seconds"}
   <span class="value {valueType}" {title}
     >{value}
