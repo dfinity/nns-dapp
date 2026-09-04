@@ -3,3 +3,6 @@ set -euxo pipefail
 
 # Commands to run after creating the rust file with didc:
 scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type GetStateResponse --trait Default
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type Swap --trait Default
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type DerivedState --trait Default
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type GetDerivedStateResponse --trait Default
