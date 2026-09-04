@@ -55,6 +55,14 @@ describe("utils", () => {
       );
     });
 
+    it("should treat a non-finite indentation as 0, like JSON.stringify", () => {
+      for (const indentation of [NaN, Infinity, -Infinity]) {
+        expect(stringifyJson(SAMPLE, { indentation })).toBe(
+          JSON.stringify(SAMPLE, null, indentation)
+        );
+      }
+    });
+
     it("should convert bigints to function call in devMode", () => {
       expect(
         stringifyJson(

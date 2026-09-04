@@ -62,8 +62,14 @@ const replaceJsonValue = (
 };
 
 // The `indentation` that `JSON.stringify` accepts, clamped the same way.
+// `JSON.stringify` treats NaN as 0. `Math.max`/`Math.min` already clamp
+// `Infinity` to 10 and `-Infinity` to 0, so only NaN needs a guard here.
 const jsonGap = (indentation: number): string =>
-  " ".repeat(Math.min(10, Math.max(0, Math.floor(indentation))));
+  " ".repeat(
+    Number.isNaN(indentation)
+      ? 0
+      : Math.min(10, Math.max(0, Math.floor(indentation)))
+  );
 
 /**
  * Serializes a value the way `JSON.stringify` does, with two differences:
@@ -75,7 +81,7 @@ const jsonGap = (indentation: number): string =>
  * as `undefined`.
  *
  * A bigint becomes a string, to avoid a serialization error. With `devMode`,
- * 123n becomes "BigInt(123)".
+ * 123n becomes "BigInt('123')".
  */
 export const stringifyJson = (
   value: unknown,
