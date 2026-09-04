@@ -31,7 +31,7 @@ test("Test SNS swap participant count", async ({ page, context }) => {
   const projectCommitmentPo = ProjectCommitmentPo.under(pageElement);
   const projectDetail = appPo.getProjectDetailPo();
 
-  step("Open the detail page of a sale that accepts participation");
+  await step("Open the detail page of a sale that accepts participation");
   await appPo.goToLaunchpad();
   await appPo.getLaunchpad2Po().getUpcomingLaunchesCardListPo().waitFor();
   const upcomingLaunchesCards = await appPo
@@ -43,7 +43,7 @@ test("Test SNS swap participant count", async ({ page, context }) => {
   await projectDetail.waitForContentLoaded();
   expect(await projectDetail.getStatus()).toBe("Accepting Participation");
 
-  step("The page shows a participant count");
+  await step("The page shows a participant count");
   await expect
     .poll(() => projectCommitmentPo.hasParticipantsCount(), {
       timeout: POLL_TIMEOUT,
@@ -53,28 +53,30 @@ test("Test SNS swap participant count", async ({ page, context }) => {
     await projectCommitmentPo.getParticipantsCount();
   expect(Number.isNaN(countBeforeParticipation)).toBe(false);
 
-  step("The page requests no metrics from the raw domain");
+  await step("The page requests no metrics from the raw domain");
   expect(rawMetricsRequests()).toEqual([]);
 
-  step("Sign in and get some ICP to participate in the sale");
+  await step("Sign in and get some ICP to participate in the sale");
   await signInWithNewUser({ page, context });
   await appPo.goBack();
   await appPo.getIcpTokens(20);
   await upcomingLaunchesCards[0].click();
   await projectDetail.waitForContentLoaded();
 
-  step("Participate in the sale");
+  await step("Participate in the sale");
   expect(await projectDetail.hasCommitmentAmount()).toBe(false);
   await projectDetail.participate({ amount: 5, acceptConditions: true });
   expect(await projectDetail.getCommitmentAmount()).toBe("5.00");
 
-  step("The participant count rises by one, so it follows the swap state");
+  await step(
+    "The participant count rises by one, so it follows the swap state"
+  );
   await expect
     .poll(() => projectCommitmentPo.getParticipantsCount(), {
       timeout: POLL_TIMEOUT,
     })
     .toBe(countBeforeParticipation + 1);
 
-  step("No request went to the raw metrics domain at any point");
+  await step("No request went to the raw metrics domain at any point");
   expect(rawMetricsRequests()).toEqual([]);
 });
