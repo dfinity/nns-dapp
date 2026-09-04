@@ -42,15 +42,31 @@ export const matchLedgerIndexPair = async ({
   ledgerCanisterId: Principal;
   indexCanisterId: Principal;
 }): Promise<boolean> => {
+  let indexIdFromLedgerCanister: Principal | undefined;
+
   try {
     // The user typed the ledger canister ID, so the call must not carry the
     // principal of the user to it.
-    const indexIdFromLedgerCanister = await queryIcrcIndexPrincipal({
+    indexIdFromLedgerCanister = await queryIcrcIndexPrincipal({
       identity: getAnonymousIdentity(),
       canisterId: ledgerCanisterId,
       certified: true,
     });
+  } catch (err) {
+    // This call targets the ledger canister, so a failure here points at the
+    // ledger, not at the index canister.
+    console.error(err);
+    toastsError({
+      labelKey: "error.ledger_canister_validation",
+      substitutions: {
+        $ledgerCanister: ledgerCanisterId.toText(),
+      },
+      err,
+    });
+    return false;
+  }
 
+  try {
     let match: boolean;
 
     if (nonNullish(indexIdFromLedgerCanister)) {
