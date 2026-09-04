@@ -35,6 +35,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- A proposal summary now renders only the tags and the attributes that markdown
+  needs. Before, the summary could add page-wide styles, a form with input
+  fields, or the class names of the app, and imitate the wallet UI.
+
 #### Not Published
 
 ### Operations
