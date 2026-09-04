@@ -5,7 +5,8 @@ import type { RootCanisterId } from "$lib/types/sns";
 /**
  * Load Sns projects accounts balances.
  *
- * The query answer shows first and the certified answer replaces it.
+ * The query answer shows first and the certified answer replaces it. If the
+ * certified answer arrives first, the query answer is skipped.
  *
  * @param {rootCanisterIds: RootCanisterId[]} params
  * @param {RootCanisterId[]} params.rootCanisterIds The list of root canister ids - Sns projects - for which the balance of the accounts should be fetched.
