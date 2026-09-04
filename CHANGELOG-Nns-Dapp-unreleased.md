@@ -38,6 +38,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- Ask the ledger canister which index canister belongs to it before an imported
+  token accepts an index canister ID. Before, the app trusted the answer of the
+  index canister itself, so a fake index canister could show an invented
+  transaction history for a real token.
+
 #### Not Published
 
 ### Operations
