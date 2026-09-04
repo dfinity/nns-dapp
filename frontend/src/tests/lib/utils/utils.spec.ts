@@ -1,3 +1,4 @@
+import { MAX_EXPANDED_JSON_DEPTH } from "$lib/constants/proposals.constants";
 import {
   PollingCancelledError,
   PollingLimitExceededError,
@@ -916,6 +917,36 @@ describe("utils", () => {
       const obj = { a: [1, JSON.stringify({ b: 2 }), 3] };
       expect(expandObject(obj)).toEqual({ a: [1, { b: 2 }, 3] });
     });
+
+    it("should parse a JSON string that nests exactly the maximum depth", () => {
+      const nested = `${"[".repeat(MAX_EXPANDED_JSON_DEPTH)}1${"]".repeat(
+        MAX_EXPANDED_JSON_DEPTH
+      )}`;
+      const { a } = expandObject({ a: nested }) as { a: unknown };
+
+      expect(getObjMaxDepth(a)).toBe(MAX_EXPANDED_JSON_DEPTH);
+      expect(a).toEqual(JSON.parse(nested));
+    });
+
+    it("should keep a JSON string that nests deeper than the maximum depth as a string", () => {
+      const nested = `${"[".repeat(MAX_EXPANDED_JSON_DEPTH + 1)}1${"]".repeat(
+        MAX_EXPANDED_JSON_DEPTH + 1
+      )}`;
+      const { a } = expandObject({ a: nested }) as { a: unknown };
+
+      expect(typeof a).toBe("string");
+      expect(a).toBe(nested);
+    });
+
+    it("should keep a payload text that nests JSON thousands of levels deep as a string", () => {
+      const nested = `${"[".repeat(35_000)}${"]".repeat(35_000)}`;
+      const { comment } = expandObject({ comment: nested }) as {
+        comment: unknown;
+      };
+
+      expect(typeof comment).toBe("string");
+      expect(comment).toBe(nested);
+    });
   });
 
   describe("sameBufferData", () => {
@@ -980,6 +1011,24 @@ describe("utils", () => {
       expect(getObjMaxDepth(null)).toBe(0);
       expect(getObjMaxDepth("hello")).toBe(0);
       expect(getObjMaxDepth(0)).toBe(0);
+    });
+
+    it("returns the depth of a 100,000 level array without a stack overflow", () => {
+      const depth = 100_000;
+      const deepArray = JSON.parse(
+        `${"[".repeat(depth)}1${"]".repeat(depth)}`
+      ) as unknown;
+
+      expect(getObjMaxDepth(deepArray)).toBe(depth);
+    });
+
+    it("returns the depth of a 100,000 level object without a stack overflow", () => {
+      const depth = 100_000;
+      const deepObject = JSON.parse(
+        `${'{"a":'.repeat(depth)}1${"}".repeat(depth)}`
+      ) as unknown;
+
+      expect(getObjMaxDepth(deepObject)).toBe(depth);
     });
   });
 
