@@ -79,7 +79,7 @@ test("Import token refuses an SNS ledger and fails closed without the SNS list",
     await formPo.waitFor();
   };
 
-  step("A legitimate non-SNS token still passes validation");
+  await step("A legitimate non-SNS token still passes validation");
 
   await openImportForm(page);
   await formPo.getLedgerCanisterInputPo().typeText(ckRedLedgerCanisterId);
@@ -91,14 +91,14 @@ test("Import token refuses an SNS ledger and fails closed without the SNS list",
     ckRedLedgerCanisterId
   );
 
-  step("The aggregator gave the app at least one SNS ledger canister ID");
+  await step("The aggregator gave the app at least one SNS ledger canister ID");
 
   await expect
     .poll(() => snsLedgerCanisterIds.length, { timeout: POLL_TIMEOUT })
     .toBeGreaterThan(0);
   const snsLedgerCanisterId = snsLedgerCanisterIds[0];
 
-  step("The form refuses an SNS ledger canister ID");
+  await step("The form refuses an SNS ledger canister ID");
 
   await openImportForm(page);
   await appPo.getToastsPo().closeAll();
@@ -112,7 +112,7 @@ test("Import token refuses an SNS ledger and fails closed without the SNS list",
   expect(await formPo.isPresent()).toBe(true);
   expect(await reviewPo.isPresent()).toBe(false);
 
-  step("Without the SNS list the URL import does not auto-submit");
+  await step("Without the SNS list the URL import does not auto-submit");
 
   blockAggregator = true;
   await page.goto(
@@ -133,7 +133,7 @@ test("Import token refuses an SNS ledger and fails closed without the SNS list",
   await expectToast(SNS_LIST_ERROR_TOAST);
   expect(await reviewPo.isPresent()).toBe(false);
 
-  step("Without the SNS list a manual submit fails closed");
+  await step("Without the SNS list a manual submit fails closed");
 
   await appPo.getToastsPo().closeAll();
   await formPo.getSubmitButtonPo().click();
