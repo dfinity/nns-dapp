@@ -809,7 +809,7 @@ describe("IcrcWallet", () => {
         // carry the user principal.
         expect(spyOnGetLedgerId).toBeCalledWith({
           certified: true,
-          identity: new AnonymousIdentity(),
+          identity: expect.any(AnonymousIdentity),
           indexCanisterId,
         });
         expect(spyOnSetImportedTokens).toBeCalledTimes(0);

@@ -31,7 +31,7 @@ describe("icrc-index.services", () => {
       expect(spyOnGetLedgerId).toBeCalledTimes(1);
       expect(spyOnGetLedgerId).toBeCalledWith({
         certified: true,
-        identity: new AnonymousIdentity(),
+        identity: expect.any(AnonymousIdentity),
         indexCanisterId,
       });
       // The index canister ID is unverified user input, so the call must not

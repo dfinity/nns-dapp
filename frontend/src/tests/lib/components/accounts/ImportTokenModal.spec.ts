@@ -585,14 +585,14 @@ describe("ImportTokenModal", () => {
       expect(queryIcrcTokenSpy).toBeCalledTimes(1);
       expect(queryIcrcTokenSpy).toBeCalledWith(
         expect.objectContaining({
-          identity: new AnonymousIdentity(),
+          identity: expect.any(AnonymousIdentity),
           canisterId: ledgerCanisterId,
         })
       );
       expect(getLedgerIdSpy).toBeCalledTimes(1);
       expect(getLedgerIdSpy).toBeCalledWith(
         expect.objectContaining({
-          identity: new AnonymousIdentity(),
+          identity: expect.any(AnonymousIdentity),
           indexCanisterId,
         })
       );
