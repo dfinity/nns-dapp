@@ -11,7 +11,7 @@ import { readFileSync } from "fs";
 
 // A spreadsheet reads a cell that starts with one of these characters as a
 // formula. The CSV export must break the formula with a single quote.
-const FORMULA_CHARACTERS = ["=", "+", "-", "@", "|", "\t"];
+const FORMULA_CHARACTERS = ["=", "+", "-", "@", "|", "\t", "\r", "\n"];
 
 // The account name is the shortest path from the user interface to a CSV cell.
 // The canister limits the name to 24 bytes, so this payload is 22 characters.
