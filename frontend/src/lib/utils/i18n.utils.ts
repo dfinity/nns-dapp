@@ -24,10 +24,16 @@ export const translate = ({
   }
 
   const firstKey = split[0];
-  const key =
-    translations !== undefined
-      ? translations[firstKey]
-      : get(i18n)[firstKey as keyof I18n];
+  const catalog: Record<string, unknown> =
+    translations ?? (get(i18n) as unknown as Record<string, unknown>);
+
+  // Only an own property of the catalog is a translation. A key such as
+  // "constructor" must not resolve to a value on the prototype chain.
+  if (!Object.hasOwn(catalog, firstKey)) {
+    return labelKey;
+  }
+
+  const key = catalog[firstKey];
 
   if (key === undefined) {
     return labelKey;
