@@ -24,6 +24,7 @@ import { outOfCyclesCanistersStore } from "$lib/stores/out-of-cycles-canisters.s
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
+import { ApiErrorKey } from "$lib/types/api.errors";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isLastCall } from "$lib/utils/env.utils";
 import {
@@ -279,7 +280,7 @@ export const transferTokens = async ({
 }> => {
   try {
     if (isNullish(fee)) {
-      throw new Error("error.transaction_fee_not_found");
+      throw new ApiErrorKey("error.transaction_fee_not_found");
     }
 
     const identity: Identity = await getIcrcAccountIdentity(source);
