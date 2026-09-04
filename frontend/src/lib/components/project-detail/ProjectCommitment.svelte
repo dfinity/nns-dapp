@@ -5,7 +5,6 @@
   import NfCommitmentProgressBar from "$lib/components/project-detail/NfCommitmentProgressBar.svelte";
   import { getMaxNeuronsFundParticipation } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
-  import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -54,8 +53,6 @@
 
   let saleBuyerCount: number | undefined;
   $: saleBuyerCount = swapSaleBuyerCount({
-    rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
-    swapMetrics: $snsSwapMetricsStore,
     derivedState: summary.derived,
   });
 
