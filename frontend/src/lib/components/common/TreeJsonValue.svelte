@@ -49,7 +49,7 @@
 {#if valueType === "base64Encoding"}
   <!-- The key and the value come from the proposal payload. Svelte escapes an
   attribute value, so the image tag must not be built as a string. -->
-  <img class="value {valueType}" alt={key} src={value} loading="lazy" />
+  <img class="value {valueType}" alt={key ?? ""} src={value} loading="lazy" />
 {:else if valueType === "seconds"}
   <span class="value {valueType}" {title}
     >{value}
