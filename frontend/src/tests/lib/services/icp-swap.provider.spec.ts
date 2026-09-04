@@ -212,6 +212,89 @@ describe("icp-swap.provider", () => {
     expect(result["token-canister-id"]).toBe(0.02);
   });
 
+  it("should ignore an untraded pool with more liquidity", async () => {
+    const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
+    const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
+
+    const ckusdcTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: ckusdcLedgerCanisterId,
+      target_id: icpLedgerCanisterId,
+      last_price: "0.04",
+      liquidity_in_usd: "617000",
+      volume_usd_24H: "1000",
+    };
+
+    // Nobody traded this pool, so ICP Swap reports a last_price of 0.
+    const untradedTokenTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: "token-canister-id",
+      target_id: icpLedgerCanisterId,
+      last_price: "0.000000",
+      liquidity_in_usd: "1000",
+      volume_usd_24H: "0",
+    };
+
+    // This pool holds less liquidity but it carries a real price.
+    const tradedTokenTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: "token-canister-id",
+      target_id: icpLedgerCanisterId,
+      last_price: "2",
+      liquidity_in_usd: "10",
+      volume_usd_24H: "1000",
+    };
+
+    for (const tickers of [
+      [ckusdcTicker, untradedTokenTicker, tradedTokenTicker],
+      [ckusdcTicker, tradedTokenTicker, untradedTokenTicker],
+    ]) {
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+
+      const result = await icpSwapTickerProvider();
+
+      // The price comes from the traded pool: 0.04 / 2 = 0.02
+      expect(result["token-canister-id"]).toBe(0.02);
+    }
+  });
+
+  it("should ignore an untraded ckUSDC pool with more liquidity", async () => {
+    const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
+    const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
+
+    // Nobody traded this ckUSDC pool, so ICP Swap reports a last_price of 0.
+    const untradedCkusdcTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: ckusdcLedgerCanisterId,
+      target_id: icpLedgerCanisterId,
+      last_price: "0.000000",
+      liquidity_in_usd: "700000",
+      volume_usd_24H: "0",
+    };
+
+    const tradedCkusdcTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: ckusdcLedgerCanisterId,
+      target_id: icpLedgerCanisterId,
+      last_price: "0.04",
+      liquidity_in_usd: "617000",
+      volume_usd_24H: "1000",
+    };
+
+    for (const tickers of [
+      [untradedCkusdcTicker, tradedCkusdcTicker],
+      [tradedCkusdcTicker, untradedCkusdcTicker],
+    ]) {
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+
+      const result = await icpSwapTickerProvider();
+
+      // The ICP price comes from the traded pool, and no error is thrown.
+      expect(result[icpLedgerCanisterId]).toBe(0.04);
+      expect(result[ckusdcLedgerCanisterId]).toBe(1);
+    }
+  });
+
   it("should select the ticker with more volume when the liquidity is equal", async () => {
     const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
     const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();

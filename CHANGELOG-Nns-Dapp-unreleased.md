@@ -38,8 +38,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
-- Use the most liquid ICPSwap pool for a token price, so a new pool with one
-  tiny trade cannot change the USD values shown.
+- Use the most liquid ICPSwap pool that has a price for a token, so a new pool
+  with one tiny trade cannot change the USD values shown.
 
 #### Not Published
 
