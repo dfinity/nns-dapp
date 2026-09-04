@@ -55,7 +55,7 @@ fn reconfigure_rejects_the_anonymous_principal() {
     crate::reconfigure(None);
 }
 
-/// Returns the config that the canister stores now.
+/// Returns the `Config` that the canister stores now.
 fn stored_config() -> Config {
     crate::STATE.with(|state| state.stable.borrow().config.borrow().clone())
 }

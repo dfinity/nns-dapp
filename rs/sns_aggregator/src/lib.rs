@@ -233,10 +233,10 @@ fn reconfigure(config: Option<Config>) {
     setup(config);
 }
 
-/// Stores the given config, then raises every interval that is too short.
+/// Stores the given `Config`, then raises every interval that is too short.
 ///
 /// A timer with a very short interval runs the data collection continuously and burns
-/// cycles.  The config reaches this canister from a caller, or from the stable memory of
+/// cycles.  A `Config` reaches this canister from a caller, or from the stable memory of
 /// an older version, so both need the same limit.
 ///
 /// Returns `true` if it raised an interval.

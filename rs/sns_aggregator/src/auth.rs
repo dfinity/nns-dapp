@@ -18,8 +18,8 @@ pub fn assert_caller_is_controller() {
 
 /// Returns `true` if a controller of this canister made the current call.
 ///
-/// Controllers can be obtained by the async call:
-/// `agent.read_state_canister_info(canister_id, "controllers")`
+/// A caller gets the list of controllers from
+/// `agent.read_state_canister_info(canister_id, "controllers")`.
 #[cfg(not(test))]
 fn caller_is_controller() -> bool {
     ic_cdk::api::is_controller(&ic_cdk::api::msg_caller())
