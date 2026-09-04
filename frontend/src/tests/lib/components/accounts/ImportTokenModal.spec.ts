@@ -16,10 +16,11 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
@@ -48,6 +49,7 @@ describe("ImportTokenModal", () => {
     return po;
   };
   let queryIcrcTokenSpy: MockInstance;
+  let getLedgerIdSpy: MockInstance;
 
   beforeEach(() => {
     resetIdentity();
@@ -56,7 +58,11 @@ describe("ImportTokenModal", () => {
       .spyOn(ledgerApi, "queryIcrcToken")
       .mockResolvedValue(tokenMetaData);
 
-    vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(ledgerCanisterId);
+    getLedgerIdSpy = vi
+      .spyOn(icrcIndexApi, "getLedgerId")
+      .mockResolvedValue(ledgerCanisterId);
+    // The SNS projects are loaded and there is no SNS project.
+    setSnsProjects([]);
     page.mock({
       routeId: AppPath.Tokens,
     });
@@ -153,6 +159,61 @@ describe("ImportTokenModal", () => {
         "You cannot import SNS tokens, they are added by the NNS."
       );
       expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+      // Stays on the form.
+      expect(await formPo.isPresent()).toEqual(true);
+    });
+
+    it.each([
+      SnsSwapLifecycle.Pending,
+      SnsSwapLifecycle.Open,
+      SnsSwapLifecycle.Adopted,
+    ])(
+      "should catch importing of an SNS ledger with lifecycle %s",
+      async (lifecycle) => {
+        setSnsProjects([
+          {
+            ledgerCanisterId,
+            lifecycle,
+          },
+        ]);
+
+        const po = renderComponent();
+        const formPo = po.getImportTokenFormPo();
+
+        await formPo
+          .getLedgerCanisterInputPo()
+          .typeText(ledgerCanisterId.toText());
+        await formPo.getSubmitButtonPo().click();
+
+        expect(get(busyStore)).toEqual([]);
+        expectToastError(
+          "You cannot import SNS tokens, they are added by the NNS."
+        );
+        expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+        expect(getLedgerIdSpy).toBeCalledTimes(0);
+        // Stays on the form.
+        expect(await formPo.isPresent()).toEqual(true);
+      }
+    );
+
+    it("should refuse validation while the SNS projects are not loaded", async () => {
+      resetSnsProjects();
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+
+      await formPo
+        .getLedgerCanisterInputPo()
+        .typeText(ledgerCanisterId.toText());
+      await formPo.getIndexCanisterInputPo().typeText(indexCanisterId.toText());
+      await formPo.getSubmitButtonPo().click();
+
+      expect(get(busyStore)).toEqual([]);
+      expectToastError(
+        "The list of SNS projects is not loaded yet. Try again in a moment."
+      );
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+      expect(getLedgerIdSpy).toBeCalledTimes(0);
       // Stays on the form.
       expect(await formPo.isPresent()).toEqual(true);
     });
@@ -734,6 +795,63 @@ describe("ImportTokenModal", () => {
       expect(consoleErrorSpy).toBeCalledWith(
         new Error(`Invalid character: "_"`)
       );
+    });
+
+    it("does not auto-submit before the SNS projects load", async () => {
+      resetSnsProjects();
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+      await runResolvedPromises();
+
+      // The imported tokens are loaded but the SNS projects are not.
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+      expect(getLedgerIdSpy).toBeCalledTimes(0);
+      expect(get(toastsStore)).toEqual([]);
+      expect(await formPo.isPresent()).toEqual(true);
+
+      setSnsProjects([
+        {
+          ledgerCanisterId,
+          lifecycle: SnsSwapLifecycle.Open,
+        },
+      ]);
+      await runResolvedPromises();
+
+      expectToastError(
+        "You cannot import SNS tokens, they are added by the NNS."
+      );
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+      expect(getLedgerIdSpy).toBeCalledTimes(0);
+      expect(await formPo.isPresent()).toEqual(true);
+    });
+
+    it("auto-submits once the SNS projects are loaded", async () => {
+      resetSnsProjects();
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+      await runResolvedPromises();
+
+      expect(queryIcrcTokenSpy).toBeCalledTimes(0);
+      expect(await formPo.isPresent()).toEqual(true);
+
+      setSnsProjects([]);
+      await runResolvedPromises();
+      await tick();
+
+      expect(queryIcrcTokenSpy).toBeCalledTimes(1);
+      expect(await formPo.isPresent()).toEqual(false);
     });
   });
 });

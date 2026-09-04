@@ -22,6 +22,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Refuse to import the ledger of any SNS project, whatever its swap state, and
+  wait for the SNS project list before the import form validates a ledger.
+
 #### Security
 
 - The "Hide Balance" option now also masks the balances in the accessible names
