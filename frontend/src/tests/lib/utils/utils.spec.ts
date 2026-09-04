@@ -134,6 +134,20 @@ describe("utils", () => {
       );
     });
 
+    it("should render an array hole as undefined", () => {
+      // A sparse array. eslint forbids the `[1, , 3]` literal.
+      const sparse: unknown[] = [1];
+      sparse[2] = 3;
+
+      expect(sparse.length).toBe(3);
+      expect(1 in sparse).toBe(false);
+
+      expect(stringifyJson(sparse)).toBe("[1,undefined,3]");
+      expect(stringifyJson(sparse, { indentation: 2 })).toBe(
+        `[\n  1,\n  undefined,\n  3\n]`
+      );
+    });
+
     it("should call toJSON the way JSON.stringify does", () => {
       const value = { date: new Date(0), nested: { date: new Date(1000) } };
       expect(stringifyJson(value)).toBe(JSON.stringify(value));
