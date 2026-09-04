@@ -1,6 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
+  import { observeRenderedMarkdown } from "$lib/utils/html.utils";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { isNullish } from "@dfinity/utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   type Props = {
@@ -11,6 +13,21 @@
   };
 
   let { label, testId, value: valueInfo, description }: Props = $props();
+
+  // An SNS supplies the description of its topics and of its nervous system
+  // functions, so keep only the tags and the attributes that a description
+  // needs.
+  let container = $state<HTMLDivElement | undefined>(undefined);
+
+  $effect(() => {
+    const element = container;
+
+    if (isNullish(element)) {
+      return;
+    }
+
+    return observeRenderedMarkdown(element);
+  });
 </script>
 
 <KeyValuePairInfo {testId} alignIconRight>
@@ -22,7 +39,15 @@
 
   {#snippet info()}
     <TestIdWrapper testId="info">
-      <Html text={description ?? $i18n.proposal_detail.no_more_info} />
+      <div class="contents" bind:this={container}>
+        <Html text={description ?? $i18n.proposal_detail.no_more_info} />
+      </div>
     </TestIdWrapper>
   {/snippet}
 </KeyValuePairInfo>
+
+<style lang="scss">
+  .contents {
+    display: contents;
+  }
+</style>
