@@ -75,6 +75,78 @@ describe("utils", () => {
         `{"_isPrincipal":true}`
       );
     });
+
+    it("should render a string that reads __UNDEFINED__ as that string", () => {
+      expect(stringifyJson({ a: "__UNDEFINED__" })).toBe(
+        `{"a":"__UNDEFINED__"}`
+      );
+    });
+
+    it("should not let a string break the rest of the payload", () => {
+      const value = { a: 'x"__UNDEFINED__', b: 1 };
+      expect(stringifyJson(value)).toBe(JSON.stringify(value));
+    });
+
+    it("should render a key named __UNDEFINED__ as that key", () => {
+      expect(stringifyJson({ __UNDEFINED__: 1 })).toBe(`{"__UNDEFINED__":1}`);
+    });
+
+    it("should tell undefined apart from the string __UNDEFINED__", () => {
+      expect(stringifyJson({ a: undefined, b: "__UNDEFINED__" })).toBe(
+        `{"a":undefined,"b":"__UNDEFINED__"}`
+      );
+      expect(stringifyJson({ a: undefined })).not.toBe(
+        stringifyJson({ a: "__UNDEFINED__" })
+      );
+    });
+
+    it("should tell undefined apart from the string __UNDEFINED__ at the root", () => {
+      expect(stringifyJson("__UNDEFINED__")).toBe(`"__UNDEFINED__"`);
+      expect(stringifyJson(undefined)).toBe("undefined");
+    });
+
+    it("should lay values out the way JSON.stringify does", () => {
+      const value = {
+        object: { nested: { deep: 1 } },
+        array: [1, [2, 3], { a: "b" }],
+        emptyObject: {},
+        emptyArray: [],
+        nullValue: null,
+        number: -1.5,
+        negativeZero: -0,
+        text: 'a "quoted" \\ value\n',
+        notANumber: NaN,
+        boxedString: new String('a "boxed" value'),
+        boxedNumber: new Number(3),
+        boxedBoolean: new Boolean(false),
+      };
+      expect(stringifyJson(value)).toBe(JSON.stringify(value));
+      expect(stringifyJson(value, { indentation: 2 })).toBe(
+        JSON.stringify(value, null, 2)
+      );
+    });
+
+    it("should indent nested undefined values", () => {
+      expect(
+        stringifyJson({ a: [undefined, { b: undefined }] }, { indentation: 2 })
+      ).toBe(
+        `{\n  "a": [\n    undefined,\n    {\n      "b": undefined\n    }\n  ]\n}`
+      );
+    });
+
+    it("should call toJSON the way JSON.stringify does", () => {
+      const value = { date: new Date(0), nested: { date: new Date(1000) } };
+      expect(stringifyJson(value)).toBe(JSON.stringify(value));
+      expect(stringifyJson(value)).toBe(
+        `{"date":"1970-01-01T00:00:00.000Z","nested":{"date":"1970-01-01T00:00:01.000Z"}}`
+      );
+    });
+
+    it("should throw on a circular structure", () => {
+      const value: Record<string, unknown> = { a: 1 };
+      value.self = value;
+      expect(() => stringifyJson(value)).toThrow(TypeError);
+    });
   });
 
   describe("uniqueObjects", () => {

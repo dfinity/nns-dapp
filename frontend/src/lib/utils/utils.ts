@@ -9,6 +9,71 @@ export const isPrincipal = (value: unknown): value is Principal =>
   typeof value === "object" && (value as Principal)?._isPrincipal === true;
 
 /**
+ * Maps a value to the value that is serialized in its place.
+ * Returns the value itself when no mapping applies.
+ */
+const replaceJsonValue = (
+  value: unknown,
+  options?: {
+    devMode?: boolean;
+  }
+): unknown => {
+  switch (typeof value) {
+    case "function":
+      return "f () { ... }";
+    case "symbol":
+      return value.toString();
+    case "object": {
+      // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
+      if (isPrincipal(value)) {
+        const asText = value.toString();
+        // To not stringify NOT Principal instance that contains _isPrincipal field
+        return asText === "[object Object]" ? value : asText;
+      }
+
+      // For proposal rendering, historically we display {principal: "1234"}, but in stringified JSON, principals are now encoded as {"__principal__": "1234"}.
+      if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
+        return value[JSON_KEY_PRINCIPAL];
+      }
+
+      // optimistic hash stringifying
+      if (Array.isArray(value) && isHash(value)) {
+        return bytesToHexString(value);
+      }
+
+      if (value instanceof Promise) {
+        return "Promise(...)";
+      }
+
+      if (value instanceof ArrayBuffer) {
+        return new Uint8Array(value).toString();
+      }
+
+      break;
+    }
+    case "bigint": {
+      if (options?.devMode !== undefined && options.devMode) {
+        return `BigInt('${value.toString()}')`;
+      }
+      return value.toString();
+    }
+  }
+  return value;
+};
+
+// The `indentation` that `JSON.stringify` accepts, clamped the same way.
+const jsonGap = (indentation: number): string =>
+  " ".repeat(Math.min(10, Math.max(0, Math.floor(indentation))));
+
+/**
+ * Serializes a value the way `JSON.stringify` does, with two differences:
+ * - `undefined` is written as the bare word `undefined` instead of being dropped.
+ * - the values that `replaceJsonValue` maps are written in their mapped form.
+ *
+ * The word `undefined` is written only for a value that is `undefined`. A string
+ * of any content is written by `JSON.stringify`, so no payload string can read
+ * as `undefined`.
+ *
  * Transform bigint to string to avoid serialization error.
  * devMode transforms 123n -> "BigInt(123)"
  */
@@ -19,58 +84,85 @@ export const stringifyJson = (
     devMode?: boolean;
   }
 ): string => {
-  const __UNDEFINED__ = "__UNDEFINED__";
-  const result = JSON.stringify(
-    value,
-    (_, value) => {
-      switch (typeof value) {
-        case "function":
-          return "f () { ... }";
-        case "symbol":
-          return value.toString();
-        case "object": {
-          // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
-          if (isPrincipal(value)) {
-            const asText = value.toString();
-            // To not stringify NOT Principal instance that contains _isPrincipal field
-            return asText === "[object Object]" ? value : asText;
-          }
+  const gap = jsonGap(options?.indentation ?? 0);
+  // The chain of objects that are currently open, to detect a circular structure.
+  const ancestors: object[] = [];
 
-          // For proposal rendering, historically we display {principal: "1234"}, but in stringified JSON, principals are now encoded as {"__principal__": "1234"}.
-          if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
-            return value[JSON_KEY_PRINCIPAL];
-          }
+  const wrap = (
+    entries: string[],
+    open: string,
+    close: string,
+    level: number
+  ): string => {
+    if (entries.length === 0) {
+      return `${open}${close}`;
+    }
+    if (gap === "") {
+      return `${open}${entries.join(",")}${close}`;
+    }
+    const indent = gap.repeat(level + 1);
+    return `${open}\n${indent}${entries.join(
+      `,\n${indent}`
+    )}\n${gap.repeat(level)}${close}`;
+  };
 
-          // optimistic hash stringifying
-          if (Array.isArray(value) && isHash(value)) {
-            return bytesToHexString(value);
-          }
+  const serialize = (raw: unknown, key: string, level: number): string => {
+    // `JSON.stringify` calls `toJSON` before the replacer. `Principal` has one.
+    const value = replaceJsonValue(
+      typeof raw === "object" &&
+        raw !== null &&
+        typeof (raw as { toJSON?: unknown }).toJSON === "function"
+        ? (raw as { toJSON: (key: string) => unknown }).toJSON(key)
+        : raw,
+      options
+    );
 
-          if (value instanceof Promise) {
-            return "Promise(...)";
-          }
+    if (value === undefined) {
+      return "undefined";
+    }
+    if (
+      typeof value !== "object" ||
+      value === null ||
+      value instanceof String ||
+      value instanceof Number ||
+      value instanceof Boolean
+    ) {
+      return JSON.stringify(value);
+    }
 
-          if (value instanceof ArrayBuffer) {
-            return new Uint8Array(value).toString();
-          }
-
-          break;
-        }
-        case "bigint": {
-          if (options?.devMode !== undefined && options.devMode) {
-            return `BigInt('${value.toString()}')`;
-          }
-          return value.toString();
-        }
+    if (ancestors.includes(value)) {
+      throw new TypeError("Converting circular structure to JSON");
+    }
+    ancestors.push(value);
+    try {
+      if (Array.isArray(value)) {
+        return wrap(
+          value.map((item, index) => serialize(item, `${index}`, level + 1)),
+          "[",
+          "]",
+          level
+        );
       }
-      return value === undefined ? __UNDEFINED__ : value;
-    },
-    options?.indentation ?? 0
-  );
+      const record = value as Record<string, unknown>;
+      return wrap(
+        Object.keys(record).map(
+          (name) =>
+            `${JSON.stringify(name)}:${gap === "" ? "" : " "}${serialize(
+              record[name],
+              name,
+              level + 1
+            )}`
+        ),
+        "{",
+        "}",
+        level
+      );
+    } finally {
+      ancestors.pop();
+    }
+  };
 
-  return (
-    result?.replace(new RegExp(`"${__UNDEFINED__}"`, "g"), "undefined") ?? ""
-  );
+  return serialize(value, "", 0);
 };
 
 /**
