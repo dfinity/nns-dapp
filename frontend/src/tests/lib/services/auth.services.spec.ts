@@ -119,6 +119,37 @@ describe("auth-services", () => {
       spy.mockClear();
     });
 
+    it("should drop a pre-existing level param when adding msg to url", async () => {
+      const spy = vi.spyOn(routeUtils, "replaceHistory");
+
+      const location = window.location;
+      const search = "level=success";
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: {
+          ...location,
+          href: `https://nns.internetcomputer.org/accounts?${search}`,
+          search,
+        },
+      });
+
+      await logout({ msg: "warning.auth_sign_out" });
+
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      const url = spy.mock.calls[0][0];
+      expect(url.searchParams.get("msg")).toEqual("warning.auth_sign_out");
+      expect(url.searchParams.get("level")).toBeNull();
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { ...location },
+      });
+
+      spy.mockClear();
+    });
+
     it("should not add msg to url", async () => {
       const spy = vi.spyOn(routeUtils, "replaceHistory");
 

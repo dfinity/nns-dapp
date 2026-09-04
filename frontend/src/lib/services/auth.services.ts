@@ -116,6 +116,9 @@ const appendMsgToUrl = (msg: LogoutMsgKey) => {
 
   const url: URL = new URL(window.location.href);
 
+  // Drop a pre-existing level param, so the url never carries an untrusted
+  // level value, even one left over from a crafted or legacy link.
+  url.searchParams.delete(levelParam);
   url.searchParams.set(msgParam, msg);
 
   replaceHistory(url);
