@@ -3,6 +3,7 @@ import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 
 describe("icrc-index.services", () => {
@@ -30,9 +31,16 @@ describe("icrc-index.services", () => {
       expect(spyOnGetLedgerId).toBeCalledTimes(1);
       expect(spyOnGetLedgerId).toBeCalledWith({
         certified: true,
-        identity: mockIdentity,
+        identity: expect.any(AnonymousIdentity),
         indexCanisterId,
       });
+      // The index canister ID is unverified user input, so the call must not
+      // carry the user principal.
+      const { identity } = spyOnGetLedgerId.mock.calls[0][0];
+      expect(identity.getPrincipal().isAnonymous()).toEqual(true);
+      expect(identity.getPrincipal().toText()).not.toEqual(
+        mockIdentity.getPrincipal().toText()
+      );
     });
 
     it("should return false when the ledger canister IDs don't match", async () => {
