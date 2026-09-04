@@ -90,14 +90,14 @@ test("Privacy mode keeps the balances out of the Portfolio accessible names", as
       );
 
   const toggleBalancePrivacy = async () => {
-    // The account menu button toggles Popover visibility (AccountMenu.svelte).
     // The Popover backdrop closes on click or on Enter/Space, not Escape
-    // (gix-components handleKeyPress only handles those two keys), so a
-    // second click on the same button is the reliable way to close it.
+    // (gix-components handleKeyPress only handles those two keys). The
+    // backdrop covers the whole screen, including the account-menu button
+    // itself, so a click on "backdrop" is the reliable way to close it.
     const accountMenuPo = appPo.getAccountMenuPo();
     await accountMenuPo.openMenu();
     await accountMenuPo.getToggleBalancePrivacyOptionPo().click();
-    await accountMenuPo.openMenu();
+    await accountMenuPo.click("backdrop");
     await expect.poll(() => accountMenuPo.isOpen(), POLL).toBe(false);
   };
 
