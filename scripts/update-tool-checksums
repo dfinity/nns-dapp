@@ -32,11 +32,11 @@ cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
 ###############
 # Pinned versions
 ###############
-dfx_version="$(jq -r .dfx dfx.json)"
-node_version="$(jq -r .volta.node frontend/package.json)"
-didc_release="$(jq -r .defaults.build.config.DIDC_RELEASE config.json)"
-ic_wasm_version="$(jq -r .defaults.build.config.IC_WASM_VERSION config.json)"
-rustup_init_version="$(jq -r .defaults.build.config.RUSTUP_INIT_VERSION config.json)"
+dfx_version="$(jq -er .dfx dfx.json)"
+node_version="$(jq -er .volta.node frontend/package.json)"
+didc_release="$(jq -er .defaults.build.config.DIDC_RELEASE config.json)"
+ic_wasm_version="$(jq -er .defaults.build.config.IC_WASM_VERSION config.json)"
+rustup_init_version="$(jq -er .defaults.build.config.RUSTUP_INIT_VERSION config.json)"
 
 # Each entry is a config.json key, a "|", and the URL of the artefact.
 # The Dockerfile downloads the same URLs.
