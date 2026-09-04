@@ -822,7 +822,7 @@ describe("icrc-accounts-services", () => {
       });
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
-        identity: new AnonymousIdentity(),
+        identity: expect.any(AnonymousIdentity),
         certified: false,
         canisterId: ledgerCanisterId,
       });
@@ -858,7 +858,7 @@ describe("icrc-accounts-services", () => {
       await expect(call).rejects.toThrow(testError);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
-        identity: new AnonymousIdentity(),
+        identity: expect.any(AnonymousIdentity),
         certified: false,
         canisterId: ledgerCanisterId,
       });
