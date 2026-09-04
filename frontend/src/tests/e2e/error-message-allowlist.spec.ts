@@ -91,11 +91,18 @@ test("An index canister cannot choose the text of the error toast", async ({
   step("The toast shows the app's own transactions error");
 
   const toastsPo = appPo.getToastsPo();
+  // The import already showed its own success toast. Close it, so the
+  // transactions error toast (which loads in the background and can take a
+  // few retries) is the only one left to wait for.
   await toastsPo.getToastPo().waitFor();
+  await toastsPo.closeAll();
+
+  await expect(async () => {
+    expect(await toastsPo.getMessages()).toContain(APP_TRANSACTIONS_ERROR);
+  }).toPass({ timeout: 30_000 });
 
   const messages = await toastsPo.getMessages();
 
-  expect(messages).toContain(APP_TRANSACTIONS_ERROR);
   expect(messages).not.toContain(ATTACKER_TARGET_TEXT);
   expect(messages).not.toContain(ATTACKER_MESSAGE);
 });
