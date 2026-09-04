@@ -1,11 +1,13 @@
 <script lang="ts">
   import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
-  import { saveAddressBook } from "$lib/services/address-book.services";
-  import { addressBookStore } from "$lib/stores/address-book.store";
+  import {
+    getCertifiedNamedAddresses,
+    saveAddressBook,
+  } from "$lib/services/address-book.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconErrorOutline } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
@@ -18,18 +20,34 @@
   const { onClose, namedAddress }: Props = $props();
 
   const handleDeleteConfirm = async () => {
-    if (isNullish($addressBookStore.namedAddresses)) {
-      return;
-    }
-
-    const updatedAddresses = $addressBookStore.namedAddresses.filter(
-      (entry) => entry.name !== namedAddress.name
-    );
-
     const initiator = "delete-address-book-entry";
     startBusy({ initiator });
 
     try {
+      // The save replaces the whole address book. Build the replacement from
+      // certified entries only. A single replica can forge or drop entries in a
+      // query response, and a write would make that response permanent.
+      const currentAddresses = await getCertifiedNamedAddresses();
+
+      if (isNullish(currentAddresses)) {
+        toastsError({ labelKey: "error__address_book.not_certified" });
+        return;
+      }
+
+      const updatedAddresses = currentAddresses.filter(
+        (entry) => entry.name !== namedAddress.name
+      );
+
+      // The certified address book no longer holds the entry to remove.
+      // Report it instead of saving an unchanged address book.
+      if (updatedAddresses.length === currentAddresses.length) {
+        toastsError({
+          labelKey: "error__address_book.entry_not_found",
+          substitutions: { $name: namedAddress.name },
+        });
+        return;
+      }
+
       const result = await saveAddressBook(updatedAddresses);
 
       if (!result?.err) {

@@ -1204,6 +1204,8 @@ interface I18nError__fav_projects {
 interface I18nError__address_book {
   load_address_book: string;
   update_address: string;
+  not_certified: string;
+  entry_not_found: string;
   too_many: string;
   invalid_icp: string;
   invalid_icrc1: string;

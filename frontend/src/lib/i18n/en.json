@@ -1154,6 +1154,8 @@
   "error__address_book": {
     "load_address_book": "There was an unexpected issue while loading the address book.",
     "update_address": "There was an unexpected issue while updating the address.",
+    "not_certified": "We could not verify your address book, so nothing was saved. Please reload the page and try again.",
+    "entry_not_found": "\"$name\" is not in your verified address book, so nothing was saved. Please reload the page and try again.",
     "too_many": "You can't add more than $limit addresses.",
     "invalid_icp": "Invalid ICP address: $error.",
     "invalid_icrc1": "Invalid ICRC1 address: $error.",
