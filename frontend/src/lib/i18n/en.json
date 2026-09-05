@@ -163,7 +163,8 @@
     "privacy_mode_hide": "Hide Balance",
     "privacy_mode_show": "Show Balance",
     "project_page": "Project Page",
-    "address_book": "Address Book"
+    "address_book": "Address Book",
+    "search": "Search"
   },
   "address_book": {
     "add_address": "Add New Address",
@@ -310,13 +311,6 @@
     "main": "Main",
     "balance": "Balance",
     "send": "Send",
-    "buy_icp": "Buy ICP",
-    "buy_icp_banxa": "Buy ICP with Banxa",
-    "receiving_icp_address": "Receiving ICP Address",
-    "icp_token_utility": "ICP Token Utility",
-    "buy_icp_description": "<a href=\"https://internetcomputer.org/icp-tokens\" rel=\"noopener noreferrer\" aria-label=\"more info ICP token\" target=\"_blank\">ICP</a> is the native utility token of the Internet Computer Protocol. You can lock ICP into neurons to participate in the governance of the Internet Computer, swap it in SNS decentralization swaps or convert it into 'cycles' that are used to pay for resources of canister smart contracts.",
-    "buy_icp_note": "<strong>Disclaimer:</strong> Clicking the button below will take you to a third party website to complete your ICP transaction at your own risk.",
-    "banxa_logo_alt": "Banxa logo",
     "icp_transaction_description": "ICP Transaction",
     "icp_transaction_memo_label": "Transaction Memo (Optional)",
     "icp_transaction_memo_hint": "* This is an advanced feature. Do not provide a value if you don't need it.",
@@ -627,7 +621,6 @@
     "text": "Check back later!"
   },
   "canisters": {
-    "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
     "create_canister": "Create Canister",
     "link_canister": "Link Canister",
@@ -1031,6 +1024,8 @@
     "status_unspecified": "Unspecified",
     "status_finalizing": "Finalizing",
     "participate_swap_description": "Participate in decentralization swap",
+    "legal_banner_title": "You are responsible for your own compliance",
+    "legal_banner_text": "By participating, you represent that you independently determined that this swap is lawful for you. You accept sole responsibility for that determination.",
     "understand_agree": "I understand that I cannot withdraw or edit my commitment after I select \"Send Now,\" and that my commitment may be returned to my main ICP account if the swap is unsuccessful for any reason.",
     "participate_success": "Your participation has been successfully committed.",
     "participate": "Participate",
@@ -1126,7 +1121,7 @@
   "error__canister": {
     "already_attached": "Canister ($canisterId) is already linked",
     "name_taken": "The name $name is already in use. Names must be unique.",
-    "name_too_long": "The name $name is too long (max. 24 characters). Please, choose a shorter name.",
+    "name_too_long": "The name $name is too long (max. $max characters). Please, choose a shorter name.",
     "limit_exceeded": "The limit of canisters that can be linked has been exceeded.",
     "unlink_not_found": "Error unlinking, canister ($canisterId) not found.",
     "unknown_link": "Error linking canister.",

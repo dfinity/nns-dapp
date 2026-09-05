@@ -293,7 +293,7 @@ fn attach_canister_name_too_long() {
     let result1 = store.attach_canister(
         principal,
         AttachCanisterRequest {
-            name: "ABCDEFGHIJKLMNOPQRSTUVWX".to_string(),
+            name: "A".repeat(CANISTER_NAME_MAX_LENGTH),
             canister_id: canister_id1,
             block_index: None,
         },
@@ -301,7 +301,7 @@ fn attach_canister_name_too_long() {
     let result2 = store.attach_canister(
         principal,
         AttachCanisterRequest {
-            name: "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string(),
+            name: "A".repeat(CANISTER_NAME_MAX_LENGTH + 1),
             canister_id: canister_id2,
             block_index: None,
         },
@@ -754,7 +754,7 @@ fn rename_to_long_name_fails() {
 
     let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
-    let long_name = "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string();
+    let long_name = "A".repeat(CANISTER_NAME_MAX_LENGTH + 1);
     let name = "DEF".to_string();
     store.attach_canister(
         principal,

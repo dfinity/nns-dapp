@@ -170,6 +170,7 @@ interface I18nNavigation {
   privacy_mode_show: string;
   project_page: string;
   address_book: string;
+  search: string;
 }
 
 interface I18nAddress_book {
@@ -322,13 +323,6 @@ interface I18nAccounts {
   main: string;
   balance: string;
   send: string;
-  buy_icp: string;
-  buy_icp_banxa: string;
-  receiving_icp_address: string;
-  icp_token_utility: string;
-  buy_icp_description: string;
-  buy_icp_note: string;
-  banxa_logo_alt: string;
   icp_transaction_description: string;
   icp_transaction_memo_label: string;
   icp_transaction_memo_hint: string;
@@ -653,7 +647,6 @@ interface I18nActionable_proposals_empty {
 }
 
 interface I18nCanisters {
-  aria_label_canister_card: string;
   text: string;
   create_canister: string;
   link_canister: string;
@@ -1069,6 +1062,8 @@ interface I18nSns_project_detail {
   status_unspecified: string;
   status_finalizing: string;
   participate_swap_description: string;
+  legal_banner_title: string;
+  legal_banner_text: string;
   understand_agree: string;
   participate_success: string;
   participate: string;
