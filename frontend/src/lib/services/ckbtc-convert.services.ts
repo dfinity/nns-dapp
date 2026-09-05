@@ -12,7 +12,6 @@ import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
 import { nonNullish } from "@dfinity/utils";
 import {
   MinterAlreadyProcessingError,
@@ -25,7 +24,8 @@ import {
 
 export type ConvertCkBTCToBtcParams = {
   destinationAddress: string;
-  amount: number;
+  // The caller converts the user input with certified token metadata.
+  amountUlps: bigint;
   universeId: UniverseCanisterId;
   canisters: CkBTCAdditionalCanisters;
   updateProgress: (step: ConvertBtcStep) => void;
@@ -39,7 +39,7 @@ export type ConvertCkBTCToBtcParams = {
  */
 export const convertCkBTCToBtcIcrc2 = async ({
   destinationAddress,
-  amount,
+  amountUlps,
   source,
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
@@ -56,7 +56,7 @@ export const convertCkBTCToBtcIcrc2 = async ({
     await approveTransfer({
       identity,
       canisterId: universeId,
-      amount: numberToE8s(amount),
+      amount: amountUlps,
       // 5 minutes should be long enough to perform the transfer but if it
       // doesn't succeed we don't want the approval to remain valid
       // indefinitely.
@@ -70,7 +70,7 @@ export const convertCkBTCToBtcIcrc2 = async ({
       identity,
       canisterId: minterCanisterId,
       address: destinationAddress,
-      amount: numberToE8s(amount),
+      amount: amountUlps,
     });
   } catch (err: unknown) {
     toastsError(toastRetrieveBtcError(err));

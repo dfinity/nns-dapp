@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Increase the maximum canister name length from 24 to 64 characters.
 - Show the canisters on the Canisters page in a table instead of a card grid.
 - Use certified token metadata in the ICRC transaction modal.
+- Use certified token metadata in the ckBTC transaction modal.
 
 #### Deprecated
 

@@ -10,7 +10,10 @@
     type ConvertCkBTCToBtcParams,
   } from "$lib/services/ckbtc-convert.services";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
-  import { transferTokens as transferIcrcTokens } from "$lib/services/icrc-accounts.services";
+  import {
+    getCertifiedIcrcTokenMetaData,
+    transferTokens as transferIcrcTokens,
+  } from "$lib/services/icrc-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     ckBTCInfoStore,
@@ -21,6 +24,7 @@
   import type { Account } from "$lib/types/account";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type {
     NewTransaction,
     TransactionInit,
@@ -30,11 +34,16 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { numberToE8s } from "$lib/utils/token.utils";
+  import { numberToUlps } from "$lib/utils/token.utils";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { nonNullish, type Token, type TokenAmountV2 } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
+  import {
+    TokenAmountV2,
+    isNullish,
+    nonNullish,
+    type Token,
+  } from "@dfinity/utils";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -53,11 +62,34 @@
 
   let currentStep: WizardStep | undefined;
 
+  // The token property can come from a query call. The amount the user signs
+  // must never depend on unproven data.
+  let certifiedToken: IcrcTokenMetadata | undefined = undefined;
+
+  onMount(async () => {
+    certifiedToken = await getCertifiedIcrcTokenMetaData({
+      ledgerCanisterId: universeId,
+    });
+  });
+
+  // Show the property values until the certified metadata arrives. The user
+  // cannot continue before that, so no amount is ever built from them.
+  let displayedToken: Token;
+  $: displayedToken = certifiedToken ?? token;
+
+  let displayedFee: TokenAmountV2;
+  $: displayedFee = nonNullish(certifiedToken)
+    ? TokenAmountV2.fromUlps({
+        amount: certifiedToken.fee,
+        token: certifiedToken,
+      })
+    : transactionFee;
+
   let title: string;
   $: title =
     currentStep?.name === "Form"
       ? replacePlaceholders($i18n.core.send_with_token, {
-          $token: networkBtc ? $i18n.ckbtc.btc : token.symbol,
+          $token: networkBtc ? $i18n.ckbtc.btc : displayedToken.symbol,
         })
       : currentStep?.name === "Progress"
         ? $i18n.ckbtc.sending_ckbtc_to_btc
@@ -73,6 +105,12 @@
   const transferTokens = async ({
     detail: { sourceAccount, amount, destinationAddress },
   }: CustomEvent<NewTransaction>) => {
+    // For type safety. The user cannot reach this step without certified
+    // metadata.
+    if (isNullish(certifiedToken)) {
+      return;
+    }
+
     startBusy({
       initiator: "accounts",
     });
@@ -80,9 +118,9 @@
     const { blockIndex } = await transferIcrcTokens({
       source: sourceAccount,
       destinationAddress,
-      amountUlps: numberToE8s(amount),
+      amountUlps: numberToUlps({ amount, token: certifiedToken }),
       ledgerCanisterId: universeId,
-      fee: transactionFee.toUlps(),
+      fee: certifiedToken.fee,
     });
 
     stopBusy("accounts");
@@ -96,13 +134,19 @@
   const convert = async ({
     detail: { sourceAccount, amount, destinationAddress },
   }: CustomEvent<NewTransaction>) => {
+    // For type safety. The user cannot reach this step without certified
+    // metadata.
+    if (isNullish(certifiedToken)) {
+      return;
+    }
+
     modal?.goProgress();
 
     const updateProgress = (step: ConvertBtcStep) => (progressStep = step);
 
     const params: ConvertCkBTCToBtcParams = {
       destinationAddress,
-      amount,
+      amountUlps: numberToUlps({ amount, token: certifiedToken }),
       universeId,
       canisters,
       updateProgress,
@@ -148,7 +192,7 @@
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: transactionFee.toUlps(),
+      transactionFee: displayedFee.toUlps(),
       infoData,
     });
 
@@ -168,12 +212,13 @@
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
-  {token}
-  {transactionFee}
+  token={displayedToken}
+  transactionFee={displayedFee}
   {transactionInit}
   bind:selectedNetwork
   {validateAmount}
   bind:amount={userAmount}
+  disableContinue={isNullish(certifiedToken)}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">
@@ -181,7 +226,7 @@
       {$i18n.accounts.ckbtc_to_btc_transaction_description}
     {:else}
       {replacePlaceholders($i18n.accounts.ckbtc_transaction_description, {
-        $token: token.symbol,
+        $token: displayedToken.symbol,
       })}
     {/if}
   </p>
@@ -204,7 +249,7 @@
         amount={userAmount}
       />
     {:else if nonNullish(userAmount)}
-      <TransactionReceivedAmount amount={userAmount} {token} />
+      <TransactionReceivedAmount amount={userAmount} token={displayedToken} />
     {/if}
   </svelte:fragment>
   <ConvertBtcInProgress slot="in_progress" {progressStep} />

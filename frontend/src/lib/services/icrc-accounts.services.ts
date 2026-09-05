@@ -60,6 +60,32 @@ export const getIcrcTokenMetaData = async ({
   });
 };
 
+/**
+ * Fetch the token metadata with a certified call.
+ *
+ * The token store can hold the result of a query call, which consensus has not
+ * checked. Use this function before you build an amount that the user signs,
+ * and do not enable the action until it resolves.
+ *
+ * Returns `undefined` and shows an error toast if the call fails.
+ */
+export const getCertifiedIcrcTokenMetaData = async ({
+  ledgerCanisterId,
+}: {
+  ledgerCanisterId: Principal;
+}): Promise<IcrcTokenMetadata | undefined> => {
+  try {
+    return await queryIcrcToken({
+      identity: getCurrentIdentity(),
+      canisterId: ledgerCanisterId,
+      certified: true,
+    });
+  } catch (err) {
+    toastsError({ labelKey: "error.token_not_found", err });
+    return undefined;
+  }
+};
+
 export const loadIcrcToken = ({
   ledgerCanisterId,
   certified = true,

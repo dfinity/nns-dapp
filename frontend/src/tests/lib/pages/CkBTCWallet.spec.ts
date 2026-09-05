@@ -158,6 +158,7 @@ describe("CkBTCWallet", () => {
     vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
       []
     );
+    vi.mocked(icrcLedgerApi.queryIcrcToken).mockResolvedValue(mockCkBTCToken);
   });
 
   describe("user not signed in", () => {
