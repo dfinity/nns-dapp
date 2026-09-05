@@ -1,5 +1,7 @@
 # Tags the latest main, to trigger a release.
 name: Tag main as tip
+permissions:
+  contents: write
 on:
   pull_request:
     branches:
