@@ -2,6 +2,7 @@
   import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
+  import SwapLegalBanner from "$lib/components/sale/SwapLegalBanner.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
@@ -225,12 +226,14 @@
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
     <div class="additional-info" slot="additional-info-form">
+      <SwapLegalBanner withTitle />
       <AdditionalInfoForm
         {conditionsToAccept}
         bind:areConditionsAccepted={areSwapConditionsAccepted}
       />
     </div>
     <div class="additional-info" slot="additional-info-review">
+      <SwapLegalBanner />
       <AdditionalInfoReview bind:accepted />
     </div>
     <p
@@ -250,5 +253,9 @@
 <style lang="scss">
   .additional-info {
     padding-top: var(--padding-2x);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
   }
 </style>

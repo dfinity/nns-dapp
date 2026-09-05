@@ -193,14 +193,15 @@ describe("canister-utils", () => {
     });
 
     it("returns an error message if canister name longer than max", () => {
+      const expectedMessage = `Canister name too long. Maximum of ${MAX_CANISTER_NAME_LENGTH} characters allowed.`;
       expect(
         errorCanisterNameMessage(
-          "My favorite dapp with a super duper long name"
+          "My favorite dapp with a name so long that it does not fit in the limit"
         )
-      ).toBe("Canister name too long. Maximum of 24 characters allowed.");
+      ).toBe(expectedMessage);
       expect(
         errorCanisterNameMessage("a".repeat(MAX_CANISTER_NAME_LENGTH + 1))
-      ).toBe("Canister name too long. Maximum of 24 characters allowed.");
+      ).toBe(expectedMessage);
     });
   });
 

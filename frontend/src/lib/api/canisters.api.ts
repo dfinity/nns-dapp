@@ -104,6 +104,7 @@ export const attachCanister = async ({
   if (isNameTooLong(name)) {
     throw new CanisterNameTooLongError("error__canister.name_too_long", {
       $name: name,
+      $max: String(MAX_CANISTER_NAME_LENGTH),
     });
   }
 
@@ -133,6 +134,7 @@ export const renameCanister = async ({
   if (isNameTooLong(name)) {
     throw new CanisterNameTooLongError("error__canister.name_too_long", {
       $name: name,
+      $max: String(MAX_CANISTER_NAME_LENGTH),
     });
   }
 
@@ -235,6 +237,7 @@ export const createCanister = async ({
   if (isNameTooLong(name)) {
     throw new CanisterNameTooLongError("error__canister.name_too_long", {
       $name: name,
+      $max: String(MAX_CANISTER_NAME_LENGTH),
     });
   }
 

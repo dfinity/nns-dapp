@@ -21,7 +21,9 @@
   />
   <svelte:fragment slot="subtitle">
     {#if canister.name.length > 0 && isController}
-      <HeadingSubtitle testId="subtitle">{canister.name}</HeadingSubtitle>
+      <HeadingSubtitle testId="subtitle" breakLongWords
+        >{canister.name}</HeadingSubtitle
+      >
     {/if}
   </svelte:fragment>
   <svelte:fragment slot="tags">

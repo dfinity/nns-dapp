@@ -6,8 +6,8 @@
   export let areConditionsAccepted = false;
 </script>
 
-<div data-tid="additional-info-form-component" class="additional-info">
-  {#if nonNullish(conditionsToAccept)}
+{#if nonNullish(conditionsToAccept)}
+  <div data-tid="additional-info-form-component" class="additional-info">
     <Checkbox
       text="block"
       inputId="agree"
@@ -16,8 +16,8 @@
     >
       <span data-tid="conditions">{conditionsToAccept}</span>
     </Checkbox>
-  {/if}
-</div>
+  </div>
+{/if}
 
 <style lang="scss">
   .additional-info {
