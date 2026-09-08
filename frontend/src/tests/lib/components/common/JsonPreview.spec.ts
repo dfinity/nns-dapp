@@ -64,6 +64,32 @@ describe("JsonPreview", () => {
     expect(await po.getExpandButton().isPresent()).toBe(false);
   });
 
+  // The shape of a real ExecuteNnsFunction payload: the outer structure nests a
+  // few levels and one string leaf holds a JSON install argument.
+  it("should still expand the string leaves of a real payload shape", async () => {
+    jsonRepresentationStore.setMode("tree");
+    const po = renderComponent({
+      canister_id: "qoctq-giaaa-aaaaa-aaaea-cai",
+      arg: '{"controllers":["aaaaa-aa"]}',
+      wasm_module_hash: "0f0d0e",
+    });
+    await po.clickExpand();
+
+    expect(await po.getTreeText()).toBe(
+      'canister_id "qoctq-giaaa-aaaaa-aaaea-cai" arg  controllers 0 "aaaaa-aa"wasm_module_hash "0f0d0e"'
+    );
+  });
+
+  it("should render a payload text that nests JSON thousands of levels deep", async () => {
+    jsonRepresentationStore.setMode("tree");
+    const deepText = `${"[".repeat(35_000)}${"]".repeat(35_000)}`;
+    const po = renderComponent({ comment: deepText });
+
+    expect(await po.getTreeText()).toBe(`comment "${deepText}"`);
+    // The text stays a string, so the tree has a single level.
+    expect(await po.getExpandButton().isPresent()).toBe(false);
+  });
+
   it("should expand and collapse in tree view", async () => {
     jsonRepresentationStore.setMode("tree");
     const po = renderComponent({ data: { test: "hello world" } });

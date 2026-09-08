@@ -1,3 +1,4 @@
+import { MAX_EXPANDED_JSON_DEPTH } from "$lib/constants/proposals.constants";
 import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { BasisPoints } from "$lib/types/proposals";
@@ -364,7 +365,13 @@ export const expandObject = (value: unknown): unknown => {
   }
   if (typeof value === "string") {
     try {
-      return JSON.parse(value);
+      const parsed = JSON.parse(value);
+      // A proposer controls this text. Keep a string whose JSON nests too deep
+      // as a string, so the tree stays small enough to walk and to render.
+      if (getObjMaxDepth(parsed) > MAX_EXPANDED_JSON_DEPTH) {
+        return value;
+      }
+      return parsed;
     } catch (_) {
       return value;
     }
@@ -391,28 +398,39 @@ export const expandObject = (value: unknown): unknown => {
   return value;
 };
 
+/**
+ * Counts the nesting levels of an object or an array.
+ *
+ * A primitive, `null`, an empty object and an empty array count 0. A non-empty
+ * object or array counts 1 plus the deepest of its values.
+ *
+ * The walk uses an explicit stack, so the call stack does not grow with the
+ * nesting of `obj`.
+ */
 export const getObjMaxDepth = (obj: unknown): number => {
-  if (typeof obj !== "object" || obj === null) {
-    return 0; // If it's not an object, return 0.
-  }
+  let maxDepth = 0;
+  const stack: { value: unknown; level: number }[] = [{ value: obj, level: 0 }];
 
-  const keyCount = Object.keys(obj).length;
-  if (keyCount === 0) {
-    return 0; // If it's an empty object, return 0.
-  }
-  // or calculate children depth
-  let childrenMaxDepth = 0;
-  for (const key in obj) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (obj.hasOwnProperty(key)) {
-      const depth = getObjMaxDepth((obj as Record<string, unknown>)[key]);
-      if (depth > childrenMaxDepth) {
-        childrenMaxDepth = depth;
+  let entry = stack.pop();
+  while (nonNullish(entry)) {
+    const { value, level } = entry;
+    if (typeof value === "object" && value !== null) {
+      const keys = Object.keys(value);
+      if (keys.length > 0) {
+        // This level holds at least one value, so it counts.
+        maxDepth = Math.max(maxDepth, level + 1);
+        for (const key of keys) {
+          stack.push({
+            value: (value as Record<string, unknown>)[key],
+            level: level + 1,
+          });
+        }
       }
     }
+    entry = stack.pop();
   }
 
-  return 1 + childrenMaxDepth; // Add 1 for the current level.
+  return maxDepth;
 };
 
 export const typeOfLikeANumber = (value: unknown): boolean =>
