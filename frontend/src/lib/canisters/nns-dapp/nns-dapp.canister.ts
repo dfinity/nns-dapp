@@ -39,6 +39,7 @@ import type {
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
+import { ApiErrorKey } from "$lib/types/api.errors";
 import { toNullable } from "@dfinity/utils";
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import { Actor } from "@icp-sdk/core/agent";
@@ -106,7 +107,7 @@ export class NNSDappCanister {
     }
 
     // We should never reach here. Some of the previous properties should be present.
-    throw new Error("error__account.no_details");
+    throw new ApiErrorKey("error__account.no_details");
   }
 
   /**
@@ -142,7 +143,7 @@ export class NNSDappCanister {
     }
 
     // We should never reach here. Some of the previous properties should be present.
-    throw new Error("error__account.create_subaccount");
+    throw new ApiErrorKey("error__account.create_subaccount");
   }
 
   public async registerHardwareWallet(
