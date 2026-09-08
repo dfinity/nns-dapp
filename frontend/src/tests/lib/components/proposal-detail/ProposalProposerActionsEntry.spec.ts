@@ -39,6 +39,24 @@ describe("ProposalProposerActionsEntry", () => {
     });
   });
 
+  it("should copy a string that reads __UNDEFINED__ as that string", async () => {
+    Object.assign(window.navigator, {
+      clipboard: {
+        writeText: vi.fn().mockImplementation(() => Promise.resolve()),
+      },
+    });
+    const po = renderComponent({
+      actionKey: "testKey",
+      actionData: { test: "__UNDEFINED__" },
+    });
+
+    await po.getCopyButtonPo().click();
+
+    expect(window.navigator.clipboard.writeText).toHaveBeenCalledWith(
+      `{\n  "test": "__UNDEFINED__"\n}`
+    );
+  });
+
   it("should render preview mode toggle", async () => {
     const po = renderComponent({
       actionKey: "actionKey",
