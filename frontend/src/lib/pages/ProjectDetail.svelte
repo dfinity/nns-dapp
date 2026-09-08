@@ -16,7 +16,6 @@
     hidePollingToast,
     restoreSnsSaleParticipation,
   } from "$lib/services/sns-sale.services";
-  import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
   import {
     loadSnsDerivedState,
     loadSnsLifecycle,
@@ -39,7 +38,6 @@
   } from "$lib/types/project-detail.context";
   import { SaleStep } from "$lib/types/sale";
   import { userCountryIsNeeded } from "$lib/utils/projects.utils";
-  import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { Principal } from "@icp-sdk/core/principal";
   import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
@@ -183,28 +181,14 @@
     });
   }
 
-  let derivedStateHasBuyersCount: boolean | undefined;
-  $: derivedStateHasBuyersCount = hasBuyersCount(
-    $projectDetailStore?.summary?.derived
-  );
   let areWatchersSet = false;
 
   let unsubscribeWatchCommitment: () => void | undefined;
   $: if (
     nonNullish(rootCanisterId) &&
     nonNullish(swapCanisterId) &&
-    nonNullish(derivedStateHasBuyersCount) &&
     !areWatchersSet
   ) {
-    if (!derivedStateHasBuyersCount) {
-      // TODO: Remove once Dragginz, OC and SONIC support new fields in in SnsGetDerivedStateResponse
-      loadSnsSwapMetrics({
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        swapCanisterId,
-        forceFetch: false,
-      });
-    }
-
     if (enableOpenProjectWatchers) {
       areWatchersSet = true;
       unsubscribeWatchCommitment?.();
