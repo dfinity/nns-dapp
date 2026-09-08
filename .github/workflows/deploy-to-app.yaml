@@ -1,5 +1,7 @@
 # App deployments are non-production deployments to mainnet.  They are public, can be used as staging, but e.g. funds are real.
 name: Deploy to app
+permissions:
+  contents: read
 on:
   push:
     branches:

@@ -4,6 +4,8 @@ name: Reproducible Docker Builds
 #   Note: This makes builds slow but is more representative of the end user experience.
 # - NOT DONE: Verify that these builds match our release artifacts.  This would correspond to third
 #   party verifiers getting consistent hashes that differ from our release.
+permissions:
+  contents: read
 on:
   push:
     branches:

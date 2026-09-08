@@ -1,6 +1,8 @@
 # A GitHub Actions workflow that regularly fetches the production response
 # of the SNS aggregator and updates the mock files for the ProdLaunchpad.spec test.
 name: Update the SNS aggregator response for ProdLaunchpad.spec
+permissions:
+  contents: read
 on:
   schedule:
     - cron: "30 3 * * THU"

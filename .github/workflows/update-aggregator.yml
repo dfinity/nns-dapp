@@ -1,6 +1,8 @@
 # A GitHub Actions workflow that regularly updates the aggregator SNS parsing code
 # and creates a PR for any changes.
 name: Update sns_aggregator candid bindings
+permissions:
+  contents: read
 on:
   schedule:
     # Check for updates on candid interface for the aggregator every monday at 3:30am.
