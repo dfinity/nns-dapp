@@ -2,7 +2,9 @@
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
+  import { i18n } from "$lib/stores/i18n";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
@@ -32,7 +34,15 @@
     </div>
     <div class="text-content">
       <h5 class="title">{title}</h5>
-      <p class="amount" data-tid="amount" aria-label={`${title}: ${usdAmount}`}>
+      <p
+        class="amount"
+        data-tid="amount"
+        aria-label={`${title}: ${
+          $isBalancePrivacyOptionStore
+            ? $i18n.portfolio.hidden_balance_label
+            : usdAmount
+        }`}
+      >
         $<PrivacyAwareAmount value={usdAmountFormatted} length={3} />
       </p>
     </div>

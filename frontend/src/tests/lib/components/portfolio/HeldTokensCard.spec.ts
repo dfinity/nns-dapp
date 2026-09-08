@@ -130,6 +130,36 @@ describe("HeldTokensCard", () => {
     expect(nativeBalances).toEqual(["••• ICP", "••• ckBTC", "••• ckETH"]);
   });
 
+  it("should show the balances in the aria labels when privacy mode is off", async () => {
+    const po = renderComponent({
+      topHeldTokens: mockTokens,
+      usdAmount: 6000,
+    });
+
+    expect(await po.getHeldTokensBalanceInUsdAriaLabels()).toEqual([
+      "Internet Computer USD: 100",
+      "ckBTC USD: 200",
+      "ckETH USD: 300",
+    ]);
+    expect(await po.getAmountAriaLabel()).toBe("Tokens Balance: 6000");
+  });
+
+  it("should not expose the balances in the aria labels when privacy mode is on", async () => {
+    balancePrivacyOptionStore.set("hide");
+
+    const po = renderComponent({
+      topHeldTokens: mockTokens,
+      usdAmount: 6000,
+    });
+
+    expect(await po.getHeldTokensBalanceInUsdAriaLabels()).toEqual([
+      "Internet Computer USD: hidden",
+      "ckBTC USD: hidden",
+      "ckETH USD: hidden",
+    ]);
+    expect(await po.getAmountAriaLabel()).toBe("Tokens Balance: hidden");
+  });
+
   it("should render links for each row", async () => {
     const po = renderComponent({
       topHeldTokens: mockTokens,

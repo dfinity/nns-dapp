@@ -6,6 +6,7 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { UserTokenData } from "$lib/types/tokens-page";
@@ -106,7 +107,11 @@
         class="balance-usd"
         data-tid="balance-in-usd"
         role="cell"
-        aria-label={`${token.title} USD: ${token?.balanceInUsd ?? 0}`}
+        aria-label={`${token.title} USD: ${
+          $isBalancePrivacyOptionStore
+            ? $i18n.portfolio.hidden_balance_label
+            : (token?.balanceInUsd ?? 0)
+        }`}
       >
         $<PrivacyAwareAmount
           value={formatNumber(token?.balanceInUsd ?? 0)}
