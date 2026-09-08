@@ -4,10 +4,19 @@
     <meta charset="utf-8" />
     <title>SNS aggregator</title>
 
-    <!-- Juno's CDN -->
+    <!--
+      Juno's CDN.
+      The integrity attribute pins the exact bytes of each file.
+      If you change a version in a URL, compute the new hash with:
+      curl -s URL | openssl dgst -sha384 -binary | openssl base64 -A
+      If the hash is wrong, the browser refuses the file.
+      The page still works, but the code examples lose their colors.
+    -->
     <link
-      href="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prism-themes/1.9.0/themes/prism-vsc-dark-plus.min.css"
+      href="https://fmkjf-bqaaa-aaaal-acpza-cai.icp0.io/libs/prism-themes/1.9.0/themes/prism-vsc-dark-plus.min.css"
       rel="stylesheet"
+      integrity="sha384-UavePWn2zyHuZbvVQRu5n4XEhCiueqts8YR0Dqq1mnsearU03Jfxl1XSHffMI1kq"
+      crossorigin="anonymous"
     />
 
     <style>
@@ -560,6 +569,11 @@ const snses = await response.json();</code></pre>
       document.addEventListener("DOMContentLoaded", loadSnses, { once: true });
     </script>
 
-    <script src="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prismjs/1.29.0/prism.min.js"></script>
+    <!-- Juno's CDN.  To change the version, read the note in the head. -->
+    <script
+      src="https://fmkjf-bqaaa-aaaal-acpza-cai.icp0.io/libs/prismjs/1.29.0/prism.min.js"
+      integrity="sha384-06z5D//U/xpvxZHuUz92xBvq3DqBBFi7Up53HRrbV7Jlv7Yvh/MZ7oenfUe9iCEt"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
