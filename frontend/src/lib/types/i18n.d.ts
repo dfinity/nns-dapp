@@ -139,6 +139,7 @@ interface I18nError {
   qrcode_token_incompatible: string;
   invalid_ledger_index_pair: string;
   index_canister_validation: string;
+  ledger_canister_validation: string;
   refresh_voting_power: string;
   unknown_topic_title: string;
   unknown_proposal_status_title: string;

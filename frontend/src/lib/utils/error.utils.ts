@@ -213,3 +213,21 @@ export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
   const errorPrefix = "IC0";
   return rejectErrorCode.startsWith(errorPrefix);
 };
+
+/**
+ * True when a canister rejected the call because it has no such method.
+ * The IC error code for a missing method is IC0536 (CanisterMethodNotFound).
+ */
+export const isCanisterMethodNotFoundError = (error: unknown): boolean => {
+  if (!(error instanceof AgentError)) return false;
+
+  const { code } = error;
+
+  if (
+    !(code instanceof UncertifiedRejectErrorCode) &&
+    !(code instanceof CertifiedRejectErrorCode)
+  )
+    return false;
+
+  return code.rejectErrorCode === "IC0536";
+};

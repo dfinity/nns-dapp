@@ -3,6 +3,7 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   errorToString,
+  isCanisterMethodNotFoundError,
   isCanisterOutOfCyclesError,
   isMethodNotSupportedError,
   isPayloadSizeError,
@@ -205,6 +206,52 @@ describe("error-utils", () => {
       expect(isCanisterOutOfCyclesError(123)).toBe(false);
       expect(isCanisterOutOfCyclesError({})).toBe(false);
       expect(isCanisterOutOfCyclesError({ type: "unknown" })).toBe(false);
+    });
+  });
+
+  describe("isCanisterMethodNotFoundError", () => {
+    const queryError = (rejectErrorCode: string) =>
+      new AgentError(
+        new UncertifiedRejectErrorCode(
+          requestIdOf({}),
+          ReplicaRejectCode.DestinationInvalid,
+          "There was an error",
+          rejectErrorCode,
+          []
+        ),
+        ErrorKindEnum.Unknown
+      );
+
+    const updateError = (rejectErrorCode: string) =>
+      new AgentError(
+        new CertifiedRejectErrorCode(
+          requestIdOf({}),
+          ReplicaRejectCode.DestinationInvalid,
+          "There was an error",
+          rejectErrorCode
+        ),
+        ErrorKindEnum.Unknown
+      );
+
+    it("should return true for the IC0536 code", () => {
+      expect(isCanisterMethodNotFoundError(queryError("IC0536"))).toBe(true);
+      expect(isCanisterMethodNotFoundError(updateError("IC0536"))).toBe(true);
+    });
+
+    it("should return false for another IC0 code", () => {
+      expect(isCanisterMethodNotFoundError(queryError("IC0503"))).toBe(false);
+      expect(isCanisterMethodNotFoundError(updateError("IC0503"))).toBe(false);
+      expect(isCanisterMethodNotFoundError(queryError("IC0"))).toBe(false);
+    });
+
+    it("should return false for invalid inputs", () => {
+      expect(isCanisterMethodNotFoundError(null)).toBe(false);
+      expect(isCanisterMethodNotFoundError(undefined)).toBe(false);
+      expect(isCanisterMethodNotFoundError(new Error("IC0536"))).toBe(false);
+      expect(isCanisterMethodNotFoundError("IC0536")).toBe(false);
+      expect(isCanisterMethodNotFoundError({ rejectErrorCode: "IC0536" })).toBe(
+        false
+      );
     });
   });
 });
