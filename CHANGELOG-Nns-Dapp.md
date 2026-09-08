@@ -11,6 +11,34 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 143823
+
+### Application
+
+#### Added
+
+- A search button in the header opens the quick search panel. Before, only the
+  Ctrl+K (Cmd+K) shortcut opened it, so a touch screen could not reach it.
+
+#### Changed
+
+- Increase the maximum canister name length from 24 to 64 characters.
+- Show the canisters on the Canisters page in a table instead of a card grid.
+
+#### Removed
+
+- Remove the "Buy ICP" button and its modal from the accounts footer. Banxa no
+  longer offers ICP, so the button did not work.
+
+#### Fixed
+
+- The quick search panel now fits a phone screen, and its selected row, icon
+  tiles and result boxes now have a visible background color.
+- On a narrow screen the header buttons no longer shrink while the app loads
+  data.
+
+### Operations
+
 ## Proposal 143733
 
 ### Application
