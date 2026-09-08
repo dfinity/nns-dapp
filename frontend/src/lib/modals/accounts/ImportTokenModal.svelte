@@ -5,7 +5,7 @@
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
-  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
   import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { addImportedToken } from "$lib/services/imported-tokens.services";
@@ -13,6 +13,7 @@
   import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
@@ -94,7 +95,10 @@
   $: if (
     !isAutoSubmitDone &&
     // Wait for the imported tokens to be loaded (for successful validation).
-    nonNullish($importedTokensStore?.importedTokens)
+    nonNullish($importedTokensStore?.importedTokens) &&
+    // Wait for the SNS projects to be loaded, otherwise the validation would
+    // accept an SNS ledger canister ID.
+    nonNullish($snsAggregatorStore.data)
   ) {
     isAutoSubmitDone = true;
     onSubmit();
@@ -123,10 +127,17 @@
     if (ledgerCanisterId.toText() === LEDGER_CANISTER_ID.toText()) {
       return { errorLabelKey: "error__imported_tokens.is_icp" };
     }
+    // Without the SNS projects the SNS check below would accept any SNS ledger
+    // canister ID, so refuse the ledger until the list is loaded.
+    if (isNullish($snsAggregatorStore.data)) {
+      return {
+        errorLabelKey: "error__imported_tokens.sns_projects_not_loaded",
+      };
+    }
     if (
       isSnsLedgerCanisterId({
         ledgerCanisterId,
-        snsProjects: $snsProjectsCommittedStore,
+        snsProjects: $snsProjectsStore,
       })
     ) {
       return { errorLabelKey: "error__imported_tokens.is_sns" };
