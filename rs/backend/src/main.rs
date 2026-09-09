@@ -151,7 +151,11 @@ pub fn add_account() -> AccountIdentifier {
 /// user's principal (the fact that it is controlled by the same principal as the user's other
 /// ledger accounts is not derivable externally).
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.create_sub_account(principal, sub_account_name))
@@ -161,7 +165,11 @@ pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse 
 ///
 /// These aliases are not visible externally or to anyone else.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn rename_sub_account(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.rename_sub_account(principal, request))
@@ -173,7 +181,11 @@ pub fn rename_sub_account(request: RenameSubAccountRequest) -> RenameSubAccountR
 /// the IC from the account, the user must use the hardware wallet to sign each request.
 /// Some read-only calls do not require signing, e.g. viewing the account's ICP balance.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn register_hardware_wallet(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.register_hardware_wallet(principal, request))
@@ -189,7 +201,11 @@ pub fn get_canisters() -> Vec<NamedCanister> {
 
 /// Attaches a canister to the user's account.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn attach_canister(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.attach_canister(principal, request))
@@ -197,7 +213,11 @@ pub fn attach_canister(request: AttachCanisterRequest) -> AttachCanisterResponse
 
 /// Renames a canister of the user.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn rename_canister(request: RenameCanisterRequest) -> RenameCanisterResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.rename_canister(principal, request))
@@ -205,14 +225,22 @@ pub fn rename_canister(request: RenameCanisterRequest) -> RenameCanisterResponse
 
 /// Detaches a canister from the user's account.
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn detach_canister(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.detach_canister(principal, request))
 }
 
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn set_imported_tokens(settings: ImportedTokens) -> SetImportedTokensResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.set_imported_tokens(principal, settings))
@@ -226,7 +254,11 @@ pub fn get_imported_tokens() -> GetImportedTokensResponse {
 }
 
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn set_fav_projects(settings: FavProjects) -> SetFavProjectsResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.set_fav_projects(principal, settings))
@@ -240,7 +272,11 @@ pub fn get_fav_projects() -> GetFavProjectsResponse {
 }
 
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn set_address_book(addresses: AddressBook) -> SetAddressBookResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.set_address_book(principal, addresses))
@@ -321,7 +357,11 @@ pub fn add_stable_asset(asset_bytes: Vec<u8>) {
 /// - If the requested number of accounts is too large, the call will run out of cycles and be killed.
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[must_use]
-#[ic_cdk::update]
+#[candid_method(update)]
+#[ic_cdk::update(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn create_toy_accounts(num_accounts: u128) -> u64 {
     let caller = ic_cdk::api::msg_caller();
     if !ic_cdk::api::is_controller(&caller) {
@@ -338,7 +378,11 @@ pub fn create_toy_accounts(num_accounts: u128) -> u64 {
 /// Gets any toy account by toy account index.
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[must_use]
-#[ic_cdk::query]
+#[candid_method(query)]
+#[ic_cdk::query(
+    hidden = true,
+    decode_with = "candid::utils::decode_one_with_decoding_and_skipping_quota::<10000,10000,_>"
+)]
 pub fn get_toy_account(toy_account_index: u64) -> GetAccountResponse {
     let caller = ic_cdk::api::msg_caller();
     if !ic_cdk::api::is_controller(&caller) {
