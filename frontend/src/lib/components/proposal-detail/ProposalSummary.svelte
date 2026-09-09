@@ -1,11 +1,34 @@
 <script lang="ts">
+  import { observeRenderedMarkdown } from "$lib/utils/html.utils";
   import { Markdown } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { onDestroy } from "svelte";
 
   export let summary: string | undefined;
 
   let showTitle: boolean;
   $: showTitle = $$slots.title !== undefined;
+
+  // The summary comes from whoever submitted the proposal. The Markdown
+  // component keeps markup that can imitate the wallet UI, so keep only the
+  // tags and the attributes that a summary needs.
+  let container: HTMLDivElement | undefined;
+  let disconnect: (() => void) | undefined;
+
+  const observeContainer = (element: HTMLDivElement | undefined) => {
+    disconnect?.();
+    disconnect = undefined;
+
+    if (isNullish(element)) {
+      return;
+    }
+
+    disconnect = observeRenderedMarkdown(element);
+  };
+
+  $: observeContainer(container);
+
+  onDestroy(() => disconnect?.());
 </script>
 
 <div class="markdown" data-tid="proposal-summary-component">
@@ -14,7 +37,10 @@
   {/if}
 
   {#if nonNullish(summary) && summary !== ""}
-    <div class="content-cell-island__card markdown-container">
+    <div
+      class="content-cell-island__card markdown-container"
+      bind:this={container}
+    >
       <Markdown text={summary} />
     </div>
   {/if}
