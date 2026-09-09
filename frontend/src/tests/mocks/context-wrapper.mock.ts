@@ -15,7 +15,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";
-import { writable } from "svelte/store";
+import { writable, type Writable } from "svelte/store";
 
 export const renderContextWrapper = <T>({
   Component,
@@ -59,16 +59,19 @@ export const renderSelectedAccountContext = ({
     Component,
   });
 
+// The caller can pass its own `store` to change the neuron after the render.
 export const renderSelectedSnsNeuronContext = ({
   Component,
   neuron,
   reload,
+  store,
   props,
   events,
 }: {
   Component: Component;
   neuron: SnsGovernanceDid.Neuron;
-  reload: () => Promise<void>;
+  reload: SelectedSnsNeuronContext["reload"];
+  store?: Writable<SelectedSnsNeuronStore>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: any;
   events?: Record<string, ($event: CustomEvent) => void>;
@@ -77,13 +80,15 @@ export const renderSelectedSnsNeuronContext = ({
     Component,
     contextKey: SELECTED_SNS_NEURON_CONTEXT_KEY,
     contextValue: {
-      store: writable<SelectedSnsNeuronStore>({
-        selected: {
-          neuronIdHex: getSnsNeuronIdAsHexString(neuron),
-          rootCanisterId: rootCanisterIdMock,
-        },
-        neuron,
-      }),
+      store:
+        store ??
+        writable<SelectedSnsNeuronStore>({
+          selected: {
+            neuronIdHex: getSnsNeuronIdAsHexString(neuron),
+            rootCanisterId: rootCanisterIdMock,
+          },
+          neuron,
+        }),
       reload,
     } as SelectedSnsNeuronContext,
     props,
