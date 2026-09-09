@@ -363,10 +363,31 @@ export const getUsdValue = ({
   return (amountE8s * tokenPrice) / 100_000_000;
 };
 
-export const getLedgerCanisterIdFromToken = (
-  token: Token,
-  tokensByLedgerCanisterId: Record<string, IcrcTokenMetadata>
-): string | undefined =>
-  Object.entries(tokensByLedgerCanisterId).find(
-    ([_, storeToken]) => storeToken.symbol === token.symbol
-  )?.[0];
+/**
+ * Resolves the ledger canister ID of a token, to look up its USD price.
+ *
+ * A `Token` holds no canister ID, so the match goes through the symbol. A
+ * symbol is not unique. The user can import any ICRC ledger, and that ledger
+ * can declare the symbol of a genuine token. A genuine token therefore always
+ * wins a collision against an imported token. A symbol that stays ambiguous
+ * resolves to `undefined`, so the caller shows no price instead of a wrong one.
+ */
+export const getLedgerCanisterIdFromToken = ({
+  token,
+  tokensByLedgerCanisterId,
+  importedTokenLedgerCanisterIds,
+}: {
+  token: Token;
+  tokensByLedgerCanisterId: Record<string, IcrcTokenMetadata>;
+  importedTokenLedgerCanisterIds: Set<string>;
+}): string | undefined => {
+  const matches = Object.entries(tokensByLedgerCanisterId)
+    .filter(([_, storeToken]) => storeToken.symbol === token.symbol)
+    .map(([ledgerCanisterId]) => ledgerCanisterId);
+  const genuineMatches = matches.filter(
+    (ledgerCanisterId) => !importedTokenLedgerCanisterIds.has(ledgerCanisterId)
+  );
+  const candidates = genuineMatches.length > 0 ? genuineMatches : matches;
+
+  return candidates.length === 1 ? candidates[0] : undefined;
+};
