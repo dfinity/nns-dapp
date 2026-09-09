@@ -1,6 +1,7 @@
 name: 'Clone the snsdemo repository'
 description: |
-  Ensures that the snsdemo repository is checked out at the commit specified in `config.json`.
+  Ensures that the snsdemo repository is checked out at the commit specified by
+  `SNSDEMO_COMMIT` in `config.json`.
 
   * If the snsdemo repository is already present: Checks that the repo is checked
     out at the expected commit.  If not, this fails with an error message.
@@ -14,7 +15,7 @@ inputs:
     default: "snsdemo"
 outputs:
   ref:
-    description: The snsdemo reference that was checked out
+    description: The snsdemo commit hash that was checked out
     value: ${{ steps.snsdemo_ref.outputs.ref }}
 runs:
   using: "composite"
@@ -29,12 +30,19 @@ runs:
         then echo have_snsdemo=true | tee -a "$GITHUB_OUTPUT"
         else echo have_snsdemo=false | tee -a "$GITHUB_OUTPUT"
         fi
-    - name: Determine snsdemo ref
+    - name: Determine snsdemo commit
       id: snsdemo_ref
       shell: bash
       run: |
-        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
-        echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
+        set -euo pipefail
+        # A commit hash is immutable. A tag is not. Check out the commit only.
+        SNSDEMO_COMMIT="$(jq -r .defaults.build.config.SNSDEMO_COMMIT config.json)"
+        [[ "$SNSDEMO_COMMIT" =~ ^[0-9a-f]{40}$ ]] || {
+          echo "ERROR: SNSDEMO_COMMIT in config.json must be a full 40 character commit hash."
+          echo "Actual value: $SNSDEMO_COMMIT"
+          exit 1
+        } >&2
+        echo "ref=$SNSDEMO_COMMIT" >> "$GITHUB_OUTPUT"
     - name: Check that the existing repo has the expected commit.
       if: ${{ steps.have_snsdemo.outputs.have_snsdemo == 'true' }}
       shell: bash

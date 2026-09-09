@@ -27,7 +27,8 @@ test -n "${SNSDEMO_RELEASE:-}" || {
 # Check that the SNSDEMO repo is checked out at the correct release
 pushd "$SNSDEMO_REPO"
 HEAD_COMMIT="$(git rev-parse HEAD)"
-RELEASE_COMMIT="$(git rev-parse "tags/$SNSDEMO_RELEASE")"
+# `^{commit}` makes this a commit hash, also for an annotated tag.
+RELEASE_COMMIT="$(git rev-parse "tags/$SNSDEMO_RELEASE^{commit}")"
 [[ "$HEAD_COMMIT" == "$RELEASE_COMMIT" ]] || {
   echo "ERROR: The repo should be checked out at the release tag."
   echo "SNSDEMO repo HEAD:      $HEAD_COMMIT"
@@ -53,8 +54,13 @@ done
 # Move to the root of the nns-dapp repository
 cd "$SOURCE_DIR/.."
 
-# Update the snsdemo commit in dfx.json
+# Update the snsdemo release tag in config.json.
+# The tag names the release. The snapshot download URL needs it.
 jq --arg c "$SNSDEMO_RELEASE" '.defaults.build.config.SNSDEMO_RELEASE |= $c' config.json | sponge config.json
+
+# Update the snsdemo commit in config.json.
+# CI checks out this commit. A commit hash is immutable, so it cannot be moved.
+jq --arg c "$RELEASE_COMMIT" '.defaults.build.config.SNSDEMO_COMMIT |= $c' config.json | sponge config.json
 
 # Update dfx to match snsdemo
 v="$DFX_VERSION" jq '.dfx |= env.v' dfx.json | sponge dfx.json
