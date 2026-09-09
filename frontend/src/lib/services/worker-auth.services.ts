@@ -20,10 +20,7 @@ export const initAuthWorker = async (): Promise<AuthWorker> => {
     switch (msg) {
       case "nnsSignOut":
         await logout({
-          msg: {
-            labelKey: "warning.auth_sign_out",
-            level: "warn",
-          },
+          msg: "warning.auth_sign_out",
         });
         return;
       case "nnsDelegationRemainingTime":
