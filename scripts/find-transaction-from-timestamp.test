@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Tests scripts/find-transaction-from-timestamp against a stub ledger canister.
+#
+# The script reads numbers from a ledger canister response. A malicious canister
+# can return text instead. Bash evaluates array subscripts in every arithmetic
+# context, so text such as 'PATH[$(command)]' would run a command. The script
+# must reject the response, and it must not run the command.
+#
+# The test replaces dfx and idl2json with stubs. It makes no network call and no
+# canister call.
+
+SCRIPT_UNDER_TEST="$SOURCE_DIR/find-transaction-from-timestamp"
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+# The canary file. The injected command creates it.
+export CANARY="$tmp_dir/canary"
+
+# Stub dfx. It prints a Candid response that the stub idl2json ignores.
+cat >"$tmp_dir/dfx" <<'EOF'
+#!/usr/bin/env bash
+echo '(record {})'
+EOF
+
+# Stub idl2json. It prints the JSON in IDL2JSON_OUTPUT.
+cat >"$tmp_dir/idl2json" <<'EOF'
+#!/usr/bin/env bash
+cat >/dev/null
+echo "$IDL2JSON_OUTPUT"
+EOF
+
+chmod +x "$tmp_dir/dfx" "$tmp_dir/idl2json"
+export PATH="$tmp_dir:$PATH"
+
+fail() {
+  echo "FAILED: $1" >&2
+  exit 1
+}
+
+# Runs the script under test. Puts the output in the variable "output", the
+# error output in the variable "errout", and the exit status in the variable
+# "status".
+output=""
+errout=""
+status=0
+run_script() {
+  local timestamp="$1"
+  set +e
+  output="$("$SCRIPT_UNDER_TEST" --ledger_canister_id aaaaa-aa --timestamp "$timestamp" 2>"$tmp_dir/stderr")"
+  status="$?"
+  set -e
+  errout="$(cat "$tmp_dir/stderr")"
+}
+
+# Asserts that the last run_script call rejected the named value. The script
+# must exit non-zero, it must name the value in the error, and it must not have
+# run the injected command.
+expect_rejected() {
+  local name="$1"
+  if [[ "$status" == "0" ]]; then
+    fail "The script accepted a non-numeric $name. Output: $errout"
+  fi
+  if ! grep -q "$name is not a number" <<<"$errout"; then
+    fail "The script printed no error for a non-numeric $name. Output: $errout"
+  fi
+  if [[ -e "$CANARY" ]]; then
+    fail "The $name value ran a command. The canary file $CANARY exists."
+  fi
+}
+
+# The command substitution in the payloads below must stay unexpanded here. The
+# script under test must not run it.
+# shellcheck disable=SC2016
+payload='PATH[$(touch $CANARY)]'
+
+# A response that the script accepts. The ledger holds 3 transactions. Each one
+# has timestamp 1000 seconds.
+good_output='{"log_length":"3","archived_transactions":[],"transactions":[{"timestamp":"1000000000000"}]}'
+
+# Case 1: a malicious canister returns log_length as text with a command in an
+# array subscript.
+export IDL2JSON_OUTPUT="{\"log_length\":\"$payload\"}"
+run_script 1000
+expect_rejected log_length
+
+# Case 2: a malicious canister returns a valid log_length, then a transaction
+# timestamp with the same payload.
+export IDL2JSON_OUTPUT="{\"log_length\":\"3\",\"archived_transactions\":[],\"transactions\":[{\"timestamp\":\"$payload\"}]}"
+run_script 1000
+expect_rejected timestamp
+
+# Case 3: the developer passes the payload as the --timestamp argument. The
+# canister behaves.
+export IDL2JSON_OUTPUT="$good_output"
+run_script "$payload"
+expect_rejected TIMESTAMP
+
+# Case 4: a well behaved canister returns numbers, and the script finds the
+# transaction. The first transaction at or after 1000 seconds is transaction 0.
+export IDL2JSON_OUTPUT="$good_output"
+run_script 1000
+
+if [[ "$status" != "0" ]]; then
+  fail "The script rejected a valid response. Output: $errout"
+fi
+
+if [[ "$output" != "0" ]]; then
+  fail "Expected index 0 but got: $output"
+fi
+
+# Case 5: the canister separates the digits of log_length, as Candid does. The
+# script removes the separator before it checks the value. The ledger holds 10
+# transactions, and none of them is at or after 1001 seconds, so the answer is
+# the number of transactions.
+export IDL2JSON_OUTPUT='{"log_length":"1_0","archived_transactions":[],"transactions":[{"timestamp":"1000000000000"}]}'
+run_script 1001
+
+if [[ "$status" != "0" ]]; then
+  fail "The script rejected a separated number. Output: $errout"
+fi
+
+if [[ "$output" != "10" ]]; then
+  fail "Expected index 10 but got: $output"
+fi
+
+echo "PASSED"

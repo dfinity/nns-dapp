@@ -30,6 +30,20 @@ if [[ -z "$TIMESTAMP" ]]; then
   exit 1
 fi
 
+# Exits with an error unless the value is a decimal integer.
+# Canister responses are untrusted. Bash evaluates array subscripts in every
+# arithmetic context, including $(( )) and [[ x -lt y ]], so a value such as
+# 'start_index[$(command)]' would run a command.
+assert_nat() {
+  local name="$1" value="$2"
+  if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+    printf 'Error: %s is not a number: %q\n' "$name" "$value" >&2
+    exit 1
+  fi
+}
+
+assert_nat TIMESTAMP "$TIMESTAMP"
+
 get_transaction() {
   index="$1"
   "$SOURCE_DIR/get-transaction" --ledger_canister_id "$LEDGER_CANISTER_ID" --index "$index" --network "$DFX_NETWORK"
@@ -37,6 +51,7 @@ get_transaction() {
 
 start_index=0
 end_index="$(dfx canister call "$LEDGER_CANISTER_ID" --query --network "$DFX_NETWORK" get_transactions '(record { start = 0 : nat; length = 0 : nat })' | idl2json | jq -r .log_length | sed -e 's/_//g')"
+assert_nat log_length "$end_index"
 
 echo "Binary searching for timestamp $TIMESTAMP" >&2
 
@@ -47,6 +62,7 @@ while [[ $start_index -lt $end_index ]]; do
     "steps remaining." >&2
   mid_index=$((start_index + (end_index - start_index) / 2))
   mid_timestamp_ns="$(get_transaction "$mid_index" | jq -r .timestamp)"
+  assert_nat timestamp "$mid_timestamp_ns"
   mid_timestamp="$(("$mid_timestamp_ns" / 1000000000))"
   if [[ "$mid_timestamp" -ge "$TIMESTAMP" ]]; then
     end_index="$mid_index"
