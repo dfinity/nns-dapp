@@ -271,7 +271,7 @@ pub struct CanisterStatusResultV2 {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetDerivedStateArg {}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
 pub struct GetDerivedStateResponse {
     pub sns_tokens_per_icp: Option<f64>,
     pub buyer_total_icp_e8s: Option<u64>,
@@ -404,7 +404,7 @@ pub struct CfParticipant {
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
 pub struct Swap {
     pub auto_finalize_swap_response: Option<FinalizeSwapResponse>,
     pub neuron_recipes: Vec<SnsNeuronRecipe>,
@@ -425,7 +425,7 @@ pub struct Swap {
     pub params: Option<Params>,
     pub open_sns_token_swap_proposal_id: Option<u64>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
 pub struct DerivedState {
     pub sns_tokens_per_icp: f32,
     pub buyer_total_icp_e8s: u64,
