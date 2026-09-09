@@ -104,3 +104,34 @@ fn nat_candid_works() {
         assert_eq!(number, parsed);
     }
 }
+
+#[test]
+fn raise_short_intervals_raises_an_interval_that_is_too_short() {
+    let mut config = Config {
+        update_interval_ms: 0,
+        fast_interval_ms: 0,
+    };
+    assert!(config.raise_short_intervals(), "The intervals should have changed");
+    assert_eq!(config.update_interval_ms, Config::MIN_INTERVAL_MS);
+    assert_eq!(config.fast_interval_ms, Config::MIN_INTERVAL_MS);
+}
+
+#[test]
+fn raise_short_intervals_keeps_an_interval_that_is_long_enough() {
+    let mut config = Config {
+        update_interval_ms: Config::MIN_INTERVAL_MS,
+        fast_interval_ms: 1_000_000,
+    };
+    assert!(!config.raise_short_intervals(), "The intervals should not have changed");
+    assert_eq!(config.update_interval_ms, Config::MIN_INTERVAL_MS);
+    assert_eq!(config.fast_interval_ms, 1_000_000);
+}
+
+#[test]
+fn raise_short_intervals_keeps_the_default_config() {
+    let mut config = Config::default();
+    let original = config.clone();
+    assert!(!config.raise_short_intervals(), "The intervals should not have changed");
+    assert_eq!(config.update_interval_ms, original.update_interval_ms);
+    assert_eq!(config.fast_interval_ms, original.fast_interval_ms);
+}
