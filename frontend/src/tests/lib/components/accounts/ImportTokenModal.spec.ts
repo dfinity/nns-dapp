@@ -408,12 +408,9 @@ describe("ImportTokenModal", () => {
         },
       ],
     });
-    expect(getImportedTokensSpy).toBeCalledTimes(2);
-    expect(getImportedTokensSpy).toHaveBeenNthCalledWith(1, {
-      identity: mockIdentity,
-      certified: false,
-    });
-    expect(getImportedTokensSpy).toHaveBeenNthCalledWith(2, {
+    // The reload after a write uses the `"update"` strategy.
+    expect(getImportedTokensSpy).toBeCalledTimes(1);
+    expect(getImportedTokensSpy).toHaveBeenCalledWith({
       identity: mockIdentity,
       certified: true,
     });
