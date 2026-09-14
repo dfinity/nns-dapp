@@ -11,7 +11,7 @@ version = "2.0.151"
 [workspace.dependencies]
 ic-cdk = "0.20.2"
 ic-cdk-timers = "1.0.0"
-ic-management-canister-types = "0.9.0"
+ic-management-canister-types = "0.10.0"
 
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2026-09-03_04-41-base" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2026-09-03_04-41-base" }
