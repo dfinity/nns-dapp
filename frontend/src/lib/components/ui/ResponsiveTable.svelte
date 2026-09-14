@@ -186,13 +186,18 @@
         {/if}
       </div>
     </div>
-    <div role="rowgroup">
+    <div role="rowgroup" aria-busy={loading ? "true" : undefined}>
       {#if loading}
         {#each skeletonRows as rowData (rowData.domKey)}
-          <div class="row-wrapper" data-tid="skeleton-table-row">
+          <div
+            class="row-wrapper"
+            data-tid="skeleton-table-row"
+            aria-hidden="true"
+          >
             <ResponsiveTableRow
               {rowData}
               columns={skeletonColumns}
+              focusable={false}
               style="pointer-events: none;"
             />
           </div>

@@ -128,6 +128,23 @@ describe("Canisters", () => {
     expect(await po.getCanisterRowPos()).toHaveLength(2);
   });
 
+  it("should finish the content wait with no canister", async () => {
+    canistersStore.setCanisters({
+      canisters: [],
+      certified: true,
+    });
+
+    const { container } = render(Canisters);
+    const po = CanistersPo.under(new JestPageObjectElement(container));
+
+    await po.waitForContentLoaded();
+
+    expect(await po.getNoCanistersMessagePo().getText()).toBe(
+      en.canisters.text
+    );
+    expect(await po.getCanistersTablePo().isPresent()).toBe(false);
+  });
+
   it("should open the LinkCanisterModal on click to Link Canister", async () => {
     const { queryByTestId } = render(Canisters);
 

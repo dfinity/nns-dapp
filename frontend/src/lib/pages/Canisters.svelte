@@ -84,7 +84,9 @@
     </div>
 
     {#if noCanisters}
-      <p class="description empty">{$i18n.canisters.text}</p>
+      <p class="description empty" data-tid="no-canisters-message">
+        {$i18n.canisters.text}
+      </p>
     {:else}
       <CanistersTable rowData={canistersTableData} {loading} />
     {/if}

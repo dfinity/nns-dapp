@@ -202,11 +202,29 @@ describe("ResponsiveTable", () => {
     }
   });
 
+  it("should render skeleton rows without a tab stop", async () => {
+    const po = renderComponent({ columns, tableData, loading: true });
+
+    const skeletonRows = await po.getSkeletonRows();
+    expect(skeletonRows).toHaveLength(3);
+    for (const skeletonRow of skeletonRows) {
+      expect(await skeletonRow.getAttribute("aria-hidden")).toBe("true");
+      expect(
+        await skeletonRow.querySelector('[role="row"]').getAttribute("tabindex")
+      ).toBe(null);
+    }
+  });
+
   it("should not render skeleton rows when it does not load", async () => {
     const po = renderComponent({ columns, tableData });
 
     expect(await po.getSkeletonRows()).toHaveLength(0);
-    expect(await po.getRows()).toHaveLength(3);
+
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    for (const row of rows) {
+      expect(await row.root.getAttribute("tabindex")).toBe("0");
+    }
   });
 
   it("should render row href", async () => {

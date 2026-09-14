@@ -72,9 +72,19 @@ export class CanistersPo extends BasePageObject {
     await modal.waitForClosed();
   }
 
+  getNoCanistersMessagePo(): PageObjectElement {
+    return this.getElement("no-canisters-message");
+  }
+
   async waitForContentLoaded(): Promise<void> {
     await this.waitFor();
-    await this.getCanistersTablePo().waitFor();
-    await this.waitForAbsent("skeleton-table-row");
+    // The page shows the table or the empty state, so wait for either one.
+    await Promise.any([
+      (async () => {
+        await this.getCanistersTablePo().waitFor();
+        await this.waitForAbsent("skeleton-table-row");
+      })(),
+      this.getNoCanistersMessagePo().waitFor(),
+    ]);
   }
 }
