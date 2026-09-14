@@ -7,6 +7,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
+  import SkeletonTableCell from "$lib/components/ui/SkeletonTableCell.svelte";
   import { isTableOrMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import type {
@@ -30,6 +31,27 @@
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
   export let displayTableSettings = false;
+  export let loading = false;
+
+  const SKELETON_ROW_COUNT = 3;
+
+  const skeletonRows: ResponsiveTableRowData[] = Array.from(
+    { length: SKELETON_ROW_COUNT },
+    (_, index) => ({ domKey: `skeleton-${index}` })
+  );
+
+  // The placeholder rows copy the real columns, so the header, the alignment
+  // and the grid columns stay the same while the data loads.
+  let skeletonColumns: ResponsiveTableColumn<ResponsiveTableRowData>[];
+  $: skeletonColumns = columns.map((column) => ({
+    title: column.title,
+    subtitle: column.subtitle,
+    alignment: column.alignment,
+    templateColumns: column.templateColumns,
+    cellComponent: nonNullish(column.cellComponent)
+      ? SkeletonTableCell
+      : undefined,
+  }));
 
   let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
   let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
@@ -165,19 +187,31 @@
       </div>
     </div>
     <div role="rowgroup">
-      {#each sortedTableData as rowData (rowData.domKey)}
-        <div
-          class="row-wrapper"
-          transition:heightTransition={{ duration: 250 }}
-        >
-          <ResponsiveTableRow
-            on:nnsAction
-            {rowData}
-            {columns}
-            style={getRowStyle(rowData)}
-          />
-        </div>
-      {/each}
+      {#if loading}
+        {#each skeletonRows as rowData (rowData.domKey)}
+          <div class="row-wrapper" data-tid="skeleton-table-row">
+            <ResponsiveTableRow
+              {rowData}
+              columns={skeletonColumns}
+              style="pointer-events: none;"
+            />
+          </div>
+        {/each}
+      {:else}
+        {#each sortedTableData as rowData (rowData.domKey)}
+          <div
+            class="row-wrapper"
+            transition:heightTransition={{ duration: 250 }}
+          >
+            <ResponsiveTableRow
+              on:nnsAction
+              {rowData}
+              {columns}
+              style={getRowStyle(rowData)}
+            />
+          </div>
+        {/each}
+      {/if}
     </div>
     {#if nonNullish($$slots["last-row"])}
       <TestIdWrapper testId="last-row">
