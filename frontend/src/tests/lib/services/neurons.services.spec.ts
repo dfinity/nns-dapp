@@ -1,6 +1,7 @@
 import * as api from "$lib/api/governance.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { LedgerError } from "$lib/constants/ledger.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { definedNeuronsStore } from "$lib/derived/neurons.derived";
@@ -49,7 +50,7 @@ import {
 import type { Identity } from "@icp-sdk/core/agent";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
-import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import type { ResponseVersion } from "@zondax/ledger-js";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -730,6 +731,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);
@@ -1131,6 +1133,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);
@@ -1337,6 +1340,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);
@@ -1768,6 +1772,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);

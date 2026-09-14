@@ -23,7 +23,7 @@ const config: UserConfig = {
             "html5-qrcode",
             "qr-creator",
             "@ledgerhq",
-            "@zondax/ledger-icp",
+            "@zondax",
             "marked",
           ];
 
