@@ -1464,6 +1464,7 @@ interface I18nPortfolio {
   login_description: string;
   no_tokens_card_description: string;
   no_neurons_card_description: string;
+  hidden_balance_label: string;
   held_icp_card_title: string;
   held_tokens_card_title: string;
   held_icp_card_link: string;
