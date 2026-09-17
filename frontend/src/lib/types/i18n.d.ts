@@ -1187,6 +1187,7 @@ interface I18nError__imported_tokens {
   is_sns: string;
   is_important: string;
   is_icp: string;
+  sns_projects_not_loaded: string;
   invalid_canister_id: string;
 }
 
