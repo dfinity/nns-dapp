@@ -5,12 +5,13 @@ import type { RootCanisterId } from "$lib/types/sns";
 /**
  * Load Sns projects accounts balances.
  *
- * ⚠️ WARNING: this feature only performs "query" calls. Effective "update" is performed when a Sns project is manually selected either through the token navigation switcher or accessed directly via the browser url.
+ * The query answer shows first and the certified answer replaces it. If the
+ * certified answer arrives first, the query answer is skipped.
  *
- * @param {rootCanisterIds: RootCanisterId[], excludeRootCanisterIds?: RootCanisterIdText[]} params
+ * @param {rootCanisterIds: RootCanisterId[]} params
  * @param {RootCanisterId[]} params.rootCanisterIds The list of root canister ids - Sns projects - for which the balance of the accounts should be fetched.
  */
-export const uncertifiedLoadSnsesAccountsBalances = async ({
+export const syncSnsAccountsBalances = async ({
   rootCanisterIds,
 }: {
   rootCanisterIds: RootCanisterId[];
@@ -19,7 +20,6 @@ export const uncertifiedLoadSnsesAccountsBalances = async ({
     rootCanisterIds.map((rootCanisterId) =>
       loadSnsAccounts({
         rootCanisterId,
-        strategy: "query",
       })
     )
   );
