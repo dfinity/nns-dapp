@@ -42,8 +42,8 @@ import type {
   ResponseAddress,
   ResponseSign,
   ResponseSignUpdateCall,
-  ResponseVersion,
 } from "@zondax/ledger-icp";
+import type { ResponseVersion } from "@zondax/ledger-js";
 import { get } from "svelte/store";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq
