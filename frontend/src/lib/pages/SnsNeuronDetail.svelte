@@ -27,6 +27,7 @@
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
+  import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
   import { queuedStore } from "$lib/stores/queued-store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -59,7 +60,8 @@
 
   setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
     store: selectedSnsNeuronStore,
-    reload: () => loadNeuron({ forceFetch: true }),
+    reload: ({ strategy }: { strategy?: QueryAndUpdateStrategy } = {}) =>
+      loadNeuron({ forceFetch: true, strategy }),
   });
 
   // BEGIN: loading and navigation
@@ -87,15 +89,20 @@
   $: governanceCanisterId =
     $selectedUniverseStore.summary?.governanceCanisterId;
 
-  const loadNeuron = async (
-    { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
-  ) => {
+  const loadNeuron = async ({
+    forceFetch = false,
+    strategy,
+  }: {
+    forceFetch?: boolean;
+    strategy?: QueryAndUpdateStrategy;
+  } = {}) => {
     const { selected } = $selectedSnsNeuronStore;
     if (selected !== undefined && $pageStore.path === AppPath.Neuron) {
       const mutableSnsNeuronStore =
         selectedSnsNeuronStore.getSingleMutationStore();
       await getSnsNeuron({
         forceFetch,
+        strategy,
         rootCanisterId: selected.rootCanisterId,
         neuronIdHex: selected.neuronIdHex,
         onLoad: ({
