@@ -4,11 +4,12 @@ import { createHash } from "crypto";
 import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
+import { cspSourceFromUrl } from "./build.csp.utils.mjs";
 import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
-const aggregatorCanisterUrl = process.env.VITE_AGGREGATOR_CANISTER_URL;
+const aggregatorCanisterUrl = process.env.VITE_AGGREGATOR_CANISTER_URL ?? "";
 const isAggregatorCanisterUrlDefined = aggregatorCanisterUrl.length > 0;
 
 const buildCsp = (htmlFile) => {
@@ -192,7 +193,9 @@ const updateCSP = (indexHtml) => {
 };
 
 const cspConnectSrc = () => {
-  // TODO: Use `URL` to check if the URL is valid and not introduce a security issue
+  // The `${{NAME}}` entries are placeholders. The nns-dapp canister replaces
+  // them at install time. The canister checks and escapes the values it
+  // substitutes. See `rs/backend/src/arguments.rs`.
   const src = [
     "${{IDENTITY_SERVICE_URL}}",
     // We move to internetcomputer.org, but if a user access the app with the old URL, we need to allow it
@@ -220,7 +223,12 @@ const cspConnectSrc = () => {
   ];
 
   if (isAggregatorCanisterUrlDefined) {
-    src.push(aggregatorCanisterUrl);
+    // This value comes from the build environment. It goes straight into the
+    // `content` attribute of the CSP meta tag, so the build checks it and
+    // escapes it. The build fails if the value is not an address.
+    src.push(
+      cspSourceFromUrl("VITE_AGGREGATOR_CANISTER_URL", aggregatorCanisterUrl)
+    );
   }
 
   return src
