@@ -101,10 +101,13 @@ describe("BuildIcrcAccountUtil", () => {
     );
   });
 
-  it("should treat all-digit string exceeding MAX_SAFE_INTEGER as hex", async () => {
+  it("should encode a decimal subaccount ID above MAX_SAFE_INTEGER as decimal", async () => {
     const { container } = render(BuildIcrcAccountUtil);
 
+    // 99999999999999999 is 0x016345785d89ffff.
     const bigDigitString = "99999999999999999";
+    expect(Number(bigDigitString)).toBeGreaterThan(Number.MAX_SAFE_INTEGER);
+
     await setInputValues(container, {
       principal: testPrincipal,
       subaccount: bigDigitString,
@@ -116,8 +119,80 @@ describe("BuildIcrcAccountUtil", () => {
       expectedIcrcAccount({
         principal: testPrincipal,
         subaccountBytes: hexStringToUint8Array(
+          "016345785d89ffff".padStart(64, "0")
+        ),
+      })
+    );
+  });
+
+  it("should not read a decimal subaccount ID as hex", async () => {
+    const { container } = render(BuildIcrcAccountUtil);
+
+    const bigDigitString = "18446744073709551615";
+    await setInputValues(container, {
+      principal: testPrincipal,
+      subaccount: bigDigitString,
+    });
+
+    const uint64MaxBytes = new Uint8Array(32);
+    uint64MaxBytes.fill(0xff, 24);
+
+    const output = getOutput(container);
+    expect(output).not.toBeNull();
+    expect(output?.textContent).toBe(
+      expectedIcrcAccount({
+        principal: testPrincipal,
+        subaccountBytes: uint64MaxBytes,
+      })
+    );
+    expect(output?.textContent).not.toBe(
+      expectedIcrcAccount({
+        principal: testPrincipal,
+        subaccountBytes: hexStringToUint8Array(
           bigDigitString.padStart(64, "0")
         ),
+      })
+    );
+  });
+
+  it("should show error for a decimal subaccount ID above 32 bytes", async () => {
+    const { container } = render(BuildIcrcAccountUtil);
+
+    await setInputValues(container, {
+      principal: testPrincipal,
+      subaccount: "9".repeat(78),
+    });
+
+    expect(getOutput(container)).toBeNull();
+    expect(getError(container)).not.toBeNull();
+  });
+
+  it("should show error for a very long digit string", async () => {
+    const { container } = render(BuildIcrcAccountUtil);
+
+    await setInputValues(container, {
+      principal: testPrincipal,
+      subaccount: "1".repeat(100000),
+    });
+
+    expect(getOutput(container)).toBeNull();
+    expect(getError(container)).not.toBeNull();
+  });
+
+  it("should ignore leading zeros in a decimal subaccount ID", async () => {
+    const { container } = render(BuildIcrcAccountUtil);
+
+    await setInputValues(container, {
+      principal: testPrincipal,
+      subaccount: "0".repeat(100) + "12345",
+    });
+
+    const output = getOutput(container);
+    expect(output).not.toBeNull();
+    expect(output?.textContent).toBe(
+      expectedIcrcAccount({
+        principal: testPrincipal,
+        subaccountBytes: SubAccount.fromID(12345).toUint8Array(),
       })
     );
   });
