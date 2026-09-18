@@ -4,11 +4,11 @@ description: |
   Optionally installs nns-dapp and sns_aggregator.
 inputs:
   snsdemo_ref:
-    description: "The git ref at which to use the snsdemo scripts.  Defaults to the release tag in config.json"
+    description: "The snsdemo commit hash to use for the snsdemo scripts. Must be a full 40 character hash. Defaults to the SNSDEMO_COMMIT hash in config.json"
     required: false
     default: ""
   snapshot_url:
-    description: "The URL of the snapshot to download and install.  Defaults to the URL of the release tag in config.json."
+    description: "The URL of the snapshot to download and install.  Defaults to the URL of the SNSDEMO_RELEASE tag in config.json."
     required: false
     default: ""
   nns_dapp_wasm:
@@ -40,15 +40,26 @@ runs:
       id: snsdemo_ref
       shell: bash
       run: |
+        set -euo pipefail
         SNSDEMO_REF="${{ inputs.snsdemo_ref }}"
-        test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
+        test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_COMMIT config.json)"
+        # A commit hash is immutable. A tag is not. Check out the commit only.
+        # Apply this check to the input too, so a caller cannot pass a mutable ref.
+        [[ "$SNSDEMO_REF" =~ ^[0-9a-f]{40}$ ]] || {
+          echo "ERROR: The snsdemo ref must be a full 40 character commit hash."
+          echo "Actual value: $SNSDEMO_REF"
+          exit 1
+        } >&2
         echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
     - name: Determine snsdemo snapshot URL
       id: snsdemo_snapshot
       shell: bash
       run: |
+        set -euo pipefail
         URL="${{ inputs.snapshot_url }}"
-        test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${{ steps.snsdemo_ref.outputs.ref }}/snsdemo_snapshot_ubuntu-24.04.tar.xz"
+        # The snapshot is a release asset, so the URL needs the release tag.
+        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
+        test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${SNSDEMO_RELEASE}/snsdemo_snapshot_ubuntu-24.04.tar.xz"
         echo "url=$URL" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
       uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
