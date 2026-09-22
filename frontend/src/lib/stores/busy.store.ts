@@ -10,6 +10,7 @@ export type BusyStateInitiatorType =
   | "update-delay"
   | "link-canister"
   | "unlink-canister"
+  | "cancel-sale-participation"
   | "rename-canister"
   | "create-canister"
   | "top-up-canister"
