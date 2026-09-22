@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Description overflow in the upcoming project card on the launchpad page.
+
 #### Security
 
 #### Not Published
