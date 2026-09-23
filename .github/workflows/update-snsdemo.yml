@@ -1,6 +1,8 @@
 # A GitHub Actions workflow that regularly checks for new snsdemo commits
 # and creates a PR on finding any.
 name: Update snsdemo
+permissions:
+  contents: read
 on:
   schedule:
     # check for new snsdemo commits weekly
