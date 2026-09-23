@@ -135,6 +135,7 @@
     "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
     "invalid_ledger_index_pair": "The provided index canister ID does not match the associated ledger canister ID.",
     "index_canister_validation": "An error occurred while validating the index canister ID. It appears that $indexCanister might not be a valid index canister ID.",
+    "ledger_canister_validation": "An error occurred while validating the ledger canister ID. It appears that $ledgerCanister might not be a valid ledger canister ID.",
     "refresh_voting_power": "An error occurred while confirming following.",
     "unknown_topic_title": "Unknown Topic ($topicId)",
     "unknown_proposal_status_title": "Unknown Proposal Status ($statusId)",
