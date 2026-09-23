@@ -36,6 +36,23 @@ describe("ConfirmationModal", () => {
     expect(spyNnsConfirm).toBeCalledTimes(1);
   });
 
+  it("should provide custom noLabel", () => {
+    const noLabel = "no label for test";
+    const spyNnsClose = vi.fn();
+    const { getByText } = render(ConfirmationModal, {
+      props: {
+        noLabel,
+      },
+      events: {
+        nnsClose: spyNnsClose,
+      },
+    });
+
+    expect(spyNnsClose).toBeCalledTimes(0);
+    fireEvent.click(getByText(noLabel));
+    expect(spyNnsClose).toBeCalledTimes(1);
+  });
+
   it("should trigger nnsClose", () =>
     new Promise<void>((done) => {
       const { getByText } = render(ConfirmationModal, {

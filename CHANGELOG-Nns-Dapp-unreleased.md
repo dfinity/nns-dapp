@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Ask the user to complete or cancel an unfinished SNS swap participation before the ICP transfer.
+
 #### Deprecated
 
 #### Removed

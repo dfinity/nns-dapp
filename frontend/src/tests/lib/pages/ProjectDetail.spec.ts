@@ -19,7 +19,6 @@ import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
-  mockIdentity,
   mockPrincipal,
   resetIdentity,
   setNoIdentity,
@@ -660,7 +659,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
       });
 
-      it("should participate without user interaction if there is an open ticket.", async () => {
+      describe("open ticket", () => {
         const initialCommitment = { icp: [], has_created_neuron_recipes: [] };
         const finalCommitment = {
           icp: [
@@ -673,82 +672,87 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           has_created_neuron_recipes: [],
         };
 
-        const resolveQuerySnsSwapCommitment: Array<
-          (commitment: SnsSwapCommitment) => void
-        > = [];
-        vi.spyOn(snsApi, "querySnsSwapCommitment").mockImplementation(
-          async () => {
-            return new Promise<SnsSwapCommitment>((resolve) => {
-              resolveQuerySnsSwapCommitment.push(resolve);
-            });
-          }
-        );
-        vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
-
-        expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
-
-        const po = renderComponent(props);
-        await runResolvedPromises();
-
-        expect(
-          await po
-            .getProjectStatusSectionPo()
-            .getCommitmentAmountDisplayPo()
-            .isPresent()
-        ).toBe(false);
-
-        expect(await po.getSaleInProgressModalPo().isPresent()).toBe(false);
-
-        const expectedQueryCommitmentParams = {
-          rootCanisterId: rootCanisterId.toText(),
-          identity: mockIdentity,
-        };
-        expect(snsApi.querySnsSwapCommitment).toBeCalledWith({
-          ...expectedQueryCommitmentParams,
-          certified: false,
-        });
-        expect(snsApi.querySnsSwapCommitment).toBeCalledWith({
-          ...expectedQueryCommitmentParams,
-          certified: true,
-        });
-        expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(2);
-
-        expect(resolveQuerySnsSwapCommitment).toHaveLength(2);
-        for (const resolve of resolveQuerySnsSwapCommitment) {
-          resolve({
+        beforeEach(() => {
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+          vi.spyOn(snsSaleApi, "notifyPaymentFailure").mockResolvedValue(
+            undefined
+          );
+          vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
             rootCanisterId,
             myCommitment: initialCommitment,
           } as SnsSwapCommitment);
-        }
-        await runResolvedPromises();
+        });
 
-        expect(await po.getSaleInProgressModalPo().isPresent()).toBe(true);
+        it("should ask the user to complete the open ticket before the transfer", async () => {
+          const po = renderComponent(props);
+          await runResolvedPromises();
 
-        expect(
+          const modal = po.getRestoreSaleParticipationModalPo();
+          await modal.waitFor();
+
+          expect(await modal.getDescription()).toContain(
+            `${formatTokenE8s({ value: testTicket.amount_icp_e8s })} ICP`
+          );
+          expect(ledgerApi.sendICP).not.toBeCalled();
+          expect(await po.getSaleInProgressModalPo().isPresent()).toBe(false);
+          expect(
+            await po
+              .getProjectStatusSectionPo()
+              .getCommitmentAmountDisplayPo()
+              .isPresent()
+          ).toBe(false);
+
+          vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+            rootCanisterId,
+            myCommitment: finalCommitment,
+          } as SnsSwapCommitment);
+
+          await modal.clickYes();
+          await runResolvedPromises();
+          await advanceTime();
+          await modal.waitForAbsent();
+
+          expect(ledgerApi.sendICP).toBeCalledTimes(1);
+          expect(ledgerApi.sendICP).toBeCalledWith(
+            expect.objectContaining({
+              amount: testTicket.amount_icp_e8s,
+              memo: testTicket.ticket_id,
+            })
+          );
+
           await po
             .getProjectStatusSectionPo()
             .getCommitmentAmountDisplayPo()
-            .isPresent()
-        ).toBe(false);
+            .waitFor();
+          expect(
+            await po.getProjectStatusSectionPo().getCommitmentAmount()
+          ).toBe(formatTokenE8s({ value: testTicket.amount_icp_e8s }));
+        });
 
-        expect(resolveQuerySnsSwapCommitment).toHaveLength(3);
-        resolveQuerySnsSwapCommitment[2]({
-          rootCanisterId,
-          myCommitment: finalCommitment,
-        } as SnsSwapCommitment);
-        await runResolvedPromises();
+        it("should cancel the open ticket without transfer", async () => {
+          vi.spyOn(snsSaleApi, "notifyParticipation").mockRejectedValue(
+            new Error("Amount transferred: 0; minimum required to participate")
+          );
 
-        expect(
-          await po
-            .getProjectStatusSectionPo()
-            .getCommitmentAmountDisplayPo()
-            .isPresent()
-        ).toBe(true);
+          const po = renderComponent(props);
+          await runResolvedPromises();
 
-        expect(await po.getProjectStatusSectionPo().getCommitmentAmount()).toBe(
-          formatTokenE8s({ value: testTicket.amount_icp_e8s })
-        );
-        expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(3);
+          const modal = po.getRestoreSaleParticipationModalPo();
+          await modal.waitFor();
+
+          await modal.clickNo();
+          await runResolvedPromises();
+          await advanceTime();
+          await modal.waitForAbsent();
+
+          expect(snsSaleApi.notifyPaymentFailure).toBeCalledTimes(1);
+          expect(ledgerApi.sendICP).not.toBeCalled();
+          expect(await po.getSaleInProgressModalPo().isPresent()).toBe(false);
+
+          await waitFor(async () =>
+            expect(await po.getParticipateButton().isDisabled()).toBe(false)
+          );
+        });
       });
     });
 
