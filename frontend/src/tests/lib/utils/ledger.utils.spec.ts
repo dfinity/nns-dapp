@@ -60,6 +60,32 @@ describe("ledger-utils", () => {
       });
     });
 
+    it("should throw an error because the public key is missing", async () => {
+      const call = () =>
+        decodePublicKey({
+          principalText,
+          returnCode: LedgerError.NoErrors,
+        } as ResponseAddress);
+
+      await expect(call).rejects.toMatchObject({
+        message: "error__ledger.fetch_public_key",
+        renderAsHtml: false,
+      });
+    });
+
+    it("should throw an error because the principal text is missing", async () => {
+      const call = () =>
+        decodePublicKey({
+          publicKey: fromHexString(rawPublicKeyHex) as unknown as Buffer,
+          returnCode: LedgerError.NoErrors,
+        } as ResponseAddress);
+
+      await expect(call).rejects.toMatchObject({
+        message: "error__ledger.fetch_public_key",
+        renderAsHtml: false,
+      });
+    });
+
     it("should throw an error because principal does not match", async () => {
       const call = () =>
         decodePublicKey({

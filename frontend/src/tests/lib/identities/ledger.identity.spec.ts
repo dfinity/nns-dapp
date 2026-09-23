@@ -58,7 +58,7 @@ describe("LedgerIdentity", () => {
   beforeEach(() => {
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     mockLedgerApp.getAddressAndPubKey.mockResolvedValue({
-      errorMessage: undefined,
+      errorMessage: "No errors",
       returnCode: LedgerError.NoErrors,
       publicKey: Buffer.from(publicKey.toRaw()),
       principal: Buffer.from(mockPrincipal.toUint8Array()),
@@ -75,7 +75,7 @@ describe("LedgerIdentity", () => {
     const callSignature = Buffer.alloc(64);
     const readStateSignature = Buffer.alloc(64);
     mockLedgerApp.signUpdateCall.mockResolvedValue({
-      errorMessage: undefined,
+      errorMessage: "No errors",
       returnCode: LedgerError.NoErrors,
       RequestHash: Buffer.from(""),
       RequestSignatureRS: callSignature,
@@ -84,7 +84,7 @@ describe("LedgerIdentity", () => {
     });
 
     mockLedgerApp.sign.mockResolvedValue({
-      errorMessage: undefined,
+      errorMessage: "No errors",
       returnCode: LedgerError.NoErrors,
       signatureRS: callSignature,
       preSignHash: Buffer.from(""),
@@ -93,7 +93,7 @@ describe("LedgerIdentity", () => {
 
     // Return at least a version bigger than ALL_CANDID_TXS_VERSION `2.4.9`.
     mockLedgerApp.getVersion.mockResolvedValue({
-      errorMessage: undefined,
+      errorMessage: "No errors",
       returnCode: LedgerError.NoErrors,
       major: 3,
       minor: 0,
@@ -218,7 +218,7 @@ describe("LedgerIdentity", () => {
   describe("when the ledger app is exactly `ALL_CANDID_TXS_VERSION`", () => {
     it("should work as expected", async () => {
       mockLedgerApp.getVersion.mockResolvedValue({
-        errorMessage: undefined,
+        errorMessage: "No errors",
         returnCode: LedgerError.NoErrors,
         major: 2,
         minor: 4,
@@ -237,7 +237,7 @@ describe("LedgerIdentity", () => {
   describe("when the ledger app version is smaller than `ALL_CANDID_TXS_VERSION`", () => {
     it("should raise an error before signing", async () => {
       mockLedgerApp.getVersion.mockResolvedValue({
-        errorMessage: undefined,
+        errorMessage: "No errors",
         returnCode: LedgerError.NoErrors,
         major: 2,
         minor: 4,
@@ -259,7 +259,7 @@ describe("LedgerIdentity", () => {
 
     it("should raise an error before signing a stake neuron call", async () => {
       mockLedgerApp.getVersion.mockResolvedValue({
-        errorMessage: undefined,
+        errorMessage: "No errors",
         returnCode: LedgerError.NoErrors,
         major: 2,
         minor: 4,
