@@ -1,6 +1,7 @@
 import {
   ExtendedLedgerError,
   LEDGER_SIGNATURE_LENGTH,
+  LedgerError,
   type AllLedgerError,
 } from "$lib/constants/ledger.constants";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
@@ -11,7 +12,6 @@ import { arrayBufferToUint8Array, isNullish } from "@dfinity/utils";
 import type { ReadRequest, RequestId, Signature } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import type {
-  LedgerError,
   ResponseAddress,
   ResponseSign,
   ResponseSignUpdateCall,
@@ -30,13 +30,15 @@ export const decodePublicKey = async ({
     throw new LedgerErrorKey({ message: "error__ledger.please_open" });
   }
 
-  const { LedgerError } = await import("@zondax/ledger-icp");
-
   if (code === LedgerError.TransactionRejected) {
     throw new LedgerErrorKey({ message: "error__ledger.locked" });
   }
 
   if (code === ExtendedLedgerError.CannotFetchPublicKey) {
+    throw new LedgerErrorKey({ message: "error__ledger.fetch_public_key" });
+  }
+
+  if (isNullish(responsePublicKey) || isNullish(principalText)) {
     throw new LedgerErrorKey({ message: "error__ledger.fetch_public_key" });
   }
 
@@ -54,8 +56,7 @@ export const decodePublicKey = async ({
   return publicKey;
 };
 
-const checkResponseCode = async (returnCode: LedgerError): Promise<void> => {
-  const { LedgerError } = await import("@zondax/ledger-icp");
+const checkResponseCode = (returnCode: LedgerError): void => {
   if (returnCode === LedgerError.TransactionRejected) {
     throw new LedgerErrorKey({
       message: "error__ledger.user_rejected_transaction",
@@ -71,7 +72,7 @@ const checkSignature = ({
   signature?: Buffer;
   returnCode: LedgerError;
   errorMessage?: string;
-}) => {
+}): Buffer => {
   const labels = get(i18n);
 
   if (isNullish(signature)) {
@@ -92,6 +93,8 @@ const checkSignature = ({
       })
     );
   }
+
+  return signature;
 };
 
 export const decodeSignature = async ({
@@ -99,10 +102,14 @@ export const decodeSignature = async ({
   returnCode,
   errorMessage,
 }: ResponseSign): Promise<Signature> => {
-  await checkResponseCode(returnCode);
-  checkSignature({ signature: signatureRS, returnCode, errorMessage });
+  checkResponseCode(returnCode);
+  const signature = checkSignature({
+    signature: signatureRS,
+    returnCode,
+    errorMessage,
+  });
 
-  return arrayBufferToUint8Array(bufferToArrayBuffer(signatureRS)) as Signature;
+  return arrayBufferToUint8Array(bufferToArrayBuffer(signature)) as Signature;
 };
 
 export type RequestSignatures = {
@@ -116,10 +123,14 @@ export const decodeUpdateSignatures = async ({
   returnCode,
   errorMessage,
 }: ResponseSignUpdateCall): Promise<RequestSignatures> => {
-  await checkResponseCode(returnCode);
+  checkResponseCode(returnCode);
   // TODO: Could we get different returnCode per signature?
-  checkSignature({ signature: RequestSignatureRS, returnCode, errorMessage });
-  checkSignature({
+  const callSignature = checkSignature({
+    signature: RequestSignatureRS,
+    returnCode,
+    errorMessage,
+  });
+  const readStateSignature = checkSignature({
     signature: StatusReadSignatureRS,
     returnCode,
     errorMessage,
@@ -127,10 +138,10 @@ export const decodeUpdateSignatures = async ({
 
   return {
     callSignature: arrayBufferToUint8Array(
-      bufferToArrayBuffer(RequestSignatureRS)
+      bufferToArrayBuffer(callSignature)
     ) as Signature,
     readStateSignature: arrayBufferToUint8Array(
-      bufferToArrayBuffer(StatusReadSignatureRS)
+      bufferToArrayBuffer(readStateSignature)
     ) as Signature,
   };
 };
