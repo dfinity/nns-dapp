@@ -39,9 +39,13 @@ runs:
     - name: Determine snsdemo ref
       id: snsdemo_ref
       shell: bash
+      env:
+        # Pass the input through the environment, not through string interpolation.
+        # Interpolation puts the raw value into the script text, where it can run as shell code.
+        SNSDEMO_REF_INPUT: ${{ inputs.snsdemo_ref }}
       run: |
         set -euo pipefail
-        SNSDEMO_REF="${{ inputs.snsdemo_ref }}"
+        SNSDEMO_REF="$SNSDEMO_REF_INPUT"
         test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_COMMIT config.json)"
         # A commit hash is immutable. A tag is not. Check out the commit only.
         # Apply this check to the input too, so a caller cannot pass a mutable ref.
@@ -54,9 +58,12 @@ runs:
     - name: Determine snsdemo snapshot URL
       id: snsdemo_snapshot
       shell: bash
+      env:
+        # Pass the input through the environment. See the note in the step above.
+        SNAPSHOT_URL_INPUT: ${{ inputs.snapshot_url }}
       run: |
         set -euo pipefail
-        URL="${{ inputs.snapshot_url }}"
+        URL="$SNAPSHOT_URL_INPUT"
         # The snapshot is a release asset, so the URL needs the release tag.
         SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
         test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${SNSDEMO_RELEASE}/snsdemo_snapshot_ubuntu-24.04.tar.xz"
