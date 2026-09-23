@@ -23,6 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 - The canisters page shows a table skeleton while the canister list loads.
+- Description overflow in the upcoming project card on the launchpad page.
 
 #### Security
 
