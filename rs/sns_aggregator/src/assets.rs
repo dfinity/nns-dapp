@@ -8,6 +8,9 @@ use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 
+#[cfg(test)]
+mod tests;
+
 /// A standard HTTP header
 type HeaderField = (String, String);
 

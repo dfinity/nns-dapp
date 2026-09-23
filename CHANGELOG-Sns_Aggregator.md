@@ -15,6 +15,8 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Fixed
 ### Security
 
+- Pin the home page's Prism script and stylesheet with Subresource Integrity and load them from the certified gateway.
+
 ## [Proposal 137283](https://dashboard.internetcomputer.org/proposal/137283)
 ### Added
 - Include SNS Governance metrics.
