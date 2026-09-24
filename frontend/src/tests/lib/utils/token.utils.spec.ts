@@ -967,12 +967,23 @@ describe("token-utils", () => {
       [mockLedgerCanisterId2]: token2,
     };
 
+    const importedLedgerCanisterId = "mxzaz-hqaaa-aaaar-qaada-cai";
+    const otherImportedLedgerCanisterId = "n5wcd-faaaa-aaaar-qaaea-cai";
+
     it("should return the ledger canister ID for a given token", () => {
       expect(
-        getLedgerCanisterIdFromToken(token1, tokensByLedgerCanisterId)
+        getLedgerCanisterIdFromToken({
+          token: token1,
+          tokensByLedgerCanisterId,
+          importedTokenLedgerCanisterIds: new Set(),
+        })
       ).toBe(mockLedgerCanisterId1);
       expect(
-        getLedgerCanisterIdFromToken(token2, tokensByLedgerCanisterId)
+        getLedgerCanisterIdFromToken({
+          token: token2,
+          tokensByLedgerCanisterId,
+          importedTokenLedgerCanisterIds: new Set(),
+        })
       ).toBe(mockLedgerCanisterId2);
     });
 
@@ -984,7 +995,82 @@ describe("token-utils", () => {
       };
 
       expect(
-        getLedgerCanisterIdFromToken(unknownToken, tokensByLedgerCanisterId)
+        getLedgerCanisterIdFromToken({
+          token: unknownToken,
+          tokensByLedgerCanisterId,
+          importedTokenLedgerCanisterIds: new Set(),
+        })
+      ).toBeUndefined();
+    });
+
+    it("should ignore an imported token that copies the symbol of a genuine token", () => {
+      expect(
+        getLedgerCanisterIdFromToken({
+          token: token1,
+          tokensByLedgerCanisterId: {
+            // The imported token comes first, to prove that order does not win.
+            [importedLedgerCanisterId]: { ...token1 },
+            ...tokensByLedgerCanisterId,
+          },
+          importedTokenLedgerCanisterIds: new Set([importedLedgerCanisterId]),
+        })
+      ).toBe(mockLedgerCanisterId1);
+    });
+
+    it("should return the ledger canister ID of an imported token without a collision", () => {
+      const importedToken: IcrcTokenMetadata = {
+        symbol: "IMPORTED",
+        name: "Imported Token",
+        decimals: 8,
+        fee: 0n,
+      };
+
+      expect(
+        getLedgerCanisterIdFromToken({
+          token: importedToken,
+          tokensByLedgerCanisterId: {
+            ...tokensByLedgerCanisterId,
+            [importedLedgerCanisterId]: importedToken,
+          },
+          importedTokenLedgerCanisterIds: new Set([importedLedgerCanisterId]),
+        })
+      ).toBe(importedLedgerCanisterId);
+    });
+
+    it("should return undefined when two genuine tokens share a symbol", () => {
+      expect(
+        getLedgerCanisterIdFromToken({
+          token: token1,
+          tokensByLedgerCanisterId: {
+            ...tokensByLedgerCanisterId,
+            [importedLedgerCanisterId]: { ...token1 },
+          },
+          importedTokenLedgerCanisterIds: new Set(),
+        })
+      ).toBeUndefined();
+    });
+
+    it("should return undefined when two imported tokens share a symbol", () => {
+      const importedToken: IcrcTokenMetadata = {
+        symbol: "IMPORTED",
+        name: "Imported Token",
+        decimals: 8,
+        fee: 0n,
+      };
+
+      expect(
+        getLedgerCanisterIdFromToken({
+          token: importedToken,
+          tokensByLedgerCanisterId: {
+            ...tokensByLedgerCanisterId,
+            [importedLedgerCanisterId]: importedToken,
+            [otherImportedLedgerCanisterId]: { ...importedToken },
+          },
+          importedTokenLedgerCanisterIds: new Set([
+            importedLedgerCanisterId,
+            otherImportedLedgerCanisterId,
+          ]),
+        })
       ).toBeUndefined();
     });
   });
