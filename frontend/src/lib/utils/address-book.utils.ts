@@ -2,6 +2,16 @@ import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { ICPToken, isNullish, type Token } from "@dfinity/utils";
 
 /**
+ * Tell if the address book in the store comes from a certified call.
+ *
+ * Only an update call gives certified data. A query response is never
+ * certified, whatever call strategy the session uses.
+ */
+export const isAddressBookCertified = (
+  certified: boolean | undefined
+): boolean => certified === true;
+
+/**
  * Helper function to extract address string from AddressType
  */
 export const getAddressString = (
