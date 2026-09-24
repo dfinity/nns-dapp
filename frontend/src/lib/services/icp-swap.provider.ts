@@ -6,11 +6,55 @@ import { ProviderErrors, type TickersData } from "$lib/types/tickers";
 import { mapEntries } from "$lib/utils/utils";
 import { isNullish } from "@dfinity/utils";
 
+// The tickers come from ICP Swap, so a field can be missing or hold something
+// that is not a number. Such a field counts as 0.
+const toAmount = (value: string): number => {
+  const amount = Number(value);
+  return Number.isFinite(amount) ? amount : 0;
+};
+
+// A price is usable only when it is a finite number above 0. ICP Swap reports
+// a last_price of 0 for a pool that nobody has traded.
+const hasUsablePrice = ({ last_price }: IcpSwapTicker): boolean => {
+  const price = Number(last_price);
+  return price > 0 && Number.isFinite(price);
+};
+
+// Keep the pool with the most liquidity, because an attacker must lock more
+// value than the real pool to be selected. A tie goes to the higher 24h
+// volume, then to the first pool in the feed.
+// The caller must pass at least one ticker. reduce with no initial value
+// throws on an empty array.
+const selectMostLiquidTicker = (tickers: IcpSwapTicker[]): IcpSwapTicker =>
+  tickers.reduce((selected, ticker) => {
+    const liquidityDifference =
+      toAmount(ticker.liquidity_in_usd) - toAmount(selected.liquidity_in_usd);
+    if (liquidityDifference !== 0) {
+      return liquidityDifference > 0 ? ticker : selected;
+    }
+    const volumeDifference =
+      toAmount(ticker.volume_usd_24H) - toAmount(selected.volume_usd_24H);
+    return volumeDifference > 0 ? ticker : selected;
+  });
+
+// Anybody can create an ICP Swap pool, so a token can have several pools and
+// each pool reports its own price. Select among the pools that carry a usable
+// price, because a pool with no usable price gives no rate. Otherwise an
+// untraded pool with more liquidity wins and the pair loses its price.
+// When no pool of the pair carries a usable price, keep the most liquid pool.
+// The price checks below then drop the pair, as they did before.
+const selectTickerForPair = (
+  tickersForPair: IcpSwapTicker[]
+): IcpSwapTicker => {
+  const tickersWithPrice = tickersForPair.filter(hasUsablePrice);
+  return selectMostLiquidTicker(
+    tickersWithPrice.length > 0 ? tickersWithPrice : tickersForPair
+  );
+};
+
 const adapter = (tickers: IcpSwapTicker[]): TickersData => {
   if (isNullish(tickers)) throw new Error(ProviderErrors.NO_DATA);
 
-  // The contents of icpSwapTickersStore come from ICP Swap, so there's no
-  // guarantee that it's format is as expected.
   const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
 
   // First, get all ICP-based tickers
@@ -30,26 +74,14 @@ const adapter = (tickers: IcpSwapTicker[]): TickersData => {
     {} as Record<string, IcpSwapTicker[]>
   );
 
-  // Apply volume filter only when there are multiple tickers for the same pair
-  const filteredTickers = Object.values(tickersByBaseId).flatMap(
-    (tickersForPair) => {
-      if (tickersForPair.length === 1) {
-        // Single ticker for this pair - keep it regardless of volume
-        return tickersForPair;
-      } else {
-        // Multiple tickers for this pair - filter by volume
-        return (
-          tickersForPair.find((ticker) => Number(ticker.volume_usd_24H) > 0) ??
-          []
-        );
-      }
-    }
-  );
-
-  const ledgerCanisterIdToTicker: Record<string, IcpSwapTicker> =
-    Object.fromEntries(
-      filteredTickers.map((ticker) => [ticker.base_id, ticker])
-    );
+  // Keep one ticker per pair.
+  const ledgerCanisterIdToTicker: Record<string, IcpSwapTicker> = mapEntries({
+    obj: tickersByBaseId,
+    mapFn: ([baseId, tickersForPair]) => [
+      baseId,
+      selectTickerForPair(tickersForPair),
+    ],
+  });
 
   const ckusdcTicker =
     ledgerCanisterIdToTicker[CKUSDC_LEDGER_CANISTER_ID.toText()];
@@ -57,17 +89,16 @@ const adapter = (tickers: IcpSwapTicker[]): TickersData => {
     throw new Error(ProviderErrors.INVALID_CKUSDC_PRICE);
   }
 
-  const icpPriceInCkusdc = Number(ckusdcTicker?.last_price);
-
-  if (icpPriceInCkusdc === 0 || !Number.isFinite(icpPriceInCkusdc)) {
+  if (!hasUsablePrice(ckusdcTicker)) {
     throw new Error(ProviderErrors.INVALID_ICP_PRICE);
   }
+
+  const icpPriceInCkusdc = Number(ckusdcTicker.last_price);
 
   const ledgerCanisterIdToUsdPrice: Record<string, number> = mapEntries({
     obj: ledgerCanisterIdToTicker,
     mapFn: ([ledgerCanisterId, ticker]) => {
-      const lastPrice = Number(ticker.last_price);
-      if (lastPrice === 0 || !Number.isFinite(lastPrice)) {
+      if (!hasUsablePrice(ticker)) {
         return undefined;
       }
       return [ledgerCanisterId, icpPriceInCkusdc / Number(ticker.last_price)];
