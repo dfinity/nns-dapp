@@ -426,7 +426,13 @@ impl AccountsStore {
     // yet been stored, allowing us to set the principal (since originally we created accounts
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
-        self.assert_account_limit();
+        self.add_account_with_limit(caller, ACCOUNT_LIMIT)
+    }
+
+    /// Adds an account, up to the given account limit.
+    ///
+    /// The limit is a parameter so that a test can reach it without creating `ACCOUNT_LIMIT` accounts.
+    fn add_account_with_limit(&mut self, caller: PrincipalId, account_limit: u64) -> bool {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.get(&account_identifier.to_vec()) {
             if account.principal.is_none() {
@@ -437,6 +443,7 @@ impl AccountsStore {
             }
             false
         } else {
+            self.assert_account_limit(account_limit);
             let new_account = Account::new(caller, account_identifier);
             self.accounts_db.insert(account_identifier.to_vec(), new_account);
 
@@ -881,11 +888,11 @@ impl AccountsStore {
         name.len() <= CANISTER_NAME_MAX_LENGTH
     }
 
-    fn assert_account_limit(&self) {
+    fn assert_account_limit(&self, account_limit: u64) {
         let db_accounts_len = self.accounts_db.len();
         assert!(
-            db_accounts_len < ACCOUNT_LIMIT,
-            "Pre migration account limit exceeded {db_accounts_len}"
+            db_accounts_len < account_limit,
+            "Account limit exceeded {db_accounts_len}"
         );
     }
 }
