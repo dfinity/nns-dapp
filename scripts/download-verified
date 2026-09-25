@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+###############
+# Hjelpe meg!
+###############
+print_help() {
+  cat <<-EOF
+	Downloads a file and verifies its sha256 checksum.
+
+	The script writes the file only if the checksum matches.
+	The script exits with an error if the checksum does not match.
+
+	Usage:
+	    $(basename "$0") <url> <sha256> <output_path>
+	EOF
+}
+[[ "${1:-}" != "--help" ]] || {
+  print_help
+  exit 0
+}
+
+(($# == 3)) || {
+  print_help
+  exit 1
+} >&2
+
+url="$1"
+expected_sha256="$2"
+output_path="$3"
+
+###############
+# Download
+###############
+# The temp file sits next to output_path, not under the system temp
+# directory. That keeps the final "mv" below on one filesystem, so it is an
+# atomic rename instead of a copy-then-delete.
+tmpfile="$(mktemp "$(dirname "$output_path")/.download-verified-XXXXXX")"
+trap 'rm -f "$tmpfile"' EXIT
+
+curl --fail --location --show-error --silent --retry 5 \
+  --proto '=https' --tlsv1.2 --output "$tmpfile" "$url"
+
+###############
+# Verify
+###############
+# Prints the sha256 checksum of the file named by the first argument.
+# macOS has shasum but it does not have sha256sum.
+sha256_of() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum <"$1" | cut -d ' ' -f 1
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 <"$1" | cut -d ' ' -f 1
+  else
+    echo "ERROR: This script needs sha256sum or shasum to verify a checksum." >&2
+    echo "ERROR: Install one of them and run the script again." >&2
+    return 1
+  fi
+}
+
+actual_sha256="$(sha256_of "$tmpfile")" || exit 1
+
+[[ "$actual_sha256" == "$expected_sha256" ]] || {
+  echo "ERROR: The checksum of the downloaded file is wrong."
+  echo "ERROR: URL:      $url"
+  echo "ERROR: Expected: $expected_sha256"
+  echo "ERROR: Actual:   $actual_sha256"
+  echo "ERROR: Update the checksum with scripts/update-tool-checksums."
+  echo "ERROR: Review the new checksum before you commit it."
+  exit 1
+} >&2
+
+mv "$tmpfile" "$output_path"
+echo "Verified $url"
