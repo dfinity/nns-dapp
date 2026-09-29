@@ -67,6 +67,13 @@ runs:
         # The snapshot is a release asset, so the URL needs the release tag.
         SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
         test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${SNSDEMO_RELEASE}/snsdemo_snapshot_ubuntu-24.04.tar.xz"
+        # Accept an https URL made of URL characters only. A space, a quote, a
+        # newline or a shell character cannot then reach the output file.
+        [[ "$URL" =~ ^https://[A-Za-z0-9._~:/?#@!\&=+%,\;-]+$ ]] || {
+          echo "ERROR: The snapshot URL must be an https URL with URL characters only."
+          echo "Actual value: $URL"
+          exit 1
+        } >&2
         echo "url=$URL" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
       uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
@@ -88,8 +95,11 @@ runs:
         cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)"
     - name: Get test environment
       shell: bash
+      env:
+        # Pass the URL through the environment. See the note in the first step.
+        SNAPSHOT_URL: ${{ steps.snsdemo_snapshot.outputs.url }}
       run: |
-        curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
+        curl -fL --retry 5 "$SNAPSHOT_URL" > state.tar.xz
         # We need to set the version explicitly because the config file dfxvm
         # uses to determine the version will be replaced by the snapshot.
         export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
