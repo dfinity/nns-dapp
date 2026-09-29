@@ -79,7 +79,8 @@
     "@icp-sdk/core": "^5.0.0",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.30.16",
     "@ledgerhq/hw-transport-webhid": "^6.30.11",
-    "@zondax/ledger-icp": "^0.6.1",
+    "@zondax/ledger-icp": "^3.2.10",
+    "@zondax/ledger-js": "^0.2.2",
     "buffer": "^6.0.3",
     "plausible-tracker": "0.3.9"
   },
