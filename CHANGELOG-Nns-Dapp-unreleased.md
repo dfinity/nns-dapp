@@ -24,6 +24,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 - The canisters page shows a table skeleton while the canister list loads.
 - Description overflow in the upcoming project card on the launchpad page.
+- The quick search panel now fits a phone screen, and its selected row, icon
+  tiles and result boxes now have a visible background color.
+- On a narrow screen the header buttons no longer shrink while the app loads
+  data.
+- The proposal detail page no longer breaks on a payload text that nests JSON
+  thousands of levels deep.
 
 #### Security
 
