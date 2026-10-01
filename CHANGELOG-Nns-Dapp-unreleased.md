@@ -24,6 +24,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 - The canisters page shows a table skeleton while the canister list loads.
 - Description overflow in the upcoming project card on the launchpad page.
+- The "Increase Stake" spinner no longer stays forever when the neuron stake refresh fails.
 
 #### Security
 

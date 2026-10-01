@@ -1130,29 +1130,51 @@ export const loadNeuron = ({
   });
 };
 
-// Not resolve until the neuron has been loaded
-export const reloadNeuron = (neuronId: NeuronId) =>
-  new Promise<void>((resolve) => {
-    getAuthenticatedIdentity()
-      // To update the neuron stake with the subaccount balance
-      .then((identity) =>
-        governanceApiService.claimOrRefreshNeuron({ identity, neuronId })
-      )
-      .then(() => {
-        loadNeuron({
-          neuronId,
-          forceFetch: true,
-          strategy: "update",
-          setNeuron: ({ neuron, certified }) => {
-            neuronsStore.pushNeurons({ neurons: [neuron], certified });
-            resolve();
-          },
-          handleError: () => {
-            resolve();
-          },
-        });
-      });
+const claimOrRefreshAndLoadNeuron = async (
+  neuronId: NeuronId
+): Promise<void> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+    // To update the neuron stake with the subaccount balance
+    await governanceApiService.claimOrRefreshNeuron({ identity, neuronId });
+  } catch (err) {
+    // The neuron is loaded anyway, so that the caller does not wait forever.
+    console.error(err);
+  }
+
+  await new Promise<void>((resolve) => {
+    loadNeuron({
+      neuronId,
+      forceFetch: true,
+      strategy: "update",
+      setNeuron: ({ neuron, certified }) => {
+        neuronsStore.pushNeurons({ neurons: [neuron], certified });
+        resolve();
+      },
+      handleError: () => {
+        resolve();
+      },
+    });
   });
+};
+
+// The governance canister rejects a claim or refresh while another command
+// on the same neuron is in progress ("Neuron has an ongoing ledger update.").
+const pendingNeuronReloads = new Map<NeuronId, Promise<void>>();
+
+// Not resolve until the neuron has been loaded.
+// Reloads of the same neuron run one after the other.
+export const reloadNeuron = (neuronId: NeuronId): Promise<void> => {
+  const run = () => claimOrRefreshAndLoadNeuron(neuronId);
+  const previous = pendingNeuronReloads.get(neuronId) ?? Promise.resolve();
+  const reload = previous.then(run, run);
+  pendingNeuronReloads.set(neuronId, reload);
+  return reload.finally(() => {
+    if (pendingNeuronReloads.get(neuronId) === reload) {
+      pendingNeuronReloads.delete(neuronId);
+    }
+  });
+};
 
 export const topUpNeuron = async ({
   amount,

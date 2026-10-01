@@ -2507,6 +2507,62 @@ describe("neurons-services", () => {
       });
       expect(spyClaimOrRefresh).toBeCalledTimes(1);
     });
+
+    it("should load the neuron if claim or refresh fails", async () => {
+      const error = new Error("Neuron has an ongoing ledger update.");
+      spyClaimOrRefresh.mockRejectedValue(error);
+      spyConsoleError.mockReturnValue();
+
+      await reloadNeuron(mockNeuron.neuronId);
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalledTimes(1);
+      expect(spyConsoleError).toBeCalledWith(error);
+      expect(spyConsoleError).toBeCalledTimes(1);
+    });
+
+    it("should not claim or refresh the same neuron concurrently", async () => {
+      let resolveFirstClaim: () => void;
+      spyClaimOrRefresh.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveFirstClaim = () => resolve(undefined);
+          })
+      );
+
+      const firstReload = reloadNeuron(mockNeuron.neuronId);
+      const secondReload = reloadNeuron(mockNeuron.neuronId);
+      await runResolvedPromises();
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
+
+      resolveFirstClaim();
+      await Promise.all([firstReload, secondReload]);
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(2);
+      expect(spyGetNeuron).toBeCalledTimes(2);
+    });
+
+    it("should claim or refresh different neurons concurrently", async () => {
+      const resolveClaims: Array<() => void> = [];
+      spyClaimOrRefresh.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveClaims.push(() => resolve(undefined));
+          })
+      );
+
+      const reloads = [
+        reloadNeuron(mockNeuron.neuronId),
+        reloadNeuron(mockNeuron.neuronId + 1n),
+      ];
+      await runResolvedPromises();
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(2);
+
+      resolveClaims.forEach((resolve) => resolve());
+      await Promise.all(reloads);
+    });
   });
 
   describe("getIdentityOfControllerByNeuronId", () => {
