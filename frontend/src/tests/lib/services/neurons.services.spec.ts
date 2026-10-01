@@ -2521,6 +2521,26 @@ describe("neurons-services", () => {
       expect(spyConsoleError).toBeCalledTimes(1);
     });
 
+    it("should resolve and not block the next reload if loading the neuron fails", async () => {
+      const error = new Error("No identity");
+      vi.spyOn(authServices, "getAuthenticatedIdentity")
+        .mockRejectedValueOnce(error)
+        .mockRejectedValueOnce(error);
+      spyConsoleError.mockReturnValue();
+
+      await reloadNeuron(mockNeuron.neuronId);
+
+      expect(spyClaimOrRefresh).not.toBeCalled();
+      expect(spyGetNeuron).not.toBeCalled();
+      expect(spyConsoleError).toBeCalledWith(error);
+      expect(spyConsoleError).toBeCalledTimes(2);
+
+      await reloadNeuron(mockNeuron.neuronId);
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalledTimes(1);
+    });
+
     it("should not claim or refresh the same neuron concurrently", async () => {
       let resolveFirstClaim: () => void;
       spyClaimOrRefresh.mockImplementationOnce(

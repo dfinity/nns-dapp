@@ -1130,6 +1130,8 @@ export const loadNeuron = ({
   });
 };
 
+// Never rejects, so that a failed reload does not block the next reload of the
+// same neuron.
 const claimOrRefreshAndLoadNeuron = async (
   neuronId: NeuronId
 ): Promise<void> => {
@@ -1138,24 +1140,21 @@ const claimOrRefreshAndLoadNeuron = async (
     // To update the neuron stake with the subaccount balance
     await governanceApiService.claimOrRefreshNeuron({ identity, neuronId });
   } catch (err) {
-    // The neuron is loaded anyway, so that the caller does not wait forever.
+    // The neuron is loaded anyway.
     console.error(err);
   }
 
-  await new Promise<void>((resolve) => {
-    loadNeuron({
+  try {
+    await loadNeuron({
       neuronId,
       forceFetch: true,
       strategy: "update",
-      setNeuron: ({ neuron, certified }) => {
-        neuronsStore.pushNeurons({ neurons: [neuron], certified });
-        resolve();
-      },
-      handleError: () => {
-        resolve();
-      },
+      setNeuron: ({ neuron, certified }) =>
+        neuronsStore.pushNeurons({ neurons: [neuron], certified }),
     });
-  });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 // The governance canister rejects a claim or refresh while another command
