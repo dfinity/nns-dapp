@@ -1161,7 +1161,7 @@ const claimOrRefreshAndLoadNeuron = async (
 // on the same neuron is in progress ("Neuron has an ongoing ledger update.").
 const pendingNeuronReloads = new Map<NeuronId, Promise<void>>();
 
-// Not resolve until the neuron has been loaded.
+// Resolves when the load attempt is complete, also if it failed.
 // Reloads of the same neuron run one after the other.
 export const reloadNeuron = (neuronId: NeuronId): Promise<void> => {
   const run = () => claimOrRefreshAndLoadNeuron(neuronId);
