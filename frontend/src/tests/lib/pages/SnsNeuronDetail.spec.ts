@@ -12,6 +12,7 @@ import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import {
+  getSnsNeuronHotkeyPermissionsFor,
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
@@ -20,6 +21,7 @@ import { page } from "$mocks/$app/stores";
 import * as fakeSnsApi from "$tests/fakes/sns-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   createMockSnsNeuron,
@@ -31,6 +33,7 @@ import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { fromNullable } from "@dfinity/utils";
 import {
   SnsNeuronPermissionType,
@@ -38,7 +41,7 @@ import {
   type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
-import { render, waitFor } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
@@ -341,6 +344,79 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getHotkeyPrincipals()).toEqual([]);
     });
 
+    it("removes ManageVotingPermission with the hotkey", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+        ],
+      });
+      const po = await renderComponent(props);
+
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+      await po.removeHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+
+      const neuron = await snsGovernanceApi.getSnsNeuron({
+        identity: mockIdentity,
+        rootCanisterId,
+        neuronId: validNeuronId,
+        certified: true,
+      });
+      expect(
+        getSnsNeuronHotkeyPermissionsFor({
+          neuron,
+          principal: hotkeyPrincipal,
+        })
+      ).toEqual([]);
+    });
+
+    it("keeps a principal with residual permissions in the list", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+        ],
+      });
+      const po = await renderComponent(props);
+
+      // The principal keeps power over the neuron, so the card must show it.
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+      await po.removeHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+    });
+
     it("old update response doesn't replace newer state", async () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
@@ -374,15 +450,16 @@ describe("SnsNeuronDetail", () => {
 
       expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
 
+      // The later calls answer at once. The certified response from before the
+      // removal stays pending.
+      fakeSnsGovernanceApi.pauseFor(() => false);
+
       await po.removeHotkey(hotkeyPrincipal);
       await runResolvedPromises();
       await tick();
 
       expect(await po.getHotkeyPrincipals()).toEqual([]);
-
-      // Now the certified response for the neuron with hotkey removed is also
-      // pending.
-      expect(fakeSnsGovernanceApi.getPendingCallsCount()).toBe(2);
+      expect(fakeSnsGovernanceApi.getPendingCallsCount()).toBe(1);
 
       // Now we resolve the certified response from before the hotkey was
       // deleted. It should not cause the hotkey to reappear.
@@ -390,6 +467,246 @@ describe("SnsNeuronDetail", () => {
       await runResolvedPromises();
 
       expect(await po.getHotkeyPrincipals()).toEqual([]);
+    });
+
+    describe("post-removal check", () => {
+      // The check must read the certified response. These tests give the query
+      // response and the certified response different contents, and resolve
+      // the certified response strictly after the query response. A check that
+      // reads the query response therefore gives the wrong answer.
+      const neuronWithHotkeyPermissions = (
+        hotkeyPermissions: SnsNeuronPermissionType[]
+      ): SnsGovernanceDid.Neuron => ({
+        ...mockSnsNeuron,
+        id: [validNeuronId],
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from(hotkeyPermissions),
+          },
+        ],
+      });
+
+      const residualPermissions = [
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+      ];
+
+      let resolveCertified: (neuron: SnsGovernanceDid.Neuron) => void;
+      let getSnsNeuronSpy;
+
+      const renderWithHotkey = async () => {
+        fakeSnsGovernanceApi.addNeuronWith({
+          rootCanisterId,
+          id: [validNeuronId],
+          cached_neuron_stake_e8s: numberToE8s(neuronStake),
+          permissions: [
+            {
+              principal: [mockIdentity.getPrincipal()],
+              permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+            },
+            {
+              principal: [Principal.fromText(hotkeyPrincipal)],
+              permission_type: Int32Array.from([
+                ...HOTKEY_PERMISSIONS,
+                ...residualPermissions,
+              ]),
+            },
+          ],
+        });
+        return renderComponent(props);
+      };
+
+      const mockResponses = ({
+        queryNeuron,
+      }: {
+        queryNeuron: SnsGovernanceDid.Neuron;
+      }) => {
+        const certifiedNeuron = new Promise<SnsGovernanceDid.Neuron>(
+          (resolve) => {
+            resolveCertified = resolve;
+          }
+        );
+        getSnsNeuronSpy = vi
+          .spyOn(snsGovernanceApi, "getSnsNeuron")
+          .mockImplementation(({ certified }) =>
+            certified ? certifiedNeuron : Promise.resolve(queryNeuron)
+          );
+        // The render made its own calls. The assertions below cover the calls
+        // of the removal only.
+        getSnsNeuronSpy.mockClear();
+      };
+
+      it("reports an incomplete removal that only the certified response shows", async () => {
+        const po = await renderWithHotkey();
+
+        expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+        // The query response says the principal keeps nothing. It is a
+        // forgery, or a snapshot from another moment.
+        mockResponses({ queryNeuron: neuronWithHotkeyPermissions([]) });
+
+        await po.removeHotkey(hotkeyPrincipal);
+        await runResolvedPromises();
+
+        // The card makes no query call, and it reports nothing yet.
+        expect(getSnsNeuronSpy).not.toBeCalledWith(
+          expect.objectContaining({ certified: false })
+        );
+        expect(getSnsNeuronSpy).toBeCalledWith(
+          expect.objectContaining({ certified: true })
+        );
+        expect(get(toastsStore)).toEqual([]);
+
+        // The certified response arrives last. It shows the residual grant.
+        resolveCertified(neuronWithHotkeyPermissions(residualPermissions));
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: en.error__sns.sns_remove_hotkey_incomplete,
+          },
+        ]);
+      });
+
+      it("reports no error when only the query response shows a residual grant", async () => {
+        const po = await renderWithHotkey();
+
+        expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+        // The query response lags the removal. It still shows the grant.
+        mockResponses({
+          queryNeuron: neuronWithHotkeyPermissions(residualPermissions),
+        });
+
+        await po.removeHotkey(hotkeyPrincipal);
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toEqual([]);
+
+        // The certified response arrives last. The removal is complete.
+        resolveCertified(neuronWithHotkeyPermissions([]));
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toEqual([]);
+      });
+    });
+
+    describe("when the user removes its own hotkey", () => {
+      // The user holds the Community Fund combination. It can manage hotkeys
+      // and the card lists it as a hotkey.
+      const currentUser = mockIdentity.getPrincipal().toText();
+      const selfPermissions = [
+        ...HOTKEY_PERMISSIONS,
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+      ];
+
+      const neuronWithSelfPermissions = (
+        permissions: SnsNeuronPermissionType[]
+      ): SnsGovernanceDid.Neuron => ({
+        ...mockSnsNeuron,
+        id: [validNeuronId],
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(permissions),
+          },
+        ],
+      });
+
+      const renderAndRemoveOwnHotkey = async ({
+        queryNeuron,
+      }: {
+        queryNeuron: SnsGovernanceDid.Neuron;
+      }) => {
+        fakeSnsGovernanceApi.addNeuronWith({
+          rootCanisterId,
+          id: [validNeuronId],
+          cached_neuron_stake_e8s: numberToE8s(neuronStake),
+          permissions: [
+            {
+              principal: [mockIdentity.getPrincipal()],
+              permission_type: Int32Array.from(selfPermissions),
+            },
+          ],
+        });
+        const { container } = render(SnsNeuronDetail, props);
+        await runResolvedPromises();
+        const po = SnsNeuronDetailPo.under(
+          new JestPageObjectElement(container)
+        );
+
+        expect(await po.getHotkeyPrincipals()).toEqual([currentUser]);
+
+        let resolveCertified: (neuron: SnsGovernanceDid.Neuron) => void;
+        const certifiedNeuron = new Promise<SnsGovernanceDid.Neuron>(
+          (resolve) => {
+            resolveCertified = resolve;
+          }
+        );
+        vi.spyOn(snsGovernanceApi, "getSnsNeuron").mockImplementation(
+          ({ certified }) =>
+            certified ? certifiedNeuron : Promise.resolve(queryNeuron)
+        );
+
+        await po.removeHotkey(currentUser);
+        await runResolvedPromises();
+
+        // The user confirms the removal of its own hotkey.
+        await fireEvent.click(
+          container.querySelector('[data-tid="confirm-yes"]')
+        );
+        await runResolvedPromises();
+
+        return { resolveCertified };
+      };
+
+      it("shows no success toast until the certified response arrives", async () => {
+        // The query response says the removal is complete. It is a forgery, or
+        // a snapshot from another moment. The certified response shows the
+        // residual grant.
+        const { resolveCertified } = await renderAndRemoveOwnHotkey({
+          queryNeuron: neuronWithSelfPermissions([]),
+        });
+
+        expect(get(toastsStore)).toEqual([]);
+
+        resolveCertified(
+          neuronWithSelfPermissions([
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+          ])
+        );
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: en.error__sns.sns_remove_hotkey_incomplete,
+          },
+        ]);
+      });
+
+      it("shows the success toast when the certified response shows no permission", async () => {
+        const { resolveCertified } = await renderAndRemoveOwnHotkey({
+          queryNeuron: neuronWithSelfPermissions(selfPermissions),
+        });
+
+        expect(get(toastsStore)).toEqual([]);
+
+        resolveCertified(neuronWithSelfPermissions([]));
+        await runResolvedPromises();
+
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "success",
+            text: en.neurons.remove_hotkey_success,
+          },
+        ]);
+      });
     });
   });
 
