@@ -10,6 +10,10 @@ export interface SnsTicketsStoreEntry {
    * null: no ticket available
    */
   ticket: SnsSwapDid.Ticket | undefined | null;
+  /**
+   * true: the ticket was found on the swap canister and the user has not yet chosen to complete or cancel it
+   */
+  requiresConfirmation?: boolean;
 }
 
 export type SnsTicketsStoreData = Record<
@@ -21,6 +25,7 @@ export interface SnsTicketsStore extends Readable<SnsTicketsStoreData> {
   setTicket: (data: {
     rootCanisterId: Principal;
     ticket: SnsSwapDid.Ticket | undefined | null;
+    requiresConfirmation?: boolean;
   }) => void;
   setNoTicket: (rootCanisterId: Principal) => void;
   reset: () => void;
@@ -35,18 +40,22 @@ const initSnsTicketsStore = (): SnsTicketsStore => {
     /**
      * @param rootCanisterId
      * @param {Ticket} ticket undefined - not set; null - no ticket.
+     * @param {boolean} requiresConfirmation true - the user must complete or cancel the ticket before the ICP transfer.
      */
     setTicket({
       rootCanisterId,
       ticket,
+      requiresConfirmation = false,
     }: {
       rootCanisterId: Principal;
       ticket: SnsSwapDid.Ticket | undefined | null;
+      requiresConfirmation?: boolean;
     }) {
       update((currentState: SnsTicketsStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
           ticket,
+          ...(requiresConfirmation ? { requiresConfirmation } : {}),
         },
       }));
     },

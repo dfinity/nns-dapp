@@ -1086,6 +1086,12 @@ interface I18nSns_sale {
   step_notify: string;
   step_reload: string;
   connecting_sale_canister: string;
+  restore_participation_title: string;
+  restore_participation_description: string;
+  restore_participation_note: string;
+  restore_participation_confirm: string;
+  restore_participation_cancel: string;
+  participation_cancelled: string;
 }
 
 interface I18nSns_neuron_detail {

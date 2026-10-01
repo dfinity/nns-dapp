@@ -4,6 +4,7 @@ import { ProjectInfoSectionPo } from "$tests/page-objects/ProjectInfoSection.pag
 import { ProjectMetadataSectionPo } from "$tests/page-objects/ProjectMetadataSection.page-object";
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
 import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
+import { RestoreSaleParticipationModalPo } from "$tests/page-objects/RestoreSaleParticipationModal.page-object";
 import { SaleInProgressModalPo } from "$tests/page-objects/SaleInProgressModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -41,6 +42,10 @@ export class ProjectDetailPo extends BasePageObject {
 
   getProposalCardPo(): ProposalCardPo {
     return ProposalCardPo.under(this.root);
+  }
+
+  getRestoreSaleParticipationModalPo(): RestoreSaleParticipationModalPo {
+    return RestoreSaleParticipationModalPo.under(this.root);
   }
 
   getSaleInProgressModalPo(): SaleInProgressModalPo {

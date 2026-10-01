@@ -1046,7 +1046,13 @@
     "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
-    "connecting_sale_canister": "Retrieving swap required information"
+    "connecting_sale_canister": "Retrieving swap required information",
+    "restore_participation_title": "Unfinished participation",
+    "restore_participation_description": "You started a participation of $amount ICP in $project on $time, but it was not completed. Do you want to complete it now?",
+    "restore_participation_note": "If you cancel, no ICP is transferred and you can participate again with a different amount.",
+    "restore_participation_confirm": "Complete participation",
+    "restore_participation_cancel": "Cancel participation",
+    "participation_cancelled": "The unfinished participation was cancelled. No ICP was transferred."
   },
   "sns_neuron_detail": {
     "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
@@ -1177,7 +1183,7 @@
     "sns_sale_unexpected_error": "Sorry, There was an unexpected error while participating. Please refresh the page and try again.",
     "sns_sale_unexpected_and_refresh": "Sorry, There was an unexpected error while participating. Please refresh and try again",
     "sns_sale_final_error": "Sorry, there was an unexpected error connection with the SNS swap. Please reload the page and try again.",
-    "sns_sale_proceed_with_existing_ticket": "There is an existing participation started at $time. Completing that participation.",
+    "sns_sale_proceed_with_existing_ticket": "There is an unfinished participation of $amount ICP started at $time. Complete or cancel it before you start a new one.",
     "sns_sale_closed": "Sorry, the swap was already closed. Please reload the page.",
     "sns_sale_not_open": "Sorry, the swap is not yet open. Please reload the page.",
     "sns_sale_invalid_amount": "Can't participate with the selected amount. Please participate with a different amount ($min - $max).",
