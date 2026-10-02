@@ -2,20 +2,18 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import IcpExchangeRateInfoTooltip from "$lib/components/ui/IcpExchangeRateInfoTooltip.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
-  import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { i18n } from "$lib/stores/i18n";
   import { tickersStore } from "$lib/stores/tickers.store";
   import { formatNumber } from "$lib/utils/format.utils";
-  import {
-    getLedgerCanisterIdFromToken,
-    getUsdValue,
-  } from "$lib/utils/token.utils";
+  import { getUsdValue } from "$lib/utils/token.utils";
   import {
     isNullish,
     nonNullish,
     TokenAmountV2,
     type Token,
   } from "@dfinity/utils";
+  import type { Readable } from "svelte/store";
 
   export let amount: number = 0;
   export let balance: bigint | undefined = undefined;
@@ -36,19 +34,11 @@
     }
   };
 
-  let ledgerCanisterId: string | undefined;
-  ledgerCanisterId = getLedgerCanisterIdFromToken(
-    token,
-    $tokensByLedgerCanisterIdStore
-  );
+  let priceStore: Readable<number | undefined>;
+  $: priceStore = tokenPriceStore(token);
 
   let tokenPrice: number | undefined;
-  $: tokenPrice =
-    nonNullish(ledgerCanisterId) &&
-    nonNullish($tickersStore) &&
-    $tickersStore !== "error"
-      ? $tickersStore[ledgerCanisterId]
-      : undefined;
+  $: tokenPrice = $priceStore;
 
   let tokens: TokenAmountV2 | undefined;
   $: tokens = safeTokenAmount(amount, token);
