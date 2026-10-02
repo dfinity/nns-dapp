@@ -44,6 +44,14 @@ class StakedTokensCardRowPo extends BasePageObject {
   getStakedTokenStakeInNativeCurrency(): Promise<string> {
     return this.getTextWithCollapsedWhitespaces("stake-in-native");
   }
+
+  getStakedTokenStakeInUsdAriaLabel(): Promise<string | null> {
+    return this.getElement("stake-in-usd").getAttribute("aria-label");
+  }
+
+  getStakedTokenStakeInNativeCurrencyAriaLabel(): Promise<string | null> {
+    return this.getElement("stake-in-native").getAttribute("aria-label");
+  }
 }
 
 export class StakedTokensCardPo extends BasePageObject {
@@ -67,6 +75,10 @@ export class StakedTokensCardPo extends BasePageObject {
 
   getAmount(): Promise<string> {
     return this.getText("amount");
+  }
+
+  getAmountAriaLabel(): Promise<string | null> {
+    return this.getElement("amount").getAttribute("aria-label");
   }
 
   getInfoRow(): PageObjectElement {
@@ -105,6 +117,22 @@ export class StakedTokensCardPo extends BasePageObject {
     const rows = await this.getRows();
     return Promise.all(
       rows.map((row) => row.getStakedTokenStakeInNativeCurrency())
+    );
+  }
+
+  async getStakedTokensStakeInUsdAriaLabels(): Promise<(string | null)[]> {
+    const rows = await this.getRows();
+    return Promise.all(
+      rows.map((row) => row.getStakedTokenStakeInUsdAriaLabel())
+    );
+  }
+
+  async getStakedTokensStakeInNativeCurrencyAriaLabels(): Promise<
+    (string | null)[]
+  > {
+    const rows = await this.getRows();
+    return Promise.all(
+      rows.map((row) => row.getStakedTokenStakeInNativeCurrencyAriaLabel())
     );
   }
 
