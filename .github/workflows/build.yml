@@ -1,4 +1,6 @@
 name: Build and test
+permissions:
+  contents: read
 # We use `push` events so that we have the actual commit. In `pull_request`
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
@@ -174,6 +176,9 @@ jobs:
   test-rest:
     needs: build
     runs-on: ubuntu-24.04
+    permissions:
+      # The Release step creates and updates a GitHub release.
+      contents: write
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
@@ -466,6 +471,10 @@ jobs:
     name: "Upload assets"
     needs: build
     runs-on: ubuntu-24.04
+    permissions:
+      # The Release step creates a GitHub release. A later step pushes the
+      # refs/notes/mainnet/wasm-sha note.
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Get docker build outputs
