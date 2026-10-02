@@ -309,6 +309,10 @@ jobs:
         run: scripts/unused-i18n
       - name: Test the ID conversion script
         run: scripts/convert-id.test
+      - name: Test the transaction search script
+        run: scripts/find-transaction-from-timestamp.test
+      - name: Test the transaction listing script
+        run: scripts/get-transactions.test
       - name: Getting network config works
         run: scripts/network-config.test
       - name: Get SNS tool
