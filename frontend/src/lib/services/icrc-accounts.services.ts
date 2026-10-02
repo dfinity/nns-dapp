@@ -7,8 +7,8 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import { snsTokensByLedgerCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import {
+  getAnonymousIdentity,
   getAuthenticatedIdentity,
-  getCurrentIdentity,
 } from "$lib/services/auth.services";
 import {
   queryAndUpdate,
@@ -54,7 +54,9 @@ export const getIcrcTokenMetaData = async ({
   ledgerCanisterId: Principal;
 }): Promise<IcrcTokenMetadata> => {
   return queryIcrcToken({
-    identity: getCurrentIdentity(),
+    // The ledger canister ID is unverified user input, so the call must not
+    // carry the user principal. The token metadata is public data.
+    identity: getAnonymousIdentity(),
     canisterId: ledgerCanisterId,
     certified: false,
   });
