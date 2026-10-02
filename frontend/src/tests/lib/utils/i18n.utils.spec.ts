@@ -17,6 +17,15 @@ describe("i18n-utils", () => {
     expect(translate({ labelKey: "core.test.test" })).toEqual("core.test.test");
   });
 
+  it("should not resolve a key from the prototype chain", () => {
+    expect(translate({ labelKey: "constructor" })).toEqual("constructor");
+    expect(translate({ labelKey: "toString" })).toEqual("toString");
+    expect(translate({ labelKey: "core.constructor" })).toEqual(
+      "core.constructor"
+    );
+    expect(translate({ labelKey: "core.toString" })).toEqual("core.toString");
+  });
+
   describe("replacePlaceholders", () => {
     it("should replace single placeholder", () => {
       expect(replacePlaceholders("Hello this!", { this: "World" })).toBe(
