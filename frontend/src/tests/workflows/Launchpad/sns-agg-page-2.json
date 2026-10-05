@@ -38,14 +38,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 31473381681860,
-              "amount_e8s": 891738378249,
+              "amount_e8s": 391738398249,
               "account": {
                 "owner": "elxqo-raaaa-aaaaq-aacba-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788403946
+              "timestamp_seconds": 1790821343
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -63,15 +63,15 @@
               },
               "ledger_canister_id": "emww2-4yaaa-aaaaq-aacbq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788403946
+              "timestamp_seconds": 1790821343
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 66789064814324540,
-            "timestamp_seconds": 1788403946
+            "governance_total_potential_voting_power": 67670719859452242,
+            "timestamp_seconds": 1790821343
           },
-          "last_ledger_block_timestamp": 1788397148,
-          "num_recently_executed_proposals": 0,
+          "last_ledger_block_timestamp": 1790819639,
+          "num_recently_executed_proposals": 1,
           "num_recently_submitted_proposals": 1,
           "genesis_timestamp_seconds": 1702635311
         }
@@ -79,11 +79,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788344120,
-      "end_timestamp_seconds": 1788344111,
-      "total_available_e8s_equivalent": 450762845907513,
+      "actual_timestamp_seconds": 1790763313,
+      "end_timestamp_seconds": 1790763311,
+      "total_available_e8s_equivalent": 157766079939293,
       "distributed_e8s_equivalent": 0,
-      "round": 992,
+      "round": 1020,
       "settled_proposals": []
     },
     "parameters": {
@@ -1629,7 +1629,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104553860262212330,
+    "icrc1_total_supply": 104916408071961189,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3180,14 +3180,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 22452512222436,
-              "amount_e8s": 1212767050935,
+              "amount_e8s": 10231182116,
               "account": {
                 "owner": "eqsml-lyaaa-aaaaq-aacdq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788403904
+              "timestamp_seconds": 1790821343
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -3205,31 +3205,33 @@
               },
               "ledger_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788403904
+              "timestamp_seconds": 1790821343
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 55408986546246,
-            "timestamp_seconds": 1788403904
+            "governance_total_potential_voting_power": 55546142990714,
+            "timestamp_seconds": 1790821343
           },
-          "last_ledger_block_timestamp": 1788404937,
-          "num_recently_executed_proposals": 6,
-          "num_recently_submitted_proposals": 7,
+          "last_ledger_block_timestamp": 1790823872,
+          "num_recently_executed_proposals": 19,
+          "num_recently_submitted_proposals": 19,
           "genesis_timestamp_seconds": 1702903688
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788353291,
-      "end_timestamp_seconds": 1788353288,
-      "total_available_e8s_equivalent": 11052266879,
+      "actual_timestamp_seconds": 1790772493,
+      "end_timestamp_seconds": 1790772488,
+      "total_available_e8s_equivalent": 55261890834,
       "distributed_e8s_equivalent": 0,
-      "round": 989,
+      "round": 1017,
       "settled_proposals": []
     },
     "parameters": {
-      "reserved_ids": [88003],
+      "reserved_ids": [
+        6000, 6010, 6011, 6012, 6110, 6111, 6210, 6211, 6311, 88003, 88004
+      ],
       "functions": [
         {
           "id": 0,
@@ -3406,118 +3408,6 @@
           }
         },
         {
-          "id": 6000,
-          "name": "DeVeFi Add Vector Pair",
-          "description": "Add vector pair canister to DeFi Vectors",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "target_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "validator_method_name": "validate_add_pair",
-              "target_method_name": "add_pair"
-            }
-          }
-        },
-        {
-          "id": 6010,
-          "name": "DeVeFi:ICP/ckBTC:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6011,
-          "name": "DeVeFi:ICP/ckBTC:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6012,
-          "name": "DeVeFi:ICP/ckBTC:Withdraw Vector",
-          "description": "Withdraws tokens from a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_withdraw_vector",
-              "target_method_name": "withdraw_vector"
-            }
-          }
-        },
-        {
-          "id": 6110,
-          "name": "DeVeFi:ICP/DKP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6111,
-          "name": "DeVeFi:ICP/DKP:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6210,
-          "name": "DeVeFi:ICP/nICP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "target_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6211,
-          "name": "transfer ICS",
-          "description": "transfer ICS from Neutrinite",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
-              "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
-              "validator_method_name": "validate_icrc_transfer",
-              "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
           "id": 6212,
           "name": "manage WTN neuron",
           "description": "Manage NTN neuron owned by Neutrinite",
@@ -3542,20 +3432,6 @@
               "target_canister_id": "oypg6-faaaa-aaaaq-aadza-cai",
               "validator_method_name": "validate_manage_neuron",
               "target_method_name": "manage_neuron"
-            }
-          }
-        },
-        {
-          "id": 6311,
-          "name": "DeVeFi:ICP/ckUSDT:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "target_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
             }
           }
         },
@@ -3612,20 +3488,6 @@
               "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
               "validator_method_name": "validate_icrc1_transfer",
               "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
-          "id": 88004,
-          "name": "Transfer position on ICP Swap",
-          "description": null,
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": "Governance",
-              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
-              "target_canister_id": "kv5pw-kyaaa-aaaag-qcyya-cai",
-              "validator_method_name": "validate_icpswap_transfer_position",
-              "target_method_name": "transferPosition"
             }
           }
         },
@@ -4113,7 +3975,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100920890236243,
+    "icrc1_total_supply": 100922012294309,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4501,118 +4363,6 @@
     "topics": {
       "uncategorized_functions": [
         {
-          "id": 6000,
-          "name": "DeVeFi Add Vector Pair",
-          "description": "Add vector pair canister to DeFi Vectors",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "target_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "validator_method_name": "validate_add_pair",
-              "target_method_name": "add_pair"
-            }
-          }
-        },
-        {
-          "id": 6010,
-          "name": "DeVeFi:ICP/ckBTC:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6011,
-          "name": "DeVeFi:ICP/ckBTC:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6012,
-          "name": "DeVeFi:ICP/ckBTC:Withdraw Vector",
-          "description": "Withdraws tokens from a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_withdraw_vector",
-              "target_method_name": "withdraw_vector"
-            }
-          }
-        },
-        {
-          "id": 6110,
-          "name": "DeVeFi:ICP/DKP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6111,
-          "name": "DeVeFi:ICP/DKP:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6210,
-          "name": "DeVeFi:ICP/nICP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "target_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6211,
-          "name": "transfer ICS",
-          "description": "transfer ICS from Neutrinite",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
-              "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
-              "validator_method_name": "validate_icrc_transfer",
-              "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
           "id": 6212,
           "name": "manage WTN neuron",
           "description": "Manage NTN neuron owned by Neutrinite",
@@ -4623,20 +4373,6 @@
               "target_canister_id": "jfnic-kaaaa-aaaaq-aadla-cai",
               "validator_method_name": "validate_manage_neuron",
               "target_method_name": "manage_neuron"
-            }
-          }
-        },
-        {
-          "id": 6311,
-          "name": "DeVeFi:ICP/ckUSDT:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "target_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
             }
           }
         }
@@ -4790,22 +4526,7 @@
           "is_critical": false,
           "name": "Governance",
           "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
-          "custom_functions": [
-            {
-              "id": 88004,
-              "name": "Transfer position on ICP Swap",
-              "description": null,
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "Governance",
-                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
-                  "target_canister_id": "kv5pw-kyaaa-aaaag-qcyya-cai",
-                  "validator_method_name": "validate_icpswap_transfer_position",
-                  "target_method_name": "transferPosition"
-                }
-              }
-            }
-          ]
+          "custom_functions": []
         },
         {
           "extension_operations": [],
@@ -5016,19 +4737,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 3000000000000,
-              "amount_e8s": 746385056319,
+              "amount_e8s": 743513557910,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788403750
+              "timestamp_seconds": 1790821102
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 164794266255,
+              "amount_e8s": 164978715339,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": {
@@ -5041,16 +4762,16 @@
               },
               "ledger_canister_id": "hvgxa-wqaaa-aaaaq-aacia-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788403750
+              "timestamp_seconds": 1790821102
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 839315565290,
-            "timestamp_seconds": 1788403750
+            "governance_total_potential_voting_power": 827028861406,
+            "timestamp_seconds": 1790821102
           },
-          "last_ledger_block_timestamp": 1788404945,
-          "num_recently_executed_proposals": 50,
-          "num_recently_submitted_proposals": 50,
+          "last_ledger_block_timestamp": 1790823950,
+          "num_recently_executed_proposals": 13,
+          "num_recently_submitted_proposals": 15,
           "genesis_timestamp_seconds": 1705799268
         }
       }
@@ -5931,7 +5652,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 993401230221,
+    "icrc1_total_supply": 993201222891,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6639,7 +6360,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788403171
+              "timestamp_seconds": 1790820542
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -6657,27 +6378,27 @@
               },
               "ledger_canister_id": "hhaaz-2aaaa-aaaaq-aacla-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788403171
+              "timestamp_seconds": 1790820542
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 12051409972462699,
-            "timestamp_seconds": 1788403171
+            "governance_total_potential_voting_power": 12031145927370275,
+            "timestamp_seconds": 1790820542
           },
-          "last_ledger_block_timestamp": 1788375812,
-          "num_recently_executed_proposals": 11,
-          "num_recently_submitted_proposals": 13,
+          "last_ledger_block_timestamp": 1790800697,
+          "num_recently_executed_proposals": 5,
+          "num_recently_submitted_proposals": 7,
           "genesis_timestamp_seconds": 1708958305
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788359912,
-      "end_timestamp_seconds": 1788359905,
-      "total_available_e8s_equivalent": 9188169309900,
+      "actual_timestamp_seconds": 1790779114,
+      "end_timestamp_seconds": 1790779105,
+      "total_available_e8s_equivalent": 20431645612688,
       "distributed_e8s_equivalent": 0,
-      "round": 919,
+      "round": 947,
       "settled_proposals": []
     },
     "parameters": {
@@ -9699,7 +9420,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 18315965926830615,
+    "icrc1_total_supply": 18316004977723631,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12729,7 +12450,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788408451
+              "timestamp_seconds": 1790821942
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -12747,14 +12468,14 @@
               },
               "ledger_canister_id": "gemj7-oyaaa-aaaaq-aacnq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788408451
+              "timestamp_seconds": 1790821942
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 59617524865257600,
-            "timestamp_seconds": 1788408451
+            "governance_total_potential_voting_power": 59635586506935243,
+            "timestamp_seconds": 1790821942
           },
-          "last_ledger_block_timestamp": 1788376621,
+          "last_ledger_block_timestamp": 1790796086,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1709209147
@@ -12763,11 +12484,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788351552,
-      "end_timestamp_seconds": 1788351547,
-      "total_available_e8s_equivalent": 140114423212347,
+      "actual_timestamp_seconds": 1790770753,
+      "end_timestamp_seconds": 1790770747,
+      "total_available_e8s_equivalent": 186647089137171,
       "distributed_e8s_equivalent": 0,
-      "round": 916,
+      "round": 944,
       "settled_proposals": []
     },
     "parameters": {
@@ -13438,7 +13159,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 26274332110605812,
+    "icrc1_total_supply": 26274573360537217,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -14108,7 +13829,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788409418
+              "timestamp_seconds": 1790822984
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -14126,14 +13847,14 @@
               },
               "ledger_canister_id": "ddsp7-7iaaa-aaaaq-aacqq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788409418
+              "timestamp_seconds": 1790822984
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 8622145392626187,
-            "timestamp_seconds": 1788409418
+            "governance_total_potential_voting_power": 8603151603923323,
+            "timestamp_seconds": 1790822984
           },
-          "last_ledger_block_timestamp": 1788365422,
+          "last_ledger_block_timestamp": 1790800744,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1710522988
@@ -14142,11 +13863,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788369398,
-      "end_timestamp_seconds": 1788369388,
-      "total_available_e8s_equivalent": 83423519661386,
+      "actual_timestamp_seconds": 1790788594,
+      "end_timestamp_seconds": 1790788588,
+      "total_available_e8s_equivalent": 91158924288200,
       "distributed_e8s_equivalent": 0,
-      "round": 901,
+      "round": 929,
       "settled_proposals": []
     },
     "parameters": {
@@ -15167,7 +14888,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10090529504315506,
+    "icrc1_total_supply": 10090568098937392,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -16191,7 +15912,7 @@
     "meta": {
       "url": "https://panda.fans",
       "name": "ICPanda",
-      "description": "An on-chain Builder DAO creating open infrastructure for digital sovereignty. Sovereign Minds: https://anda.ai | Sovereign Markets: https://tokenlist.ing",
+      "description": "An on-chain Builder DAO for digital sovereignty. Minds: https://anda.ai | Markets: https://tokenlist.ing | Personal control: https://dmsg.net",
       "logo": "/v1/sns/root/d7wvo-iiaaa-aaaaq-aacsq-cai/logo.png"
     },
     "metrics": {
@@ -16208,7 +15929,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788409647
+              "timestamp_seconds": 1790823563
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -16226,30 +15947,30 @@
               },
               "ledger_canister_id": "druyg-tyaaa-aaaaq-aactq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788409647
+              "timestamp_seconds": 1790823563
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 115905016226423416,
-            "timestamp_seconds": 1788409647
+            "governance_total_potential_voting_power": 117740358516782349,
+            "timestamp_seconds": 1790823563
           },
-          "last_ledger_block_timestamp": 1788411028,
-          "num_recently_executed_proposals": 17,
-          "num_recently_submitted_proposals": 17,
+          "last_ledger_block_timestamp": 1790819704,
+          "num_recently_executed_proposals": 33,
+          "num_recently_submitted_proposals": 33,
           "genesis_timestamp_seconds": 1710783210
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788370420,
-      "end_timestamp_seconds": 1788370410,
-      "total_available_e8s_equivalent": 11731426633319,
-      "distributed_e8s_equivalent": 11731426633137,
-      "round": 898,
+      "actual_timestamp_seconds": 1790789613,
+      "end_timestamp_seconds": 1790789610,
+      "total_available_e8s_equivalent": 59352405542142,
+      "distributed_e8s_equivalent": 59352405541964,
+      "round": 926,
       "settled_proposals": [
         {
-          "id": 494
+          "id": 514
         }
       ]
     },
@@ -16879,6 +16600,104 @@
           }
         },
         {
+          "id": 1311,
+          "name": "Initialize bridge public keys and metadata",
+          "description": "Fetch missing threshold public keys and retry bridge metadata verification.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_init_public_keys",
+              "target_method_name": "admin_init_public_keys"
+            }
+          }
+        },
+        {
+          "id": 1312,
+          "name": "Set bridge request and cycle limits",
+          "description": "Configure bounded public request quotas, pending capacity and the cycle reserve.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_set_resource_limits",
+              "target_method_name": "admin_set_resource_limits"
+            }
+          }
+        },
+        {
+          "id": 1313,
+          "name": "Set bridge EVM gas fee limits",
+          "description": "Configure per-chain gas price, priority fee, transaction cost and hourly cost limits.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_set_evm_fee_limits",
+              "target_method_name": "admin_set_evm_fee_limits"
+            }
+          }
+        },
+        {
+          "id": 1314,
+          "name": "Reconcile a bridge payment operation",
+          "description": "Reconcile a durable payment operation using its exact revision and external evidence.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_resolve_operation",
+              "target_method_name": "admin_resolve_operation"
+            }
+          }
+        },
+        {
+          "id": 1315,
+          "name": "Reconcile a legacy bridge payout",
+          "description": "Record an externally verified outcome for a legacy payout without a complete payment journal.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_resolve_legacy_payout",
+              "target_method_name": "admin_resolve_legacy_payout"
+            }
+          }
+        },
+        {
+          "id": 1317,
+          "name": "Recheck a pending bridge task",
+          "description": "Resume status checks for a pending task while preserving its recorded payment intent.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_recheck_task",
+              "target_method_name": "admin_recheck_task"
+            }
+          }
+        },
+        {
+          "id": 1318,
+          "name": "Set public browser RPC endpoints for the bridge",
+          "description": "Publish anonymous browser RPC endpoints separately from the internal financial-evidence providers.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_set_public_providers",
+              "target_method_name": "admin_set_public_providers"
+            }
+          }
+        },
+        {
           "id": 2000,
           "name": "`transferPosition` function",
           "description": "It is used to transfer position in ICPSwap.",
@@ -17214,7 +17033,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 107173108830704922,
+    "icrc1_total_supply": 108393519591110350,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -18020,6 +17839,104 @@
               }
             },
             {
+              "id": 1311,
+              "name": "Initialize bridge public keys and metadata",
+              "description": "Fetch missing threshold public keys and retry bridge metadata verification.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_init_public_keys",
+                  "target_method_name": "admin_init_public_keys"
+                }
+              }
+            },
+            {
+              "id": 1312,
+              "name": "Set bridge request and cycle limits",
+              "description": "Configure bounded public request quotas, pending capacity and the cycle reserve.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_set_resource_limits",
+                  "target_method_name": "admin_set_resource_limits"
+                }
+              }
+            },
+            {
+              "id": 1313,
+              "name": "Set bridge EVM gas fee limits",
+              "description": "Configure per-chain gas price, priority fee, transaction cost and hourly cost limits.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_set_evm_fee_limits",
+                  "target_method_name": "admin_set_evm_fee_limits"
+                }
+              }
+            },
+            {
+              "id": 1314,
+              "name": "Reconcile a bridge payment operation",
+              "description": "Reconcile a durable payment operation using its exact revision and external evidence.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_resolve_operation",
+                  "target_method_name": "admin_resolve_operation"
+                }
+              }
+            },
+            {
+              "id": 1315,
+              "name": "Reconcile a legacy bridge payout",
+              "description": "Record an externally verified outcome for a legacy payout without a complete payment journal.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_resolve_legacy_payout",
+                  "target_method_name": "admin_resolve_legacy_payout"
+                }
+              }
+            },
+            {
+              "id": 1317,
+              "name": "Recheck a pending bridge task",
+              "description": "Resume status checks for a pending task while preserving its recorded payment intent.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_recheck_task",
+                  "target_method_name": "admin_recheck_task"
+                }
+              }
+            },
+            {
+              "id": 1318,
+              "name": "Set public browser RPC endpoints for the bridge",
+              "description": "Publish anonymous browser RPC endpoints separately from the internal financial-evidence providers.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_set_public_providers",
+                  "target_method_name": "admin_set_public_providers"
+                }
+              }
+            },
+            {
               "id": 2000,
               "name": "`transferPosition` function",
               "description": "It is used to transfer position in ICPSwap.",
@@ -18189,7 +18106,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788409267
+              "timestamp_seconds": 1790823003
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -18207,35 +18124,28 @@
               },
               "ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788409267
+              "timestamp_seconds": 1790823003
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 55550960913677639,
-            "timestamp_seconds": 1788409267
+            "governance_total_potential_voting_power": 55633983645677481,
+            "timestamp_seconds": 1790823003
           },
-          "last_ledger_block_timestamp": 1788409716,
-          "num_recently_executed_proposals": 4,
-          "num_recently_submitted_proposals": 5,
+          "last_ledger_block_timestamp": 1790822503,
+          "num_recently_executed_proposals": 8,
+          "num_recently_submitted_proposals": 8,
           "genesis_timestamp_seconds": 1711034480
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788362487,
-      "end_timestamp_seconds": 1788362480,
-      "total_available_e8s_equivalent": 20047084076115,
-      "distributed_e8s_equivalent": 20047084075476,
-      "round": 895,
-      "settled_proposals": [
-        {
-          "id": 920
-        },
-        {
-          "id": 921
-        }
-      ]
+      "actual_timestamp_seconds": 1790781683,
+      "end_timestamp_seconds": 1790781680,
+      "total_available_e8s_equivalent": 12024485604417,
+      "distributed_e8s_equivalent": 0,
+      "round": 923,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -19339,7 +19249,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 97632380143097960,
+    "icrc1_total_supply": 97600579061810334,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20456,7 +20366,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788410776
+              "timestamp_seconds": 1790820972
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -20474,14 +20384,14 @@
               },
               "ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788410776
+              "timestamp_seconds": 1790820972
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 35015138063520000,
-            "timestamp_seconds": 1788410776
+            "governance_total_potential_voting_power": 35079152894314772,
+            "timestamp_seconds": 1790820972
           },
-          "last_ledger_block_timestamp": 1788376603,
+          "last_ledger_block_timestamp": 1790185186,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1711451121
@@ -20490,11 +20400,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788347126,
-      "end_timestamp_seconds": 1788347121,
-      "total_available_e8s_equivalent": 104897234430096,
+      "actual_timestamp_seconds": 1790766322,
+      "end_timestamp_seconds": 1790766321,
+      "total_available_e8s_equivalent": 112152048026850,
       "distributed_e8s_equivalent": 0,
-      "round": 890,
+      "round": 918,
       "settled_proposals": []
     },
     "parameters": {
@@ -21210,7 +21120,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 94636450859184177,
+    "icrc1_total_supply": 94636452471751475,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -21928,14 +21838,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 13508027072751,
-              "amount_e8s": 477921142750,
+              "amount_e8s": 121142750,
               "account": {
                 "owner": "bmjwo-aqaaa-aaaaq-aac4a-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1788408336
+              "timestamp_seconds": 1790822043
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -21953,27 +21863,27 @@
               },
               "ledger_canister_id": "bliq2-niaaa-aaaaq-aac4q-cai",
               "treasury": 2,
-              "timestamp_seconds": 1788408336
+              "timestamp_seconds": 1790822043
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 73259699861346049,
-            "timestamp_seconds": 1788408336
+            "governance_total_potential_voting_power": 84328137077895408,
+            "timestamp_seconds": 1790822043
           },
-          "last_ledger_block_timestamp": 1788379023,
+          "last_ledger_block_timestamp": 1790819435,
           "num_recently_executed_proposals": 2,
-          "num_recently_submitted_proposals": 1,
+          "num_recently_submitted_proposals": 3,
           "genesis_timestamp_seconds": 1712478412
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1788337623,
-      "end_timestamp_seconds": 1788337612,
-      "total_available_e8s_equivalent": 350162116148787,
+      "actual_timestamp_seconds": 1790756823,
+      "end_timestamp_seconds": 1790756812,
+      "total_available_e8s_equivalent": 145435285899444,
       "distributed_e8s_equivalent": 0,
-      "round": 878,
+      "round": 906,
       "settled_proposals": []
     },
     "parameters": {
@@ -22709,7 +22619,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101508486392886515,
+    "icrc1_total_supply": 104525720690412149,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

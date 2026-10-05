@@ -1,4 +1,7 @@
-import { ExtendedLedgerError } from "$lib/constants/ledger.constants";
+import {
+  ExtendedLedgerError,
+  LedgerError,
+} from "$lib/constants/ledger.constants";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { decodePublicKey, decodeSignature } from "$lib/utils/ledger.utils";
 import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
@@ -8,11 +11,7 @@ import {
   fromHexString,
   rawPublicKeyHex,
 } from "$tests/mocks/ledger.identity.mock";
-import {
-  LedgerError,
-  type ResponseAddress,
-  type ResponseSign,
-} from "@zondax/ledger-icp";
+import type { ResponseAddress, ResponseSign } from "@zondax/ledger-icp";
 
 describe("ledger-utils", () => {
   describe("decodePublicKey", () => {
@@ -53,6 +52,32 @@ describe("ledger-utils", () => {
           publicKey: fromHexString(rawPublicKeyHex) as unknown as Buffer,
           returnCode:
             ExtendedLedgerError.CannotFetchPublicKey as unknown as LedgerError,
+        } as ResponseAddress);
+
+      await expect(call).rejects.toMatchObject({
+        message: "error__ledger.fetch_public_key",
+        renderAsHtml: false,
+      });
+    });
+
+    it("should throw an error because the public key is missing", async () => {
+      const call = () =>
+        decodePublicKey({
+          principalText,
+          returnCode: LedgerError.NoErrors,
+        } as ResponseAddress);
+
+      await expect(call).rejects.toMatchObject({
+        message: "error__ledger.fetch_public_key",
+        renderAsHtml: false,
+      });
+    });
+
+    it("should throw an error because the principal text is missing", async () => {
+      const call = () =>
+        decodePublicKey({
+          publicKey: fromHexString(rawPublicKeyHex) as unknown as Buffer,
+          returnCode: LedgerError.NoErrors,
         } as ResponseAddress);
 
       await expect(call).rejects.toMatchObject({

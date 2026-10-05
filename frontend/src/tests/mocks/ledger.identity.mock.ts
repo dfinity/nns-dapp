@@ -3,7 +3,7 @@ import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { hexStringToUint8Array } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
-import type { ResponseVersion } from "@zondax/ledger-icp";
+import type { ResponseVersion } from "@zondax/ledger-js";
 
 export const fromHexString = (hexString: string): Uint8Array => {
   return hexStringToUint8Array(hexString);

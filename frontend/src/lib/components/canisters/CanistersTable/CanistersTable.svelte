@@ -10,6 +10,7 @@
 
   export let rowData: Array<CanistersTableRowData>;
   export let testId = "canisters-table-component";
+  export let loading = false;
 
   let columns: CanistersTableColumn[];
   $: columns = [
@@ -29,4 +30,4 @@
   ];
 </script>
 
-<ResponsiveTable {testId} tableData={rowData} {columns} />
+<ResponsiveTable {testId} tableData={rowData} {columns} {loading} />
