@@ -338,6 +338,49 @@ describe("icp-swap.provider", () => {
     expect(result["token-canister-id"]).toBe(0.02);
   });
 
+  it("should select the first ticker in the feed when the liquidity and the volume are equal", async () => {
+    const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
+    const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
+
+    const ckusdcTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: ckusdcLedgerCanisterId,
+      target_id: icpLedgerCanisterId,
+      last_price: "0.04",
+      liquidity_in_usd: "617000",
+      volume_usd_24H: "1000",
+    };
+
+    const firstTokenTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: "token-canister-id",
+      target_id: icpLedgerCanisterId,
+      last_price: "2",
+      liquidity_in_usd: "1000",
+      volume_usd_24H: "5",
+    };
+
+    const secondTokenTicker: IcpSwapTicker = {
+      ...mockIcpSwapTicker,
+      base_id: "token-canister-id",
+      target_id: icpLedgerCanisterId,
+      last_price: "4",
+      liquidity_in_usd: "1000",
+      volume_usd_24H: "5",
+    };
+
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([
+      ckusdcTicker,
+      firstTokenTicker,
+      secondTokenTicker,
+    ]);
+
+    const result = await icpSwapTickerProvider();
+
+    // The price comes from the first pool in the feed: 0.04 / 2 = 0.02
+    expect(result["token-canister-id"]).toBe(0.02);
+  });
+
   it("should count a missing or non-numeric liquidity as zero", async () => {
     const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
     const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
