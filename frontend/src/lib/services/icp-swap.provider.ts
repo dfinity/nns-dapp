@@ -23,6 +23,8 @@ const hasUsablePrice = ({ last_price }: IcpSwapTicker): boolean => {
 // Keep the pool with the most liquidity, because an attacker must lock more
 // value than the real pool to be selected. A tie goes to the higher 24h
 // volume, then to the first pool in the feed.
+// The 24h volume does not filter the pools. One small trade sets it, so it
+// costs an attacker nothing, and most real pools have no trade on a given day.
 // The caller must pass at least one ticker. reduce with no initial value
 // throws on an empty array.
 const selectMostLiquidTicker = (tickers: IcpSwapTicker[]): IcpSwapTicker =>
