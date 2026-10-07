@@ -26,6 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
+  `aria-label` attributes, so a screen reader announced them.
 
 - Read the SNS swap participant count only from the certified swap canister
   state. Before, a swap without that field read the count from the unverified
