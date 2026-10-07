@@ -96,14 +96,16 @@ type GetAccountTransactionsParams = TimerWorkerUtilsSyncParams &
  * @param object.state
  */
 export const hasNewIcrcTransactions = ({
-  result: { mostRecentTxId },
+  result: { mostRecentTxId, backlog },
   state,
 }: {
   result: GetAccountsTransactionsResults;
   state: TransactionsData | undefined;
 }): boolean =>
-  // A sync that continued a backlog fetched older transactions and keeps the same most recent id.
-  mostRecentTxId !== state?.mostRecentTxId || nonNullish(state?.backlog);
+  // A sync that starts or continues a backlog can keep the same most recent id.
+  mostRecentTxId !== state?.mostRecentTxId ||
+  nonNullish(backlog) ||
+  nonNullish(state?.backlog);
 
 /**
  * Return the `start` of the next call to the index canister, or `undefined` if the pagination is complete.

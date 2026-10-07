@@ -617,6 +617,19 @@ describe("transactions.worker-services", () => {
       ).toBe(false);
     });
 
+    it("should report new transactions when the result starts a backlog and the most recent id is unchanged", () => {
+      expect(
+        hasNewIcrcTransactions({
+          result: {
+            transactions: [],
+            mostRecentTxId: 250n,
+            backlog: { start: 50n, stopTxId: 1n },
+          },
+          state: { mostRecentTxId: 250n, transactions: [] } as never,
+        })
+      ).toBe(true);
+    });
+
     it("should drop the backlog when a backlog page makes no progress", async () => {
       // The index canister ignores "start" and answers the same page every time.
       const ids = idsFrom(120n, 101n);
