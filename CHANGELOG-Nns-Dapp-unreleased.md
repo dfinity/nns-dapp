@@ -24,6 +24,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+- The "Hide Balance" option now also masks the balances in the accessible names
+  on the Portfolio page. Before, the cards kept the exact amounts in their
+  `aria-label` attributes, so a screen reader announced them.
 - Use the most liquid ICPSwap pool that has a price for a token, so a new pool
   with one tiny trade cannot change the USD values shown.
 
