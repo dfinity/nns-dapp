@@ -99,7 +99,7 @@
     const { selected } = $selectedSnsNeuronStore;
     if (selected !== undefined && $pageStore.path === AppPath.Neuron) {
       const mutableSnsNeuronStore =
-        selectedSnsNeuronStore.getSingleMutationStore();
+        selectedSnsNeuronStore.getSingleMutationStore(strategy);
       await getSnsNeuron({
         forceFetch,
         strategy,
