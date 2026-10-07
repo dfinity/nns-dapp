@@ -191,4 +191,22 @@ describe("AmountInputFiatValue", () => {
 
     expect(await updatedPo.getFiatValue()).toBe("$-/-");
   });
+
+  it("should update the USD value when the token prop changes", async () => {
+    setIcpPrice(10);
+    const { container, rerender } = render(AmountInputFiatValue, {
+      props: { amount: 5, token: ICPToken },
+    });
+    const po = AmountInputFiatValuePo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.getFiatValue()).toBe("$50.00");
+
+    await rerender({
+      token: { symbol: "UNKNOWN", name: "Unknown", decimals: 8 },
+    });
+
+    expect(await po.getFiatValue()).toBe("$-/-");
+  });
 });
