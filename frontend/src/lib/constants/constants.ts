@@ -5,9 +5,8 @@ export const MAX_ACTIONABLE_REQUEST_COUNT = 10;
 export const DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT = 20;
 // The worker does not trust the Index canister to end the pagination.
 // It stops after this number of pages in one sync of one account.
-// Trade-off: an account with more than DEFAULT_INDEX_TRANSACTION_MAX_PAGES *
-// DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT new transactions in one sync interval
-// shows a gap until the user reloads the page.
+// The worker keeps the remaining pages as a backlog and fetches them in the
+// next syncs, at most this number of pages in each sync.
 export const DEFAULT_INDEX_TRANSACTION_MAX_PAGES = 10;
 
 export const DEFAULT_TOAST_DURATION_MILLIS = 4000;

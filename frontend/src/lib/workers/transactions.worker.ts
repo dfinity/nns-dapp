@@ -5,7 +5,10 @@ import type {
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
-import { getIcrcAccountsTransactions } from "$lib/worker-services/icrc-transactions.worker-services";
+import {
+  getIcrcAccountsTransactions,
+  hasNewIcrcTransactions,
+} from "$lib/worker-services/icrc-transactions.worker-services";
 import { DictionaryWorkerStore } from "$lib/worker-stores/dictionary.worker-store";
 import type { TransactionsData } from "$lib/worker-types/transactions.worker-types";
 import {
@@ -49,9 +52,11 @@ const syncTransactions = async (
       state: store.state,
     });
 
-    const newTransactions = results.filter(
-      ({ accountIdentifier, mostRecentTxId }) =>
-        mostRecentTxId !== store.state[accountIdentifier]?.mostRecentTxId
+    const newTransactions = results.filter((result) =>
+      hasNewIcrcTransactions({
+        result,
+        state: store.state[result.accountIdentifier],
+      })
     );
 
     if (newTransactions.length === 0) {
@@ -69,7 +74,7 @@ const syncTransactions = async (
     );
 
     emitTransactions(
-      newTransactions.map(({ transactions, ...rest }) => ({
+      newTransactions.map(({ transactions, backlog: _, ...rest }) => ({
         transactions: JSON.stringify(transactions, jsonReplacer),
         ...rest,
       }))

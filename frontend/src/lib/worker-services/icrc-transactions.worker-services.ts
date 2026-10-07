@@ -26,7 +26,8 @@ export type GetAccountsTransactionsResults = Omit<
   PostMessageDataResponseTransaction,
   "transactions"
 > &
-  Pick<GetTransactionsResponse, "transactions">;
+  Pick<GetTransactionsResponse, "transactions"> &
+  Pick<TransactionsData, "backlog">;
 
 /**
  * Collect the ICRC transactions for a list of accounts.
@@ -87,92 +88,137 @@ type GetAccountTransactionsParams = TimerWorkerUtilsSyncParams &
     state: TransactionsData | undefined;
   };
 
-const getIcrcAccountTransactions = async ({
-  identity,
-  indexCanisterId,
-  accountIdentifier,
-  start,
-  fetchRootKey,
-  host,
+/**
+ * Tell if a result of `getIcrcAccountsTransactions` holds data that the worker must store and emit.
+ *
+ * @param object
+ * @param object.result
+ * @param object.state
+ */
+export const hasNewIcrcTransactions = ({
+  result: { mostRecentTxId },
   state,
+}: {
+  result: GetAccountsTransactionsResults;
+  state: TransactionsData | undefined;
+}): boolean =>
+  // A sync that continued a backlog fetched older transactions and keeps the same most recent id.
+  mostRecentTxId !== state?.mostRecentTxId || nonNullish(state?.backlog);
+
+/**
+ * Return the `start` of the next call to the index canister, or `undefined` if the pagination is complete.
+ *
+ * @param object
+ * @param object.page
+ * @param object.start
+ * @param object.stopTxId
+ */
+const nextPageStart = ({
+  page,
+  start,
+  stopTxId,
+}: {
+  page: IcrcIndexDid.TransactionWithId[];
+  start: bigint | undefined;
+  stopTxId: bigint | undefined;
+}): bigint | undefined => {
+  // We compare IDs because we want to find the oldest transaction ID to notice if we have fetched all new transactions or if there is a remaining gap.
+  //
+  // For example:
+  // New transactions [100, 99, 98]
+  // Most recent transaction ID 95
+  // Therefore, we still need to get between 95 and 98
+  //
+  // Note that we do not compare based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
+  //
+  // We compare the bigint IDs directly, with no Number(...) conversion. A hostile index canister
+  // can answer an ID above Number.MAX_SAFE_INTEGER, and a conversion of that ID to a number loses
+  // precision, which can pick the wrong oldest ID and defeat the progress and cap checks.
+  const oldestTxId: IcrcIndexDid.BlockIndex | undefined = page.reduce<
+    IcrcIndexDid.BlockIndex | undefined
+  >(
+    (oldest, { id }) => (isNullish(oldest) || id < oldest ? id : oldest),
+    undefined
+  );
+
+  // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions
+  if (isNullish(stopTxId) || isNullish(oldestTxId) || oldestTxId <= stopTxId) {
+    return undefined;
+  }
+
+  // The Index canister can answer a page that does not move the oldest ID
+  // down. Such a page makes no progress, so the pagination stops with it.
+  if (nonNullish(start) && oldestTxId >= start) {
+    return undefined;
+  }
+
+  // Two transactions can have the same Id - e.g. a transaction from/to same account.
+  // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
+  // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
+  return oldestTxId;
+};
+
+const getIcrcAccountTransactions = async ({
+  state,
+  ...params
 }: GetAccountTransactionsParams): Promise<GetAccountsTransactionsResults> => {
+  // A backlog from an earlier sync goes first. The newest transactions wait
+  // until a sync completes the backlog.
+  const backlog = state?.backlog;
+  const stopTxId = backlog?.stopTxId ?? state?.mostRecentTxId;
+
+  let currentStart: bigint | undefined = backlog?.start;
+
   const { transactions: firstPage, ...rest } = await getIcrcTransactions({
-    identity,
-    indexCanisterId,
-    accountIdentifier,
-    start,
-    fetchRootKey,
-    host,
+    ...params,
+    start: currentStart,
     state,
   });
 
   // Collect the pages and flatten them once at the end.
   const pages: IcrcIndexDid.TransactionWithId[][] = [firstPage];
 
-  let currentStart: bigint | undefined = start;
-  let currentPage: IcrcIndexDid.TransactionWithId[] = firstPage;
+  let nextStart = nextPageStart({
+    page: firstPage,
+    start: currentStart,
+    stopTxId,
+  });
 
   // The Index canister is not trusted, therefore the loop stops after
   // DEFAULT_INDEX_TRANSACTION_MAX_PAGES pages whatever the canister answers.
-  while (pages.length < DEFAULT_INDEX_TRANSACTION_MAX_PAGES) {
-    // We compare IDs because we want to find the oldest transaction ID to notice if we have fetched all new transactions or if there is a remaining gap.
-    //
-    // For example:
-    // New transactions [100, 99, 98]
-    // Most recent transaction ID 95
-    // Therefore, we still need to get between 95 and 98
-    //
-    // Note that we do not compare based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
-    //
-    // We compare the bigint IDs directly, with no Number(...) conversion. A hostile index canister
-    // can answer an ID above Number.MAX_SAFE_INTEGER, and a conversion of that ID to a number loses
-    // precision, which can pick the wrong oldest ID and defeat the progress and cap checks below.
-    const oldestTxId: IcrcIndexDid.BlockIndex | undefined = currentPage.reduce<
-      IcrcIndexDid.BlockIndex | undefined
-    >(
-      (oldest, { id }) => (isNullish(oldest) || id < oldest ? id : oldest),
-      undefined
-    );
-
-    const stateMostRecentTxId = state?.mostRecentTxId;
-
-    // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions
-    if (
-      isNullish(stateMostRecentTxId) ||
-      isNullish(oldestTxId) ||
-      oldestTxId <= stateMostRecentTxId
-    ) {
-      break;
-    }
-
-    // The Index canister can answer a page that does not move the oldest ID
-    // down. Such a page makes no progress, so the loop stops with it.
-    if (nonNullish(currentStart) && oldestTxId >= currentStart) {
-      break;
-    }
-
-    // Two transactions can have the same Id - e.g. a transaction from/to same account.
-    // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
-    // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
-    currentStart = oldestTxId;
+  // The remaining pages become the backlog of the next sync.
+  while (
+    nonNullish(nextStart) &&
+    pages.length < DEFAULT_INDEX_TRANSACTION_MAX_PAGES
+  ) {
+    currentStart = nextStart;
 
     const { transactions } = await getIcrcTransactions({
-      identity,
-      indexCanisterId,
-      accountIdentifier,
+      ...params,
       start: currentStart,
-      fetchRootKey,
-      host,
       state,
     });
 
     pages.push(transactions);
-    currentPage = transactions;
+
+    nextStart = nextPageStart({
+      page: transactions,
+      start: currentStart,
+      stopTxId,
+    });
   }
 
   return {
     ...rest,
+    // A backlog page is older than the most recent transaction id of the state.
+    mostRecentTxId: nonNullish(backlog)
+      ? state?.mostRecentTxId
+      : rest.mostRecentTxId,
     transactions: pages.flat(),
+    backlog:
+      nonNullish(nextStart) && nonNullish(stopTxId)
+        ? { start: nextStart, stopTxId }
+        : undefined,
   };
 };
 

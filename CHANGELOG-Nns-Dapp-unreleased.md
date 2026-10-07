@@ -29,7 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
   `aria-label` attributes, so a screen reader announced them.
 - The transactions sync now stops after a fixed number of pages, and it stops
   when a page makes no progress. A hostile index canister can no longer make the
-  sync run without an end.
+  sync run without an end. The next syncs fetch the remaining pages.
 
 #### Not Published
 
