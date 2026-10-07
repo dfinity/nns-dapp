@@ -25,6 +25,10 @@ import { isLastCall } from "$lib/utils/env.utils";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
+// Identifies the newest load. A response from an older load is ignored, so a
+// late update call cannot overwrite the store with an older address book.
+let latestLoadId = 0;
+
 /**
  * Load address book from the `nns-dapp` backend and update the `addressBookStore` store.
  * - Displays an error toast if the operation fails. `silentErrorMessages`
@@ -47,10 +51,16 @@ export const loadAddressBook = async ({
   silentErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 } = {}) => {
+  const loadId = ++latestLoadId;
+  const isStale = () => loadId !== latestLoadId;
+
   return queryAndUpdate<AddressBook, unknown>({
     request: getAddressBook,
     strategy,
     onLoad: ({ response: { named_addresses: namedAddresses }, certified }) => {
+      if (isStale()) {
+        return;
+      }
       addressBookStore.set({
         namedAddresses,
         certified,
@@ -58,6 +68,10 @@ export const loadAddressBook = async ({
     },
     onError: ({ error: err, certified, strategy }) => {
       console.error(err);
+
+      if (isStale()) {
+        return;
+      }
 
       if (ignoreAccountNotFoundError && err instanceof AccountNotFoundError) {
         // When you log in with a new account for the first time, the account is created in the NNS dapp.
