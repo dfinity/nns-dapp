@@ -36,6 +36,10 @@ import { isNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
+// Identifies the newest load. A response of an older load is ignored, so it
+// cannot replace newer store state.
+let latestLoadId = 0;
+
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.
  * - Displays an error toast if the operation fails. `silentErrorMessages`
  *   suppresses that toast, so the caller can show its own message.
@@ -61,10 +65,16 @@ export const loadImportedTokens = async ({
   silentErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 } = {}) => {
+  const loadId = ++latestLoadId;
+  const isStale = () => loadId !== latestLoadId;
+
   return queryAndUpdate<ImportedTokens, unknown>({
     request: (options) => getImportedTokens(options),
     strategy,
     onLoad: ({ response: { imported_tokens: importedTokens }, certified }) => {
+      if (isStale()) {
+        return;
+      }
       importedTokensStore.set({
         importedTokens: importedTokens.map(toImportedTokenData),
         certified,
@@ -73,6 +83,10 @@ export const loadImportedTokens = async ({
     },
     onError: ({ error: err, certified, strategy }) => {
       console.error(err);
+
+      if (isStale()) {
+        return;
+      }
 
       if (ignoreAccountNotFoundError && err instanceof AccountNotFoundError) {
         // When you log in with a new account for the first time, the account is created in the NNS dapp.

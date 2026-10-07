@@ -150,6 +150,35 @@ describe("imported-tokens-services", () => {
       expect(get(toastsStore)).toEqual([]);
     });
 
+    it("should ignore the response of an older load", async () => {
+      let resolveOlderUpdate: (value: {
+        imported_tokens: ImportedToken[];
+      }) => void = () => undefined;
+      let call = 0;
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockImplementation(
+        async () => {
+          call += 1;
+          if (call === 1) {
+            return new Promise((resolve) => {
+              resolveOlderUpdate = resolve;
+            });
+          }
+          return { imported_tokens: [importedTokenA] };
+        }
+      );
+
+      const olderLoad = loadImportedTokens({ strategy: "update" });
+      await loadImportedTokens({ strategy: "update" });
+
+      resolveOlderUpdate({ imported_tokens: [importedTokenA, importedTokenB] });
+      await olderLoad;
+
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataA],
+        certified: true,
+      });
+    });
+
     it("should not display toast on uncertified error", async () => {
       vi.spyOn(importedTokensApi, "getImportedTokens").mockImplementation(
         async ({ certified }) => {
