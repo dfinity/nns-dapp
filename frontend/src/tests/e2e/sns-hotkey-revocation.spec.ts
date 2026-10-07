@@ -19,7 +19,10 @@ const NEURON_NOT_FOUND_ERROR = "Neuron not found.";
 // other permissions back to itself.
 //
 // The second test proves that a failed certified reload after the removal
-// shows one error, not a second "incomplete" error.
+// shows one error, not a second "incomplete" error, and leaves the page.
+//
+// The third test proves the same for the default load of the page: the query
+// call answers first, then the certified call fails.
 
 // The numbers are the values of `SnsNeuronPermissionType`.
 const SUBMIT_PROPOSAL = 3;
@@ -93,6 +96,12 @@ const grantPermissions = async ({
 
   await page.getByRole("button", { name: "Confirm" }).click();
 };
+
+// The neuron detail page leaves to the neurons page after a failed load.
+const NEURONS_PATH = /^\/neurons\/?$/;
+
+const countOf = (messages: string[], message: string): number =>
+  messages.filter((text) => text === message).length;
 
 // "Alfa Centauri" is the test SNS project configured with a faucet.
 const SNS_PROJECT_NAME = "Alfa Centauri";
@@ -258,7 +267,78 @@ test("Test SNS hotkey removal with a failed certified reload", async ({
   expect(failedCalls).toBeGreaterThan(0);
   // The card does not read the stale neuron after the failed reload, so it
   // shows no second error.
-  expect(await appPo.getToastsPo().getMessages()).not.toContain(
-    REMOVE_INCOMPLETE_ERROR
-  );
+  const messages = await appPo.getToastsPo().getMessages();
+  expect(messages).not.toContain(REMOVE_INCOMPLETE_ERROR);
+  expect(countOf(messages, NEURON_NOT_FOUND_ERROR)).toBe(1);
+
+  await step("The page leaves the neuron");
+  await expect
+    .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+    .toMatch(NEURONS_PATH);
+});
+
+test("Test SNS neuron load with a failed certified call after the query", async ({
+  page,
+  context,
+}) => {
+  const { appPo } = await openNewSnsNeuron({ page, context });
+  const neuronUrl = page.url();
+
+  // Errors that the page throws and nobody catches.
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await step("Fail the certified get_neuron call after the query answers");
+  // The method name is a plain CBOR text string in the request body.
+  let resolveQuery: () => void = () => undefined;
+  const queryAnswered = new Promise<void>((resolve) => {
+    resolveQuery = resolve;
+  });
+  page.on("requestfinished", (request) => {
+    if (
+      /\/api\/v\d+\/canister\/[^/]+\/query$/.test(request.url()) &&
+      (request.postDataBuffer()?.toString("latin1") ?? "").includes(
+        "get_neuron"
+      )
+    ) {
+      resolveQuery();
+    }
+  });
+  let failedCalls = 0;
+  let failedAfterQuery = true;
+  await page.route(/\/api\/v\d+\/canister\/[^/]+\/call$/, async (route) => {
+    const body = route.request().postDataBuffer()?.toString("latin1") ?? "";
+    if (body.includes("get_neuron")) {
+      const answered = await Promise.race([
+        queryAnswered.then(() => true),
+        new Promise<boolean>((resolve) =>
+          setTimeout(() => resolve(false), 30_000)
+        ),
+      ]);
+      failedAfterQuery = failedAfterQuery && answered;
+      failedCalls += 1;
+      await route.fulfill({ status: 500, body: "e2e: certified call failed" });
+      return;
+    }
+    await route.continue();
+  });
+
+  await step("Load the neuron page again");
+  await page.goto(neuronUrl);
+
+  await step("The user sees one error and the page leaves the neuron");
+  await expect
+    .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+    .toMatch(NEURONS_PATH);
+  await expect
+    .poll(() => appPo.getToastsPo().getMessages(), { timeout: 30_000 })
+    .toContain(NEURON_NOT_FOUND_ERROR);
+  expect(failedCalls).toBeGreaterThan(0);
+  // The certified call failed after the query response was in the store.
+  expect(failedAfterQuery).toBe(true);
+  expect(
+    countOf(await appPo.getToastsPo().getMessages(), NEURON_NOT_FOUND_ERROR)
+  ).toBe(1);
+  // The old code threw "This mutation has already been applied" here.
+  expect(pageErrors).toEqual([]);
 });
