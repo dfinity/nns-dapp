@@ -65,9 +65,11 @@ export const getIcrcTokenMetaData = async ({
 export const loadIcrcToken = ({
   ledgerCanisterId,
   certified = true,
+  strategy = FORCE_CALL_STRATEGY,
 }: {
   ledgerCanisterId: Principal;
   certified?: boolean;
+  strategy?: QueryAndUpdateStrategy;
 }) => {
   if (ledgerCanisterId.toText() in get(snsTokensByLedgerCanisterIdStore)) {
     // SNS tokens are derived from aggregator data instead.
@@ -89,7 +91,7 @@ export const loadIcrcToken = ({
   }
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
-    strategy: certified ? FORCE_CALL_STRATEGY : "query",
+    strategy: certified ? strategy : "query",
     identityType: "current",
     request: ({ certified, identity }) =>
       queryIcrcToken({
@@ -257,7 +259,7 @@ export const syncAccounts = async ({
 }) =>
   await Promise.all([
     loadAccounts({ ledgerCanisterId, strategy }),
-    loadIcrcToken({ ledgerCanisterId }),
+    loadIcrcToken({ ledgerCanisterId, strategy }),
   ]);
 
 ///
