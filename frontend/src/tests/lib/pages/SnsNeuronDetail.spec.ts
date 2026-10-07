@@ -594,6 +594,27 @@ describe("SnsNeuronDetail", () => {
 
         expect(get(toastsStore)).toEqual([]);
       });
+
+      it("shows one error when the certified reload fails", async () => {
+        const po = await renderWithHotkey();
+
+        expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+        vi.spyOn(snsGovernanceApi, "getSnsNeuron").mockRejectedValue(
+          new Error("certified call failed")
+        );
+
+        await po.removeHotkey(hotkeyPrincipal);
+        await runResolvedPromises();
+
+        // The reload reports the failure. The card adds no second error.
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: en.error.neuron_not_found,
+          },
+        ]);
+      });
     });
 
     describe("when the user removes its own hotkey", () => {

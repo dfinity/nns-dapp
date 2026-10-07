@@ -100,6 +100,7 @@
     if (selected !== undefined && $pageStore.path === AppPath.Neuron) {
       const mutableSnsNeuronStore =
         selectedSnsNeuronStore.getSingleMutationStore(strategy);
+      let certifiedError: { error: unknown } | undefined;
       await getSnsNeuron({
         forceFetch,
         strategy,
@@ -120,10 +121,11 @@
             certified,
           });
         },
-        onError: ({ certified }) => {
+        onError: ({ certified, error }) => {
           // The certified call is the last call. Free the queued mutation.
           if (certified) {
             mutableSnsNeuronStore.cancel();
+            certifiedError = { error };
           }
           toastsError({
             labelKey: "error.neuron_not_found",
@@ -133,6 +135,11 @@
           goBack(true);
         },
       });
+      // With the "update" strategy, the promise settles on the certified call.
+      // The caller must not read the store after a failed certified call.
+      if (strategy === "update" && certifiedError !== undefined) {
+        throw certifiedError.error;
+      }
     }
   };
 

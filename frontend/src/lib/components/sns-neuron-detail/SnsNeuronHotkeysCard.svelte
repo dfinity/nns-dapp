@@ -108,7 +108,14 @@
     // response. The default strategy settles on the query response. One
     // replica can forge a query response, and a query response can also show
     // the neuron from before the removal.
-    await reload({ strategy: "update" });
+    try {
+      await reload({ strategy: "update" });
+    } catch (_) {
+      // The reload reports its own error. The store holds no certified
+      // neuron, so the card makes no check.
+      stopBusy("remove-sns-hotkey-neuron");
+      return;
+    }
     // The removal is complete only when the principal keeps no hotkey
     // permission. A neuron that the reload did not deliver counts as
     // incomplete.
