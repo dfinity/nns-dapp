@@ -74,7 +74,7 @@ export const queryProposals = async ({
 };
 
 /**
- * Fetch a proposal w/o the payload.
+ * Fetch one proposal.
  */
 export const queryProposal = async ({
   proposalId,

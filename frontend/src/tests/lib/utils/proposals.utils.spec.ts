@@ -4,7 +4,6 @@ import { enumValues } from "$lib/utils/enum.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
-  getNnsFunctionKey,
   getUniversalProposalStatus,
   getVoteDisplay,
   getVotingBallot,
@@ -17,8 +16,6 @@ import {
   navigationIdComparator,
   nnsNeuronToVotingNeuron,
   preserveNeuronSelectionAfterUpdate,
-  proposalActionData,
-  proposalFirstActionKey,
   proposalIdSet,
   proposalsHaveSameIds,
   replaceAndConcatenateProposals,
@@ -33,53 +30,20 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   generateMockProposals,
   mockProposalInfo,
-  proposalActionNnsFunction21,
-  proposalActionRewardNodeProvider,
 } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type {
-  Action,
   Ballot,
   NeuronInfo,
   Proposal,
   ProposalInfo,
 } from "@icp-sdk/canisters/nns";
 import {
-  NnsFunction,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
   Vote,
 } from "@icp-sdk/canisters/nns";
-
-const proposalWithNnsFunctionAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionNnsFunction21,
-} as Proposal;
-
-const proposalWithRewardNodeProviderAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionRewardNodeProvider,
-} as Proposal;
-
-const actionWithEmpty = {
-  RewardNodeProvider: {
-    nodeProvider: {
-      id: "aaaaa-aa",
-    },
-    amountE8s: undefined,
-    rewardMode: {
-      RewardToNeuron: {
-        dissolveDelaySeconds: 1_000n,
-      },
-    },
-  },
-} as Action;
-
-const proposalWithActionWithUndefined = {
-  ...mockProposalInfo.proposal,
-  action: actionWithEmpty,
-} as Proposal;
 
 const toTestNnsVotingNode =
   (proposal: ProposalInfo = mockProposalInfo) =>
@@ -93,11 +57,6 @@ describe("proposals-utils", () => {
 
   it("should find no last proposal id", () =>
     expect(lastProposalId([])).toBeUndefined());
-
-  it("should find fist action key", () =>
-    expect(proposalFirstActionKey(proposalWithNnsFunctionAction)).toEqual(
-      "ExecuteNnsFunction"
-    ));
 
   describe("hideProposal", () => {
     it("hideProposal", () => {
@@ -309,34 +268,6 @@ describe("proposals-utils", () => {
           },
         })
       ).toBe(false);
-    });
-  });
-
-  describe("proposalActionFields", () => {
-    it("should filter action fields", () => {
-      const action = proposalActionData(proposalWithRewardNodeProviderAction);
-
-      expect(Object.keys(action).join()).toEqual(
-        "nodeProvider,amountE8s,rewardMode"
-      );
-    });
-
-    it("should include undefined action fields", () => {
-      const action = proposalActionData(proposalWithActionWithUndefined);
-
-      expect(Object.keys(action).join()).toEqual(
-        "nodeProvider,amountE8s,rewardMode"
-      );
-    });
-
-    it("should return empty array if no `action`", () => {
-      const proposal = {
-        ...mockProposalInfo.proposal,
-        action: undefined,
-      } as Proposal;
-      const action = proposalActionData(proposal);
-
-      expect(Object.keys(action).length).toBe(0);
     });
   });
 
@@ -826,34 +757,6 @@ describe("proposals-utils", () => {
           proposal,
         })
       ).toBe(decidingVotingPower);
-    });
-  });
-
-  describe("getNnsFunctionKey", () => {
-    it("should return nnsFunctionKey from proposal", () => {
-      expect(
-        getNnsFunctionKey({
-          ...mockProposalInfo.proposal,
-          action: {
-            ExecuteNnsFunction: {
-              nnsFunctionId: 4,
-            },
-          },
-        } as Proposal)
-      ).toBe(NnsFunction[NnsFunction.NnsCanisterUpgrade]);
-    });
-
-    it("should return undefined if not ExecuteNnsFunction type", () => {
-      expect(
-        getNnsFunctionKey({
-          ...mockProposalInfo.proposal,
-          action: {},
-        } as Proposal)
-      ).toBeUndefined();
-    });
-
-    it("should return undefined if undefined", () => {
-      expect(getNnsFunctionKey(undefined)).toBeUndefined();
     });
   });
 
