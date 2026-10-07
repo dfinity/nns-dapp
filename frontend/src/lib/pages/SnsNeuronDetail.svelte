@@ -120,7 +120,11 @@
             certified,
           });
         },
-        onError: () => {
+        onError: ({ certified }) => {
+          // The certified call is the last call. Free the queued mutation.
+          if (certified) {
+            mutableSnsNeuronStore.cancel();
+          }
           toastsError({
             labelKey: "error.neuron_not_found",
           });
