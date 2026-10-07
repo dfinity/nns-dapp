@@ -2,6 +2,7 @@ import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHot
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
+import * as busyStore from "$lib/stores/busy.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { SelectedSnsNeuronStore } from "$lib/types/sns-neuron-detail.context";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -233,6 +234,29 @@ describe("SnsNeuronHotkeysCard", () => {
     await runResolvedPromises();
 
     expect(spyToastsError).not.toBeCalled();
+  });
+
+  it("shows no second error when the certified reload fails", async () => {
+    const spyToastsError = vi.spyOn(toastsStore, "toastsError");
+    const spyStopBusy = vi.spyOn(busyStore, "stopBusy");
+    const failingReload = vi.fn().mockRejectedValue(new Error("reload failed"));
+    const { queryAllByTestId } = renderSelectedSnsNeuronContext({
+      reload: failingReload,
+      Component: SnsNeuronHotkeysCard,
+      neuron: controlledNeuron,
+      props,
+    });
+
+    const removeButtons = queryAllByTestId("remove-hotkey-button");
+    fireEvent.click(removeButtons[0]);
+
+    await waitFor(() => expect(failingReload).toBeCalled());
+    await runResolvedPromises();
+
+    // The reload reports its own error. The store still holds the neuron from
+    // before the removal, and the card must not report it as incomplete.
+    expect(spyToastsError).not.toBeCalled();
+    expect(spyStopBusy).toBeCalledWith("remove-sns-hotkey-neuron");
   });
 
   it("shows confirmation modal if hotkey is the current user", async () => {

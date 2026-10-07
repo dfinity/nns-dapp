@@ -28,6 +28,9 @@ export interface SelectedSnsNeuronContext {
    * response, which is not certified. `"update"` settles on the certified
    * response. A caller that makes a security decision from the neuron must
    * pass `"update"`.
+   *
+   * With `"update"`, the promise rejects if the certified call fails. The
+   * reload reports that error itself, so the caller shows no second error.
    */
   reload: (params?: { strategy?: QueryAndUpdateStrategy }) => Promise<void>;
 }
