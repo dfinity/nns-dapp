@@ -18,6 +18,7 @@
       "$routes/*": ["src/routes/*"],
       "$mocks": ["__mocks__"],
       "$mocks/*": ["__mocks__/*"],
+      "$scripts/*": ["scripts/*"],
       "$tests": ["src/tests"],
       "$tests/*": ["src/tests/*"]
     },
