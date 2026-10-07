@@ -14,9 +14,10 @@ import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import * as dfinityUtils from "@dfinity/utils";
@@ -309,6 +310,27 @@ describe("imported-tokens-services", () => {
   });
 
   describe("removeImportedTokens", () => {
+    it("should remove the token metadata of the removed token", async () => {
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue(
+        undefined
+      );
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA],
+        certified: true,
+      });
+      tokensStore.setToken({
+        canisterId: importedTokenDataA.ledgerCanisterId,
+        token: mockSnsToken,
+        certified: true,
+      });
+
+      await removeImportedTokens(importedTokenDataA.ledgerCanisterId);
+
+      expect(
+        get(tokensStore)[importedTokenDataA.ledgerCanisterId.toText()]
+      ).toBeUndefined();
+    });
+
     it("should call setImportedTokens with updated token list", async () => {
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")
