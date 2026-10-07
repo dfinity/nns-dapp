@@ -108,6 +108,11 @@ test("Remove an imported token while the store holds a query response", async ({
   const queryResponse = page.waitForResponse(
     (response) =>
       response.url().includes(`/canister/${nnsDappCanisterId}/query`) &&
+      response
+        .request()
+        .postDataBuffer()
+        ?.toString("latin1")
+        .includes("get_imported_tokens") === true &&
       response.ok()
   );
   await page.reload();
