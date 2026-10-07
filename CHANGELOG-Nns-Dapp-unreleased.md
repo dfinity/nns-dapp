@@ -27,6 +27,10 @@ proposal is successful, the changes it released will be moved from this file to
 - The "Hide Balance" option now also masks the balances in the accessible names
   on the Portfolio page. Before, the cards kept the exact amounts in their
   `aria-label` attributes, so a screen reader announced them.
+- Ask the ledger canister which index canister belongs to it before an imported
+  token accepts an index canister ID. Before, the app trusted the answer of the
+  index canister itself, so a fake index canister could show an invented
+  transaction history for a real token.
 
 #### Not Published
 

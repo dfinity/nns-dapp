@@ -1,6 +1,11 @@
 import { getLedgerId as getLedgerIdApi } from "$lib/api/icrc-index.api";
-import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { queryIcrcIndexPrincipal } from "$lib/api/icrc-ledger.api";
+import {
+  getAnonymousIdentity,
+  getAuthenticatedIdentity,
+} from "$lib/services/auth.services";
 import { toastsError } from "$lib/stores/toasts.store";
+import { nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 
 const getLedgerId = async ({
@@ -21,8 +26,14 @@ const getLedgerId = async ({
 
 /**
  * Validates whether the provided index canister ID corresponds to the given ledger canister ID.
- * This function uses `ledger_id` icrc1 index canister api to check if the indexCanisterId is correctly associated with
- * the provided ledgerCanisterId.
+ *
+ * The function asks the ledger canister first, with the ICRC-106
+ * `icrc106_get_index_principal` method. The ledger is the trusted side of the
+ * pair, so its answer decides the result and the index canister is not called.
+ *
+ * Not every ledger names an index canister. When the ledger names none, the
+ * function falls back to the `ledger_id` method of the index canister. That
+ * answer comes from the canister under test, so it proves less.
  */
 export const matchLedgerIndexPair = async ({
   ledgerCanisterId,
@@ -31,13 +42,42 @@ export const matchLedgerIndexPair = async ({
   ledgerCanisterId: Principal;
   indexCanisterId: Principal;
 }): Promise<boolean> => {
+  let indexIdFromLedgerCanister: Principal | undefined;
+
   try {
-    const ledgerIdFromIndexCanister = await getLedgerId({
-      indexCanisterId,
+    // The user typed the ledger canister ID, so the call must not carry the
+    // principal of the user to it.
+    indexIdFromLedgerCanister = await queryIcrcIndexPrincipal({
+      identity: getAnonymousIdentity(),
+      canisterId: ledgerCanisterId,
       certified: true,
     });
-    const match =
-      ledgerIdFromIndexCanister.toText() === ledgerCanisterId.toText();
+  } catch (err) {
+    // This call targets the ledger canister, so a failure here points at the
+    // ledger, not at the index canister.
+    console.error(err);
+    toastsError({
+      labelKey: "error.ledger_canister_validation",
+      substitutions: {
+        $ledgerCanister: ledgerCanisterId.toText(),
+      },
+      err,
+    });
+    return false;
+  }
+
+  try {
+    let match: boolean;
+
+    if (nonNullish(indexIdFromLedgerCanister)) {
+      match = indexIdFromLedgerCanister.toText() === indexCanisterId.toText();
+    } else {
+      const ledgerIdFromIndexCanister = await getLedgerId({
+        indexCanisterId,
+        certified: true,
+      });
+      match = ledgerIdFromIndexCanister.toText() === ledgerCanisterId.toText();
+    }
 
     if (!match) {
       toastsError({

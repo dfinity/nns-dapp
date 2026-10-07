@@ -4,6 +4,7 @@ import {
   executeIcrcTransfer,
   icrcTransfer,
   queryIcrcBalance,
+  queryIcrcIndexPrincipal,
   queryIcrcToken,
 } from "$lib/api/icrc-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -15,9 +16,18 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import {
   IcrcLedgerCanister,
+  IndexPrincipalNotSetError,
   type IcrcAccount,
 } from "@icp-sdk/canisters/ledger/icrc";
-import { AnonymousIdentity, type HttpAgent } from "@icp-sdk/core/agent";
+import {
+  AgentError,
+  AnonymousIdentity,
+  CertifiedRejectErrorCode,
+  ErrorKindEnum,
+  ReplicaRejectCode,
+  requestIdOf,
+  type HttpAgent,
+} from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
@@ -180,6 +190,73 @@ describe("icrc-ledger api", () => {
         certified: true,
         ...account,
       });
+    });
+  });
+  describe("queryIcrcIndexPrincipal", () => {
+    const canisterId = principal(0);
+    const indexCanisterId = principal(1);
+
+    const callQueryIcrcIndexPrincipal = () =>
+      queryIcrcIndexPrincipal({
+        certified: true,
+        identity: new AnonymousIdentity(),
+        canisterId,
+      });
+
+    it("returns the index principal the ledger names", async () => {
+      ledgerCanisterMock.getIndexPrincipal.mockResolvedValue(indexCanisterId);
+
+      expect(await callQueryIcrcIndexPrincipal()).toEqual(indexCanisterId);
+      expect(ledgerCanisterMock.getIndexPrincipal).toBeCalledTimes(1);
+      expect(ledgerCanisterMock.getIndexPrincipal).toBeCalledWith({
+        certified: true,
+      });
+    });
+
+    it("returns undefined when the ledger names no index principal", async () => {
+      ledgerCanisterMock.getIndexPrincipal.mockRejectedValue(
+        new IndexPrincipalNotSetError()
+      );
+
+      expect(await callQueryIcrcIndexPrincipal()).toBeUndefined();
+    });
+
+    it("returns undefined when the ledger has no such method", async () => {
+      ledgerCanisterMock.getIndexPrincipal.mockRejectedValue(
+        new AgentError(
+          new CertifiedRejectErrorCode(
+            requestIdOf({}),
+            ReplicaRejectCode.DestinationInvalid,
+            "Canister has no query method 'icrc106_get_index_principal'",
+            "IC0536"
+          ),
+          ErrorKindEnum.Unknown
+        )
+      );
+
+      expect(await callQueryIcrcIndexPrincipal()).toBeUndefined();
+    });
+
+    it("rethrows any other error", async () => {
+      const error = new Error("test");
+      ledgerCanisterMock.getIndexPrincipal.mockRejectedValue(error);
+
+      await expect(callQueryIcrcIndexPrincipal()).rejects.toThrow(error);
+    });
+
+    it("rethrows another canister reject", async () => {
+      const error = new AgentError(
+        new CertifiedRejectErrorCode(
+          requestIdOf({}),
+          ReplicaRejectCode.CanisterError,
+          "Canister is out of cycles",
+          "IC0207"
+        ),
+        ErrorKindEnum.Unknown
+      );
+      ledgerCanisterMock.getIndexPrincipal.mockRejectedValue(error);
+
+      await expect(callQueryIcrcIndexPrincipal()).rejects.toThrow(error);
     });
   });
 });
