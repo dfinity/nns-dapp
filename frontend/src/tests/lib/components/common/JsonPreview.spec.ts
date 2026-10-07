@@ -58,6 +58,18 @@ describe("JsonPreview", () => {
     expect(await po.getRawText()).toBe(`{\n  "test": undefined\n}`);
   });
 
+  it("should render a string that reads __UNDEFINED__ in raw view", async () => {
+    jsonRepresentationStore.setMode("raw");
+    const po = renderComponent({ test: "__UNDEFINED__" });
+    expect(await po.getRawText()).toBe(`{\n  "test": "__UNDEFINED__"\n}`);
+  });
+
+  it("should render a string that reads __UNDEFINED__ in tree view", async () => {
+    jsonRepresentationStore.setMode("tree");
+    const po = renderComponent({ test: "__UNDEFINED__" });
+    expect(await po.getTreeText()).toBe('test "__UNDEFINED__"');
+  });
+
   it("should not render expand button when there is no children", async () => {
     jsonRepresentationStore.setMode("tree");
     const po = renderComponent({ hello: "world" });
