@@ -2,6 +2,8 @@ export const AGGREGATOR_CANISTER_VERSION = "v1";
 export const AGGREGATOR_PAGE_SIZE = 10;
 export const SALE_PARTICIPATION_RETRY_SECONDS = 2;
 export const WATCH_SALE_STATE_EVERY_MILLISECONDS = 10_000;
+// Every Nth poll is a certified update call. It refreshes the certified participant count.
+export const WATCH_SALE_CERTIFIED_EVERY_N_POLLS = 6;
 /**
  * Approximately 2 months in seconds
  *
