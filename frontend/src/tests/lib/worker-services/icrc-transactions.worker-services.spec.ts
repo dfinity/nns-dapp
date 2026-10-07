@@ -621,6 +621,8 @@ describe("transactions.worker-services", () => {
       expect(
         hasNewIcrcTransactions({
           result: {
+            accountIdentifier: mockSnsMainAccount.identifier,
+            balance: 0n,
             transactions: [],
             mostRecentTxId: 250n,
             backlog: { start: 50n, stopTxId: 1n },
