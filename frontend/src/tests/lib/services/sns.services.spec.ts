@@ -11,6 +11,7 @@ import {
   mockIdentity,
   mockPrincipal,
   resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsSwapCommitment,
@@ -396,6 +397,27 @@ describe("sns-services", () => {
         expect.objectContaining({ certified: false })
       );
       expect(count()).toEqual([10n]);
+      clearWatch();
+    });
+
+    it("should only query when the viewer is anonymous", async () => {
+      setNoIdentity();
+      const spy = vi
+        .spyOn(api, "querySnsDerivedState")
+        .mockResolvedValue(derived(999n));
+
+      const clearWatch = watchSnsTotalCommitment({
+        rootCanisterId: rootCanisterId1.toText(),
+      });
+
+      for (let i = 1; i <= WATCH_SALE_CERTIFIED_EVERY_N_POLLS * 2; i++) {
+        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+      }
+
+      expect(spy).toBeCalledTimes(WATCH_SALE_CERTIFIED_EVERY_N_POLLS * 2);
+      expect(spy).not.toBeCalledWith(
+        expect.objectContaining({ certified: true })
+      );
       clearWatch();
     });
   });
