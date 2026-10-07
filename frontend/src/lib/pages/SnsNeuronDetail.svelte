@@ -101,6 +101,7 @@
       const mutableSnsNeuronStore =
         selectedSnsNeuronStore.getSingleMutationStore(strategy);
       let certifiedError: { error: unknown } | undefined;
+      let hasResponse = false;
       await getSnsNeuron({
         forceFetch,
         strategy,
@@ -113,6 +114,7 @@
           certified: boolean;
           neuron: SnsGovernanceDid.Neuron;
         }) => {
+          hasResponse = true;
           mutableSnsNeuronStore.update({
             mutation: (store) => ({
               ...store,
@@ -122,10 +124,13 @@
           });
         },
         onError: ({ certified, error }) => {
-          // The certified call is the last call. Free the queued mutation.
           if (certified) {
-            mutableSnsNeuronStore.cancel();
             certifiedError = { error };
+            // The certified call is the last call. Free the queued mutation.
+            // `cancel` throws for an entry that holds the query response.
+            if (!hasResponse) {
+              mutableSnsNeuronStore.cancel();
+            }
           }
           toastsError({
             labelKey: "error.neuron_not_found",

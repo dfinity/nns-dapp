@@ -785,6 +785,44 @@ describe("SnsNeuronDetail", () => {
     });
   });
 
+  describe("when the query call succeeds and the certified call fails", () => {
+    it("shows the error and redirects", async () => {
+      let rejectCertified: (error: Error) => void;
+      const certifiedNeuron = new Promise<SnsGovernanceDid.Neuron>(
+        (_, reject) => {
+          rejectCertified = reject;
+        }
+      );
+      const queryNeuron = fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+      });
+      vi.spyOn(snsGovernanceApi, "getSnsNeuron").mockImplementation(
+        ({ certified }) =>
+          certified ? certifiedNeuron : Promise.resolve(queryNeuron)
+      );
+
+      const po = await renderComponent({ neuronId: validNeuronIdAsHexString });
+
+      // The query response is on the page. The certified call is pending.
+      expect(await po.getUniverse()).toBe(projectName);
+      expect(get(pageStore).path).toEqual(AppPath.Neuron);
+      expect(get(toastsStore)).toEqual([]);
+
+      rejectCertified(new Error("certified call failed"));
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: en.error.neuron_not_found,
+        },
+      ]);
+      expect(get(pageStore).path).toEqual(AppPath.Neurons);
+    });
+  });
+
   describe("follow by Topic", () => {
     beforeEach(() => {
       page.mock({
