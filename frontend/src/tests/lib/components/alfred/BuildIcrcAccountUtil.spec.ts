@@ -167,6 +167,18 @@ describe("BuildIcrcAccountUtil", () => {
     expect(getError(container)).not.toBeNull();
   });
 
+  it("should accept the largest 32-byte decimal subaccount ID", async () => {
+    const { container } = render(BuildIcrcAccountUtil);
+
+    await setInputValues(container, {
+      principal: testPrincipal,
+      subaccount: (2n ** 256n - 1n).toString(),
+    });
+
+    expect(getError(container)).toBeNull();
+    expect(getOutput(container)).not.toBeNull();
+  });
+
   it("should show error for a very long digit string", async () => {
     const { container } = render(BuildIcrcAccountUtil);
 
