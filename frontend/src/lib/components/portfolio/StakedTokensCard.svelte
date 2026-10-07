@@ -10,6 +10,7 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import {
     isDesktopViewportStore,
     isMobileViewportStore,
@@ -125,6 +126,13 @@
 {#snippet row({ stakedToken }: { stakedToken: TableProject | undefined })}
   {@const apy = stakedToken?.apy}
   {#if nonNullish(stakedToken)}
+    {@const stakeNative =
+      stakedToken.stake instanceof TokenAmountV2
+        ? formatTokenV2({
+            value: stakedToken.stake,
+            detailed: false,
+          })
+        : PRICE_NOT_AVAILABLE_PLACEHOLDER}
     <a
       href={stakedToken.rowHref}
       class="row"
@@ -163,7 +171,11 @@
         class="stake-usd"
         data-tid="stake-in-usd"
         role="cell"
-        aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
+        aria-label={`${stakedToken.title} USD: ${
+          $isBalancePrivacyOptionStore
+            ? $i18n.portfolio.hidden_balance_label
+            : (stakedToken?.stakeInUsd ?? 0)
+        }`}
       >
         $<PrivacyAwareAmount
           value={formatNumber(stakedToken?.stakeInUsd ?? 0)}
@@ -174,17 +186,13 @@
         class="stake-native"
         data-tid="stake-in-native"
         role="cell"
-        aria-label={`${stakedToken.title} D: ${stakedToken?.stakeInUsd ?? 0}`}
+        aria-label={`${stakedToken.title} ${stakedToken.stake.token.symbol}: ${
+          $isBalancePrivacyOptionStore
+            ? $i18n.portfolio.hidden_balance_label
+            : stakeNative
+        }`}
       >
-        <PrivacyAwareAmount
-          value={stakedToken.stake instanceof TokenAmountV2
-            ? formatTokenV2({
-                value: stakedToken.stake,
-                detailed: false,
-              })
-            : PRICE_NOT_AVAILABLE_PLACEHOLDER}
-          length={3}
-        />
+        <PrivacyAwareAmount value={stakeNative} length={3} />
         {stakedToken.stake.token.symbol}
       </div>
     </a>
