@@ -149,16 +149,28 @@ test("Test the CSV export escapes formula characters", async ({
     reportingTransactionsPo.getReportingTransactionsButtonPo();
   await exportButtonPo.waitFor();
 
-  const downloadPromise = page.waitForEvent("download", { timeout: 120_000 });
-  await exportButtonPo.click();
-  const download = await downloadPromise;
-
-  expect(download.suggestedFilename()).toMatch(/\.csv$/);
-
+  // The index canister can lag behind the transfer, so the first export can
+  // hold no rows. Export again until the CSV holds the payload account.
   const readCsvTexts = () =>
     page.evaluate(() => (window as unknown as { csvTexts: string[] }).csvTexts);
-  await expect.poll(async () => (await readCsvTexts()).length).toBe(1);
-  const [csvText] = await readCsvTexts();
+  const maxExports = 6;
+  let csvText = "";
+  for (let attempt = 1; attempt <= maxExports; attempt++) {
+    const downloadPromise = page.waitForEvent("download", { timeout: 120_000 });
+    await exportButtonPo.click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toMatch(/\.csv$/);
+
+    await expect
+      .poll(async () => (await readCsvTexts()).length, { timeout: 30_000 })
+      .toBe(attempt);
+    csvText = (await readCsvTexts())[attempt - 1];
+    if (csvText.includes(PAYLOAD_ACCOUNT_NAME)) {
+      break;
+    }
+    await page.waitForTimeout(5_000);
+  }
   const cells = parseCsv(csvText).flat();
 
   step("Check that the export escapes every formula cell");
