@@ -20,6 +20,7 @@ export const syncSnsAccountsBalances = async ({
     rootCanisterIds.map((rootCanisterId) =>
       loadSnsAccounts({
         rootCanisterId,
+        strategy: "query_and_update",
       })
     )
   );

@@ -248,11 +248,13 @@ export const loadAccounts = async ({
 
 export const syncAccounts = async ({
   ledgerCanisterId,
+  strategy,
 }: {
   ledgerCanisterId: Principal;
+  strategy?: QueryAndUpdateStrategy;
 }) =>
   await Promise.all([
-    loadAccounts({ ledgerCanisterId }),
+    loadAccounts({ ledgerCanisterId, strategy }),
     loadIcrcToken({ ledgerCanisterId }),
   ]);
 
