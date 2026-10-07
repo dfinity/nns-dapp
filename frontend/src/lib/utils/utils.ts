@@ -116,12 +116,12 @@ export const stringifyJson = (
 
   const serialize = (raw: unknown, key: string, level: number): string => {
     // `JSON.stringify` calls `toJSON` before the replacer. `Principal` has one.
+    const toJson =
+      typeof raw === "object" && raw !== null
+        ? (raw as { toJSON?: unknown }).toJSON
+        : undefined;
     const value = replaceJsonValue(
-      typeof raw === "object" &&
-        raw !== null &&
-        typeof (raw as { toJSON?: unknown }).toJSON === "function"
-        ? (raw as { toJSON: (key: string) => unknown }).toJSON(key)
-        : raw,
+      typeof toJson === "function" ? toJson.call(raw, key) : raw,
       options
     );
 
