@@ -107,6 +107,9 @@ const convertToDerivedState = (
 
 /**
  * Override the derived state in the SnsSummary with the one from the store.
+ *
+ * The participant count comes only from a certified response. Without one, the
+ * summary keeps the count from the aggregator.
  */
 const overrideDerivedState =
   (derivedStore: SnsDerivedStateData) =>
@@ -124,7 +127,12 @@ const overrideDerivedState =
     if (isNullish(convertedData)) {
       return summary;
     }
-    return summary.overrideDerivedState(convertedData);
+    return summary.overrideDerivedState({
+      ...convertedData,
+      direct_participant_count:
+        projectDerivedState.certifiedDirectParticipantCount ??
+        summary.derived.direct_participant_count,
+    });
   };
 
 /**

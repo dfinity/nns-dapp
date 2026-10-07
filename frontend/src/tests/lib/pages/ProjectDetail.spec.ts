@@ -35,6 +35,7 @@ import {
 } from "$tests/mocks/sns-finalization-status.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import { ProjectCommitmentPo } from "$tests/page-objects/ProjectCommitment.page-object";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
@@ -237,6 +238,31 @@ describe("ProjectDetail", () => {
         // Even after waiting a long time there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
         expect(snsApi.querySnsDerivedState).toBeCalledTimes(expectedCalls);
+      });
+
+      it("should keep the certified participant count when a polled query reply forges it", async () => {
+        vi.mocked(snsApi.querySnsDerivedState).mockImplementation(
+          async ({ certified }) => ({
+            sns_tokens_per_icp: [1],
+            buyer_total_icp_e8s: [200_000_000n],
+            cf_participant_count: [],
+            direct_participant_count: certified ? [30n] : [999_999n],
+            cf_neuron_count: [],
+            neurons_fund_participation_icp_e8s: [],
+            direct_participation_icp_e8s: [],
+          })
+        );
+        const po = renderComponent(props);
+        const commitmentPo = ProjectCommitmentPo.under(po.root);
+
+        await runResolvedPromises();
+        expect(await commitmentPo.getParticipantsCount()).toBe(30);
+
+        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+        expect(snsApi.querySnsDerivedState).toBeCalledWith(
+          expect.objectContaining({ certified: false })
+        );
+        expect(await commitmentPo.getParticipantsCount()).toBe(30);
       });
 
       it("should not load user's commitment", async () => {
