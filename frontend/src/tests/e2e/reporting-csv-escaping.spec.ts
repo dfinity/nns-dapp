@@ -81,6 +81,7 @@ test("Test the CSV export escapes formula characters", async ({
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
   const accountsPo = appPo.getAccountsPo();
+  const toastsPo = appPo.getToastsPo();
   const nnsAccountsPo = accountsPo.getNnsAccountsPo();
   const tokensTablePo = nnsAccountsPo.getTokensTablePo();
 
@@ -91,13 +92,27 @@ test("Test the CSV export escapes formula characters", async ({
 
   step("Create a linked account whose name is a spreadsheet formula");
 
-  await nnsAccountsPo.clickAddAccount();
+  const addPayloadAccount = async () => {
+    await nnsAccountsPo.clickAddAccount();
 
-  const addAccountModalPo = accountsPo.getAddAccountModalPo();
-  expect(await addAccountModalPo.isPresent()).toBe(true);
+    const addAccountModalPo = accountsPo.getAddAccountModalPo();
+    expect(await addAccountModalPo.isPresent()).toBe(true);
 
-  await addAccountModalPo.addAccount(PAYLOAD_ACCOUNT_NAME);
-  await addAccountModalPo.waitForClosed();
+    await addAccountModalPo.addAccount(PAYLOAD_ACCOUNT_NAME);
+    await addAccountModalPo.waitForClosed();
+  };
+
+  await addPayloadAccount();
+
+  if ((await toastsPo.getToastPos()).length > 0) {
+    step("Account creation failed, retrying after 2 seconds");
+    await toastsPo.closeAll();
+    await page.waitForTimeout(2_000);
+
+    await addPayloadAccount();
+
+    expect(await toastsPo.getMessages()).toEqual([]);
+  }
 
   const payloadRow = await tokensTablePo.getRowByName(PAYLOAD_ACCOUNT_NAME);
   await payloadRow.waitFor();
