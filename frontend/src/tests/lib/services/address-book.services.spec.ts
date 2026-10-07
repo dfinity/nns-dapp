@@ -165,6 +165,29 @@ describe("address-book-services", () => {
   });
 
   describe("loadAddressBook", () => {
+    it("should ignore the response of an older load", async () => {
+      const oldEntries = [mockForgedNamedAddress];
+      const newEntries = [mockNamedAddressIcp];
+      let call = 0;
+      vi.spyOn(addressBookApi, "getAddressBook").mockImplementation(
+        async () => {
+          call += 1;
+          if (call === 1) {
+            // The older load answers last.
+            await delay(CERTIFIED_RESPONSE_DELAY_MS);
+            return { named_addresses: oldEntries };
+          }
+          return { named_addresses: newEntries };
+        }
+      );
+
+      const older = loadAddressBook({ strategy: "update" });
+      await loadAddressBook({ strategy: "update" });
+      await older;
+
+      expect(get(addressBookStore).namedAddresses).toEqual(newEntries);
+    });
+
     it("should show an error toast when the load fails", async () => {
       vi.spyOn(addressBookApi, "getAddressBook").mockRejectedValue(
         new Error("test")
