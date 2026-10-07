@@ -9,8 +9,7 @@ import {
 import { expect, test } from "@playwright/test";
 
 // The swap participant count must come from the certified `get_derived_state`
-// call. The removed code read it from `https://<swap>.raw.icp0.io/metrics`,
-// which the raw gateway serves without response certification.
+// call, never from the uncertified raw `/metrics` page.
 const RAW_METRICS_PATTERN = /\.raw\.(icp0\.io|ic0\.app)\/metrics/;
 
 // playwright.config.ts sets expect.timeout to 0, so every poll needs its own.
