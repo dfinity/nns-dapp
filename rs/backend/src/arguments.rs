@@ -42,6 +42,9 @@ const URL_ARGUMENT_NAMES: [&str; 6] = [
 /// value is escaped.  See `TemplateEngine::populate`.
 const HTML_ARGUMENT_NAMES: [&str; 1] = ["ROBOTS"];
 
+/// The format of an argument name.  `to_html` turns each name into an attribute name.
+const NAME_PATTERN: &str = r"\A[A-Z0-9_]+\z";
+
 /// The pattern of a valid value for an argument in `URL_ARGUMENT_NAMES`.
 ///
 /// The value must be empty, or an absolute `http` or `https` address.  The
@@ -154,6 +157,8 @@ impl CanisterArguments {
     /// value adds a source or a directive to the policy.  A `"` or a `>` ends
     /// the attribute or the tag.  The check rejects those characters.
     ///
+    /// An argument name may contain only `A-Z`, `0-9` and `_`.
+    ///
     /// The arguments in `HTML_ARGUMENT_NAMES` hold a fragment of `HTML`.  The
     /// check limits them to the `robots` `meta` tag.
     ///
@@ -171,7 +176,13 @@ impl CanisterArguments {
     pub fn validate(&self) -> Result<(), String> {
         let url_regex = fixed_regex(URL_PATTERN);
         let html_regex = fixed_regex(HTML_PATTERN);
+        let name_regex = fixed_regex(NAME_PATTERN);
         for (key, value) in &self.args {
+            if !name_regex.is_match(key) {
+                return Err(format!(
+                    "The argument name {key:?} must contain only the characters A-Z, 0-9 and _."
+                ));
+            }
             if URL_ARGUMENT_NAMES.contains(&key.as_str()) && !url_regex.is_match(value) {
                 return Err(format!(
                     "The argument {key} must be empty or an absolute http or https address.  Got: {value:?}"

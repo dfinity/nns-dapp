@@ -174,7 +174,8 @@ fn real_robots_arguments_are_valid() {
 fn validation_names_the_bad_argument() {
     let error = arguments(&[("HOST", "https://icp-api.io; script-src *")])
         .validate()
-        .expect_err("The value is not an address");
+        .err()
+        .unwrap_or_default();
     assert!(error.contains("HOST"), "The error must name the argument: {error}");
 }
 
@@ -230,4 +231,14 @@ fn template_keeps_robots_as_html() {
     let values = CanisterArguments::args_from_str(&[("ROBOTS", robots)]);
     let template_engine = TemplateEngine::new(&values[..]);
     assert_eq!(template_engine.populate("<!-- ROBOTS -->"), robots);
+}
+
+#[test]
+fn hostile_argument_name_is_rejected() {
+    for name in ["X\" onload=\"alert(1)", "FOO BAR", "foo", "", "FOO>"] {
+        assert!(
+            arguments(&[(name, "value")]).validate().is_err(),
+            "The name {name:?} must be rejected"
+        );
+    }
 }

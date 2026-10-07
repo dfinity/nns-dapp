@@ -40,7 +40,7 @@ const ALLOWED_PROTOCOLS = ["http:", "https:"];
 export const assertValidCspSourceUrl = (name, value) => {
   if (typeof value !== "string" || value.length === 0) {
     throw new Error(
-      `Cannot build the Content-Security-Policy: ${name} is not a non-empty string.`
+      `Cannot build the Content-Security-Policy: ${name} must be a string that is not empty.`
     );
   }
 
