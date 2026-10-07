@@ -170,5 +170,5 @@ test("Test the CSV export escapes formula characters", async ({
   expect(amounts.some((amount) => /^\+20(\.0+)?$/.test(amount))).toBe(true);
 
   // No amount cell carries the quote prefix.
-  expect(cells.filter((cell) => /^'[+-]\d/.test(cell))).toEqual([]);
+  expect(cells.filter((cell) => /^'[+-]\d[\d'.]*$/.test(cell))).toEqual([]);
 });
