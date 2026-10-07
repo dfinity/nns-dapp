@@ -155,6 +155,56 @@ describe("sns.store", () => {
       );
     });
 
+    describe("participant count", () => {
+      const forgedDerivedState: SnsSwapDid.GetDerivedStateResponse = {
+        ...mockDerivedResponse,
+        sns_tokens_per_icp: [4],
+        direct_participant_count: [999_999n],
+      };
+
+      beforeEach(() => {
+        snsAggregatorIncludingAbortedProjectsStore.setData([
+          aggregatorSnsMockWith({
+            rootCanisterId: rootCanisterId.toText(),
+            directParticipantCount: [30n],
+          }),
+        ]);
+      });
+
+      it("keeps the aggregator count when the derived state is uncertified", () => {
+        snsDerivedStateStore.setDerivedState({
+          certified: false,
+          rootCanisterId,
+          data: forgedDerivedState,
+        });
+
+        const summary = get(snsSummariesStore)[0];
+        expect(summary.derived.sns_tokens_per_icp).toBe(4);
+        expect(summary.derived.direct_participant_count).toEqual([30n]);
+      });
+
+      it("keeps the certified count when an uncertified derived state follows", () => {
+        snsDerivedStateStore.setDerivedState({
+          certified: true,
+          rootCanisterId,
+          data: { ...mockDerivedResponse, direct_participant_count: [40n] },
+        });
+        expect(
+          get(snsSummariesStore)[0].derived.direct_participant_count
+        ).toEqual([40n]);
+
+        snsDerivedStateStore.setDerivedState({
+          certified: false,
+          rootCanisterId,
+          data: forgedDerivedState,
+        });
+
+        const summary = get(snsSummariesStore)[0];
+        expect(summary.derived.sns_tokens_per_icp).toBe(4);
+        expect(summary.derived.direct_participant_count).toEqual([40n]);
+      });
+    });
+
     it("lifestate is overriden with data in snsDerivedStateStore", () => {
       const newLifecycle = SnsSwapLifecycle.Open;
       const aggregatorData = aggregatorSnsMockWith({
