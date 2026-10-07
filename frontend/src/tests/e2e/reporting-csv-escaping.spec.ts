@@ -7,7 +7,6 @@ import {
   step,
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
-import { readFileSync } from "fs";
 
 // A spreadsheet reads a cell that starts with one of these characters as a
 // formula. The CSV export must break the formula with a single quote.
@@ -111,6 +110,21 @@ test("Test the CSV export escapes formula characters", async ({
 
   step("Export the transactions to CSV");
 
+  // The export revokes the blob URL right after the click, so the downloaded
+  // file can be empty. Read the text of each blob that the page turns into a
+  // download link.
+  await page.addInitScript(() => {
+    const csvTexts: string[] = [];
+    (window as unknown as { csvTexts: string[] }).csvTexts = csvTexts;
+    const createObjectURL = URL.createObjectURL.bind(URL);
+    URL.createObjectURL = (object: Blob | MediaSource) => {
+      if (object instanceof Blob) {
+        void object.text().then((text) => csvTexts.push(text));
+      }
+      return createObjectURL(object);
+    };
+  });
+
   await page.goto("/reporting");
 
   const reportingTransactionsPo = ReportingTransactionsPo.under(pageElement);
@@ -124,11 +138,12 @@ test("Test the CSV export escapes formula characters", async ({
   await exportButtonPo.click();
   const download = await downloadPromise;
 
-  const downloadPath = await download.path();
-  if (downloadPath === null) {
-    throw new Error("The download produced no local file path.");
-  }
-  const csvText = readFileSync(downloadPath, "utf-8");
+  expect(download.suggestedFilename()).toMatch(/\.csv$/);
+
+  const readCsvTexts = () =>
+    page.evaluate(() => (window as unknown as { csvTexts: string[] }).csvTexts);
+  await expect.poll(async () => (await readCsvTexts()).length).toBe(1);
+  const [csvText] = await readCsvTexts();
   const cells = parseCsv(csvText).flat();
 
   step("Check that the export escapes every formula cell");
