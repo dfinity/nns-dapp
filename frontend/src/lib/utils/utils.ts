@@ -144,10 +144,10 @@ export const stringifyJson = (
     ancestors.push(value);
     try {
       if (Array.isArray(value)) {
-        // `Array.from` visits every index. `map` skips a hole and keeps it a hole.
+        // Read each index from 0 to length - 1, like `JSON.stringify`. A hole reads as `undefined`.
         return wrap(
-          Array.from(value, (item, index) =>
-            serialize(item, `${index}`, level + 1)
+          Array.from({ length: value.length }, (_, index) =>
+            serialize(value[index], `${index}`, level + 1)
           ),
           "[",
           "]",
