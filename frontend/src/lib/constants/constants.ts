@@ -3,6 +3,11 @@ export const MAX_ACTIONABLE_REQUEST_COUNT = 10;
 // Use a different limit for Icrc transactions
 // the Index canister needs to query the Icrc Ledger canister for each transaction - i.e. it needs an update call
 export const DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT = 20;
+// The worker does not trust the Index canister to end the pagination.
+// It stops after this number of pages in one sync of one account.
+// The worker keeps the remaining pages as a backlog and fetches them in the
+// next syncs, at most this number of pages in each sync.
+export const DEFAULT_INDEX_TRANSACTION_MAX_PAGES = 10;
 
 export const DEFAULT_TOAST_DURATION_MILLIS = 4000;
 
