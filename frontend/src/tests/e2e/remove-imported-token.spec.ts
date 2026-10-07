@@ -105,9 +105,15 @@ test("Remove an imported token while the store holds a query response", async ({
 
   step("Reload the page, so the store holds only a query response");
 
+  const queryResponse = page.waitForResponse(
+    (response) =>
+      response.url().includes(`/canister/${nnsDappCanisterId}/query`) &&
+      response.ok()
+  );
   await page.reload();
   await disableCssAnimations(page);
   await walletPo.waitFor();
+  await queryResponse;
 
   step("Remove the imported token");
 
