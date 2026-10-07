@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
 import {
   assertValidCspSourceUrl,
   cspSourceFromUrl,
   escapeHtmlAttributeValue,
-} from "../../../scripts/build.csp.utils.mjs";
+} from "$scripts/build.csp.utils.mjs";
+import { describe, expect, it } from "vitest";
 
 describe("build.csp.utils", () => {
   // Values that config.sh really produces for VITE_AGGREGATOR_CANISTER_URL and
