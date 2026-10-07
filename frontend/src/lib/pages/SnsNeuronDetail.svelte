@@ -27,6 +27,7 @@
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
+  import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
   import { queuedStore } from "$lib/stores/queued-store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -59,7 +60,8 @@
 
   setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
     store: selectedSnsNeuronStore,
-    reload: () => loadNeuron({ forceFetch: true }),
+    reload: ({ strategy }: { strategy?: QueryAndUpdateStrategy } = {}) =>
+      loadNeuron({ forceFetch: true, strategy }),
   });
 
   // BEGIN: loading and navigation
@@ -87,15 +89,22 @@
   $: governanceCanisterId =
     $selectedUniverseStore.summary?.governanceCanisterId;
 
-  const loadNeuron = async (
-    { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
-  ) => {
+  const loadNeuron = async ({
+    forceFetch = false,
+    strategy,
+  }: {
+    forceFetch?: boolean;
+    strategy?: QueryAndUpdateStrategy;
+  } = {}) => {
     const { selected } = $selectedSnsNeuronStore;
     if (selected !== undefined && $pageStore.path === AppPath.Neuron) {
       const mutableSnsNeuronStore =
-        selectedSnsNeuronStore.getSingleMutationStore();
+        selectedSnsNeuronStore.getSingleMutationStore(strategy);
+      let certifiedError: { error: unknown } | undefined;
+      let hasResponse = false;
       await getSnsNeuron({
         forceFetch,
+        strategy,
         rootCanisterId: selected.rootCanisterId,
         neuronIdHex: selected.neuronIdHex,
         onLoad: ({
@@ -105,6 +114,7 @@
           certified: boolean;
           neuron: SnsGovernanceDid.Neuron;
         }) => {
+          hasResponse = true;
           mutableSnsNeuronStore.update({
             mutation: (store) => ({
               ...store,
@@ -113,7 +123,15 @@
             certified,
           });
         },
-        onError: () => {
+        onError: ({ certified, error }) => {
+          if (certified) {
+            certifiedError = { error };
+            // The certified call is the last call. Free the queued mutation.
+            // `cancel` throws for an entry that holds the query response.
+            if (!hasResponse) {
+              mutableSnsNeuronStore.cancel();
+            }
+          }
           toastsError({
             labelKey: "error.neuron_not_found",
           });
@@ -122,6 +140,11 @@
           goBack(true);
         },
       });
+      // With the "update" strategy, the promise settles on the certified call.
+      // The caller must not read the store after a failed certified call.
+      if (strategy === "update" && certifiedError !== undefined) {
+        throw certifiedError.error;
+      }
     }
   };
 
