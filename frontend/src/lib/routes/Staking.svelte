@@ -91,6 +91,7 @@
     // staking.
     loadSnsAccounts({
       rootCanisterId: summary.rootCanisterId,
+      strategy: "query_and_update",
     });
 
     snsStakingModalData = {

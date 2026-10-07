@@ -3,8 +3,8 @@ import {
   loadSnsAccountsBalances,
   resetBalanceLoading,
 } from "$lib/services/accounts-balances.services";
+import * as walletServices from "$lib/services/icrc-accounts-balance.services";
 import * as snsBalanceServices from "$lib/services/sns-accounts-balance.services";
-import * as walletServices from "$lib/services/wallet-uncertified-accounts.services";
 import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 
@@ -12,6 +12,7 @@ vi.mock("$lib/services/icrc-accounts.services", () => {
   return {
     loadAccounts: vi.fn(),
     loadIcrcToken: vi.fn(),
+    syncAccounts: vi.fn(),
   };
 });
 
@@ -28,15 +29,9 @@ describe("accounts-balances services", () => {
   beforeEach(() => {
     resetBalanceLoading();
 
-    accountsBalanceSpy = vi.spyOn(
-      walletServices,
-      "uncertifiedLoadAccountsBalance"
-    );
+    accountsBalanceSpy = vi.spyOn(walletServices, "syncIcrcAccountsBalances");
 
-    snsBalancesSpy = vi.spyOn(
-      snsBalanceServices,
-      "uncertifiedLoadSnsesAccountsBalances"
-    );
+    snsBalancesSpy = vi.spyOn(snsBalanceServices, "syncSnsAccountsBalances");
   });
 
   describe("loadSnsBalances", () => {
