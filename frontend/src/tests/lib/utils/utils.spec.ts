@@ -1,10 +1,8 @@
-import { MAX_EXPANDED_JSON_DEPTH } from "$lib/constants/proposals.constants";
 import {
   PollingCancelledError,
   PollingLimitExceededError,
   bytesToHexString,
   cancelPoll,
-  expandObject,
   getObjMaxDepth,
   hexStringToBytes,
   isDefined,
@@ -894,58 +892,6 @@ describe("utils", () => {
       expect(isPngAsset(jpg1)).toBe(false);
       expect(isPngAsset(pngFake)).toBe(false);
       expect(isPngAsset(svgFile)).toBe(false);
-    });
-  });
-
-  describe("expandObject", () => {
-    it("should not do anything in strings that are not JSON", () => {
-      const obj = { a: "a string" };
-      expect(expandObject(obj)).toEqual(obj);
-    });
-
-    it("should parse JSON strings", () => {
-      const obj = { a: JSON.stringify({ b: "c" }) };
-      expect(expandObject(obj)).toEqual({ a: { b: "c" } });
-    });
-
-    it("should respect arrays (not convert into objects)", () => {
-      const obj = { a: [1, 2, 3] };
-      expect(expandObject(obj)).toEqual({ a: [1, 2, 3] });
-    });
-
-    it("should parse JSON strings from arrays", () => {
-      const obj = { a: [1, JSON.stringify({ b: 2 }), 3] };
-      expect(expandObject(obj)).toEqual({ a: [1, { b: 2 }, 3] });
-    });
-
-    it("should parse a JSON string that nests exactly the maximum depth", () => {
-      const nested = `${"[".repeat(MAX_EXPANDED_JSON_DEPTH)}1${"]".repeat(
-        MAX_EXPANDED_JSON_DEPTH
-      )}`;
-      const { a } = expandObject({ a: nested }) as { a: unknown };
-
-      expect(getObjMaxDepth(a)).toBe(MAX_EXPANDED_JSON_DEPTH);
-      expect(a).toEqual(JSON.parse(nested));
-    });
-
-    it("should keep a JSON string that nests deeper than the maximum depth as a string", () => {
-      const nested = `${"[".repeat(MAX_EXPANDED_JSON_DEPTH + 1)}1${"]".repeat(
-        MAX_EXPANDED_JSON_DEPTH + 1
-      )}`;
-      const { a } = expandObject({ a: nested }) as { a: unknown };
-
-      expect(typeof a).toBe("string");
-      expect(a).toBe(nested);
-    });
-
-    it("should keep a payload text that nests JSON thousands of levels deep as a string", () => {
-      const nested = `${"[".repeat(35_000)}${"]".repeat(35_000)}`;
-      const { comment } = expandObject({ comment: nested }) as {
-        comment: unknown;
-      };
-
-      expect(typeof comment).toBe("string");
-      expect(comment).toBe(nested);
     });
   });
 

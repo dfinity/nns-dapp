@@ -1,4 +1,3 @@
-import { MAX_EXPANDED_JSON_DEPTH } from "$lib/constants/proposals.constants";
 import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { BasisPoints } from "$lib/types/proposals";
@@ -349,54 +348,6 @@ export const isPngAsset = (
 ): asset is PngDataUrl =>
   nonNullish(asset) &&
   (asset.startsWith("data:image/png;base64,") || asset.endsWith(".png"));
-
-/**
- * Takes an object and tries to parse inner string as JSON.
- * If it fails, it returns the original string value.
- *
- * For example: {b: '{"c":"d"}'} becomes {b: {c: 'd'}}
- *
- * @param obj
- * @returns parsed object
- */
-export const expandObject = (value: unknown): unknown => {
-  if (value === null || value === undefined) {
-    return value;
-  }
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-      // A proposer controls this text. Keep a string whose JSON nests too deep
-      // as a string, so the tree stays small enough to walk and to render.
-      if (getObjMaxDepth(parsed) > MAX_EXPANDED_JSON_DEPTH) {
-        return value;
-      }
-      return parsed;
-    } catch (_) {
-      return value;
-    }
-  }
-  if (Array.isArray(value)) {
-    return value.map(expandObject);
-  }
-  if (typeof value === "object") {
-    if (isPrincipal(value)) {
-      // Do not expand Principal to keep the prototype methods
-      return value;
-    }
-
-    // to avoid mutating original object
-    const result = { ...value };
-    Object.keys(result).forEach(
-      (key) =>
-        ((result as Record<string, unknown>)[key] = expandObject(
-          (result as Record<string, unknown>)[key]
-        ))
-    );
-    return result;
-  }
-  return value;
-};
 
 /**
  * Counts the nesting levels of an object or an array.

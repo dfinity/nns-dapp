@@ -1,4 +1,3 @@
-import { MAX_EXPANDED_JSON_DEPTH } from "$lib/constants/proposals.constants";
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
@@ -18,9 +17,10 @@ import { expect, test } from "@playwright/test";
 // and the payload card, together with the rest of the detail page, stopped
 // rendering. A proposal cannot be edited, so the page stayed broken for good.
 //
-// This test submits a real ExecuteNnsFunction proposal whose
-// `replica_version_id` text nests 34,000 levels, then reads the payload card.
-// The text must show as the quoted string it is, and the page must work.
+// The page no longer parses a text field as JSON. This test submits a real
+// ExecuteNnsFunction proposal whose `replica_version_id` text nests 34,000
+// levels, then reads the payload card. The text must show as the quoted string
+// it is, and the page must work.
 //
 // Why ExecuteNnsFunction and not a Motion: governance caps a Motion text at
 // 10,000 bytes, which is at most 5,000 levels. The measured overflow threshold
@@ -174,8 +174,7 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
 
   // The text shows as the quoted string it is, the same as any string that is
   // not JSON.
-  expect(treeText).toContain(`"${"[".repeat(MAX_EXPANDED_JSON_DEPTH)}`);
-  expect(treeText).toContain(`${"]".repeat(MAX_EXPANDED_JSON_DEPTH)}"`);
+  expect(treeText).toContain(`"${DEEP_TEXT}"`);
   expect(treeText).toContain("replica_version_id");
   expect(treeText).not.toContain("Maximum call stack size exceeded");
 
