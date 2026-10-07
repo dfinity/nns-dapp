@@ -21,6 +21,7 @@ export const syncIcrcAccountsBalances = async ({
     universeIds.map((universeId) =>
       syncAccounts({
         ledgerCanisterId: Principal.fromText(universeId),
+        strategy: "query_and_update",
       })
     )
   );
