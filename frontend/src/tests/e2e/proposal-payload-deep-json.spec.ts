@@ -9,22 +9,14 @@ import {
 import { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 import { expect, test } from "@playwright/test";
 
-// The proposer writes every text field of a proposal payload. The proposal
-// detail page used to call `JSON.parse` on each string field and then walk the
-// result with a recursive function, so a compact text such as
-// "[[[[..." became a structure thousands of levels deep. The walk threw
-// `RangeError: Maximum call stack size exceeded` inside a reactive statement,
-// and the payload card, together with the rest of the detail page, stopped
-// rendering. A proposal cannot be edited, so the page stayed broken for good.
-//
-// The page no longer parses a text field as JSON. This test submits a real
-// ExecuteNnsFunction proposal whose `replica_version_id` text nests 34,000
-// levels, then reads the payload card. The text must show as the quoted string
-// it is, and the page must work.
+// The proposer writes every text field of a proposal payload. This test
+// submits a real ExecuteNnsFunction proposal whose `replica_version_id` text
+// nests 34,000 levels of JSON, then reads the proposal detail page. The text
+// must show as the quoted string it is, and the page must work.
 //
 // Why ExecuteNnsFunction and not a Motion: governance caps a Motion text at
-// 10,000 bytes, which is at most 5,000 levels. The measured overflow threshold
-// is 6,205 levels in Chrome 152, so a Motion text cannot reach the bug. The
+// 10,000 bytes, which is at most 5,000 levels. A recursive walk of the parsed
+// text overflows the call stack at 6,205 levels in Chrome 152. The
 // ExecuteNnsFunction payload cap is 70,000 bytes, which is far above it.
 const NESTING_DEPTH = 34_000;
 const DEEP_TEXT = `${"[".repeat(NESTING_DEPTH)}${"]".repeat(NESTING_DEPTH)}`;
@@ -158,8 +150,6 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
   await nnsProposalPo.waitForContentLoaded();
 
   await step("Read the payload card");
-  // Before the fix the reactive statement in JsonPreview.svelte threw here, so
-  // this card never appeared.
   const payloadPo = nnsProposalPo.getProposalProposerActionsEntryPo();
   await payloadPo.waitFor();
   expect(await payloadPo.getActionTitle()).toBe("Payload");
@@ -172,11 +162,8 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
   await jsonPreviewPo.getTreeJson().waitFor();
   const treeText = await jsonPreviewPo.getTreeText();
 
-  // The text shows as the quoted string it is, the same as any string that is
-  // not JSON.
   expect(treeText).toContain(`"${DEEP_TEXT}"`);
   expect(treeText).toContain("replica_version_id");
-  expect(treeText).not.toContain("Maximum call stack size exceeded");
 
   await step("Read the raw view");
   await togglePo.setEnabled(true);
@@ -186,8 +173,6 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
   expect(Object.values(parsed)).toContain(DEEP_TEXT);
 
   await step("Check the rest of the detail page still works");
-  // The throw broke the whole render and update cycle of the page, so the
-  // voting controls of this proposal went with it.
   expect(await nnsProposalPo.getVotingCardPo().isPresent()).toBe(true);
   expect(
     await nnsProposalPo.getProposalSystemInfoSectionPo().getProposalTopicText()

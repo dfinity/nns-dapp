@@ -368,7 +368,6 @@ export const getObjMaxDepth = (obj: unknown): number => {
     if (typeof value === "object" && value !== null) {
       const keys = Object.keys(value);
       if (keys.length > 0) {
-        // This level holds at least one value, so it counts.
         maxDepth = Math.max(maxDepth, level + 1);
         for (const key of keys) {
           stack.push({
