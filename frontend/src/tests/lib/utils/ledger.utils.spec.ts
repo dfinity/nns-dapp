@@ -1,7 +1,4 @@
-import {
-  ExtendedLedgerError,
-  LedgerError,
-} from "$lib/constants/ledger.constants";
+import { ExtendedLedgerError } from "$lib/constants/ledger.constants";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { decodePublicKey, decodeSignature } from "$lib/utils/ledger.utils";
 import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
@@ -12,6 +9,7 @@ import {
   rawPublicKeyHex,
 } from "$tests/mocks/ledger.identity.mock";
 import type { ResponseAddress, ResponseSign } from "@zondax/ledger-icp";
+import { LedgerError } from "@zondax/ledger-js";
 
 describe("ledger-utils", () => {
   describe("decodePublicKey", () => {
