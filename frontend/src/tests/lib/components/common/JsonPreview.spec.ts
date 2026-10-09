@@ -64,6 +64,28 @@ describe("JsonPreview", () => {
     expect(await po.getExpandButton().isPresent()).toBe(false);
   });
 
+  it("should render a string that holds JSON as a string", async () => {
+    jsonRepresentationStore.setMode("tree");
+    const po = renderComponent({
+      canister_id: "qoctq-giaaa-aaaaa-aaaea-cai",
+      arg: '{"controllers":["aaaaa-aa"]}',
+    });
+
+    expect(await po.getTreeText()).toBe(
+      'canister_id "qoctq-giaaa-aaaaa-aaaea-cai"arg "{\\"controllers\\":[\\"aaaaa-aa\\"]}"'
+    );
+    expect(await po.getExpandButton().isPresent()).toBe(false);
+  });
+
+  it("should render a text that nests JSON thousands of levels deep", async () => {
+    jsonRepresentationStore.setMode("tree");
+    const deepText = `${"[".repeat(35_000)}${"]".repeat(35_000)}`;
+    const po = renderComponent({ comment: deepText });
+
+    expect(await po.getTreeText()).toBe(`comment "${deepText}"`);
+    expect(await po.getExpandButton().isPresent()).toBe(false);
+  });
+
   it("should expand and collapse in tree view", async () => {
     jsonRepresentationStore.setMode("tree");
     const po = renderComponent({ data: { test: "hello world" } });

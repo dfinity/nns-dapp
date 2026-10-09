@@ -22,6 +22,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- The proposal detail page no longer parses the text fields of a payload as
+  JSON, so a text that nests JSON thousands of levels deep no longer breaks
+  the page.
+
 #### Security
 
 - The "Hide Balance" option now also masks the balances in the accessible names

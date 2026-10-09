@@ -3,7 +3,6 @@ import {
   PollingLimitExceededError,
   bytesToHexString,
   cancelPoll,
-  expandObject,
   getObjMaxDepth,
   hexStringToBytes,
   isDefined,
@@ -896,28 +895,6 @@ describe("utils", () => {
     });
   });
 
-  describe("expandObject", () => {
-    it("should not do anything in strings that are not JSON", () => {
-      const obj = { a: "a string" };
-      expect(expandObject(obj)).toEqual(obj);
-    });
-
-    it("should parse JSON strings", () => {
-      const obj = { a: JSON.stringify({ b: "c" }) };
-      expect(expandObject(obj)).toEqual({ a: { b: "c" } });
-    });
-
-    it("should respect arrays (not convert into objects)", () => {
-      const obj = { a: [1, 2, 3] };
-      expect(expandObject(obj)).toEqual({ a: [1, 2, 3] });
-    });
-
-    it("should parse JSON strings from arrays", () => {
-      const obj = { a: [1, JSON.stringify({ b: 2 }), 3] };
-      expect(expandObject(obj)).toEqual({ a: [1, { b: 2 }, 3] });
-    });
-  });
-
   describe("sameBufferData", () => {
     it("returns true if same data", () => {
       const a = new Uint8Array([1, 2, 3]);
@@ -980,6 +957,24 @@ describe("utils", () => {
       expect(getObjMaxDepth(null)).toBe(0);
       expect(getObjMaxDepth("hello")).toBe(0);
       expect(getObjMaxDepth(0)).toBe(0);
+    });
+
+    it("returns the depth of a 100,000 level array without a stack overflow", () => {
+      const depth = 100_000;
+      const deepArray = JSON.parse(
+        `${"[".repeat(depth)}1${"]".repeat(depth)}`
+      ) as unknown;
+
+      expect(getObjMaxDepth(deepArray)).toBe(depth);
+    });
+
+    it("returns the depth of a 100,000 level object without a stack overflow", () => {
+      const depth = 100_000;
+      const deepObject = JSON.parse(
+        `${'{"a":'.repeat(depth)}1${"}".repeat(depth)}`
+      ) as unknown;
+
+      expect(getObjMaxDepth(deepObject)).toBe(depth);
     });
   });
 
