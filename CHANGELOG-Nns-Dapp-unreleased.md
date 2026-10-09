@@ -30,6 +30,8 @@ proposal is successful, the changes it released will be moved from this file to
 - Impose a Candid decoding quota on every exported method that takes an argument. The quota limits the DoS surface from decoding bombs.
 - The sign-out message in the URL is now limited to known messages. Before, a
   crafted link could show any text as an official toast.
+- Use the most liquid ICPSwap pool that has a price for a token, so a new pool
+  with one tiny trade cannot change the USD values shown.
 
 #### Not Published
 
