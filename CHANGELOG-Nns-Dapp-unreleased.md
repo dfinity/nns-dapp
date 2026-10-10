@@ -31,6 +31,10 @@ proposal is successful, the changes it released will be moved from this file to
 - The sign-out message in the URL is now limited to known messages. Before, a
   crafted link could show any text as an official toast.
 
+- Read the SNS swap participant count only from the certified swap canister
+  state. Before, a swap without that field read the count from the unverified
+  raw metrics page.
+
 #### Not Published
 
 ### Operations
