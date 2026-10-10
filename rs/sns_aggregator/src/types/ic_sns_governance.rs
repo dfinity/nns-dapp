@@ -214,7 +214,7 @@ pub struct VotingRewardsParameters {
     pub reward_rate_transition_duration_seconds: Option<u64>,
     pub round_duration_seconds: Option<u64>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
 pub struct NervousSystemParameters {
     pub default_followees: Option<DefaultFollowees>,
     pub max_dissolve_delay_seconds: Option<u64>,
