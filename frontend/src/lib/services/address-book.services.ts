@@ -67,18 +67,66 @@ export const loadAddressBook = async ({
   });
 };
 
+export type AddressBookMutation =
+  | { type: "add"; address: NamedAddress }
+  | { type: "update"; previousName: string; address: NamedAddress }
+  | { type: "remove"; name: string };
+
+const normalizeName = (name: string): string => name.trim().toLowerCase();
+
+const applyMutation = ({
+  namedAddresses,
+  mutation,
+}: {
+  namedAddresses: NamedAddress[];
+  mutation: AddressBookMutation;
+}): NamedAddress[] => {
+  switch (mutation.type) {
+    case "add":
+      return [...namedAddresses, mutation.address];
+    case "update": {
+      const previousName = normalizeName(mutation.previousName);
+      const addressExists = namedAddresses.some(
+        ({ name }) => normalizeName(name) === previousName
+      );
+      if (!addressExists) {
+        throw new Error("The address book entry no longer exists.");
+      }
+      return namedAddresses.map((address) =>
+        normalizeName(address.name) === previousName
+          ? mutation.address
+          : address
+      );
+    }
+    case "remove": {
+      const addresses = namedAddresses.filter(
+        ({ name }) => name !== mutation.name
+      );
+      if (addresses.length === namedAddresses.length) {
+        throw new Error("The address book entry no longer exists.");
+      }
+      return addresses;
+    }
+  }
+};
+
 /**
- * Save the entire address book to the `nns-dapp` backend and reload to update the `addressBookStore`.
- * - This method always saves the complete address book (replaces the existing one).
- * - The UI is responsible for manipulating the array (add/update/remove) before calling this method.
- * - Displays appropriate error toasts based on the error type.
- * - Returns an error if the operation fails.
+ * Applies one mutation to a certified address book and reloads the store.
+ * Uncertified store data is never used as the base of the backend write.
  */
 export const saveAddressBook = async (
-  namedAddresses: NamedAddress[]
+  mutation: AddressBookMutation
 ): Promise<{ err?: Error } | undefined> => {
   try {
     const identity = await getAuthenticatedIdentity();
+    const { named_addresses: certifiedAddresses } = await getAddressBook({
+      identity,
+      certified: true,
+    });
+    const namedAddresses = applyMutation({
+      namedAddresses: certifiedAddresses,
+      mutation,
+    });
     await setAddressBook({ identity, namedAddresses });
     await loadAddressBook();
   } catch (err) {
