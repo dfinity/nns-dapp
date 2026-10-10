@@ -36,14 +36,10 @@ export const stringifyJson = (
             return asText === "[object Object]" ? value : asText;
           }
 
-          // For proposal rendering, historically we display {principal: "1234"}, but in stringified JSON, principals are now encoded as {"__principal__": "1234"}.
+          // JSON.stringify calls Principal.toJSON before this replacer runs, so a
+          // Principal arrives here as {"__principal__": "1234"}.
           if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
             return value[JSON_KEY_PRINCIPAL];
-          }
-
-          // optimistic hash stringifying
-          if (Array.isArray(value) && isHash(value)) {
-            return bytesToHexString(value);
           }
 
           if (value instanceof Promise) {
@@ -92,13 +88,6 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
 // https://stackoverflow.com/questions/43010737/way-to-tell-typescript-compiler-array-prototype-filter-removes-certain-types-fro#answer-54318054
 export const isDefined = <T>(argument: T | undefined): argument is T =>
   argument !== undefined;
-
-// e.g. payloads.did/state_hash (32 bytes) or SEV-SNP measurements (48 bytes)
-export const isHash = (bytes: number[]): boolean =>
-  [32, 48].includes(bytes.length) &&
-  bytes.find(
-    (value) => !Number.isInteger(value) || value < 0 || value > 255
-  ) === undefined;
 
 // Convert a byte array to a hex string
 export const bytesToHexString = (bytes: number[]): string =>
