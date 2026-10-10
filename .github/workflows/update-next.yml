@@ -1,6 +1,8 @@
 # A GitHub Actions workflow that can be used to trigger updates of npm package
 # dependencies.
 name: Update next npm package dependencies
+permissions:
+  contents: read
 on:
   workflow_dispatch:
     inputs:
