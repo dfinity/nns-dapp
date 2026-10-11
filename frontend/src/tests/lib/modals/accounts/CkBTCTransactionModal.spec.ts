@@ -6,11 +6,15 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import * as services from "$lib/services/ckbtc-convert.services";
-import { transferTokens } from "$lib/services/icrc-accounts.services";
+import {
+  getCertifiedIcrcTokenMetaData,
+  transferTokens,
+} from "$lib/services/icrc-accounts.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { ulpsToNumber } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -42,18 +46,20 @@ describe("CkBTCTransactionModal", () => {
   const renderTransactionModal = ({
     selectedAccount,
     events,
+    token = mockCkBTCToken,
   }: {
     selectedAccount?: Account;
     events?: Record<string, ($event: CustomEvent) => void>;
+    token?: IcrcTokenMetadata;
   }) =>
     renderModal({
       component: CkBTCTransactionModal,
       props: {
         selectedAccount,
-        token: mockCkBTCToken,
+        token,
         transactionFee: TokenAmountV2.fromUlps({
-          amount: mockCkBTCToken.fee,
-          token: mockCkBTCToken,
+          amount: token.fee,
+          token,
         }),
         canisters: mockCkBTCAdditionalCanisters,
         universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -65,9 +71,11 @@ describe("CkBTCTransactionModal", () => {
     selectedAccount?: Account;
     nnsClose?: () => void;
     nnsTransfer?: () => void;
+    token?: IcrcTokenMetadata;
   }): Promise<CkBTCTransactionModalPo> => {
     const { container } = await renderTransactionModal({
       selectedAccount: params?.selectedAccount,
+      token: params?.token,
       events: {
         ...(nonNullish(params?.nnsClose) && { nnsClose: params.nnsClose }),
         ...(nonNullish(params?.nnsTransfer) && {
@@ -95,6 +103,7 @@ describe("CkBTCTransactionModal", () => {
     vi.useFakeTimers();
 
     vi.mocked(transferTokens).mockResolvedValue({ blockIndex: undefined });
+    vi.mocked(getCertifiedIcrcTokenMetaData).mockResolvedValue(mockCkBTCToken);
     resetIdentity();
 
     icrcAccountsStore.set({
@@ -154,6 +163,74 @@ describe("CkBTCTransactionModal", () => {
     });
   });
 
+  describe("certified token metadata", () => {
+    it("should query the token metadata as certified", async () => {
+      await renderModalToPo();
+
+      expect(getCertifiedIcrcTokenMetaData).toBeCalledTimes(1);
+      expect(getCertifiedIcrcTokenMetaData).toBeCalledWith({
+        ledgerCanisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      });
+    });
+
+    it("should keep continue disabled when the certified metadata fails to load", async () => {
+      vi.mocked(getCertifiedIcrcTokenMetaData).mockResolvedValue(undefined);
+
+      const po = await renderModalToPo();
+      const formPo = po.getTransactionFormPo();
+
+      await formPo.enterAddress(mockCkBTCMainAccount.identifier);
+      await formPo.enterAmount(1);
+
+      expect(await formPo.isContinueButtonEnabled()).toBe(false);
+      expect(transferTokens).not.toBeCalled();
+    });
+
+    it("should convert the amount with the certified decimals", async () => {
+      // The property comes from the token store, which can hold the result of
+      // an uncertified query.
+      const uncertifiedToken = {
+        ...mockCkBTCToken,
+        decimals: mockCkBTCToken.decimals - 2,
+      };
+
+      const amount = 1;
+      const po = await renderModalToPo({ token: uncertifiedToken });
+
+      await po.transferToAddress({
+        destinationAddress: mockCkBTCMainAccount.identifier,
+        amount,
+      });
+
+      expect(transferTokens).toBeCalledWith(
+        expect.objectContaining({
+          amountUlps: BigInt(amount) * 10n ** BigInt(mockCkBTCToken.decimals),
+        })
+      );
+    });
+
+    it("should convert the amount with the certified decimals when converting to BTC", async () => {
+      const spy = vi
+        .spyOn(services, "convertCkBTCToBtcIcrc2")
+        .mockResolvedValue({ success: true });
+
+      const amount = 1;
+
+      await testTransfer({
+        eventName: "nnsTransfer",
+        selectedNetwork: TransactionNetwork.BTC_TESTNET,
+        amount,
+        token: { ...mockCkBTCToken, decimals: mockCkBTCToken.decimals - 2 },
+      });
+
+      expect(spy).toBeCalledWith(
+        expect.objectContaining({
+          amountUlps: BigInt(amount) * 10n ** BigInt(mockCkBTCToken.decimals),
+        })
+      );
+    });
+  });
+
   const testConvertCkBTCToBTCWithIcrc2 = async ({
     success,
     eventName,
@@ -176,14 +253,17 @@ describe("CkBTCTransactionModal", () => {
   const testTransfer = async ({
     eventName,
     selectedNetwork,
+    amount = 10,
+    token,
   }: {
     eventName: "nnsClose" | "nnsTransfer";
     selectedNetwork?: TransactionNetwork;
+    amount?: number;
+    token?: IcrcTokenMetadata;
   }) => {
     const onEnd = vi.fn();
-    const po = await renderModalToPo({ [eventName]: onEnd });
+    const po = await renderModalToPo({ [eventName]: onEnd, token });
 
-    const amount = 10;
     const destinationAddress = mockBTCAddressTestnet;
 
     await po.selectNetwork(selectedNetwork);
