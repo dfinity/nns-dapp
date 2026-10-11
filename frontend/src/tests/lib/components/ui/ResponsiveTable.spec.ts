@@ -98,6 +98,7 @@ describe("ResponsiveTable", () => {
     gridRowsPerTableRow?: number;
     getRowStyle?: (rowData: ResponsiveTableRowData) => string;
     displayTableSettings?: boolean;
+    loading?: boolean;
   }
 
   const renderComponent = ({
@@ -172,6 +173,58 @@ describe("ResponsiveTable", () => {
     expect(await rows[0].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
     expect(await rows[1].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
     expect(await rows[2].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+  });
+
+  it("should render skeleton rows while loading", async () => {
+    const po = renderComponent({ columns, tableData, loading: true });
+
+    // The header stays the same, so the table keeps its shape.
+    expect(await po.getDesktopColumnHeaders()).toEqual(["Name", "", "Age", ""]);
+
+    const skeletonRows = await po.getSkeletonRows();
+    expect(skeletonRows).toHaveLength(3);
+    for (const skeletonRow of skeletonRows) {
+      // One skeleton cell per column with a cell component.
+      expect(await skeletonRow.allByTestId("skeleton-table-cell")).toHaveLength(
+        3
+      );
+    }
+
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    for (const row of rows) {
+      expect(await row.getHref()).toBe(null);
+    }
+
+    const tableText = await po.getText();
+    for (const { name } of tableData) {
+      expect(tableText).not.toContain(name);
+    }
+  });
+
+  it("should render skeleton rows without a tab stop", async () => {
+    const po = renderComponent({ columns, tableData, loading: true });
+
+    const skeletonRows = await po.getSkeletonRows();
+    expect(skeletonRows).toHaveLength(3);
+    for (const skeletonRow of skeletonRows) {
+      expect(await skeletonRow.getAttribute("aria-hidden")).toBe("true");
+      expect(
+        await skeletonRow.querySelector('[role="row"]').getAttribute("tabindex")
+      ).toBe(null);
+    }
+  });
+
+  it("should not render skeleton rows when it does not load", async () => {
+    const po = renderComponent({ columns, tableData });
+
+    expect(await po.getSkeletonRows()).toHaveLength(0);
+
+    const rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+    for (const row of rows) {
+      expect(await row.root.getAttribute("tabindex")).toBe("0");
+    }
   });
 
   it("should render row href", async () => {

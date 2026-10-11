@@ -14,30 +14,24 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- A search button in the header opens the quick search panel. Before, only the
-  Ctrl+K (Cmd+K) shortcut opened it, so a touch screen could not reach it.
-
 #### Changed
 
-- Increase the maximum canister name length from 24 to 64 characters.
-- Show the canisters on the Canisters page in a table instead of a card grid.
 - Use certified token metadata in the ICRC transaction modal.
 
 #### Deprecated
 
 #### Removed
 
-- Remove the "Buy ICP" button and its modal from the accounts footer. Banxa no
-  longer offers ICP, so the button did not work.
-
 #### Fixed
 
-- The quick search panel now fits a phone screen, and its selected row, icon
-  tiles and result boxes now have a visible background color.
-- On a narrow screen the header buttons no longer shrink while the app loads
-  data.
-
 #### Security
+
+- The "Hide Balance" option now also masks the balances in the accessible names
+  on the Portfolio page. Before, the cards kept the exact amounts in their
+  `aria-label` attributes, so a screen reader announced them.
+- Impose a Candid decoding quota on every exported method that takes an argument. The quota limits the DoS surface from decoding bombs.
+- The sign-out message in the URL is now limited to known messages. Before, a
+  crafted link could show any text as an official toast.
 
 #### Not Published
 

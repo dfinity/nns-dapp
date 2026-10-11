@@ -49,7 +49,8 @@ import {
 import type { Identity } from "@icp-sdk/core/agent";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
-import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import type { ResponseVersion } from "@zondax/ledger-icp";
+import { LedgerError } from "@zondax/ledger-js";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -730,6 +731,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);
@@ -1131,6 +1133,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);
@@ -1337,6 +1340,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);
@@ -1768,6 +1772,7 @@ describe("neurons-services", () => {
         deviceLocked: false,
         targetId: "test",
         returnCode: LedgerError.NoErrors,
+        errorMessage: "No errors",
       };
       const smallerVersionIdentity = new MockLedgerIdentity({ version });
       setAccountIdentity(smallerVersionIdentity);

@@ -12,6 +12,8 @@
   export let rowData: RowDataType;
   export let columns: ResponsiveTableColumn<RowDataType>[];
   export let style: string | undefined = undefined;
+  // A placeholder row passes false, so the row is not a tab stop.
+  export let focusable = true;
 
   let firstColumn: ResponsiveTableColumn<RowDataType> | undefined;
   let middleColumns: ResponsiveTableColumn<RowDataType>[];
@@ -49,7 +51,7 @@
   this={nonNullish(rowData.rowHref) ? "a" : "div"}
   href={rowData.rowHref}
   role="row"
-  tabindex="0"
+  tabindex={focusable ? 0 : undefined}
   data-tid="responsive-table-row-component"
   on:click={onRowClick}
   {style}

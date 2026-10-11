@@ -1,4 +1,4 @@
-import type { LedgerError } from "@zondax/ledger-icp";
+import type { LedgerError } from "@zondax/ledger-js";
 
 export enum LedgerConnectionState {
   NOT_CONNECTED,
