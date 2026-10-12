@@ -1,4 +1,4 @@
-import { isHash, isPrincipal, typeOfLikeANumber } from "$lib/utils/utils";
+import { isPrincipal, typeOfLikeANumber } from "$lib/utils/utils";
 
 export type TreeJsonValueType =
   | "bigint"
@@ -8,7 +8,6 @@ export type TreeJsonValueType =
   | "number"
   | "object"
   | "principal"
-  | "hash"
   | "string"
   | "symbol"
   | "base64Encoding"
@@ -30,7 +29,6 @@ export const getTreeJsonValueRenderType = (
 ): TreeJsonValueType => {
   if (value === null) return "null";
   if (isPrincipal(value)) return "principal";
-  if (Array.isArray(value) && isHash(value)) return "hash";
   // not null was already checked above
   if (typeof value === "object") {
     const keys = Object.keys(value);
