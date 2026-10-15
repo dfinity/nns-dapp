@@ -5,8 +5,9 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
+    "build:seo": "node scripts/build.seo.mjs",
     "build:preload": "node scripts/build.preload.mjs",
-    "build:post-process": "npm run build:csp",
+    "build:post-process": "npm run build:seo && npm run build:csp",
     "i18n": "node scripts/i18n.types.js && prettier --write ./src/lib/types/i18n.d.ts",
     "dev": "npm run i18n && vite dev",
     "build": "npm run i18n && tsc --noEmit && vite build && npm run build:post-process",
