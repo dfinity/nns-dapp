@@ -2439,9 +2439,9 @@ dependencies = [
 
 [[package]]
 name = "ic-management-canister-types"
-version = "0.10.0"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98d6395878cedbecf0d7887521e6c3f62063b714c80c20efd046a89314fd2b59"
+checksum = "b3e3162bdfbdbc6ca3b4bfa8145f9ba19cddaf3eb8d1af8dc7be6a39557b76c2"
 dependencies = [
  "candid",
  "serde",
@@ -5780,7 +5780,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-timers",
  "ic-certified-map 0.3.2",
- "ic-management-canister-types 0.10.0",
+ "ic-management-canister-types 0.11.0",
  "ic-nervous-system-common",
  "lazy_static",
  "num-traits",
