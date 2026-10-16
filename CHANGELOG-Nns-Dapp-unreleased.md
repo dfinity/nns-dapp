@@ -39,6 +39,8 @@ proposal is successful, the changes it released will be moved from this file to
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- Use the most liquid ICPSwap pool that has a price for a token, so a new pool
+  with one tiny trade cannot change the USD values shown.
 
 #### Not Published
 
