@@ -35,10 +35,13 @@ proposal is successful, the changes it released will be moved from this file to
   could previously end the `content` attribute and add live `HTML` to the page.
   The install or the upgrade now fails if a value is not a web address. The
   check also limits the `ROBOTS` argument to the `robots` `meta` tag.
-
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- Build the imported-token replacement from certified data when the user imports
+  a token, adds an index canister, or removes a token. A save no longer writes
+  back a query response, and a save can no longer clear the list because the
+  tokens were not loaded.
 
 #### Not Published
 

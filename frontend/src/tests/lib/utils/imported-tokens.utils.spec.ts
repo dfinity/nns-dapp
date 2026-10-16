@@ -3,9 +3,11 @@ import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import {
   fromImportedTokenData,
   isImportedToken,
+  isImportedTokensCertified,
   toImportedTokenData,
 } from "$lib/utils/imported-tokens.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockedConstants } from "$tests/utils/mockable-constants.test-utils";
 
 describe("imported tokens utils", () => {
   const importedToken: ImportedToken = {
@@ -102,6 +104,38 @@ describe("imported tokens utils", () => {
           importedTokens: undefined,
         })
       ).toEqual(false);
+    });
+  });
+
+  describe("isImportedTokensCertified", () => {
+    it("should accept a certified response", () => {
+      expect(isImportedTokensCertified(true)).toBe(true);
+    });
+
+    it("should reject a query response", () => {
+      expect(isImportedTokensCertified(false)).toBe(false);
+    });
+
+    it("should reject imported tokens that were never loaded", () => {
+      expect(isImportedTokensCertified(undefined)).toBe(false);
+    });
+
+    it("should reject a query response when the session forces the query strategy", () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+
+      expect(isImportedTokensCertified(false)).toBe(false);
+    });
+
+    it("should accept a certified response when the session forces the query strategy", () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+
+      expect(isImportedTokensCertified(true)).toBe(true);
+    });
+
+    it("should reject imported tokens that were never loaded when the session forces the query strategy", () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+
+      expect(isImportedTokensCertified(undefined)).toBe(false);
     });
   });
 });
