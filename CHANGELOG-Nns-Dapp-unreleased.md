@@ -36,6 +36,10 @@ proposal is successful, the changes it released will be moved from this file to
   The install or the upgrade now fails if a value is not a web address. The
   check also limits the `ROBOTS` argument to the `robots` `meta` tag.
 
+- The import token validation no longer sends the user principal to the entered
+  canisters. The ledger and index canister IDs come from the form or from the
+  URL, so the two validation calls now use the anonymous identity.
+
 #### Not Published
 
 ### Operations
