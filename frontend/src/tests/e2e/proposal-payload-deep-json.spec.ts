@@ -19,7 +19,7 @@ import { expect, test } from "@playwright/test";
 // text overflows the call stack at 6,205 levels in Chrome 152. The
 // ExecuteNnsFunction payload cap is 70,000 bytes, which is far above it.
 const NESTING_DEPTH = 34_000;
-const DEEP_TEXT = `${"[".repeat(NESTING_DEPTH)}${"]".repeat(NESTING_DEPTH)}`;
+const DEEP_TEXT = "[".repeat(NESTING_DEPTH) + "]".repeat(NESTING_DEPTH);
 
 // The app loads this script to create the dummy proposals of a testnet. The
 // test serves its own version, so that one proposal carries the payload above.

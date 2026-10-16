@@ -79,7 +79,7 @@ describe("JsonPreview", () => {
 
   it("should render a text that nests JSON thousands of levels deep", async () => {
     jsonRepresentationStore.setMode("tree");
-    const deepText = `${"[".repeat(35_000)}${"]".repeat(35_000)}`;
+    const deepText = "[".repeat(35_000) + "]".repeat(35_000);
     const po = renderComponent({ comment: deepText });
 
     expect(await po.getTreeText()).toBe(`comment "${deepText}"`);

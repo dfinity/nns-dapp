@@ -362,22 +362,23 @@ export const getObjMaxDepth = (obj: unknown): number => {
   let maxDepth = 0;
   const stack: { value: unknown; level: number }[] = [{ value: obj, level: 0 }];
 
-  let entry = stack.pop();
-  while (nonNullish(entry)) {
-    const { value, level } = entry;
-    if (typeof value === "object" && value !== null) {
-      const keys = Object.keys(value);
-      if (keys.length > 0) {
-        maxDepth = Math.max(maxDepth, level + 1);
-        for (const key of keys) {
-          stack.push({
-            value: (value as Record<string, unknown>)[key],
-            level: level + 1,
-          });
-        }
-      }
+  while (stack.length > 0) {
+    const { value, level } = stack.pop()!;
+    if (typeof value !== "object" || value === null) {
+      continue;
     }
-    entry = stack.pop();
+    // If value is an array, keys are its indexes: ["0", "1", ...].
+    const keys = Object.keys(value);
+    if (keys.length === 0) {
+      continue;
+    }
+    maxDepth = Math.max(maxDepth, level + 1);
+    for (const key of keys) {
+      stack.push({
+        value: (value as Record<string, unknown>)[key],
+        level: level + 1,
+      });
+    }
   }
 
   return maxDepth;

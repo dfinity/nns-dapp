@@ -962,7 +962,7 @@ describe("utils", () => {
     it("returns the depth of a 100,000 level array without a stack overflow", () => {
       const depth = 100_000;
       const deepArray = JSON.parse(
-        `${"[".repeat(depth)}1${"]".repeat(depth)}`
+        "[".repeat(depth) + "1" + "]".repeat(depth)
       ) as unknown;
 
       expect(getObjMaxDepth(deepArray)).toBe(depth);
@@ -971,7 +971,7 @@ describe("utils", () => {
     it("returns the depth of a 100,000 level object without a stack overflow", () => {
       const depth = 100_000;
       const deepObject = JSON.parse(
-        `${'{"a":'.repeat(depth)}1${"}".repeat(depth)}`
+        '{"a":'.repeat(depth) + "1" + "}".repeat(depth)
       ) as unknown;
 
       expect(getObjMaxDepth(deepObject)).toBe(depth);
