@@ -43,32 +43,25 @@ const syncBalances = async (
   params: TimerWorkerUtilsJobData<PostMessageDataRequestBalances>
 ) => {
   try {
-    const queries = await getIcrcAccountsBalances({
-      ...params,
-      certified: false,
-    });
-
-    const changes = queries.filter(
-      ({ key, balance }) => balance !== store.state[key]?.balance
-    );
-
-    if (changes.length === 0) {
-      // Optimistic approach:
-      // Nothing has changed according query calls therefore, we spare the update calls.
-      // We do this for performance reason in order to reduce to the amount of update calls we perform from this worker.
-      return;
-    }
-
-    // Call and update store with certified data
+    // Only a certified answer may decide whether a balance changed, because a
+    // query answer comes from a single replica.
     const updates = await getIcrcAccountsBalances({
       ...params,
       certified: true,
     });
 
-    store.update(updates);
+    const changes = updates.filter(
+      ({ key, balance }) => balance !== store.state[key]?.balance
+    );
+
+    if (changes.length === 0) {
+      return;
+    }
+
+    store.update(changes);
 
     emitBalances(
-      updates.map(({ key, balance }) => ({
+      changes.map(({ key, balance }) => ({
         accountIdentifier: key,
         balance,
       }))
