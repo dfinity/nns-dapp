@@ -85,6 +85,7 @@ describe("balances.worker", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
+    vi.mocked(getIcrcAccountsBalances).mockReset();
 
     spyPostMessage = vi.fn();
     global.postMessage = spyPostMessage as unknown as typeof global.postMessage;
