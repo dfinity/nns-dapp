@@ -69,6 +69,22 @@ test("Portfolio balances are confirmed with certified update calls", async ({
     .poll(() => queriedLedgers.size, { timeout: 60_000 })
     .toBeGreaterThan(0);
 
+  await step("Wait until the set of queried ledgers stops growing");
+  // Later ledgers can get their query after the first ledger got its update,
+  // so a check that runs too early would miss a query-only ledger.
+  let lastSize = -1;
+  await expect
+    .poll(
+      async () => {
+        const stable = queriedLedgers.size === lastSize;
+        lastSize = queriedLedgers.size;
+        await page.waitForTimeout(3_000);
+        return stable;
+      },
+      { timeout: 60_000 }
+    )
+    .toBe(true);
+
   await step(
     "Every ledger that got a balance query also gets a balance update"
   );
