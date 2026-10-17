@@ -1,9 +1,6 @@
 import { getLedgerId as getLedgerIdApi } from "$lib/api/icrc-index.api";
 import { queryIcrcIndexPrincipal } from "$lib/api/icrc-ledger.api";
-import {
-  getAnonymousIdentity,
-  getAuthenticatedIdentity,
-} from "$lib/services/auth.services";
+import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -15,9 +12,11 @@ const getLedgerId = async ({
   indexCanisterId: Principal;
   certified: boolean;
 }): Promise<Principal> => {
-  const identity = await getAuthenticatedIdentity();
   const ledgerId = await getLedgerIdApi({
-    identity,
+    // The index canister ID is unverified user input, so the call must not
+    // carry the user principal. The ledger ID of an index canister is public
+    // data.
+    identity: getAnonymousIdentity(),
     indexCanisterId,
     certified,
   });

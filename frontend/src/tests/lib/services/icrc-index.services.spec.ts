@@ -1,7 +1,7 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
@@ -97,9 +97,13 @@ describe("icrc-index.services", () => {
         expect(spyOnGetLedgerId).toBeCalledTimes(1);
         expect(spyOnGetLedgerId).toBeCalledWith({
           certified: true,
-          identity: mockIdentity,
+          identity: expect.any(AnonymousIdentity),
           indexCanisterId,
         });
+        // The index canister ID is unverified user input, so the call must not
+        // carry the user principal.
+        const { identity } = spyOnGetLedgerId.mock.calls[0][0];
+        expect(identity.getPrincipal().isAnonymous()).toEqual(true);
       });
 
       it("should return false when the ledger canister IDs don't match", async () => {
