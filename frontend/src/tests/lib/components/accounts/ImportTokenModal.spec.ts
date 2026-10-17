@@ -57,6 +57,9 @@ describe("ImportTokenModal", () => {
       .spyOn(ledgerApi, "queryIcrcToken")
       .mockResolvedValue(tokenMetaData);
 
+    // The ledger names no index canister, so the check falls back to
+    // `getLedgerId` on the index canister.
+    vi.spyOn(ledgerApi, "queryIcrcIndexPrincipal").mockResolvedValue(undefined);
     vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(ledgerCanisterId);
     page.mock({
       routeId: AppPath.Tokens,
