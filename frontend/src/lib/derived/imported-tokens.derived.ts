@@ -45,8 +45,11 @@ export const importedTokenLedgerCanisterIdsStore: Readable<Set<string>> =
     importedTokensStore,
     ({ importedTokens }) =>
       new Set(
-        (importedTokens ?? []).map(({ ledgerCanisterId }) =>
-          ledgerCanisterId.toText()
-        )
+        (importedTokens ?? [])
+          // Important CK tokens keep their trusted metadata.
+          .filter(
+            ({ ledgerCanisterId }) => !isImportantCkToken({ ledgerCanisterId })
+          )
+          .map(({ ledgerCanisterId }) => ledgerCanisterId.toText())
       )
   );
