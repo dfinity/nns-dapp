@@ -22,6 +22,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- The proposal detail page no longer parses the text fields of a payload as
+  JSON, so a text that nests JSON thousands of levels deep no longer breaks
+  the page.
+
 #### Security
 
 - The "Hide Balance" option now also masks the balances in the accessible names
@@ -33,6 +37,16 @@ proposal is successful, the changes it released will be moved from this file to
 - The Portfolio, Tokens and Staking pages now confirm every token balance with
   a certified call. Before, they showed the answer of one replica and never
   checked it.
+
+- Check and escape the canister install arguments that the canister puts in the
+  `Content-Security-Policy` of every page. A value that is not a web address
+  could previously end the `content` attribute and add live `HTML` to the page.
+  The install or the upgrade now fails if a value is not a web address. The
+  check also limits the `ROBOTS` argument to the `robots` `meta` tag.
+
+- The import token validation no longer sends the user principal to the entered
+  canisters. The ledger and index canister IDs come from the form or from the
+  URL, so the two validation calls now use the anonymous identity.
 
 #### Not Published
 
