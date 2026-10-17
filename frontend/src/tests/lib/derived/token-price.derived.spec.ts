@@ -108,7 +108,7 @@ describe("token-price.derived", () => {
     });
 
     describe("symbol collisions", () => {
-      const importedLedgerCanisterIdText = "mxzaz-hqaaa-aaaar-qaada-cai";
+      const importedLedgerCanisterIdText = "2vxsx-fae";
       const importedLedgerCanisterId = Principal.fromText(
         importedLedgerCanisterIdText
       );
