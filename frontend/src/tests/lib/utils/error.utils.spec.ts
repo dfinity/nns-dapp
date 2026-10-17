@@ -1,7 +1,12 @@
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 
-import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  AccountNotFoundError,
+  HardwareWalletAttachError,
+  SubAccountLimitExceededError,
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import { ApiErrorKey } from "$lib/types/api.errors";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
 import {
   errorToString,
   isCanisterOutOfCyclesError,
@@ -109,6 +114,21 @@ describe("error-utils", () => {
         labelKey: "error__sns.undefined_project",
         renderAsHtml: false,
       });
+    });
+
+    it("should use the error message key of every allowed error family", () => {
+      for (const err of [
+        new AccountNotFoundError("error.account_not_found"),
+        new SubAccountLimitExceededError("error__account.create_subaccount"),
+        new NotEnoughAmountError("error.insufficient_funds"),
+      ]) {
+        expect(
+          toToastError({
+            fallbackErrorLabelKey: "test.test",
+            err,
+          })
+        ).toEqual({ labelKey: err.message, renderAsHtml: false });
+      }
     });
 
     it("should not use the message of an error that carries free text as a key", () => {
