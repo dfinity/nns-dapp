@@ -35,6 +35,7 @@ import {
 } from "$lib/stores/sns-neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
+import { ApiErrorKey } from "$lib/types/api.errors";
 import type { SnsTopicFollowing } from "$lib/types/sns";
 import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -537,7 +538,7 @@ export const stakeNeuron = async ({
       ?.fee;
 
     if (isNullish(fee)) {
-      throw new Error("error.transaction_fee_not_found");
+      throw new ApiErrorKey("error.transaction_fee_not_found");
     }
 
     await stakeNeuronApi({

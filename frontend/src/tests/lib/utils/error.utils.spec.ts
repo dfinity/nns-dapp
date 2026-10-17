@@ -1,6 +1,12 @@
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 
-import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  AccountNotFoundError,
+  HardwareWalletAttachError,
+  SubAccountLimitExceededError,
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { ApiErrorKey } from "$lib/types/api.errors";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
 import {
   errorToString,
   isCanisterOutOfCyclesError,
@@ -42,9 +48,20 @@ describe("error-utils", () => {
     });
 
     it("should translate error", () => {
+      expect(
+        errorToString(new ApiErrorKey("error__sns.undefined_project"))
+      ).toEqual(en.error__sns.undefined_project);
+    });
+
+    it("should not translate the message of an error that carries free text", () => {
+      expect(errorToString(new Error("core.close"))).toEqual("core.close");
       expect(errorToString(new Error("error__sns.undefined_project"))).toEqual(
-        en.error__sns.undefined_project
+        "error__sns.undefined_project"
       );
+      expect(
+        errorToString(new TestError("accounts.transaction_success"))
+      ).toEqual("accounts.transaction_success");
+      expect(errorToString(new Error("constructor"))).toEqual("constructor");
     });
   });
 
@@ -83,6 +100,72 @@ describe("error-utils", () => {
           err,
         })
       ).toEqual({ labelKey: "error.rename_subaccount", renderAsHtml: false });
+    });
+
+    it("should use the error message key of an allowed error class", () => {
+      const err = new ApiErrorKey("error__sns.undefined_project");
+
+      expect(
+        toToastError({
+          fallbackErrorLabelKey: "test.test",
+          err,
+        })
+      ).toEqual({
+        labelKey: "error__sns.undefined_project",
+        renderAsHtml: false,
+      });
+    });
+
+    it("should use the error message key of every allowed error family", () => {
+      for (const err of [
+        new AccountNotFoundError("error.account_not_found"),
+        new SubAccountLimitExceededError("error__account.create_subaccount"),
+        new NotEnoughAmountError("error.insufficient_funds"),
+      ]) {
+        expect(
+          toToastError({
+            fallbackErrorLabelKey: "test.test",
+            err,
+          })
+        ).toEqual({ labelKey: err.message, renderAsHtml: false });
+      }
+    });
+
+    it("should not use the message of an error that carries free text as a key", () => {
+      // An index or ledger canister the user imported chooses this message.
+      for (const message of [
+        "core.close",
+        "accounts.transaction_success",
+        "error.transaction_error",
+      ]) {
+        const err = new Error(message);
+
+        expect(
+          toToastError({
+            fallbackErrorLabelKey: "error.transaction_data",
+            err,
+          })
+        ).toEqual({
+          labelKey: "error.transaction_data",
+          err,
+          renderAsHtml: false,
+        });
+      }
+    });
+
+    it("should not use a prototype chain key of the catalog", () => {
+      const err = new Error("constructor");
+
+      expect(
+        toToastError({
+          fallbackErrorLabelKey: "error.transaction_data",
+          err,
+        })
+      ).toEqual({
+        labelKey: "error.transaction_data",
+        err,
+        renderAsHtml: false,
+      });
     });
 
     it("should pass on renderAsHtml", () => {
