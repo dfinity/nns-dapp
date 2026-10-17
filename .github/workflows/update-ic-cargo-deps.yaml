@@ -1,5 +1,7 @@
 # A GitHub Actions workflow that regularly checks for new `ic` releases and updates the Cargo.toml dependencies.
 name: Update IC Cargo Dependencies
+permissions:
+  contents: read
 on:
   schedule:
     # Check for new IC releases every Sunday at 7:30am UTC.
