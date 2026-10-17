@@ -38,6 +38,7 @@ describe("IcrcTokenTransactionModal", () => {
     });
     vi.spyOn(ledgerApi, "icrcTransfer").mockResolvedValue(1234n);
     vi.spyOn(ledgerApi, "queryIcrcMintingAccount").mockResolvedValue(undefined);
+    vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(token);
   });
 
   const setupAccount = () => {
@@ -164,6 +165,134 @@ describe("IcrcTokenTransactionModal", () => {
       amount: BigInt(amount) * 10n ** 18n,
       to: toAccount,
       fee: token.fee,
+    });
+  });
+
+  describe("certified token metadata", () => {
+    // The property comes from the token store, which can hold the result of an
+    // uncertified query.
+    const uncertifiedToken = { ...token, decimals: token.decimals + 2 };
+
+    const renderWithUncertifiedToken = async () => {
+      const { container } = await renderModal({
+        component: IcrcTokenTransactionModal,
+        props: {
+          ledgerCanisterId,
+          universeId: ledgerCanisterId,
+          token: uncertifiedToken,
+          transactionFee: TokenAmountV2.fromUlps({
+            amount: uncertifiedToken.fee,
+            token: uncertifiedToken,
+          }),
+        },
+      });
+
+      await runResolvedPromises();
+
+      return IcrcTokenTransactionModalPo.under(
+        new JestPageObjectElement(container)
+      );
+    };
+
+    it("should query the token metadata as certified", async () => {
+      setupAccount();
+      await renderModalComponent();
+
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+        certified: true,
+      });
+    });
+
+    it("should disable continue until the certified metadata is loaded", async () => {
+      setupAccount();
+      let resolveToken: (value: typeof token) => void;
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockReturnValue(
+        new Promise((resolve) => {
+          resolveToken = resolve;
+        })
+      );
+
+      const { container } = await renderModal({
+        component: IcrcTokenTransactionModal,
+        props: {
+          ledgerCanisterId,
+          universeId: ledgerCanisterId,
+          token,
+          transactionFee,
+        },
+      });
+
+      const po = IcrcTokenTransactionModalPo.under(
+        new JestPageObjectElement(container)
+      );
+      const formPo = po.getTransactionFormPo();
+
+      await formPo.enterAddress(encodeIcrcAccount({ owner: principal(2) }));
+      await formPo.enterAmount(1);
+
+      expect(await formPo.isContinueButtonEnabled()).toBe(false);
+
+      resolveToken(token);
+      await runResolvedPromises();
+
+      expect(await formPo.isContinueButtonEnabled()).toBe(true);
+    });
+
+    it("should keep continue disabled when the certified metadata fails to load", async () => {
+      setupAccount();
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockRejectedValue(
+        new Error("network error")
+      );
+
+      const po = await renderModalComponent();
+      const formPo = po.getTransactionFormPo();
+
+      await formPo.enterAddress(encodeIcrcAccount({ owner: principal(2) }));
+      await formPo.enterAmount(1);
+
+      expect(await formPo.isContinueButtonEnabled()).toBe(false);
+      expect(ledgerApi.icrcTransfer).not.toHaveBeenCalled();
+    });
+
+    it("should convert the amount with the certified decimals", async () => {
+      setupAccount();
+
+      const po = await renderWithUncertifiedToken();
+      const toAccount = { owner: principal(2) };
+      const amount = 1;
+
+      await po.transferToAddress({
+        destinationAddress: encodeIcrcAccount(toAccount),
+        amount,
+      });
+
+      expect(ledgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
+      expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          amount: BigInt(amount) * 10n ** BigInt(token.decimals),
+        })
+      );
+    });
+
+    it("should use the certified fee", async () => {
+      setupAccount();
+      const certifiedToken = { ...token, fee: token.fee + 12_345n };
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(certifiedToken);
+
+      const po = await renderModalComponent();
+
+      await po.transferToAddress({
+        destinationAddress: encodeIcrcAccount({ owner: principal(2) }),
+        amount: 1,
+      });
+
+      expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith(
+        expect.objectContaining({ fee: certifiedToken.fee })
+      );
     });
   });
 
