@@ -29,6 +29,8 @@
 
     .markdown-container {
       margin-top: var(--padding-2x);
+      // keep positioned summary content inside the card
+      contain: paint;
     }
 
     :global(.markdown-container > :last-child) {
