@@ -11,10 +11,15 @@ canisters keep the balances and the neurons.
 ## Identity
 
 - The canister keys each account by the principal of the caller.
-- Internet Identity derives this principal for one origin. If the app serves
-  `/.well-known/ii-derivation-origin`, the web app uses the origin in that
-  file. If not, the web app uses the origin that the user visits. A principal
-  for a different origin has a different, empty account.
+- Internet Identity derives this principal for one origin. A principal for a
+  different origin has a different, empty account.
+- The web app derives for `https://nns.ic0.app` when the user visits
+  `nns.ic0.app`, `nns.internetcomputer.org`, `wallet.ic0.app`,
+  `wallet.internetcomputer.org`, `beta.nns.ic0.app`, or
+  `beta.nns.internetcomputer.org`. On every other origin, it derives for the
+  origin that the user visits.
+- `/.well-known/ii-derivation-origin` gives this origin to agents. It does not
+  configure the sign-in of the web app. Only the mainnet canister serves it.
 - Each method that reads or changes account data rejects the anonymous
   principal. The call traps.
 - `get_stats`, `get_histogram`, `get_tvl`, `http_request`, `add_stable_asset`,
@@ -41,10 +46,10 @@ canisters keep the balances and the neurons.
 
 ## Query calls
 
-Query responses are not certified. If a read decides where tokens go, for
-example an address from `get_address_book` or an account identifier from
-`get_account`, make the same call as an update call. An update call goes
-through consensus.
+Query responses are not certified. Make a read as an update call if it decides
+where tokens go, for example an address from `get_address_book` or an account
+identifier from `get_account`. Also make it as an update call if its result goes
+into a `set_` call. An update call goes through consensus.
 
 ## Methods that change state
 
@@ -68,9 +73,9 @@ All of these are update calls. Each call changes only the data of the caller.
   or delete the canister.
 - `set_imported_tokens`, `set_fav_projects`, and `set_address_book` replace the
   full list. Each list holds 20 entries or fewer. An entry that is not in the
-  new list is deleted. To change one entry, read the list with the matching
-  `get_imported_tokens`, `get_fav_projects`, or `get_address_book` query, and
-  then send the full changed list.
+  new list is deleted. To change one entry, call the matching
+  `get_imported_tokens`, `get_fav_projects`, or `get_address_book` method as
+  an update call, and then send the full changed list.
 - `set_imported_tokens` keeps the `ledger_canister_id` and the optional
   `index_canister_id` of each ICRC-1 token.
 - `set_fav_projects` keeps the `root_canister_id` of each SNS.
