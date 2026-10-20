@@ -426,41 +426,43 @@ pub fn init_assets() {
         let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
         insert_tar_xz(compressed);
     }
+    insert_service_discoverability_files();
+}
+
+/// Adds the files that let an AI agent find this canister from the app URL.
+///
+/// The canister serves the files only if the `II_DERIVATION_ORIGIN` argument
+/// is set.  Only mainnet sets it.  The `ic-architecture` manifest opts the app
+/// into ICP MCP, so beta and test deployments must not serve it.
+///
+/// See <https://docs.internetcomputer.org/guides/frontends/service-discoverability/>
+fn insert_service_discoverability_files() {
+    let Some(origin) = CANISTER_ARGUMENTS.with(|args| ii_derivation_origin(&args.borrow().args)) else {
+        return;
+    };
     let manifest = ic_architecture_manifest(&ic_cdk::api::canister_self().to_string());
     insert_asset(IC_ARCHITECTURE_PATH, Asset::new(manifest.into_bytes()));
-    if let Some(body) = CANISTER_ARGUMENTS.with(|args| ii_derivation_origin(&args.borrow().args)) {
-        insert_asset(II_DERIVATION_ORIGIN_PATH, Asset::new(body.into_bytes()));
-    }
+    insert_asset(II_DERIVATION_ORIGIN_PATH, Asset::new(origin.into_bytes()));
 }
 
 /// The path of the manifest that lists the canisters of the app.
-///
-/// See <https://docs.internetcomputer.org/guides/frontends/service-discoverability/>
 const IC_ARCHITECTURE_PATH: &str = "/.well-known/ic-architecture";
 
 /// The path of the file that gives the Internet Identity derivation origin.
-///
-/// See <https://docs.internetcomputer.org/guides/frontends/service-discoverability/>
 const II_DERIVATION_ORIGIN_PATH: &str = "/.well-known/ii-derivation-origin";
 
-/// Returns the body of `/.well-known/ii-derivation-origin`, from the `II_DERIVATION_ORIGIN` argument.
-///
-/// Only the deployments whose front end pins a derivation origin set the
-/// argument.  Without the file, an agent derives for the origin that it
-/// visits, as the front end does.
+/// Returns the value of the `II_DERIVATION_ORIGIN` argument, if it is not empty.
 fn ii_derivation_origin(args: &[(String, String)]) -> Option<String> {
     args.iter()
         .find(|(name, _)| name == "II_DERIVATION_ORIGIN")
-        .map(|(_, origin)| origin)
+        .map(|(_, origin)| origin.clone())
         .filter(|origin| !origin.is_empty())
-        .map(|origin| format!("{origin}\n"))
 }
 
 /// Returns the `ic-architecture` manifest of the app.
 ///
 /// The manifest declares only this canister.  This canister serves the web app
-/// and the account API.  The canister ID differs on each network, so the
-/// canister makes the manifest when it is installed or upgraded.
+/// and the account API.
 fn ic_architecture_manifest(own_canister_id: &str) -> String {
     format!(
         r#"{{
@@ -612,7 +614,7 @@ fn ii_derivation_origin_comes_from_the_argument() {
     let args = |pairs: &[(&str, &str)]| crate::arguments::CanisterArguments::args_from_str(pairs);
     assert_eq!(
         ii_derivation_origin(&args(&[("II_DERIVATION_ORIGIN", "https://nns.ic0.app")])),
-        Some("https://nns.ic0.app\n".to_string())
+        Some("https://nns.ic0.app".to_string())
     );
     assert_eq!(ii_derivation_origin(&args(&[("II_DERIVATION_ORIGIN", "")])), None);
     assert_eq!(ii_derivation_origin(&args(&[("HOST", "https://icp-api.io")])), None);

@@ -1,28 +1,16 @@
 import { step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-test("Test the service discoverability files", async ({ request }) => {
-  await step("The manifest declares only the nns-dapp canister");
-  const html = await (await request.get("/")).text();
-  const ownCanisterId = html.match(/data-own-canister-id="([^"]+)"/)?.[1];
-  expect(ownCanisterId).toBeTruthy();
-
+// Only mainnet sets II_DERIVATION_ORIGIN, which turns the files on. The gateway
+// cannot verify the certificate of a missing asset, so the status is 503 and
+// not 404.
+test("Test that a local deployment is not discoverable", async ({
+  request,
+}) => {
+  await step("A local deployment serves no manifest");
   const manifest = await request.get("/.well-known/ic-architecture");
-  expect(manifest.status()).toBe(200);
-  expect(manifest.headers()["content-type"]).toBe("application/json");
-  expect(manifest.headers()["access-control-allow-origin"]).toBe("*");
-  expect(await manifest.json()).toEqual({
-    version: "1.0.0",
-    canisters: [
-      expect.objectContaining({
-        id: ownCanisterId,
-        name: "nns-dapp",
-      }),
-    ],
-  });
+  expect(manifest.ok()).toBe(false);
 
-  // Only mainnet and beta set II_DERIVATION_ORIGIN. The gateway cannot verify
-  // the certificate of a missing asset, so the status is 503 and not 404.
   await step("A local deployment serves no derivation origin");
   const derivationOrigin = await request.get(
     "/.well-known/ii-derivation-origin"

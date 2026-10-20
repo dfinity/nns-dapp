@@ -31,8 +31,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
         },
-        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app",
-        "II_DERIVATION_ORIGIN": "https://nns.ic0.app"
+        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
       }
     },
     "devenv_llorenc": {
