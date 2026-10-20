@@ -14,16 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Serve the `/.well-known/ic-architecture` manifest. The manifest declares the
-  nns-dapp canister, so an AI agent can find the canister from the app URL.
-  The manifest also makes the app available through ICP MCP, under the ICP MCP
-  App Operator Terms.
-- Add the `get_api_doc` query method. It returns a guide to the API of the
-  canister: the authentication rules, the limits, and the methods that replace
-  a full list.
-- Serve `/.well-known/ii-derivation-origin`. An agent on an alternative origin,
-  for example `nns.internetcomputer.org`, then derives the same principal as
-  the web app.
+- Make the NNS dapp discoverable by AI agents, also through ICP MCP.
 
 #### Changed
 
