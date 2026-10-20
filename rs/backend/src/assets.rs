@@ -271,8 +271,13 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     }
     // ii-alternative-origins needs to be set as JSON even though it has no file extension
     // https://internetcomputer.org/docs/current/developer-docs/integrations/internet-identity/alternative-origins#listing-origins
-    if request_path.ends_with("ii-alternative-origins") {
+    if request_path.ends_with("ii-alternative-origins") || request_path.ends_with("ic-architecture") {
         return Some("application/json");
+    }
+    // The body of ii-derivation-origin is one origin on one line.
+    // https://docs.internetcomputer.org/guides/frontends/service-discoverability/
+    if request_path.ends_with("ii-derivation-origin") {
+        return Some("text/plain");
     }
     // Mentioned here: https://github.com/dfinity/internet-identity/pull/1230
     // If you follow the official docs https://github.com/r-birkner/portal/blob/rjb/custom-domains-docs-v2/docs/developer-docs/production/custom-domain/custom-domain.md#custom-domains-on-the-boundary-nodes
@@ -412,7 +417,7 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &mut State, path:
     assets.insert(path, asset);
 }
 
-/// Adds the files bundled in the WASM to the state.
+/// Adds the files bundled in the WASM and the `ic-architecture` manifest to the state.
 ///
 /// Note: Used both in `init` and `post_upgrade`
 pub fn init_assets() {
@@ -421,6 +426,35 @@ pub fn init_assets() {
         let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
         insert_tar_xz(compressed);
     }
+    let manifest = ic_architecture_manifest(&ic_cdk::api::canister_self().to_string());
+    insert_asset(IC_ARCHITECTURE_PATH, Asset::new(manifest.into_bytes()));
+}
+
+/// The path of the manifest that lists the canisters of the app.
+///
+/// See <https://docs.internetcomputer.org/guides/frontends/service-discoverability/>
+const IC_ARCHITECTURE_PATH: &str = "/.well-known/ic-architecture";
+
+/// Returns the `ic-architecture` manifest of the app.
+///
+/// The manifest declares only this canister.  This canister serves the web app
+/// and the account API.  The canister ID differs on each network, so the
+/// canister makes the manifest when it is installed or upgraded.
+fn ic_architecture_manifest(own_canister_id: &str) -> String {
+    format!(
+        r#"{{
+  "version": "1.0.0",
+  "canisters": [
+    {{
+      "id": "{own_canister_id}",
+      "name": "nns-dapp",
+      "role": "the frontend and the backend",
+      "description": "Serves the NNS dapp web app. Keeps the account data of each user: sub-account names, hardware wallets, linked canisters, imported tokens, favorite projects, and an address book. Holds no tokens. get_api_doc returns a guide to the API."
+    }}
+  ]
+}}
+"#
+    )
 }
 
 /// Adds an xz compressed tarball of assets to the state.
@@ -526,6 +560,30 @@ fn encode_decode() {
             "x".to_string() => Asset::new_stable(vec![1,2,3])
         })
     );
+}
+
+#[test]
+fn well_known_files_have_the_correct_content_type() {
+    assert_eq!(
+        content_type_of("/.well-known/ic-architecture"),
+        Some("application/json")
+    );
+    assert_eq!(
+        content_type_of("/.well-known/ii-alternative-origins"),
+        Some("application/json")
+    );
+    assert_eq!(content_type_of("/.well-known/ii-derivation-origin"), Some("text/plain"));
+    assert_eq!(
+        content_type_of("/.well-known/ic-domains"),
+        Some("application/octet-stream")
+    );
+}
+
+#[test]
+fn ic_architecture_manifest_declares_only_the_given_canister() {
+    let manifest = ic_architecture_manifest("qoctq-giaaa-aaaaa-aaaea-cai");
+    assert!(manifest.contains(r#""id": "qoctq-giaaa-aaaaa-aaaea-cai","#));
+    assert_eq!(manifest.matches(r#""id":"#).count(), 1);
 }
 
 /// Compress data
