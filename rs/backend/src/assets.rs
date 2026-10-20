@@ -417,7 +417,7 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &mut State, path:
     assets.insert(path, asset);
 }
 
-/// Adds the files bundled in the WASM and the `ic-architecture` manifest to the state.
+/// Adds the files bundled in the WASM and the service discoverability files to the state.
 ///
 /// Note: Used both in `init` and `post_upgrade`
 pub fn init_assets() {
@@ -428,12 +428,33 @@ pub fn init_assets() {
     }
     let manifest = ic_architecture_manifest(&ic_cdk::api::canister_self().to_string());
     insert_asset(IC_ARCHITECTURE_PATH, Asset::new(manifest.into_bytes()));
+    if let Some(body) = CANISTER_ARGUMENTS.with(|args| ii_derivation_origin(&args.borrow().args)) {
+        insert_asset(II_DERIVATION_ORIGIN_PATH, Asset::new(body.into_bytes()));
+    }
 }
 
 /// The path of the manifest that lists the canisters of the app.
 ///
 /// See <https://docs.internetcomputer.org/guides/frontends/service-discoverability/>
 const IC_ARCHITECTURE_PATH: &str = "/.well-known/ic-architecture";
+
+/// The path of the file that gives the Internet Identity derivation origin.
+///
+/// See <https://docs.internetcomputer.org/guides/frontends/service-discoverability/>
+const II_DERIVATION_ORIGIN_PATH: &str = "/.well-known/ii-derivation-origin";
+
+/// Returns the body of `/.well-known/ii-derivation-origin`, from the `II_DERIVATION_ORIGIN` argument.
+///
+/// Only the deployments whose front end pins a derivation origin set the
+/// argument.  Without the file, an agent derives for the origin that it
+/// visits, as the front end does.
+fn ii_derivation_origin(args: &[(String, String)]) -> Option<String> {
+    args.iter()
+        .find(|(name, _)| name == "II_DERIVATION_ORIGIN")
+        .map(|(_, origin)| origin)
+        .filter(|origin| !origin.is_empty())
+        .map(|origin| format!("{origin}\n"))
+}
 
 /// Returns the `ic-architecture` manifest of the app.
 ///
@@ -584,6 +605,17 @@ fn ic_architecture_manifest_declares_only_the_given_canister() {
     let manifest = ic_architecture_manifest("qoctq-giaaa-aaaaa-aaaea-cai");
     assert!(manifest.contains(r#""id": "qoctq-giaaa-aaaaa-aaaea-cai","#));
     assert_eq!(manifest.matches(r#""id":"#).count(), 1);
+}
+
+#[test]
+fn ii_derivation_origin_comes_from_the_argument() {
+    let args = |pairs: &[(&str, &str)]| crate::arguments::CanisterArguments::args_from_str(pairs);
+    assert_eq!(
+        ii_derivation_origin(&args(&[("II_DERIVATION_ORIGIN", "https://nns.ic0.app")])),
+        Some("https://nns.ic0.app\n".to_string())
+    );
+    assert_eq!(ii_derivation_origin(&args(&[("II_DERIVATION_ORIGIN", "")])), None);
+    assert_eq!(ii_derivation_origin(&args(&[("HOST", "https://icp-api.io")])), None);
 }
 
 /// Compress data

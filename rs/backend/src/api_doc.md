@@ -75,9 +75,13 @@ All of these are update calls. Each call changes only the data of the caller.
 
 - `get_stats` (query) returns the number of accounts, sub-accounts, and
   hardware wallets, the memory sizes, and the instruction counts.
-- `get_histogram` (query) returns the number of sub-accounts, hardware
-  wallets, and canisters for each account. It traps if you call it as an
-  update. It is for ad-hoc analysis, and a future release can remove it.
+- `get_histogram` (query) returns `accounts_count` and three histograms of all
+  accounts: the number of sub-accounts, hardware wallets, and canisters per
+  account. The buckets are logarithmic. Each key is the upper limit of its
+  bucket: key 0 is 0 items, key 1 is 1 item, key 3 is 2 to 3 items, key 7 is
+  4 to 7 items, and so on. Each value is the number of accounts in the bucket.
+  It traps if you call it as an update. It is for ad-hoc analysis, and a
+  future release can remove it.
 - `get_tvl` (query) returns `tvl`, the value of the ICP in NNS neurons in whole
   USD, and `time_sec`, the Unix time in seconds of the ICP/USD exchange rate.
 - `http_request` (query) serves the files of the web app.

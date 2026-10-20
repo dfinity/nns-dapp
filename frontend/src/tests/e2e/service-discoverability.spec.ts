@@ -21,11 +21,11 @@ test("Test the service discoverability files", async ({ request }) => {
     ],
   });
 
-  await step("The derivation origin is the origin of the NNS dapp");
+  // Only mainnet and beta set II_DERIVATION_ORIGIN. The gateway cannot verify
+  // the certificate of a missing asset, so the status is 503 and not 404.
+  await step("A local deployment serves no derivation origin");
   const derivationOrigin = await request.get(
     "/.well-known/ii-derivation-origin"
   );
-  expect(derivationOrigin.status()).toBe(200);
-  expect(derivationOrigin.headers()["content-type"]).toBe("text/plain");
-  expect(await derivationOrigin.text()).toBe("https://nns.ic0.app\n");
+  expect(derivationOrigin.ok()).toBe(false);
 });
