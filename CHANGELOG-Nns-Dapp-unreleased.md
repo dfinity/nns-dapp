@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Make the NNS dapp discoverable by AI agents, also through ICP MCP.
+
 #### Changed
 
 #### Deprecated

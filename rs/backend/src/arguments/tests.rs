@@ -11,11 +11,12 @@ fn arguments(pairs: &[(&str, &str)]) -> CanisterArguments {
 /// The arguments that the deployment scripts create for the mainnet network.
 ///
 /// The values come from `scripts/nns-dapp/test-config-assets/mainnet/arg.did`.
-const MAINNET_ARGUMENTS: [(&str, &str); 8] = [
+const MAINNET_ARGUMENTS: [(&str, &str); 9] = [
     ("API_HOST", "https://icp-api.io"),
     ("HOST", "https://icp-api.io"),
     ("ICP_SWAP_URL", "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/"),
     ("IDENTITY_SERVICE_URL", "https://id.ai/"),
+    ("II_DERIVATION_ORIGIN", "https://nns.ic0.app"),
     ("ROBOTS", ""),
     ("SNS_AGGREGATOR_URL", "https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io"),
     ("STATIC_HOST", "https://icp0.io"),
