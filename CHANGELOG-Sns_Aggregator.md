@@ -14,6 +14,10 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Removed
 ### Fixed
 ### Security
+- Only a controller can call the `reconfigure` method. The method exists in the
+  development build. Before, any principal could replace the configuration.
+- Raise an update interval below 100 ms to 100 ms. A shorter interval makes the
+  canister collect data continuously and burn cycles.
 
 ## [Proposal 137283](https://dashboard.internetcomputer.org/proposal/137283)
 ### Added
