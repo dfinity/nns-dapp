@@ -34,6 +34,10 @@ proposal is successful, the changes it released will be moved from this file to
 - Impose a Candid decoding quota on every exported method that takes an argument. The quota limits the DoS surface from decoding bombs.
 - The sign-out message in the URL is now limited to known messages. Before, a
   crafted link could show any text as an official toast.
+- A CSV export now prefixes a cell that starts with `+`, `-`, a tab, a carriage
+  return or a line feed with a single quote. Before, only `=`, `@` and `|` got
+  the prefix, so a token name or symbol could inject a spreadsheet formula.
+  Amount cells are unchanged.
 - Check and escape the canister install arguments that the canister puts in the
   `Content-Security-Policy` of every page. A value that is not a web address
   could previously end the `content` attribute and add live `HTML` to the page.
