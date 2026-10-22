@@ -17,8 +17,10 @@ import {
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { isLastCall } from "$lib/utils/env.utils";
+import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
 import {
   fromImportedTokenData,
   toImportedTokenData,
@@ -198,6 +200,10 @@ export const removeImportedTokens = async (
       // There is no need to reload imported tokens if the remove operation is successful.
       importedTokensStore.remove(ledgerCanisterId);
       failedImportedTokenLedgerIdsStore.remove(ledgerCanisterId.toText());
+      // Drop the unvetted metadata, so it does not look genuine once the token is no longer imported.
+      if (!isImportantCkToken({ ledgerCanisterId })) {
+        tokensStore.resetUniverse(ledgerCanisterId);
+      }
 
       toastsSuccess({
         labelKey: "tokens.remove_imported_token_success",

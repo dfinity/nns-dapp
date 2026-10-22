@@ -1,5 +1,7 @@
+import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
   failedExistentImportedTokenLedgerIdsStore,
+  importedTokenLedgerCanisterIdsStore,
   loadedImportedTokensStore,
 } from "$lib/derived/imported-tokens.derived";
 import {
@@ -83,6 +85,24 @@ describe("imported tokens derived stores", () => {
         importedTokenA.ledgerCanisterId.toText()
       );
       expect(get(loadedImportedTokensStore)).toEqual([importedTokenB]);
+    });
+  });
+
+  describe("importedTokenLedgerCanisterIdsStore", () => {
+    it("should contain imported ledger ids but not important CK tokens", () => {
+      importedTokensStore.set({
+        importedTokens: [
+          importedTokenA,
+          {
+            ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+      expect(get(importedTokenLedgerCanisterIdsStore)).toEqual(
+        new Set([importedTokenA.ledgerCanisterId.toText()])
+      );
     });
   });
 });
