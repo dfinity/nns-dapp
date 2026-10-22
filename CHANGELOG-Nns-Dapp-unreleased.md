@@ -44,6 +44,10 @@ proposal is successful, the changes it released will be moved from this file to
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
 
+- Build the address book replacement from certified data when the user
+  adds, edits or removes an entry. A save no longer writes back a query
+  response.
+
 #### Not Published
 
 ### Operations

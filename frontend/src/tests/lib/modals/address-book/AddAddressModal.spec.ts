@@ -2,13 +2,16 @@ import AddAddressModal from "$lib/modals/address-book/AddAddressModal.svelte";
 import * as addressBookServices from "$lib/services/address-book.services";
 import { addressBookStore } from "$lib/stores/address-book.store";
 import {
+  mockForgedNamedAddress,
   mockNamedAddressIcp,
   mockNamedAddressIcrc1,
 } from "$tests/mocks/address-book.mock";
 import en from "$tests/mocks/i18n.mock";
 
 import { renderModal } from "$tests/mocks/modal.mock";
-import { fireEvent } from "@testing-library/svelte";
+import { toastsStore } from "@dfinity/gix-components";
+import { fireEvent, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/services/address-book.services");
 
@@ -21,6 +24,18 @@ describe("AddAddressModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     addressBookStore.reset();
+    addressBookStore.set({ namedAddresses: [], certified: true });
+
+    // The real service returns the entries only when the store holds certified
+    // data. The mock keeps that link, so the tests below can drop the
+    // certified flag and see the modal refuse to save.
+    vi.spyOn(
+      addressBookServices,
+      "getCertifiedNamedAddresses"
+    ).mockImplementation(async () => {
+      const { namedAddresses, certified } = get(addressBookStore);
+      return certified === true ? namedAddresses : undefined;
+    });
   });
 
   it("should display modal", async () => {
@@ -826,6 +841,152 @@ describe("AddAddressModal", () => {
 
       const saveButton = queryByTestId("save-address-button");
       await fireEvent.click(saveButton);
+      expect(saveAddressBookSpy).not.toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
+    });
+  });
+  describe("certified data", () => {
+    const fillForm = async (
+      container: HTMLElement,
+      nickname: string,
+      addressValue: string
+    ) => {
+      await fireEvent.input(container.querySelector("input[name='nickname']"), {
+        target: { value: nickname },
+      });
+      await fireEvent.input(container.querySelector("input[name='address']"), {
+        target: { value: addressValue },
+      });
+    };
+
+    it("should not write back an uncertified address book when adding", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp],
+        certified: false,
+      });
+
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+      const onClose = vi.fn();
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose },
+      });
+
+      await fillForm(container, "Carol", validIcrc1Address);
+      await fireEvent.click(queryByTestId("save-address-button"));
+
+      await waitFor(() =>
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: en.error__address_book.not_certified,
+          },
+        ])
+      );
+
+      expect(saveAddressBookSpy).not.toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("should not write back an uncertified address book when editing", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp],
+        certified: false,
+      });
+
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+      const onClose = vi.fn();
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose, namedAddress: mockNamedAddressIcp },
+      });
+
+      await fillForm(container, "Alice renamed", validIcrc1Address);
+      await fireEvent.click(queryByTestId("save-address-button"));
+
+      await waitFor(() =>
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: en.error__address_book.not_certified,
+          },
+        ])
+      );
+
+      expect(saveAddressBookSpy).not.toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it("should write back the certified address book, not the store snapshot the modal opened with", async () => {
+      // The modal opens on a query response that holds a forged entry.
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockForgedNamedAddress],
+        certified: false,
+      });
+
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose: vi.fn() },
+      });
+
+      // The certified response arrives and drops the forged entry.
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp],
+        certified: true,
+      });
+
+      await fillForm(container, "Carol", validIcrc1Address);
+      await fireEvent.click(queryByTestId("save-address-button"));
+
+      await waitFor(() => expect(saveAddressBookSpy).toHaveBeenCalledTimes(1));
+
+      expect(saveAddressBookSpy).toHaveBeenCalledWith([
+        mockNamedAddressIcp,
+        { name: "Carol", address: { Icrc1: validIcrc1Address } },
+      ]);
+    });
+
+    it("should not save when the entry to edit is absent from the certified address book", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+      const onClose = vi.fn();
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose, namedAddress: mockNamedAddressIcp },
+      });
+
+      await fillForm(container, "Alice renamed", validIcrc1Address);
+      await fireEvent.click(queryByTestId("save-address-button"));
+
+      await waitFor(() =>
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: en.error__address_book.entry_not_found.replace(
+              "$name",
+              mockNamedAddressIcp.name
+            ),
+          },
+        ])
+      );
+
       expect(saveAddressBookSpy).not.toHaveBeenCalled();
       expect(onClose).not.toHaveBeenCalled();
     });
