@@ -1,5 +1,8 @@
 import * as api from "$lib/api/sns.api";
-import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import {
+  WATCH_SALE_CERTIFIED_EVERY_N_POLLS,
+  WATCH_SALE_STATE_EVERY_MILLISECONDS,
+} from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
@@ -8,6 +11,7 @@ import {
   mockIdentity,
   mockPrincipal,
   resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsSwapCommitment,
@@ -345,6 +349,76 @@ describe("sns-services", () => {
       expect(
         get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
       ).toEqual(derivedState);
+    });
+  });
+
+  describe("watchSnsTotalCommitment certified refresh", () => {
+    const derived = (count: bigint): SnsSwapDid.GetDerivedStateResponse => ({
+      sns_tokens_per_icp: [2],
+      buyer_total_icp_e8s: [2_000_000_000n],
+      cf_participant_count: [],
+      direct_participant_count: [count],
+      cf_neuron_count: [],
+      direct_participation_icp_e8s: [],
+      neurons_fund_participation_icp_e8s: [],
+    });
+
+    it("should refresh the certified count on every Nth poll and ignore uncertified replies", async () => {
+      const spy = vi
+        .spyOn(api, "querySnsDerivedState")
+        .mockImplementation(async ({ certified }) =>
+          certified ? derived(10n) : derived(999n)
+        );
+
+      const clearWatch = watchSnsTotalCommitment({
+        rootCanisterId: rootCanisterId1.toText(),
+      });
+      const count = () =>
+        get(snsDerivedStateStore)[rootCanisterId1.toText()]
+          ?.certifiedDirectParticipantCount;
+
+      for (let i = 1; i < WATCH_SALE_CERTIFIED_EVERY_N_POLLS; i++) {
+        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+        expect(spy).toHaveBeenLastCalledWith(
+          expect.objectContaining({ certified: false })
+        );
+        expect(count()).toBeUndefined();
+      }
+
+      await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+      expect(spy).toHaveBeenLastCalledWith(
+        expect.objectContaining({ certified: true })
+      );
+      expect(count()).toEqual([10n]);
+
+      // Uncertified polls after the refresh do not replace the certified count.
+      await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+      expect(spy).toHaveBeenLastCalledWith(
+        expect.objectContaining({ certified: false })
+      );
+      expect(count()).toEqual([10n]);
+      clearWatch();
+    });
+
+    it("should only query when the viewer is anonymous", async () => {
+      setNoIdentity();
+      const spy = vi
+        .spyOn(api, "querySnsDerivedState")
+        .mockResolvedValue(derived(999n));
+
+      const clearWatch = watchSnsTotalCommitment({
+        rootCanisterId: rootCanisterId1.toText(),
+      });
+
+      for (let i = 1; i <= WATCH_SALE_CERTIFIED_EVERY_N_POLLS * 2; i++) {
+        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+      }
+
+      expect(spy).toBeCalledTimes(WATCH_SALE_CERTIFIED_EVERY_N_POLLS * 2);
+      expect(spy).not.toBeCalledWith(
+        expect.objectContaining({ certified: true })
+      );
+      clearWatch();
     });
   });
 

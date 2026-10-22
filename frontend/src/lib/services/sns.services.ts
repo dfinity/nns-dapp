@@ -4,8 +4,14 @@ import {
   querySnsSwapCommitment,
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
-import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import {
+  WATCH_SALE_CERTIFIED_EVERY_N_POLLS,
+  WATCH_SALE_STATE_EVERY_MILLISECONDS,
+} from "$lib/constants/sns.constants";
+import {
+  getAuthenticatedIdentity,
+  getCurrentIdentity,
+} from "$lib/services/auth.services";
 import { getLoadedSnsAggregatorData } from "$lib/services/public/sns.services";
 import {
   queryAndUpdate,
@@ -134,8 +140,19 @@ export const watchSnsTotalCommitment = ({
 }: {
   rootCanisterId: string;
 }) => {
+  let polls = 0;
   const id = setInterval(() => {
-    loadSnsDerivedState({ rootCanisterId, strategy: "query" });
+    polls += 1;
+    // Query replies are not certified. A certified update call runs on every
+    // Nth poll to keep the certified participant count fresh. Anonymous
+    // viewers can only make query calls.
+    const certified =
+      polls % WATCH_SALE_CERTIFIED_EVERY_N_POLLS === 0 &&
+      !getCurrentIdentity().getPrincipal().isAnonymous();
+    loadSnsDerivedState({
+      rootCanisterId,
+      strategy: certified ? "update" : "query",
+    });
   }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
 
   return () => {

@@ -1,5 +1,4 @@
 import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
-import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
@@ -37,29 +36,35 @@ describe("ProjectCommitment", () => {
     expect(await po.getMinCommitment()).toEqual("200.00 ICP");
   });
 
-  it("should render total participants from swap metrics", async () => {
-    snsSwapMetricsStore.setMetrics({
-      rootCanisterId: mockSnsFullProject.swapCommitment.rootCanisterId,
-      metrics: {
-        saleBuyerCount,
-      },
-    });
+  it("should not render total participants when the derived state has none", async () => {
     const summaryWithoutBuyers = createSummary({
       lifecycle: SnsSwapLifecycle.Open,
       buyersCount: null,
     });
 
     const po = renderComponent(summaryWithoutBuyers);
-    expect(await po.getParticipantsCount()).toEqual(saleBuyerCount);
+    expect(await po.hasParticipantsCount()).toBe(false);
+  });
+
+  it("should not render success message when the derived state has no participants count", async () => {
+    const directCommitment = 30000000000n;
+    const summary = createSummary({
+      lifecycle: SnsSwapLifecycle.Open,
+      currentTotalCommitment: directCommitment,
+      neuronsFundCommitment: 0n,
+      directCommitment,
+      minDirectParticipation: 10000000000n,
+      maxDirectParticipation: 100000000000n,
+      buyersCount: null,
+      minParticipants: 100,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.hasParticipantsCount()).toBe(false);
+    expect(await po.getGoalReachedMessage()).toEqual(null);
   });
 
   it("should render total participants from derived state", async () => {
-    snsSwapMetricsStore.setMetrics({
-      rootCanisterId: mockSnsFullProject.swapCommitment.rootCanisterId,
-      metrics: {
-        saleBuyerCount: 0,
-      },
-    });
     const summaryWithBuyersCount = createSummary({
       lifecycle: SnsSwapLifecycle.Open,
       buyersCount: BigInt(saleBuyerCount),
