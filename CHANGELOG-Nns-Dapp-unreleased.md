@@ -43,6 +43,9 @@ proposal is successful, the changes it released will be moved from this file to
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- The Encode ICRC-1 Account utility now reads a large decimal subaccount ID as
+  a decimal number. Before, it read it as hexadecimal and returned a different
+  account.
 
 #### Not Published
 
