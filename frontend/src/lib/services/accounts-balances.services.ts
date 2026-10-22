@@ -1,5 +1,5 @@
-import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
+import { syncIcrcAccountsBalances } from "$lib/services/icrc-accounts-balance.services";
+import { syncSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
@@ -23,7 +23,7 @@ export const loadSnsAccountsBalances = async (
 
   if (notLoadedIds.length === 0) return;
 
-  await uncertifiedLoadSnsesAccountsBalances({
+  await syncSnsAccountsBalances({
     rootCanisterIds: notLoadedIds.map((id) => Principal.fromText(id)),
   });
 };
@@ -35,7 +35,7 @@ export const loadAccountsBalances = async (
 
   if (notLoadedIds.length === 0) return;
 
-  await uncertifiedLoadAccountsBalance({
+  await syncIcrcAccountsBalances({
     universeIds: notLoadedIds,
   });
 };
