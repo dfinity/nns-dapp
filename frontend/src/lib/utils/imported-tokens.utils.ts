@@ -4,6 +4,16 @@ import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
 import { fromNullable, nonNullish, toNullable } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 
+/**
+ * Tell if the imported tokens in the store come from a certified call.
+ *
+ * Only an update call gives certified data. A query response is never
+ * certified, whatever call strategy the session uses.
+ */
+export const isImportedTokensCertified = (
+  certified: boolean | undefined
+): boolean => certified === true;
+
 export const toImportedTokenData = ({
   ledger_canister_id,
   index_canister_id,
