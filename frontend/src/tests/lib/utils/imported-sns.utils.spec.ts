@@ -132,6 +132,21 @@ describe("imported-sns.utils", () => {
       ).toEqual(fullParameters);
     });
 
+    it("should throw for a default followee function ID that a number cannot hold exactly", () => {
+      expect(() =>
+        toNervousSystemParametersDto({
+          ...emptyParameters,
+          default_followees: [
+            {
+              followees: [
+                [BigInt(Number.MAX_SAFE_INTEGER) + 2n, { followees: [] }],
+              ],
+            },
+          ],
+        })
+      ).toThrow();
+    });
+
     it("should round trip empty fields", () => {
       expect(
         convertNervousSystemParameters(
@@ -158,6 +173,26 @@ describe("imported-sns.utils", () => {
       expect(convertNervousFunction(toNervousFunctionDto(nsFunction))).toEqual(
         nsFunction
       );
+    });
+
+    it("should round trip the largest safe ID", () => {
+      const nsFunction: SnsGovernanceDid.NervousSystemFunction = {
+        ...nativeNervousSystemFunctionMock,
+        id: BigInt(Number.MAX_SAFE_INTEGER),
+      };
+
+      expect(convertNervousFunction(toNervousFunctionDto(nsFunction))).toEqual(
+        nsFunction
+      );
+    });
+
+    it("should throw for an ID that a number cannot hold exactly", () => {
+      expect(() =>
+        toNervousFunctionDto({
+          ...nativeNervousSystemFunctionMock,
+          id: BigInt(Number.MAX_SAFE_INTEGER) + 2n,
+        })
+      ).toThrow();
     });
 
     it("should round trip a function without description and type", () => {

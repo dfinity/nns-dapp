@@ -54,6 +54,17 @@ const toOptionalNumber = <T extends bigint | number>(
 };
 
 /**
+ * Converts an ID to a number. Throws if a number cannot hold the ID exactly,
+ * because a changed ID points to another function or action.
+ */
+const toSafeId = (id: bigint): number => {
+  if (id > BigInt(Number.MAX_SAFE_INTEGER)) {
+    throw new Error(`The ID ${id} is too large for the aggregator format.`);
+  }
+  return Number(id);
+};
+
+/**
  * Splits a non-negative bigint into 32-bit digits, least significant first.
  * This is the inverse of `candidNumberArrayToBigInt`.
  */
@@ -123,7 +134,7 @@ export const toNervousFunctionDto = ({
 }: SnsGovernanceDid.NervousSystemFunction): CachedNervousFunctionDto => {
   const functionType = fromNullable(function_type);
   return {
-    id: Number(id),
+    id: toSafeId(id),
     name,
     description: fromNullable(description) ?? null,
     function_type: isNullish(functionType)
@@ -148,7 +159,7 @@ export const toNervousSystemParametersDto = (
       ? undefined
       : {
           followees: defaultFollowees.followees.map(
-            ([functionId, followees]) => [Number(functionId), followees]
+            ([functionId, followees]) => [toSafeId(functionId), followees]
           ),
         },
     max_dissolve_delay_seconds: toOptionalNumber(
@@ -220,7 +231,7 @@ export const toNervousSystemParametersDto = (
       : {
           additional_critical_native_action_ids: Array.from(
             customProposalCriticality.additional_critical_native_action_ids,
-            Number
+            toSafeId
           ),
         },
   };
@@ -367,7 +378,7 @@ export const toCachedSnsDto = ({
     meta: toMetadataDto(metadata),
     parameters: {
       functions: functions.functions.map(toNervousFunctionDto),
-      reserved_ids: Array.from(functions.reserved_ids, Number),
+      reserved_ids: Array.from(functions.reserved_ids, toSafeId),
     },
     nervous_system_parameters: nervousSystemParameters,
     swap_state: {
