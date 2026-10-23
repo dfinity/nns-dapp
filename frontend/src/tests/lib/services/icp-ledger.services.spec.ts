@@ -33,7 +33,7 @@ import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { principalToAccountIdentifier } from "@icp-sdk/canisters/nns";
 import type { Agent } from "@icp-sdk/core/agent";
-import type { ResponseVersion } from "@zondax/ledger-icp";
+import type { ResponseAddress, ResponseVersion } from "@zondax/ledger-icp";
 import { LedgerError } from "@zondax/ledger-js";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -314,7 +314,9 @@ describe("icp-ledger.services", () => {
         async (): Promise<LedgerIdentity> => mockLedgerIdentity
       );
 
-      spy = vi.spyOn(mockLedgerIdentity, "showAddressAndPubKeyOnDevice");
+      spy = vi
+        .spyOn(mockLedgerIdentity, "showAddressAndPubKeyOnDevice")
+        .mockResolvedValue({} as ResponseAddress);
     });
 
     describe("success", () => {

@@ -28,6 +28,7 @@ const mockDmk = vi.hoisted(() => ({
   startDiscovering: vi.fn(),
   connect: vi.fn(),
   disconnect: vi.fn(),
+  listConnectedDevices: vi.fn(),
 }));
 
 vi.mock("@ledgerhq/device-management-kit", () => ({
@@ -90,7 +91,7 @@ describe("LedgerIdentity", () => {
     });
     vi.spyOn(LedgerIdentity, "connect").mockResolvedValue({
       app: mockLedgerApp,
-      disconnect: vi.fn(),
+      release: vi.fn(),
     });
     vi.spyOn(LedgerIdentity, "fetchPublicKeyFromDevice").mockResolvedValue(
       publicKey
@@ -307,15 +308,21 @@ describe("LedgerIdentity", () => {
 });
 
 describe("LedgerIdentity.connect", () => {
-  const sessionId = "session-id";
   const device = { id: "device-id" } as DiscoveredDevice;
+  // The session lives in module state, so each test uses a new session id.
+  let sessionCount = 0;
+  let sessionId: string;
 
   beforeEach(() => {
+    sessionCount += 1;
+    sessionId = `session-${sessionCount}`;
+
     mockDmk.isEnvironmentSupported.mockReturnValue(true);
     mockDmk.listenToAvailableDevices.mockReturnValue(of([device]));
     mockDmk.startDiscovering.mockReturnValue(of(device));
     mockDmk.connect.mockResolvedValue(sessionId);
     mockDmk.disconnect.mockResolvedValue(undefined);
+    mockDmk.listConnectedDevices.mockImplementation(() => [{ sessionId }]);
   });
 
   it("should connect to a device that the user already allowed", async () => {
@@ -344,13 +351,56 @@ describe("LedgerIdentity.connect", () => {
     });
   });
 
-  it("should disconnect the session", async () => {
-    const { disconnect } = await LedgerIdentity.connect();
+  it("should reuse the session for operations that follow each other", async () => {
+    vi.useFakeTimers();
 
-    await disconnect();
+    const first = await LedgerIdentity.connect();
+    first.release();
+    const second = await LedgerIdentity.connect();
+    second.release();
 
+    expect(mockDmk.connect).toBeCalledTimes(1);
+    expect(mockDmk.disconnect).not.toBeCalled();
+  });
+
+  it("should disconnect when the session is idle", async () => {
+    vi.useFakeTimers();
+
+    const { release } = await LedgerIdentity.connect();
+    release();
+
+    await vi.advanceTimersByTimeAsync(4_999);
+    expect(mockDmk.disconnect).not.toBeCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
     expect(mockDmk.disconnect).toBeCalledTimes(1);
     expect(mockDmk.disconnect).toBeCalledWith({ sessionId });
+  });
+
+  it("should not disconnect while an operation uses the session", async () => {
+    vi.useFakeTimers();
+
+    const first = await LedgerIdentity.connect();
+    const second = await LedgerIdentity.connect();
+    first.release();
+
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).not.toBeCalled();
+
+    second.release();
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).toBeCalledTimes(1);
+  });
+
+  it("should connect again if the device disconnected", async () => {
+    vi.useFakeTimers();
+
+    const first = await LedgerIdentity.connect();
+    first.release();
+    mockDmk.listConnectedDevices.mockReturnValue([]);
+    await LedgerIdentity.connect();
+
+    expect(mockDmk.connect).toBeCalledTimes(2);
   });
 
   it("should raise an error if the browser does not support WebHID", async () => {

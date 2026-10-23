@@ -34,6 +34,7 @@ import {
 } from "@icp-sdk/core/agent";
 import type {
   DeviceManagementKit,
+  DeviceSessionId,
   DiscoveredDevice,
   DmkError,
 } from "@ledgerhq/device-management-kit";
@@ -56,7 +57,20 @@ type ReadStateData = {
 // How long to wait for a device that the user already allowed before the browser asks for a device.
 const KNOWN_DEVICE_TIMEOUT_MS = 500;
 
+// How long the device session stays open after the last operation.
+// Operations that follow each other reuse the session. The DMK does not wait for the device to close, so a reconnect right after a disconnect can get a device that is still closing.
+const SESSION_IDLE_TIMEOUT_MS = 5_000;
+
 let deviceManagementKit: DeviceManagementKit | undefined;
+
+let session:
+  | {
+      id: DeviceSessionId;
+      // The number of operations that use the session.
+      users: number;
+      idleTimer?: ReturnType<typeof setTimeout>;
+    }
+  | undefined;
 
 export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
@@ -78,7 +92,7 @@ export class LedgerIdentity extends SignIdentity {
   public static async create(
     derivePath = LEDGER_DEFAULT_DERIVE_PATH
   ): Promise<LedgerIdentity> {
-    const { app, disconnect } = await this.connect();
+    const { app, release } = await this.connect();
 
     try {
       const publicKey = await this.fetchPublicKeyFromDevice({
@@ -88,8 +102,8 @@ export class LedgerIdentity extends SignIdentity {
 
       return new this(derivePath, publicKey);
     } finally {
-      // Always disconnect from the device.
-      await disconnect();
+      // Always release the device.
+      release();
     }
   }
 
@@ -230,10 +244,60 @@ export class LedgerIdentity extends SignIdentity {
     return firstValueFrom(dmk.startDiscovering({}));
   }
 
+  private static async openSession(
+    dmk: DeviceManagementKit
+  ): Promise<DeviceSessionId> {
+    if (nonNullish(session)) {
+      clearTimeout(session.idleTimer);
+      const { id } = session;
+
+      // The DMK ends the session if the device disconnects.
+      if (
+        dmk.listConnectedDevices().some(({ sessionId }) => sessionId === id)
+      ) {
+        session.users += 1;
+        return id;
+      }
+
+      session = undefined;
+    }
+
+    const device = await this.findDevice(dmk);
+    const id = await dmk.connect({
+      device,
+      // The refresher polls the device between the APDUs of a multi-APDU signature.
+      sessionRefresherOptions: { isRefresherDisabled: true },
+    });
+    session = { id, users: 1 };
+
+    return id;
+  }
+
+  private static releaseSession(dmk: DeviceManagementKit): void {
+    if (isNullish(session)) {
+      return;
+    }
+
+    session.users -= 1;
+    if (session.users > 0) {
+      return;
+    }
+
+    const { id } = session;
+    session.idleTimer = setTimeout(() => {
+      session = undefined;
+      dmk
+        .disconnect({ sessionId: id })
+        .catch((err: unknown) =>
+          console.warn("Failed to disconnect the Ledger device.", err)
+        );
+    }, SESSION_IDLE_TIMEOUT_MS);
+  }
+
   // Public to be able to mock it in tests.
   public static async connect(): Promise<{
     app: LedgerApp;
-    disconnect: () => Promise<void>;
+    release: () => void;
   }> {
     try {
       const dmk = await this.getDeviceManagementKit();
@@ -244,21 +308,16 @@ export class LedgerIdentity extends SignIdentity {
         });
       }
 
-      const device = await this.findDevice(dmk);
-      const sessionId = await dmk.connect({
-        device,
-        // The refresher polls the device between the APDUs of a multi-APDU signature.
-        sessionRefresherOptions: { isRefresherDisabled: true },
-      });
-
       const [{ default: LedgerAppConstructor }, { DMKTransport }] =
         await Promise.all([
           import("@zondax/ledger-icp"),
           import("@zondax/ledger-js"),
         ]);
+
+      const sessionId = await this.openSession(dmk);
       const app = new LedgerAppConstructor(new DMKTransport(dmk, sessionId));
 
-      return { app, disconnect: () => dmk.disconnect({ sessionId }) };
+      return { app, release: () => this.releaseSession(dmk) };
     } catch (err: unknown) {
       if (err instanceof LedgerErrorKey) {
         throw err;
@@ -310,7 +369,7 @@ export class LedgerIdentity extends SignIdentity {
   private async executeWithApp<T>(
     callback: (app: LedgerApp) => Promise<T>
   ): Promise<T> {
-    const { app, disconnect } = await LedgerIdentity.connect();
+    const { app, release } = await LedgerIdentity.connect();
 
     try {
       // Verify that the public key of the device matches the public key of this identity.
@@ -329,7 +388,7 @@ export class LedgerIdentity extends SignIdentity {
       // Run the provided function.
       return await callback(app);
     } finally {
-      await disconnect();
+      release();
     }
   }
 
