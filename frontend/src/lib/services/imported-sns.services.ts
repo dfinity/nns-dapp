@@ -60,6 +60,9 @@ const getSnsCanisterIds = async ({
 const includesPrincipal = (principals: Principal[], principal: Principal) =>
   principals.some((p) => p.toText() === principal.toText());
 
+const isDefaultSubaccount = (subaccount: Uint8Array | number[] | undefined) =>
+  isNullish(subaccount) || subaccount.every((byte) => byte === 0);
+
 /**
  * Throws an `ImportedSnsError` if the canisters are not linked like the canisters of an SNS.
  *
@@ -97,9 +100,11 @@ const assertSnsCanisters = async ({
     throw new ImportedSnsError("controllers");
   }
 
+  // SNS governance mints and burns with its default account.
   if (
     isNullish(mintingAccount) ||
-    mintingAccount.owner.toText() !== governance.toText()
+    mintingAccount.owner.toText() !== governance.toText() ||
+    !isDefaultSubaccount(mintingAccount.subaccount)
   ) {
     throw new ImportedSnsError("minting-account");
   }

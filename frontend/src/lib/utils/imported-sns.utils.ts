@@ -380,7 +380,7 @@ export const toCachedSnsDto = ({
       derived: SWAP_DERIVED_PLACEHOLDER,
     },
     icrc1_metadata: toTokenMetadataDto(tokenMetadata),
-    icrc1_fee: [Number(fee)],
+    icrc1_fee: bigIntToCandidNumberArray(fee),
     icrc1_total_supply: Number(totalSupply),
     derived_state: SWAP_DERIVED_PLACEHOLDER,
     swap_params: { params: SWAP_PARAMS_PLACEHOLDER },

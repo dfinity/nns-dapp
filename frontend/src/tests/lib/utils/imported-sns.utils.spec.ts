@@ -20,6 +20,7 @@ import {
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
+import { candidNumberArrayToBigInt } from "@dfinity/utils";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
@@ -316,7 +317,14 @@ describe("imported-sns.utils", () => {
       expect(dto.topics).toEqual(toListTopicsResponseDto(data.topics));
       expect(dto.icrc1_metadata).toEqual(toTokenMetadataDto(tokenMetadata));
       expect(dto.icrc1_fee).toEqual([10_000]);
+      expect(candidNumberArrayToBigInt(dto.icrc1_fee)).toBe(10_000n);
       expect(dto.icrc1_total_supply).toBe(100_000_000_000);
+    });
+
+    it("should encode a fee above 32 bits as 32-bit digits", () => {
+      expect(
+        toCachedSnsDto({ ...data, fee: 5_000_000_000n }).icrc1_fee
+      ).toEqual([705_032_704, 1]);
     });
 
     it("should leave the topics empty if they are missing", () => {

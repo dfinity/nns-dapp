@@ -181,6 +181,26 @@ describe("imported-sns.services", () => {
     await expectError("minting-account");
   });
 
+  it("should accept a minting subaccount of zeros", async () => {
+    queryMintingAccountSpy().mockResolvedValue({
+      owner: governance,
+      subaccount: new Uint8Array(32),
+    });
+
+    await expect(getImportedSns(root)).resolves.toBeDefined();
+  });
+
+  it("should reject the SNS if the ledger mints to a governance subaccount", async () => {
+    const subaccount = new Uint8Array(32);
+    subaccount[31] = 1;
+    queryMintingAccountSpy().mockResolvedValue({
+      owner: governance,
+      subaccount,
+    });
+
+    await expectError("minting-account");
+  });
+
   it("should reject the SNS if the ledger has no minting account", async () => {
     queryMintingAccountSpy().mockResolvedValue(undefined);
 
