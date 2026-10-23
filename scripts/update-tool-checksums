@@ -81,7 +81,7 @@ for entry in "${entries[@]}"; do
   url="${entry#*|}"
   echo "Downloading $url"
   curl --fail --location --show-error --silent --retry 5 \
-    --proto '=https' --tlsv1.2 --output "$tmpdir/artefact" "$url"
+    --proto '=https' --proto-redir '=https' --tlsv1.2 --output "$tmpdir/artefact" "$url"
   checksum="$(sha256_of "$tmpdir/artefact")" || exit 1
   echo "$key $checksum"
   KEY="$key" CHECKSUM="$checksum" \

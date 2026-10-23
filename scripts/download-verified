@@ -39,7 +39,7 @@ tmpfile="$(mktemp "$(dirname "$output_path")/.download-verified-XXXXXX")"
 trap 'rm -f "$tmpfile"' EXIT
 
 curl --fail --location --show-error --silent --retry 5 \
-  --proto '=https' --tlsv1.2 --output "$tmpfile" "$url"
+  --proto '=https' --proto-redir '=https' --tlsv1.2 --output "$tmpfile" "$url"
 
 ###############
 # Verify
