@@ -54,23 +54,26 @@ type ReadStateData = {
   body: ReadStateRequest;
 };
 
-// How long to wait for a device that the user already allowed before the browser asks for a device.
-const KNOWN_DEVICE_TIMEOUT_MS = 500;
+// How long to wait for the list of devices that the user already allowed.
+// The DMK lists them as soon as the browser answers. The timeout only covers a browser that does not answer.
+const KNOWN_DEVICES_TIMEOUT_MS = 5_000;
 
 // How long the device session stays open after the last operation.
 // Operations that follow each other reuse the session. The DMK does not wait for the device to close, so a reconnect right after a disconnect can get a device that is still closing.
 const SESSION_IDLE_TIMEOUT_MS = 5_000;
 
-let deviceManagementKit: DeviceManagementKit | undefined;
+// A promise, so that concurrent calls share one DMK.
+let deviceManagementKit: Promise<DeviceManagementKit> | undefined;
 
-let session:
-  | {
-      id: DeviceSessionId;
-      // The number of operations that use the session.
-      users: number;
-      idleTimer?: ReturnType<typeof setTimeout>;
-    }
-  | undefined;
+type Session = {
+  // A promise, so that concurrent operations share one session.
+  id: Promise<DeviceSessionId>;
+  // The number of operations that use the session.
+  users: number;
+  idleTimer?: ReturnType<typeof setTimeout>;
+};
+
+let session: Session | undefined;
 
 export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
@@ -205,16 +208,22 @@ export class LedgerIdentity extends SignIdentity {
     return this.executeWithApp<ResponseVersion>(callback);
   }
 
-  private static async getDeviceManagementKit(): Promise<DeviceManagementKit> {
+  private static getDeviceManagementKit(): Promise<DeviceManagementKit> {
     if (isNullish(deviceManagementKit)) {
-      const [{ DeviceManagementKitBuilder }, { webHidTransportFactory }] =
-        await Promise.all([
-          import("@ledgerhq/device-management-kit"),
-          import("@ledgerhq/device-transport-kit-web-hid"),
-        ]);
-      deviceManagementKit = new DeviceManagementKitBuilder()
-        .addTransport(webHidTransportFactory)
-        .build();
+      deviceManagementKit = Promise.all([
+        import("@ledgerhq/device-management-kit"),
+        import("@ledgerhq/device-transport-kit-web-hid"),
+      ])
+        .then(([{ DeviceManagementKitBuilder }, { webHidTransportFactory }]) =>
+          new DeviceManagementKitBuilder()
+            .addTransport(webHidTransportFactory)
+            .build()
+        )
+        .catch((err: unknown) => {
+          // Let the next call load the DMK again.
+          deviceManagementKit = undefined;
+          throw err;
+        });
     }
     return deviceManagementKit;
   }
@@ -223,71 +232,98 @@ export class LedgerIdentity extends SignIdentity {
   private static async findDevice(
     dmk: DeviceManagementKit
   ): Promise<DiscoveredDevice> {
-    const { filter, firstValueFrom, timeout, TimeoutError } = await import(
+    const { firstValueFrom, skip, take, timeout, TimeoutError } = await import(
       "rxjs"
     );
 
+    let devices: DiscoveredDevice[] = [];
     try {
-      const [device] = await firstValueFrom(
-        dmk.listenToAvailableDevices({}).pipe(
-          filter((devices) => devices.length > 0),
-          timeout({ first: KNOWN_DEVICE_TIMEOUT_MS })
-        )
+      // The DMK emits the devices it knows at once, and the devices that the browser lists after it asks the browser.
+      devices = await firstValueFrom(
+        dmk
+          .listenToAvailableDevices({})
+          .pipe(skip(1), take(1), timeout({ first: KNOWN_DEVICES_TIMEOUT_MS }))
       );
-      return device;
     } catch (err: unknown) {
       if (!(err instanceof TimeoutError)) {
         throw err;
       }
     }
 
+    const [device] = devices;
+    if (nonNullish(device)) {
+      return device;
+    }
+
     return firstValueFrom(dmk.startDiscovering({}));
   }
 
-  private static async openSession(
+  private static async connectDevice(
     dmk: DeviceManagementKit
   ): Promise<DeviceSessionId> {
-    if (nonNullish(session)) {
-      clearTimeout(session.idleTimer);
-      const { id } = session;
-
-      // The DMK ends the session if the device disconnects.
-      if (
-        dmk.listConnectedDevices().some(({ sessionId }) => sessionId === id)
-      ) {
-        session.users += 1;
-        return id;
-      }
-
-      session = undefined;
-    }
-
     const device = await this.findDevice(dmk);
-    const id = await dmk.connect({
+    return dmk.connect({
       device,
       // The refresher polls the device between the APDUs of a multi-APDU signature.
       sessionRefresherOptions: { isRefresherDisabled: true },
     });
-    session = { id, users: 1 };
-
-    return id;
   }
 
-  private static releaseSession(dmk: DeviceManagementKit): void {
-    if (isNullish(session)) {
-      return;
-    }
-
-    session.users -= 1;
-    if (session.users > 0) {
-      return;
-    }
-
-    const { id } = session;
-    session.idleTimer = setTimeout(() => {
+  private static forgetSession(forgotten: Session): void {
+    if (session === forgotten) {
       session = undefined;
-      dmk
-        .disconnect({ sessionId: id })
+    }
+  }
+
+  private static async openSession(dmk: DeviceManagementKit): Promise<{
+    id: DeviceSessionId;
+    release: () => void;
+  }> {
+    const reused = nonNullish(session);
+    if (nonNullish(session)) {
+      clearTimeout(session.idleTimer);
+      session.users += 1;
+    } else {
+      session = { id: this.connectDevice(dmk), users: 1 };
+    }
+    const current = session;
+
+    try {
+      const id = await current.id;
+
+      // The DMK ends the session if the device disconnects.
+      if (
+        reused &&
+        !dmk.listConnectedDevices().some(({ sessionId }) => sessionId === id)
+      ) {
+        this.forgetSession(current);
+        return this.openSession(dmk);
+      }
+
+      return { id, release: () => this.releaseSession({ dmk, current }) };
+    } catch (err: unknown) {
+      this.forgetSession(current);
+      throw err;
+    }
+  }
+
+  private static releaseSession({
+    dmk,
+    current,
+  }: {
+    dmk: DeviceManagementKit;
+    current: Session;
+  }): void {
+    current.users -= 1;
+    // A forgotten session is already closed.
+    if (current.users > 0 || session !== current) {
+      return;
+    }
+
+    current.idleTimer = setTimeout(() => {
+      this.forgetSession(current);
+      current.id
+        .then((sessionId) => dmk.disconnect({ sessionId }))
         .catch((err: unknown) =>
           console.warn("Failed to disconnect the Ledger device.", err)
         );
@@ -314,16 +350,20 @@ export class LedgerIdentity extends SignIdentity {
           import("@zondax/ledger-js"),
         ]);
 
-      const sessionId = await this.openSession(dmk);
+      const { id: sessionId, release } = await this.openSession(dmk);
       const app = new LedgerAppConstructor(new DMKTransport(dmk, sessionId));
 
-      return { app, release: () => this.releaseSession(dmk) };
+      return { app, release };
     } catch (err: unknown) {
       if (err instanceof LedgerErrorKey) {
         throw err;
       }
 
-      const { _tag: tag } = (err ?? {}) as Partial<DmkError>;
+      const {
+        _tag: tag,
+        originalError,
+        message,
+      } = (err ?? {}) as Partial<DmkError>;
 
       if (tag === "NoAccessibleDeviceError") {
         throw new LedgerErrorKey({ message: "error__ledger.access_denied" });
@@ -345,9 +385,15 @@ export class LedgerIdentity extends SignIdentity {
       // Unsupported browser. Data on browser compatibility is taken from https://caniuse.com/webhid
       const labels = get(i18n);
 
+      // A DmkError is not an Error, so `${err}` renders as "[object Object]".
+      const errorText = isNullish(tag)
+        ? `${err}`
+        : (message ??
+          (originalError instanceof Error ? originalError.message : tag));
+
       throw new LedgerErrorMessage(
         replacePlaceholders(labels.error__ledger.connect_not_supported, {
-          $err: `${err}`,
+          $err: errorText,
         })
       );
     }

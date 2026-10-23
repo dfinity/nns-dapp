@@ -29,6 +29,7 @@ const config: UserConfig = {
             "@sentry",
             "isomorphic-ws",
             "rxjs",
+            "uuid",
           ];
 
           if (
