@@ -16,14 +16,37 @@ import {
   type ReadRequest,
   type ReadRequestType,
 } from "@icp-sdk/core/agent";
-import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
+import type { DiscoveredDevice } from "@ledgerhq/device-management-kit";
 import type InternetComputerApp from "@zondax/ledger-icp";
 import { LedgerError } from "@zondax/ledger-js";
+import { NEVER, of, throwError } from "rxjs";
 import { mock } from "vitest-mock-extended";
+
+const mockDmk = vi.hoisted(() => ({
+  isEnvironmentSupported: vi.fn(),
+  listenToAvailableDevices: vi.fn(),
+  startDiscovering: vi.fn(),
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+vi.mock("@ledgerhq/device-management-kit", () => ({
+  DeviceManagementKitBuilder: class {
+    addTransport() {
+      return this;
+    }
+    build() {
+      return mockDmk;
+    }
+  },
+}));
+
+vi.mock("@ledgerhq/device-transport-kit-web-hid", () => ({
+  webHidTransportFactory: vi.fn(),
+}));
 
 describe("LedgerIdentity", () => {
   const mockLedgerApp = mock<InternetComputerApp>();
-  const mockTransport = mock<TransportWebHID>();
 
   const publicKey = Secp256k1PublicKey.fromRaw(fromHexString(rawPublicKeyHex));
   const callBody1 = {
@@ -67,7 +90,7 @@ describe("LedgerIdentity", () => {
     });
     vi.spyOn(LedgerIdentity, "connect").mockResolvedValue({
       app: mockLedgerApp,
-      transport: mockTransport,
+      disconnect: vi.fn(),
     });
     vi.spyOn(LedgerIdentity, "fetchPublicKeyFromDevice").mockResolvedValue(
       publicKey
@@ -279,6 +302,94 @@ describe("LedgerIdentity", () => {
         renderAsHtml: true,
       });
       expect(mockLedgerApp.sign).not.toBeCalled();
+    });
+  });
+});
+
+describe("LedgerIdentity.connect", () => {
+  const sessionId = "session-id";
+  const device = { id: "device-id" } as DiscoveredDevice;
+
+  beforeEach(() => {
+    mockDmk.isEnvironmentSupported.mockReturnValue(true);
+    mockDmk.listenToAvailableDevices.mockReturnValue(of([device]));
+    mockDmk.startDiscovering.mockReturnValue(of(device));
+    mockDmk.connect.mockResolvedValue(sessionId);
+    mockDmk.disconnect.mockResolvedValue(undefined);
+  });
+
+  it("should connect to a device that the user already allowed", async () => {
+    await LedgerIdentity.connect();
+
+    expect(mockDmk.startDiscovering).not.toBeCalled();
+    expect(mockDmk.connect).toBeCalledTimes(1);
+    expect(mockDmk.connect).toBeCalledWith({
+      device,
+      sessionRefresherOptions: { isRefresherDisabled: true },
+    });
+  });
+
+  it("should ask the browser for a device if the user allowed no device", async () => {
+    vi.useFakeTimers();
+    mockDmk.listenToAvailableDevices.mockReturnValue(NEVER);
+
+    const result = LedgerIdentity.connect();
+    await vi.advanceTimersByTimeAsync(500);
+    await result;
+
+    expect(mockDmk.startDiscovering).toBeCalledTimes(1);
+    expect(mockDmk.connect).toBeCalledWith({
+      device,
+      sessionRefresherOptions: { isRefresherDisabled: true },
+    });
+  });
+
+  it("should disconnect the session", async () => {
+    const { disconnect } = await LedgerIdentity.connect();
+
+    await disconnect();
+
+    expect(mockDmk.disconnect).toBeCalledTimes(1);
+    expect(mockDmk.disconnect).toBeCalledWith({ sessionId });
+  });
+
+  it("should raise an error if the browser does not support WebHID", async () => {
+    mockDmk.isEnvironmentSupported.mockReturnValue(false);
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: "error__ledger.browser_not_supported",
+    });
+    expect(mockDmk.connect).not.toBeCalled();
+  });
+
+  it("should raise an error if the user denies access to the device", async () => {
+    vi.useFakeTimers();
+    mockDmk.listenToAvailableDevices.mockReturnValue(NEVER);
+    mockDmk.startDiscovering.mockReturnValue(
+      throwError(() => ({ _tag: "NoAccessibleDeviceError" }))
+    );
+
+    const result = LedgerIdentity.connect();
+    const assertion = expect(result).rejects.toMatchObject({
+      message: "error__ledger.access_denied",
+    });
+    await vi.advanceTimersByTimeAsync(500);
+    await assertion;
+  });
+
+  it("should raise an error if another application uses the device", async () => {
+    mockDmk.connect.mockRejectedValue({ _tag: "ConnectionOpeningError" });
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: "error__ledger.connect_many_apps",
+    });
+  });
+
+  it("should raise an error if the device is gone", async () => {
+    mockDmk.connect.mockRejectedValue({ _tag: "UnknownDeviceError" });
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: "error__ledger.connect_no_device",
     });
   });
 });

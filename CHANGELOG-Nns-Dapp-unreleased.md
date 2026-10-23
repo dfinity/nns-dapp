@@ -16,6 +16,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Connect to the Ledger device through the Ledger Device Management Kit. It
+  replaces the LedgerJS transport that Ledger deprecated.
+
 #### Deprecated
 
 #### Removed

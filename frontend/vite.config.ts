@@ -19,13 +19,26 @@ const config: UserConfig = {
         manualChunks: (id) => {
           const folder = dirname(id);
 
-          const lazy = [
-            "html5-qrcode",
-            "qr-creator",
+          // The Ledger Device Management Kit and its dependencies. Rollup puts them in their own chunk, which loads only when the user connects a Ledger device.
+          const ledgerDmk = [
             "@ledgerhq",
-            "@zondax",
-            "marked",
+            "xstate",
+            "inversify",
+            "purify-ts",
+            "reflect-metadata",
+            "@sentry",
+            "isomorphic-ws",
+            "rxjs",
           ];
+
+          if (
+            ledgerDmk.find((lib) => folder.includes(lib)) !== undefined &&
+            folder.includes("node_modules")
+          ) {
+            return undefined;
+          }
+
+          const lazy = ["html5-qrcode", "qr-creator", "@zondax", "marked"];
 
           if (
             ["@sveltejs", "svelte", "@dfinity/gix-components", ...lazy].find(
