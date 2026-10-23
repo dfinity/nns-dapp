@@ -177,6 +177,50 @@ describe("StakedTokensCard", () => {
     ]);
   });
 
+  it("should show the balances in the aria labels when privacy mode is off", async () => {
+    const po = renderComponent({
+      topStakedTokens: mockStakedTokens,
+      usdAmount: 5000,
+    });
+
+    expect(await po.getStakedTokensStakeInUsdAriaLabels()).toEqual([
+      "Internet Computer USD: 100",
+      "Project 1 USD: 200",
+      "Project 2 USD: 300",
+      "Project 3 USD: 400",
+    ]);
+    expect(await po.getStakedTokensStakeInNativeCurrencyAriaLabels()).toEqual([
+      "Internet Computer ICP: 0.01",
+      "Project 1 TET: 0.01",
+      "Project 2 TET: 0.01",
+      "Project 3 TET: 0.01",
+    ]);
+    expect(await po.getAmountAriaLabel()).toBe("Staking Balance: 5000");
+  });
+
+  it("should not expose the balances in the aria labels when privacy mode is on", async () => {
+    balancePrivacyOptionStore.set("hide");
+
+    const po = renderComponent({
+      topStakedTokens: mockStakedTokens,
+      usdAmount: 5000,
+    });
+
+    expect(await po.getStakedTokensStakeInUsdAriaLabels()).toEqual([
+      "Internet Computer USD: hidden",
+      "Project 1 USD: hidden",
+      "Project 2 USD: hidden",
+      "Project 3 USD: hidden",
+    ]);
+    expect(await po.getStakedTokensStakeInNativeCurrencyAriaLabels()).toEqual([
+      "Internet Computer ICP: hidden",
+      "Project 1 TET: hidden",
+      "Project 2 TET: hidden",
+      "Project 3 TET: hidden",
+    ]);
+    expect(await po.getAmountAriaLabel()).toBe("Staking Balance: hidden");
+  });
+
   it("should not show info row when numberOfTopHeldTokens is the same as the number of topStakedTokens", async () => {
     const po = renderComponent({
       topStakedTokens: mockStakedTokens.slice(0, 3),

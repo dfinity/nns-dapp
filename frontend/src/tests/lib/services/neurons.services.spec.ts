@@ -1,7 +1,6 @@
 import * as api from "$lib/api/governance.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
-import { LedgerError } from "$lib/constants/ledger.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { definedNeuronsStore } from "$lib/derived/neurons.derived";
@@ -50,7 +49,8 @@ import {
 import type { Identity } from "@icp-sdk/core/agent";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
-import type { ResponseVersion } from "@zondax/ledger-js";
+import type { ResponseVersion } from "@zondax/ledger-icp";
+import { LedgerError } from "@zondax/ledger-js";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -2506,6 +2506,82 @@ describe("neurons-services", () => {
         neuronId: mockNeuron.neuronId,
       });
       expect(spyClaimOrRefresh).toBeCalledTimes(1);
+    });
+
+    it("should load the neuron if claim or refresh fails", async () => {
+      const error = new Error("Neuron has an ongoing ledger update.");
+      spyClaimOrRefresh.mockRejectedValue(error);
+      spyConsoleError.mockReturnValue();
+
+      await reloadNeuron(mockNeuron.neuronId);
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalledTimes(1);
+      expect(spyConsoleError).toBeCalledWith(error);
+      expect(spyConsoleError).toBeCalledTimes(1);
+    });
+
+    it("should resolve and not block the next reload if loading the neuron fails", async () => {
+      const error = new Error("No identity");
+      vi.spyOn(authServices, "getAuthenticatedIdentity")
+        .mockRejectedValueOnce(error)
+        .mockRejectedValueOnce(error);
+      spyConsoleError.mockReturnValue();
+
+      await reloadNeuron(mockNeuron.neuronId);
+
+      expect(spyClaimOrRefresh).not.toBeCalled();
+      expect(spyGetNeuron).not.toBeCalled();
+      expect(spyConsoleError).toBeCalledWith(error);
+      expect(spyConsoleError).toBeCalledTimes(2);
+
+      await reloadNeuron(mockNeuron.neuronId);
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
+      expect(spyGetNeuron).toBeCalledTimes(1);
+    });
+
+    it("should not claim or refresh the same neuron concurrently", async () => {
+      let resolveFirstClaim: () => void;
+      spyClaimOrRefresh.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveFirstClaim = () => resolve(undefined);
+          })
+      );
+
+      const firstReload = reloadNeuron(mockNeuron.neuronId);
+      const secondReload = reloadNeuron(mockNeuron.neuronId);
+      await runResolvedPromises();
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
+
+      resolveFirstClaim();
+      await Promise.all([firstReload, secondReload]);
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(2);
+      expect(spyGetNeuron).toBeCalledTimes(2);
+    });
+
+    it("should claim or refresh different neurons concurrently", async () => {
+      const resolveClaims: Array<() => void> = [];
+      spyClaimOrRefresh.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveClaims.push(() => resolve(undefined));
+          })
+      );
+
+      const reloads = [
+        reloadNeuron(mockNeuron.neuronId),
+        reloadNeuron(mockNeuron.neuronId + 1n),
+      ];
+      await runResolvedPromises();
+
+      expect(spyClaimOrRefresh).toBeCalledTimes(2);
+
+      resolveClaims.forEach((resolve) => resolve());
+      await Promise.all(reloads);
     });
   });
 

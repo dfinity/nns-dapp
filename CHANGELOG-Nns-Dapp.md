@@ -11,6 +11,17 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 144116
+
+### Application
+
+#### Fixed
+
+- The canisters page shows a table skeleton while the canister list loads.
+- Description overflow in the upcoming project card on the launchpad page.
+
+### Operations
+
 ## Proposal 143823
 
 ### Application

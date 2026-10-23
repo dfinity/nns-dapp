@@ -1,4 +1,3 @@
-import { LedgerError } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { getRequestId } from "$lib/utils/ledger.utils";
@@ -19,6 +18,7 @@ import {
 } from "@icp-sdk/core/agent";
 import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import type InternetComputerApp from "@zondax/ledger-icp";
+import { LedgerError } from "@zondax/ledger-js";
 import { mock } from "vitest-mock-extended";
 
 describe("LedgerIdentity", () => {

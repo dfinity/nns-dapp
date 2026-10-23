@@ -1,10 +1,7 @@
 import * as agent from "$lib/api/agent.api";
 import * as api from "$lib/api/governance.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import {
-  LedgerConnectionState,
-  LedgerError,
-} from "$lib/constants/ledger.constants";
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import * as authServices from "$lib/services/auth.services";
 import * as accountsServices from "$lib/services/icp-accounts.services";
@@ -36,7 +33,8 @@ import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { principalToAccountIdentifier } from "@icp-sdk/canisters/nns";
 import type { Agent } from "@icp-sdk/core/agent";
-import type { ResponseVersion } from "@zondax/ledger-js";
+import type { ResponseVersion } from "@zondax/ledger-icp";
+import { LedgerError } from "@zondax/ledger-js";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 

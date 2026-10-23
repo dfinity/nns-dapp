@@ -3,23 +3,16 @@
   import TreeJson from "$lib/components/common/TreeJson.svelte";
   import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
+  import { getObjMaxDepth } from "$lib/utils/utils";
   import { IconCollapseAll, IconExpandAll } from "@dfinity/gix-components";
-  import { isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
   const DEFAULT_EXPANDED_LEVEL = 1;
 
   export let json: unknown | undefined = undefined;
 
-  let expandedData: unknown;
-  $: expandedData = isNullish(json)
-    ? json
-    : expandObject(json as Record<string, unknown>);
-
   let isExpandedAllVisible = false;
-  $: isExpandedAllVisible =
-    getObjMaxDepth(expandedData) > DEFAULT_EXPANDED_LEVEL;
+  $: isExpandedAllVisible = getObjMaxDepth(json) > DEFAULT_EXPANDED_LEVEL;
 
   let isAllExpanded: boolean | undefined = undefined;
   const toggleExpanded = () => {
@@ -55,7 +48,7 @@
       <div in:fade>
         <TreeJson
           testId="tree-json"
-          json={expandedData}
+          {json}
           defaultExpandedLevel={isAllExpanded ? Number.MAX_SAFE_INTEGER : 1}
         />
       </div>

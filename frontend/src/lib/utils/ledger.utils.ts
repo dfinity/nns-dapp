@@ -1,7 +1,6 @@
 import {
   ExtendedLedgerError,
   LEDGER_SIGNATURE_LENGTH,
-  LedgerError,
   type AllLedgerError,
 } from "$lib/constants/ledger.constants";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
@@ -16,6 +15,7 @@ import type {
   ResponseSign,
   ResponseSignUpdateCall,
 } from "@zondax/ledger-icp";
+import { LedgerError } from "@zondax/ledger-js";
 import { get } from "svelte/store";
 
 export const decodePublicKey = async ({
