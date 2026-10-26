@@ -162,6 +162,23 @@ describe("utils", () => {
       );
     });
 
+    it("should call toJSON of a function the way JSON.stringify does", () => {
+      const fn = Object.assign(() => undefined, {
+        toJSON: () => "from toJSON",
+      });
+      expect(stringifyJson({ fn })).toBe(JSON.stringify({ fn }));
+      expect(stringifyJson({ fn })).toBe(`{"fn":"from toJSON"}`);
+    });
+
+    it("should serialize a deeply nested value without exhausting the call stack", () => {
+      const depth = 50_000;
+      let nested: unknown = "leaf";
+      for (let i = 0; i < depth; i++) {
+        nested = i % 2 === 0 ? { a: nested } : [nested];
+      }
+      expect(stringifyJson(nested)).toBe(JSON.stringify(nested));
+    });
+
     it("should throw on a circular structure", () => {
       const value: Record<string, unknown> = { a: 1 };
       value.self = value;

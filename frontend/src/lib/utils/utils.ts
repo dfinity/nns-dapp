@@ -89,8 +89,8 @@ export const stringifyJson = (
   const gap = jsonGap(options?.indentation ?? 0);
   // `JSON.stringify` writes a space after the key colon only when it indents.
   const colonSpace = gap === "" ? "" : " ";
-  // The chain of objects that are currently open, to detect a circular structure.
-  const ancestors: object[] = [];
+  // The objects that are currently open, to detect a circular structure.
+  const ancestors = new Set<object>();
 
   const wrap = (
     entries: string[],
@@ -110,10 +110,30 @@ export const stringifyJson = (
     )}\n${gap.repeat(level)}${close}`;
   };
 
-  const serialize = (raw: unknown, key: string, level: number): string => {
+  // An array or an object whose entries are being written.
+  type Frame = {
+    value: Record<string, unknown>;
+    // The keys of an object. An array reads the indexes 0 to length - 1.
+    names: string[] | undefined;
+    size: number;
+    next: number;
+    entries: string[];
+    level: number;
+    // What goes before this frame's text in its parent: the quoted key and the colon.
+    prefix: string;
+  };
+
+  // The text of a value, or a frame when the value is an array or an object.
+  const open = (
+    raw: unknown,
+    key: string,
+    level: number,
+    prefix: string
+  ): string | Frame => {
     // `JSON.stringify` calls `toJSON` before the replacer. `Principal` has one.
+    // Functions are looked up too, as `JSON.stringify` does.
     const toJson =
-      typeof raw === "object" && raw !== null
+      (typeof raw === "object" && raw !== null) || typeof raw === "function"
         ? (raw as { toJSON?: unknown }).toJSON
         : undefined;
     const value = replaceJsonValue(
@@ -134,42 +154,62 @@ export const stringifyJson = (
       return JSON.stringify(value);
     }
 
-    if (ancestors.includes(value)) {
+    if (ancestors.has(value)) {
       throw new TypeError("Converting circular structure to JSON");
     }
-    ancestors.push(value);
-    try {
-      if (Array.isArray(value)) {
-        // Read each index from 0 to length - 1, like `JSON.stringify`. A hole reads as `undefined`.
-        return wrap(
-          Array.from({ length: value.length }, (_, index) =>
-            serialize(value[index], `${index}`, level + 1)
-          ),
-          "[",
-          "]",
-          level
-        );
-      }
-      const record = value as Record<string, unknown>;
-      return wrap(
-        Object.keys(record).map(
-          (name) =>
-            `${JSON.stringify(name)}:${colonSpace}${serialize(
-              record[name],
-              name,
-              level + 1
-            )}`
-        ),
-        "{",
-        "}",
-        level
-      );
-    } finally {
-      ancestors.pop();
-    }
+    ancestors.add(value);
+    // Read each index from 0 to length - 1, like `JSON.stringify`. A hole reads as `undefined`.
+    const names = Array.isArray(value) ? undefined : Object.keys(value);
+    return {
+      value: value as Record<string, unknown>,
+      names,
+      size: names === undefined ? (value as unknown[]).length : names.length,
+      next: 0,
+      entries: [],
+      level,
+      prefix,
+    };
   };
 
-  return serialize(value, "", 0);
+  // An explicit stack instead of recursion, so that a deeply nested value does
+  // not exhaust the call stack. `JSON.stringify` has no such limit.
+  const root = open(value, "", 0, "");
+  if (typeof root === "string") {
+    return root;
+  }
+  const stack: Frame[] = [root];
+  try {
+    for (;;) {
+      const frame = stack[stack.length - 1];
+      if (frame.next < frame.size) {
+        const name = frame.names?.[frame.next] ?? `${frame.next}`;
+        frame.next += 1;
+        const prefix =
+          frame.names === undefined
+            ? ""
+            : `${JSON.stringify(name)}:${colonSpace}`;
+        const child = open(frame.value[name], name, frame.level + 1, prefix);
+        if (typeof child === "string") {
+          frame.entries.push(`${prefix}${child}`);
+        } else {
+          stack.push(child);
+        }
+        continue;
+      }
+      stack.pop();
+      ancestors.delete(frame.value);
+      const text =
+        frame.names === undefined
+          ? wrap(frame.entries, "[", "]", frame.level)
+          : wrap(frame.entries, "{", "}", frame.level);
+      if (stack.length === 0) {
+        return text;
+      }
+      stack[stack.length - 1].entries.push(`${frame.prefix}${text}`);
+    }
+  } finally {
+    ancestors.clear();
+  }
 };
 
 /**
