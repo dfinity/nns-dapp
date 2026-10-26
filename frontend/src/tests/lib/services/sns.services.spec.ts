@@ -309,6 +309,52 @@ describe("sns-services", () => {
       });
       expect(spy).toBeCalledTimes(1);
     });
+
+    it("should not let an older certified response overwrite a newer one", async () => {
+      const derivedStateWithCount = (
+        count: bigint
+      ): SnsSwapDid.GetDerivedStateResponse => ({
+        sns_tokens_per_icp: [1],
+        buyer_total_icp_e8s: [1_000_000_000n],
+        cf_participant_count: [],
+        direct_participant_count: [count],
+        cf_neuron_count: [],
+        direct_participation_icp_e8s: [],
+        neurons_fund_participation_icp_e8s: [],
+      });
+      const rootCanisterId = rootCanisterId1.toText();
+      let resolveFirst: (
+        value: SnsSwapDid.GetDerivedStateResponse
+      ) => void = () => {};
+      vi.spyOn(api, "querySnsDerivedState")
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              resolveFirst = resolve;
+            })
+        )
+        .mockImplementationOnce(() =>
+          Promise.resolve(derivedStateWithCount(20n))
+        );
+
+      const first = loadSnsDerivedState({
+        rootCanisterId,
+        strategy: "update",
+      });
+      await loadSnsDerivedState({ rootCanisterId, strategy: "update" });
+      expect(
+        get(snsDerivedStateStore)[rootCanisterId]
+          ?.certifiedDirectParticipantCount
+      ).toEqual([20n]);
+
+      resolveFirst(derivedStateWithCount(10n));
+      await first;
+
+      expect(
+        get(snsDerivedStateStore)[rootCanisterId]
+          ?.certifiedDirectParticipantCount
+      ).toEqual([20n]);
+    });
   });
 
   describe("watchSnsTotalCommitment", () => {

@@ -95,14 +95,25 @@ export const loadSnsSwapCommitment = async ({
   });
 };
 
+// Certified refreshes can overlap (a poll and a participation). The call that
+// started last wins: an older certified response that arrives after a newer one
+// has been applied is dropped.
+let derivedStateCallCounter = 0;
+const lastCertifiedDerivedStateCall: Record<string, number> = {};
+
 export const loadSnsDerivedState = async ({
   rootCanisterId,
   strategy,
 }: {
   rootCanisterId: string;
   strategy?: QueryAndUpdateStrategy;
-}) =>
-  queryAndUpdate<SnsSwapDid.GetDerivedStateResponse | undefined, unknown>({
+}) => {
+  derivedStateCallCounter += 1;
+  const callId = derivedStateCallCounter;
+  return queryAndUpdate<
+    SnsSwapDid.GetDerivedStateResponse | undefined,
+    unknown
+  >({
     strategy: strategy ?? FORCE_CALL_STRATEGY,
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -113,6 +124,12 @@ export const loadSnsDerivedState = async ({
       }),
     onLoad: ({ response: derivedState, certified }) => {
       if (derivedState !== undefined) {
+        if (certified) {
+          if (callId < (lastCertifiedDerivedStateCall[rootCanisterId] ?? 0)) {
+            return;
+          }
+          lastCertifiedDerivedStateCall[rootCanisterId] = callId;
+        }
         snsDerivedStateStore.setDerivedState({
           rootCanisterId: Principal.fromText(rootCanisterId),
           certified,
@@ -134,6 +151,7 @@ export const loadSnsDerivedState = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
+};
 
 export const watchSnsTotalCommitment = ({
   rootCanisterId,
