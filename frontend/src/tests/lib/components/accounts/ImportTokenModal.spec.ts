@@ -20,8 +20,8 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
-import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
@@ -168,6 +168,7 @@ describe("ImportTokenModal", () => {
       SnsSwapLifecycle.Pending,
       SnsSwapLifecycle.Open,
       SnsSwapLifecycle.Adopted,
+      SnsSwapLifecycle.Aborted,
     ])(
       "should catch importing of an SNS ledger with lifecycle %s",
       async (lifecycle) => {

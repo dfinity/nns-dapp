@@ -5,7 +5,6 @@
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
-  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
   import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { addImportedToken } from "$lib/services/imported-tokens.services";
@@ -13,13 +12,15 @@
   import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import {
+    snsAggregatorIncludingAbortedProjectsStore,
+    snsAggregatorStore,
+  } from "$lib/stores/sns-aggregator.store";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
-  import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
   import {
     WizardModal,
     type WizardStep,
@@ -134,11 +135,15 @@
         errorLabelKey: "error__imported_tokens.sns_projects_not_loaded",
       };
     }
+    // Use the raw aggregator data: the SNS projects store drops records with
+    // missing metadata, swap parameters or lifecycle, and aborted projects.
+    const ledgerText = ledgerCanisterId.toText();
     if (
-      isSnsLedgerCanisterId({
-        ledgerCanisterId,
-        snsProjects: $snsProjectsStore,
-      })
+      $snsAggregatorIncludingAbortedProjectsStore.data?.some(
+        ({ canister_ids, list_sns_canisters }) =>
+          canister_ids?.ledger_canister_id === ledgerText ||
+          list_sns_canisters?.ledger === ledgerText
+      )
     ) {
       return { errorLabelKey: "error__imported_tokens.is_sns" };
     }
