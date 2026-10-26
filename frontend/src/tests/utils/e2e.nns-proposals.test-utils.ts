@@ -4,7 +4,7 @@ import { step } from "$tests/utils/e2e.test-utils";
 import { expect } from "@playwright/test";
 
 /** Creates dummy proposals
- * - needs at least 10 ICPs
+ * - needs at least 25 ICPs, the reject cost of a proposal
  * 1. stake a neuron
  * 2. use the neuron to create dummy proposals
  * 3. disburse the neuron
@@ -25,7 +25,7 @@ export const createDummyProposal = async (appPo: AppPo): Promise<string> => {
   await appPo
     .getNeuronsPo()
     .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: 10, dissolveDelayDays: "max" });
+    .stakeNeuron({ amount: 25, dissolveDelayDays: "max" });
 
   const idsAfterNeuronCreation = await getNnsNeuronCardsIds(appPo);
   expect(idsAfterNeuronCreation).toHaveLength(idsBeforeRun.length + 1);

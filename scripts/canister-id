@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Prints the ID of a canister on a network.
+
+	The ID comes from, in this order:
+	- canister_ids.json in the repository root, if the file exists.
+	  Testnets and devenvs record their canister IDs there.
+	- the "remote" section of the canister in dfx.json, for the network
+	  or, failing that, for "__default".
+
+	The script fails if the canister has no ID on the network.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The network" variable=DFX_NETWORK default="local"
+clap.define short=c long=canister desc="The canister name" variable=DFX_CANISTER
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Historically, the canister name was given as a positional argument.
+test -n "${DFX_CANISTER:-}" || (($# != 1)) || DFX_CANISTER="${1:-}"
+test -n "${DFX_CANISTER:-}" || {
+  echo "ERROR: Please specify the canister name."
+  exit 1
+} >&2
+
+cd "$SOURCE_DIR/.."
+export DFX_NETWORK DFX_CANISTER
+
+id=""
+if test -f canister_ids.json; then
+  id="$(jq -r '.[env.DFX_CANISTER][env.DFX_NETWORK] // empty' canister_ids.json)"
+fi
+test -n "$id" || id="$(jq -r '.canisters[env.DFX_CANISTER].remote.id | (.[env.DFX_NETWORK] // .__default) // empty' dfx.json)"
+test -n "$id" || {
+  echo "ERROR: Canister '$DFX_CANISTER' has no ID on network '$DFX_NETWORK'." >&2
+  exit 1
+}
+echo "$id"

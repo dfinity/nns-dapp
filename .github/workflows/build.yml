@@ -115,12 +115,11 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
-      - name: Install dfx
-        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
+      - name: Start the local network
+        uses: ./.github/actions/start_icp_network
       - name: Install tools
         run: |
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)" && idl2json --version
       - name: Run uprade-downgrade test
         run: ./scripts/nns-dapp/upgrade-downgrade-test --wasm out/nns-dapp_test.wasm.gz --args out/nns-dapp-arg-local.did --github_step_summary "$GITHUB_STEP_SUMMARY"
   test-upgrade-stable:
@@ -137,22 +136,19 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
-      - name: Install dfx
-        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
+      - name: Start the local network
+        uses: ./.github/actions/start_icp_network
       - name: Install tools
         run: |
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)" && idl2json --version
-      - name: Start dfx
-        run: dfx start --clean --background &>test-upgrade-stable-dfx.log
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --accounts 1000 --chunk 100
-      - name: Upload dfx logs
+      - name: Upload the network logs
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
-          name: test-upgrade-stable-dfx.log
-          path: test-upgrade-stable-dfx.log
+          name: test-upgrade-stable-network-logs
+          path: .icp/cache/networks/local/network-launcher/
   test-test-account-api:
     needs: build
     runs-on: ubuntu-24.04
@@ -165,12 +161,10 @@ jobs:
         with:
           name: nns-dapp_test
       - name: Start empty nns-dapp
-        # As long as the snapshot environment can be installed with no accounts, we can use that.
-        # The snapshot action also installs `idl2json` and `jq`; commands that we will need.
-        uses: ./.github/actions/start_dfx_snapshot
+        # The action also installs `idl2json`, which the test needs.
+        uses: ./.github/actions/start_icp_network
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
-          logfile: 'dfx-test-test-account-api.log'
       - name: Check that test accounts can be created and read
         run: ./scripts/nns-dapp/test-account.test
   test-rest:
@@ -195,29 +189,21 @@ jobs:
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: sns_aggregator_dev
-      - name: Start snapshot environment
-        uses: ./.github/actions/start_dfx_snapshot
+      - name: Start the local network
+        uses: ./.github/actions/start_icp_network
         with:
           nns_dapp_wasm: 'nns-dapp.wasm.gz'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
-          logfile: 'dfx-test-rest.log'
       - name: Setup Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: '1.26'
-      - name: Add go and SNS scripts to the path
-        run: |
-          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - name: Add go to the path
+        run: echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
       - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest
           pup --version
-      - name: Install IC tools
-        run: |
-          pushd snsdemo
-          bin/dfx-sns-demo-install
-          popd
       - name: Install tools
         run: |
           # libarchive-zip-perl is needed for crc32, used by test-cmc-notify.
@@ -226,7 +212,7 @@ jobs:
         run: |
           for ((i=5; i>0; i--)); do
             (
-              timeout 60 curl --fail --silent --retry 10 --connect-timeout 5 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
+              timeout 60 curl --fail --silent --retry 10 --connect-timeout 5 "$(scripts/dfx-canister-url --network local nns-dapp)/" > index.html
               file index.html
               < index.html gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
             ) || { echo "Failed.  Retrying..." ; sleep 5 ; continue ; }
@@ -246,12 +232,11 @@ jobs:
           scripts/dfx-wasm-metadata-add.test --verbose
       - name: Verify that metrics are present
         run: scripts/nns-dapp/e2e-test-metrics-present
-      - name: Test TVL
-        run: |
-          scripts/nns-dapp/test-tvl --nns_dapp_wasm nns-dapp.wasm.gz --nns_dapp_arg nns-dapp-arg-local.did
+      # TODO: Test the TVL again. scripts/nns-dapp/test-tvl needs a mock
+      # exchange rate canister, which the icp-cli network does not have.
       - name: Test import canister IDs
         run: |
-          ./scripts/canister_ids --import-from-index-html http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ --network local --create
+          ./scripts/canister_ids --import-from-index-html "$(scripts/dfx-canister-url --network local nns-dapp)/" --network local --create
           diff <(jq -r 'keys | .[]' canister_ids.json) <(cat <<-EOF
           	ckbtc_index
           	ckbtc_ledger
@@ -287,12 +272,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm.gz --mode upgrade --argument "$(cat nns-dapp-arg-local.did)" --yes
+          icp canister install nns-dapp --wasm nns-dapp.wasm.gz --mode upgrade --args-file nns-dapp-arg-local.did --yes --environment local
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
-      - name: Stop replica
-        run: dfx stop
+      - name: Stop the local network
+        run: icp network stop
   network_independent_wasm:
     name: "Same wasms for mainnet and local"
     # Note: The dockerfile structure SHOULD guarantee that the network is not used in any Wasm build commands.
@@ -373,14 +358,13 @@ jobs:
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: sns_aggregator_dev
-      - name: Start snapshot environment
-        uses: ./.github/actions/start_dfx_snapshot
+      - name: Start the local network
+        uses: ./.github/actions/start_icp_network
         with:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
-          logfile: 'dfx-aggregator-test.log'
       - name: Get the earliest data from the sns aggregator
         run: |
-          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          AGGREGATOR_CANISTER_ID="$(scripts/canister-id --network local sns_aggregator)"
           # Wait for the aggregator to be up:
           for (( try=300; try>0; try-- )); do
             if curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json; then
@@ -400,14 +384,14 @@ jobs:
       - name: Verify that configuration is as provided
         run: scripts/sns/aggregator/test-config
       - name: Make the aggregator collect data quickly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
+        run: icp canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })' --environment local
       - name: Wait for the aggregator to get data
         run: sleep 120
         # sleep time > 12 SNS & 2 block heights each + a few extra calls.
         # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
       - name: Get the latest data from the sns aggregator
         run: |
-          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          AGGREGATOR_CANISTER_ID="$(scripts/canister-id --network local sns_aggregator)"
           curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
           expect=10
           actual="$(jq length aggregate-1.json)"
@@ -427,12 +411,12 @@ jobs:
             exit 1
           }
       - name: Upgrade the aggregator to self with a slow refresh rate
-        run: dfx canister install --mode upgrade --wasm sns_aggregator_dev.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })' --yes
+        run: icp canister install sns_aggregator --mode upgrade --wasm sns_aggregator_dev.wasm.gz --args '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })' --yes --environment local
       - name: Expect the paginated data to be retained over the upgrade
         run: scripts/sns/aggregator/test-pagination --num 13
       - name: Expect the latest data to be retained over the upgrade
         run: |
-          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          AGGREGATOR_CANISTER_ID="$(scripts/canister-id --network local sns_aggregator)"
           curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
           expect=10
           actual="$(jq length aggregate-1.json)"
@@ -456,17 +440,10 @@ jobs:
           then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
-      - name: Verify that fast data is updated fast
-        run: |
-          pushd snsdemo
-          # Install tools such as quill
-          bin/dfx-sns-demo-install
-          # Set canister IDs
-          bin/dfx-nns-import --network local
-          popd
-          scripts/sns/aggregator/test-fast
-      - name: Stop replica
-        run: dfx stop
+      # TODO: Verify that fast data is updated fast. scripts/sns/aggregator/test-fast
+      # creates an SNS with the snsdemo scripts, which the icp-cli network does not have.
+      - name: Stop the local network
+        run: icp network stop
   assets:
     name: "Upload assets"
     needs: build

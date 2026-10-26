@@ -5,6 +5,7 @@ import {
 import { AGGREGATOR_CANISTER_VERSION } from "$lib/constants/sns.constants";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { nonNullish } from "@dfinity/utils";
 
 const aggregatorPageUrl = (page: number) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/list/page/${page}/slow.json`;
@@ -19,32 +20,36 @@ const PAGE_COUNT = IS_TESTNET ? DEV_PAGE_COUNT : MAINNER_PAGE_COUNT;
 const pages = [...Array(PAGE_COUNT).keys()].map(aggregatorPageUrl);
 
 export const queryParallelSnsAggregator = async (): Promise<CachedSnsDto[]> => {
-  const pagePromises = pages.map(async (page) => {
-    try {
-      const response = await fetch(page);
+  const pagePromises = pages.map(
+    async (page): Promise<CachedSnsDto[] | undefined> => {
+      try {
+        const response = await fetch(page);
 
-      if (!response.ok) {
+        if (!response.ok) {
+          console.error(
+            `Error loading SNS project page ${page} from aggregator canister (status ${response.status})`
+          );
+          return undefined;
+        }
+        return await response.json();
+      } catch (e) {
         console.error(
-          `Error loading SNS project page ${page} from aggregator canister (status ${response.status})`
+          `Error loading SNS project page ${page} from aggregator canister`,
+          e
         );
-        return [] as CachedSnsDto[];
+        return undefined;
       }
-      return await response.json();
-    } catch (e) {
-      console.error(
-        `Error loading SNS project page ${page} from aggregator canister`,
-        e
-      );
-      return [] as CachedSnsDto[];
     }
-  });
+  );
 
   const results = await Promise.all(pagePromises);
-  const allProjects = results.flat();
+  const loadedPages = results.filter(nonNullish);
 
-  if (allProjects.length === 0) throw new Error("Error loading SNS projects");
+  // A local network can have no SNS. That is not an error, as long as the
+  // aggregator answers.
+  if (loadedPages.length === 0) throw new Error("Error loading SNS projects");
 
-  return allProjects;
+  return loadedPages.flat();
 };
 
 export const querySnsProjects = async (): Promise<CachedSnsDto[]> => {

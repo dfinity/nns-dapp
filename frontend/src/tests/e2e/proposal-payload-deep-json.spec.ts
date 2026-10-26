@@ -106,7 +106,7 @@ test("Test a proposal payload text that nests JSON thousands of levels deep", as
   const appPo = new AppPo(pageElement);
 
   await step("Get some ICP");
-  await appPo.getIcpTokens(21);
+  await appPo.getIcpTokens(41);
 
   await step("Stake a neuron for voting");
   await appPo.goToStaking();

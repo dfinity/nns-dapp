@@ -21,7 +21,7 @@ test("Test proposals", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  await appPo.getIcpTokens(21);
+  await appPo.getIcpTokens(41);
 
   // should be created before dummy proposals
   step("Stake a neuron for voting");

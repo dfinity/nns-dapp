@@ -15,7 +15,7 @@ print_help() {
 	  - Some or all of these changes may be migrated into the downgrade-upgrade test.
 
 	Needs:
-	  - dfx
+	  - icp-cli
 	  - ic-wasm
 	  - idl2json
 	  - wasm files for the two deployments

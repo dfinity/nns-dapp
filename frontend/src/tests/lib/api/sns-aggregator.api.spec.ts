@@ -86,10 +86,21 @@ describe("sns-aggregator api", () => {
       expect(projects).toHaveLength(10);
     });
 
-    it("should throw when all pages are empty", async () => {
+    it("should return no projects when all pages are empty", async () => {
       const mockFetch = vi.fn(() =>
         Promise.resolve({ ok: true, json: () => Promise.resolve([]) })
       );
+      global.fetch = mockFetch as unknown as typeof fetch;
+
+      const projects = await querySnsProjects();
+
+      expect(projects).toEqual([]);
+      expect(mockFetch).toHaveBeenCalledTimes(6);
+    });
+
+    it("should throw when all pages fail", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      const mockFetch = vi.fn(() => Promise.resolve({ ok: false }));
       global.fetch = mockFetch as unknown as typeof fetch;
 
       await expect(querySnsProjects()).rejects.toThrow(

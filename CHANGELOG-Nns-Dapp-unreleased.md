@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- No error toast when the SNS aggregator has no project.
 - The proposal detail page no longer parses the text fields of a payload as
   JSON, so a text that nests JSON thousands of levels deep no longer breaks
   the page.
@@ -54,6 +55,10 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
+
+- The local test network, for development and CI, runs on icp-cli instead of
+  dfx and the snsdemo snapshot. The network has no SNS project, no ckBTC and no
+  test token, so the end-to-end tests that need them are skipped.
 
 #### Deprecated
 

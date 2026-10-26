@@ -1,0 +1,37 @@
+# Local test network for development and CI.
+#
+# The network launcher starts PocketIC with the NNS, the SNS, Internet Identity,
+# the ICP ledger, the SNS aggregator and an nns-dapp. The NNS root canister
+# controls those canisters. `scripts/icp-network-start` adds the current icp
+# identity as a controller, so a local build can replace the nns-dapp and the
+# aggregator.
+#
+# Mainnet wasms come from `scripts/docker-build`. Releases go through NNS
+# proposals, see `scripts/nns-dapp/release-sop`.
+networks:
+  - name: local
+    mode: managed
+    version: v16.1.0-2026-10-16-03-29
+    gateway:
+      port: 8080
+    nns: true
+    # The same delay on update calls as dfx had by default. Without it, some
+    # end-to-end tests read a state before the index canister has synced.
+    artificial-delay-ms: 600
+
+canisters:
+  - name: nns-dapp
+    build:
+      steps:
+        - type: pre-built
+          path: nns-dapp.wasm.gz
+  - name: sns_aggregator
+    build:
+      steps:
+        - type: pre-built
+          path: sns_aggregator.wasm.gz
+
+environments:
+  - name: local
+    network: local
+    canisters: [nns-dapp, sns_aggregator]
