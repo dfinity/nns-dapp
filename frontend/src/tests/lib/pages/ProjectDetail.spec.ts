@@ -12,6 +12,7 @@ import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
+import { loadedImportedSnsesStore } from "$lib/stores/imported-snses.store";
 import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -44,6 +45,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { nonNullish } from "@dfinity/utils";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -911,6 +913,24 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const { path } = get(pageStore);
         return expect(path).toEqual(AppPath.Launchpad);
       });
+    });
+
+    it("should not report the project as not found while the imported SNSes load", async () => {
+      loadedImportedSnsesStore.reset();
+
+      renderComponent({
+        rootCanisterId: importedRootCanisterId.toText(),
+      });
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).not.toEqual(AppPath.Launchpad);
+      expect(get(toastsStore)).toEqual([]);
+
+      setImportedSnses([importedRootCanisterId]);
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toEqual(AppPath.Launchpad);
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should not load the swap commitment when signed in", async () => {

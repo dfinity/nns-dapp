@@ -26,7 +26,10 @@
   import { loadUserCountry } from "$lib/services/user-country.services";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
+  import {
+    importedSnsRootCanisterIdsStore,
+    importedSnsesReadyStore,
+  } from "$lib/stores/sns-aggregator.store";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
     snsSummariesStore,
@@ -108,6 +111,7 @@
     $snsSwapCommitmentsStore,
     $snsTotalSupplyTokenAmountStore,
     $importedSnsRootCanisterIdsStore,
+    $importedSnsesReadyStore,
     (async () => {
       // An imported SNS has no swap data to show.
       if (
@@ -119,6 +123,10 @@
       }
       // Check project summaries are loaded in store
       if ($snsSummariesStore.length === 0) {
+        return;
+      }
+      // Wait for the imported SNSes, so that the page does not report an imported root as not found.
+      if (!$importedSnsesReadyStore) {
         return;
       }
       // Check valid rootCanisterId
