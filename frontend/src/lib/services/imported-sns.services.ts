@@ -9,6 +9,7 @@ import {
 } from "$lib/api/imported-sns.api";
 import { ImportedSnsError } from "$lib/types/imported-sns.errors";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
+import { isMethodNotFoundError } from "$lib/utils/error.utils";
 import {
   toCachedSnsDto,
   type ImportedSnsCanisterIds,
@@ -76,20 +77,15 @@ const assertSnsCanisters = async ({
   identity: Identity;
   canisterIds: ImportedSnsCanisterIds;
 }): Promise<void> => {
-  const [controllers, mintingAccount, { mode }] = await Promise.all([
-    queryCanistersControllers({
-      identity,
-      canisterIds: [governance, root, ledger, index],
-    }),
-    queryIcrcMintingAccount({ identity, canisterId: ledger, certified: false }),
-    querySnsGovernanceMode({ identity, governanceCanisterId: governance }),
-  ]);
   const [
     governanceControllers,
     rootControllers,
     ledgerControllers,
     indexControllers,
-  ] = controllers;
+  ] = await queryCanistersControllers({
+    identity,
+    canisterIds: [governance, root, ledger, index],
+  });
 
   if (
     !includesPrincipal(governanceControllers, root) ||
@@ -99,6 +95,12 @@ const assertSnsCanisters = async ({
   ) {
     throw new ImportedSnsError("controllers");
   }
+
+  // The controllers check passed, so the ledger and governance are canisters of the SNS.
+  const [mintingAccount, { mode }] = await Promise.all([
+    queryIcrcMintingAccount({ identity, canisterId: ledger, certified: false }),
+    querySnsGovernanceMode({ identity, governanceCanisterId: governance }),
+  ]);
 
   // SNS governance mints and burns with its default account.
   if (
@@ -142,7 +144,10 @@ export const getImportedSns = async (
       identity,
       governanceCanisterId: canisterIds.governance,
       certified: false,
-    }).catch(() => undefined),
+    }).catch((error: unknown) => {
+      if (isMethodNotFoundError(error)) return undefined;
+      throw error;
+    }),
     querySnsLedgerData({
       identity,
       ledgerCanisterId: canisterIds.ledger,

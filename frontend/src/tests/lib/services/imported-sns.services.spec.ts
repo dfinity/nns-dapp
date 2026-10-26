@@ -12,7 +12,14 @@ import {
   type IcrcTokenMetadataResponse,
 } from "@icp-sdk/canisters/ledger/icrc";
 import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
-import { AnonymousIdentity } from "@icp-sdk/core/agent";
+import {
+  AgentError,
+  AnonymousIdentity,
+  ErrorKindEnum,
+  ReplicaRejectCode,
+  requestIdOf,
+  UncertifiedRejectErrorCode,
+} from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
 describe("imported-sns.services", () => {
@@ -138,11 +145,28 @@ describe("imported-sns.services", () => {
   });
 
   it("should accept the SNS if older governance has no topics", async () => {
-    queryTopicsSpy().mockRejectedValue(new Error("no list_topics"));
+    const methodNotFoundError = new AgentError(
+      new UncertifiedRejectErrorCode(
+        requestIdOf({}),
+        ReplicaRejectCode.CanisterError,
+        "Canister has no query method 'list_topics'",
+        "IC0536",
+        []
+      ),
+      ErrorKindEnum.Unknown
+    );
+    queryTopicsSpy().mockRejectedValue(methodNotFoundError);
 
     const dto = await getImportedSns(root);
 
     expect(dto.topics).toBeUndefined();
+  });
+
+  it("should fail if the topics query fails for another reason", async () => {
+    const networkError = new Error("Failed to fetch");
+    queryTopicsSpy().mockRejectedValue(networkError);
+
+    await expect(getImportedSns(root)).rejects.toBe(networkError);
   });
 
   it.each(["governance", "ledger", "swap", "index"] as const)(
@@ -173,6 +197,15 @@ describe("imported-sns.services", () => {
     controllers[position] = newControllers;
 
     await expectError("controllers");
+  });
+
+  it("should not query the ledger and governance if the controllers check fails", async () => {
+    controllers[0] = [stranger];
+
+    await expectError("controllers");
+
+    expect(icrcLedgerApi.queryIcrcMintingAccount).not.toHaveBeenCalled();
+    expect(importedSnsApi.querySnsGovernanceMode).not.toHaveBeenCalled();
   });
 
   it("should reject the SNS if the ledger mints to another canister", async () => {
