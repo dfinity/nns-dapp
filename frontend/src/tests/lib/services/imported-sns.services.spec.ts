@@ -327,6 +327,33 @@ describe("imported-sns.services", () => {
       expect(get(toastsStore)).toEqual([]);
     });
 
+    it("should not publish an older load when the list returns to an earlier value", async () => {
+      let rejectFirstLoad: () => void;
+      const firstLoad = new Promise<void>((_, reject) => {
+        rejectFirstLoad = () => reject(new Error("First load failed"));
+      });
+      querySnsCanisterIdsSpy().mockImplementationOnce(async () => {
+        await firstLoad;
+        throw new Error("unreachable");
+      });
+
+      // The list goes from A to A+B and back to A.
+      importedSnsesStore.add(root.toText());
+      const firstCall = loadImportedSnses();
+      importedSnsesStore.add(failingRoot.toText());
+      const secondCall = loadImportedSnses();
+      importedSnsesStore.remove(failingRoot.toText());
+      await loadImportedSnses();
+      rejectFirstLoad();
+      await Promise.all([firstCall, secondCall]);
+
+      expect(get(loadedImportedSnsesStore).rootCanisterIds).toEqual([
+        root.toText(),
+      ]);
+      expect(get(loadedImportedSnsesStore).snses).toHaveLength(1);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
     it("should not load anything if the feature flag is off", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
       importedSnsesStore.add(root.toText());

@@ -95,14 +95,21 @@ export const snsProjectsRecordStore = derived<
   )
 );
 
-// Imported SNSes did not launch through the NNS, so the Launchpad does not show them.
 export const snsProjectsActivePadStore = derived<
+  Readable<SnsFullProject[]>,
+  SnsFullProject[]
+>(snsProjectsStore, (projects: SnsFullProject[]) =>
+  filterActiveProjects(projects)
+);
+
+// Imported SNSes did not launch through the NNS, so the Launchpad does not show them.
+export const snsProjectsLaunchpadStore = derived<
   [Readable<SnsFullProject[]>, Readable<Set<RootCanisterIdText>>],
   SnsFullProject[]
 >(
-  [snsProjectsStore, importedSnsRootCanisterIdsStore],
+  [snsProjectsActivePadStore, importedSnsRootCanisterIdsStore],
   ([projects, importedRootCanisterIds]) =>
-    filterActiveProjects(projects).filter(
+    projects.filter(
       ({ rootCanisterId }) =>
         !importedRootCanisterIds.has(rootCanisterId.toText())
     )

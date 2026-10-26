@@ -224,8 +224,13 @@ export const loadImportedSnses = (): Promise<void> => {
     return currentLoad.promise;
   }
 
-  const promise = loadSnses(rootCanisterIds).then(({ snses, failures }) => {
-    if (currentLoad?.key !== key) {
+  const load: { key: string; promise: Promise<void> } = {
+    key,
+    promise: Promise.resolve(),
+  };
+  load.promise = loadSnses(rootCanisterIds).then(({ snses, failures }) => {
+    // A newer call started another load, maybe for the same list.
+    if (currentLoad !== load) {
       return;
     }
 
@@ -239,6 +244,6 @@ export const loadImportedSnses = (): Promise<void> => {
     }
     loadedImportedSnsesStore.set({ rootCanisterIds, snses });
   });
-  currentLoad = { key, promise };
-  return promise;
+  currentLoad = load;
+  return load.promise;
 };

@@ -2,6 +2,7 @@ import {
   snsProjectsActivePadStore,
   snsProjectsAdoptedStore,
   snsProjectsCommittedStore,
+  snsProjectsLaunchpadStore,
   snsProjectsRecordStore,
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
@@ -92,12 +93,19 @@ describe("projects.derived", () => {
       setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
       setImportedSnses([importedRootCanisterId]);
 
-      expect(get(snsProjectsActivePadStore)).toHaveLength(1);
       expect(
-        get(snsProjectsActivePadStore).map(({ rootCanisterId }) =>
+        get(snsProjectsLaunchpadStore).map(({ rootCanisterId }) =>
           rootCanisterId.toText()
         )
-      ).not.toContain(importedRootCanisterId.toText());
+      ).toEqual([principal(0).toText()]);
+    });
+
+    it("should keep imported SNSes in the other project lists", () => {
+      const importedRootCanisterId = principal(99);
+      setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
+      setImportedSnses([importedRootCanisterId]);
+
+      expect(get(snsProjectsActivePadStore)).toHaveLength(2);
       expect(get(snsProjectsCommittedStore)).toHaveLength(2);
     });
 
