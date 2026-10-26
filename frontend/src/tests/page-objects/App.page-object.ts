@@ -278,7 +278,8 @@ export class AppPo extends BasePageObject {
     }
 
     await this.getButton("back").click();
-    currentView.waitForAbsent();
+    await currentView.waitForAbsent();
+    await this.waitForNextView();
   }
 
   // Can be called regardless of whether a back button is present.

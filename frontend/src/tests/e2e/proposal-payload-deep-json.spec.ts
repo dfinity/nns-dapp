@@ -25,7 +25,8 @@ const DEEP_TEXT = "[".repeat(NESTING_DEPTH) + "]".repeat(NESTING_DEPTH);
 // test serves its own version, so that one proposal carries the payload above.
 // See frontend/src/lib/api/dev.api.ts and
 // frontend/static/assets/libs/dummy-proposals.utils.js.
-const DUMMY_PROPOSALS_SCRIPT_PATH = "**/assets/libs/dummy-proposals.utils.js";
+// The Vite dev server adds a query string to the import URL.
+const DUMMY_PROPOSALS_SCRIPT_PATH = "**/assets/libs/dummy-proposals.utils.js*";
 
 const PROPOSAL_TITLE = "Test proposal title - a deeply nested payload text";
 
