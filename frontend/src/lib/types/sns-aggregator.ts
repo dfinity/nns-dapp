@@ -352,4 +352,6 @@ export type CachedSnsDto = {
   lifecycle: CachedLifecycleResponseDto | null;
   // TODO(mstr): Make it not optional after all the canisters are upgraded.
   topics?: CachedListTopicsResponseDto;
+  // Only for an imported SNS, because the aggregator does not serve its logo.
+  imported_logo?: string;
 };

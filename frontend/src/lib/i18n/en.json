@@ -1154,6 +1154,9 @@
     "name_too_long": "Address name is too long. Maximum length is $maxLength characters.",
     "duplicate_name": "An address with the name \"$name\" already exists."
   },
+  "error__imported_sns": {
+    "load": "The imported SNS $rootCanisterId failed to load."
+  },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",

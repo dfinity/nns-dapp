@@ -1,3 +1,8 @@
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import {
+  importedSnsesStore,
+  loadedImportedSnsesStore,
+} from "$lib/stores/imported-snses.store";
 import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
@@ -81,6 +86,23 @@ export const setSnsProjects = (
   snsLifecycleStore.reset();
   snsDerivedStateStore.reset();
   snsAggregatorIncludingAbortedProjectsStore.setData(aggregatorProjects);
+};
+
+/**
+ * Imports committed SNSes with the given root canister IDs.
+ * Imported SNSes show only after the aggregator data loads, so also call `setSnsProjects`.
+ */
+export const setImportedSnses = (rootCanisterIds: Principal[]) => {
+  overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
+  rootCanisterIds.forEach((rootCanisterId) =>
+    importedSnsesStore.add(rootCanisterId.toText())
+  );
+  loadedImportedSnsesStore.set({
+    rootCanisterIds: rootCanisterIds.map((id) => id.toText()),
+    snses: rootCanisterIds.map((rootCanisterId) =>
+      aggregatorSnsMockWith({ rootCanisterId: rootCanisterId.toText() })
+    ),
+  });
 };
 
 export const resetSnsProjects = () => {

@@ -1,10 +1,20 @@
 import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
+  importedSnsesStore,
+  loadedImportedSnsesStore,
+} from "$lib/stores/imported-snses.store";
+import {
+  importedSnsRootCanisterIdsStore,
+  importedSnsesReadyStore,
   snsAggregatorIncludingAbortedProjectsStore,
   snsAggregatorStore,
 } from "$lib/stores/sns-aggregator.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
-import { aggregatorMockSnsesDataDto } from "$tests/mocks/sns-aggregator.mock";
+import {
+  aggregatorMockSnsesDataDto,
+  aggregatorSnsMockWith,
+} from "$tests/mocks/sns-aggregator.mock";
 import { nonNullish } from "@dfinity/utils";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
@@ -178,6 +188,101 @@ describe("sns-aggregator store", () => {
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
 
       expect(get(snsAggregatorStore).data).toEqual([]);
+    });
+  });
+
+  describe("imported SNSes", () => {
+    const listedSns = aggregatorSnsMockWith({
+      rootCanisterId: "zxeu2-7aaaa-aaaaq-aaafa-cai",
+    });
+    const importedRootCanisterId = "3e3x2-xyaaa-aaaaq-aaalq-cai";
+    const importedSns = aggregatorSnsMockWith({
+      rootCanisterId: importedRootCanisterId,
+    });
+
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
+      snsAggregatorIncludingAbortedProjectsStore.setData([listedSns]);
+      importedSnsesStore.add(importedRootCanisterId);
+      loadedImportedSnsesStore.set({
+        rootCanisterIds: [importedRootCanisterId],
+        snses: [importedSns],
+      });
+    });
+
+    it("should add the imported SNSes after the listed SNSes", () => {
+      expect(get(snsAggregatorStore).data).toEqual([listedSns, importedSns]);
+      expect(get(importedSnsRootCanisterIdsStore)).toEqual(
+        new Set([importedRootCanisterId])
+      );
+    });
+
+    it("should not add the imported SNSes if the feature flag is off", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
+
+      expect(get(snsAggregatorStore).data).toEqual([listedSns]);
+      expect(get(importedSnsRootCanisterIdsStore)).toEqual(new Set());
+    });
+
+    it("should not add an SNS that the user removed", () => {
+      importedSnsesStore.remove(importedRootCanisterId);
+
+      expect(get(snsAggregatorStore).data).toEqual([listedSns]);
+      expect(get(importedSnsRootCanisterIdsStore)).toEqual(new Set());
+    });
+
+    it("should not add an SNS that the aggregator lists", () => {
+      importedSnsesStore.add(listedSns.canister_ids.root_canister_id);
+      loadedImportedSnsesStore.set({
+        rootCanisterIds: [
+          importedRootCanisterId,
+          listedSns.canister_ids.root_canister_id,
+        ],
+        snses: [importedSns, listedSns],
+      });
+
+      expect(get(snsAggregatorStore).data).toEqual([listedSns, importedSns]);
+      expect(get(importedSnsRootCanisterIdsStore)).toEqual(
+        new Set([importedRootCanisterId])
+      );
+    });
+
+    describe("importedSnsesReadyStore", () => {
+      it("should be ready when the list has loaded", () => {
+        expect(get(importedSnsesReadyStore)).toBe(true);
+      });
+
+      it("should not be ready before the first load", () => {
+        loadedImportedSnsesStore.reset();
+
+        expect(get(importedSnsesReadyStore)).toBe(false);
+      });
+
+      it("should not be ready when the list has an SNS that did not load yet", () => {
+        importedSnsesStore.add("2vxsx-fae");
+
+        expect(get(importedSnsesReadyStore)).toBe(false);
+      });
+
+      it("should stay ready when the user removes an SNS", () => {
+        importedSnsesStore.remove(importedRootCanisterId);
+
+        expect(get(importedSnsesReadyStore)).toBe(true);
+      });
+
+      it("should be ready if the feature flag is off", () => {
+        loadedImportedSnsesStore.reset();
+        overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
+
+        expect(get(importedSnsesReadyStore)).toBe(true);
+      });
+    });
+
+    it("should wait for the aggregator data", () => {
+      snsAggregatorIncludingAbortedProjectsStore.reset();
+
+      expect(get(snsAggregatorStore).data).toBeUndefined();
+      expect(get(importedSnsRootCanisterIdsStore)).toEqual(new Set());
     });
   });
 });

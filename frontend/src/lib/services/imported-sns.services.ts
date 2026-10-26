@@ -7,16 +7,25 @@ import {
   querySnsLedgerData,
   querySnsTopics,
 } from "$lib/api/imported-sns.api";
+import { ENABLE_IMPORT_SNS } from "$lib/stores/feature-flags.store";
+import {
+  importedSnsesStore,
+  loadedImportedSnsesStore,
+} from "$lib/stores/imported-snses.store";
+import { toastsError } from "$lib/stores/toasts.store";
 import { ImportedSnsError } from "$lib/types/imported-sns.errors";
+import type { RootCanisterIdText } from "$lib/types/sns";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { isMethodNotFoundError } from "$lib/utils/error.utils";
 import {
   toCachedSnsDto,
   type ImportedSnsCanisterIds,
 } from "$lib/utils/imported-sns.utils";
+import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
 import { fromNullable, isNullish } from "@dfinity/utils";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
-import type { Principal } from "@icp-sdk/core/principal";
+import { Principal } from "@icp-sdk/core/principal";
+import { get } from "svelte/store";
 
 // The value of `Mode::Normal` in SNS governance.
 const GOVERNANCE_MODE_NORMAL = 1;
@@ -163,4 +172,83 @@ export const getImportedSns = async (
     fee: ledgerData.fee,
     totalSupply: ledgerData.totalSupply,
   });
+};
+
+// The load of the current list of imported root canister IDs.
+let currentLoad: { key: string; promise: Promise<void> } | undefined;
+
+registerCleanupForTesting(() => {
+  currentLoad = undefined;
+});
+
+const loadSnses = async (
+  rootCanisterIds: RootCanisterIdText[]
+): Promise<{
+  snses: CachedSnsDto[];
+  failures: { rootCanisterId: RootCanisterIdText; err: unknown }[];
+}> => {
+  const results = await Promise.allSettled(
+    rootCanisterIds.map(async (rootCanisterId) =>
+      getImportedSns(Principal.fromText(rootCanisterId))
+    )
+  );
+
+  const snses: CachedSnsDto[] = [];
+  const failures: { rootCanisterId: RootCanisterIdText; err: unknown }[] = [];
+  results.forEach((result, index) => {
+    if (result.status === "fulfilled") {
+      snses.push(result.value);
+    } else {
+      failures.push({
+        rootCanisterId: rootCanisterIds[index],
+        err: result.reason,
+      });
+    }
+  });
+
+  return { snses, failures };
+};
+
+/**
+ * Loads each imported SNS into `loadedImportedSnsesStore`.
+ *
+ * Each SNS loads on its own. If one fails, an error toast shows its root
+ * canister ID, and the other SNSes still load.
+ *
+ * The app calls this function on each navigation. Calls for the same list
+ * share one load, and a load for an older list does not publish its result.
+ */
+export const loadImportedSnses = (): Promise<void> => {
+  if (!get(ENABLE_IMPORT_SNS)) {
+    return Promise.resolve();
+  }
+
+  const rootCanisterIds = get(importedSnsesStore);
+  const key = rootCanisterIds.join(",");
+  if (currentLoad?.key === key) {
+    return currentLoad.promise;
+  }
+
+  const load: { key: string; promise: Promise<void> } = {
+    key,
+    promise: Promise.resolve(),
+  };
+  load.promise = loadSnses(rootCanisterIds).then(({ snses, failures }) => {
+    // A newer call started another load, maybe for the same list.
+    if (currentLoad !== load) {
+      return;
+    }
+
+    for (const { rootCanisterId, err } of failures) {
+      toastsError({
+        labelKey: "error__imported_sns.load",
+        substitutions: { $rootCanisterId: rootCanisterId },
+        err,
+        showDetails: true,
+      });
+    }
+    loadedImportedSnsesStore.set({ rootCanisterIds, snses });
+  });
+  currentLoad = load;
+  return load.promise;
 };

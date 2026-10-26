@@ -1,12 +1,21 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as importedSnsApi from "$lib/api/imported-sns.api";
-import { getImportedSns } from "$lib/services/imported-sns.services";
+import {
+  getImportedSns,
+  loadImportedSnses,
+} from "$lib/services/imported-sns.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import {
+  importedSnsesStore,
+  loadedImportedSnsesStore,
+} from "$lib/stores/imported-snses.store";
 import { ImportedSnsError } from "$lib/types/imported-sns.errors";
 import { toCachedSnsDto } from "$lib/utils/imported-sns.utils";
 import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
+import { toastsStore } from "@dfinity/gix-components";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
@@ -21,6 +30,7 @@ import {
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
+import { get } from "svelte/store";
 
 describe("imported-sns.services", () => {
   const root = principal(10);
@@ -259,5 +269,184 @@ describe("imported-sns.services", () => {
 
     expect(importedSnsApi.querySnsGovernanceData).not.toHaveBeenCalled();
     expect(importedSnsApi.querySnsLedgerData).not.toHaveBeenCalled();
+  });
+
+  describe("loadImportedSnses", () => {
+    const failingRoot = principal(30);
+
+    beforeEach(() => {
+      vi.spyOn(console, "error").mockReturnValue();
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
+    });
+
+    it("should load each imported SNS", async () => {
+      importedSnsesStore.add(root.toText());
+
+      await loadImportedSnses();
+
+      expect(get(loadedImportedSnsesStore)).toEqual({
+        rootCanisterIds: [root.toText()],
+        snses: [await getImportedSns(root)],
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should share one load for the same list", async () => {
+      importedSnsesStore.add(root.toText());
+
+      await Promise.all([loadImportedSnses(), loadImportedSnses()]);
+      await loadImportedSnses();
+
+      expect(querySnsCanisterIdsSpy()).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not repeat the error toast for the same list", async () => {
+      importedSnsesStore.add("not-a-principal");
+
+      await loadImportedSnses();
+      await loadImportedSnses();
+
+      expect(get(toastsStore)).toHaveLength(1);
+    });
+
+    it("should load again when the list changes", async () => {
+      importedSnsesStore.add(root.toText());
+      await loadImportedSnses();
+
+      importedSnsesStore.add(failingRoot.toText());
+      await loadImportedSnses();
+
+      expect(querySnsCanisterIdsSpy()).toHaveBeenCalledTimes(3);
+      expect(get(loadedImportedSnsesStore).rootCanisterIds).toEqual([
+        root.toText(),
+        failingRoot.toText(),
+      ]);
+    });
+
+    it("should not publish the result of a load for an older list", async () => {
+      let resolveOldLoad: () => void;
+      const oldLoad = new Promise<void>((resolve) => {
+        resolveOldLoad = resolve;
+      });
+      const canisterIds = {
+        root: [root],
+        governance: [governance],
+        ledger: [ledger],
+        swap: [swap],
+        index: [index],
+        dapps: [],
+        archives: [],
+        extensions: [],
+      } as Awaited<ReturnType<typeof importedSnsApi.querySnsCanisterIds>>;
+      querySnsCanisterIdsSpy()
+        .mockImplementationOnce(async () => {
+          await oldLoad;
+          throw new Error("Old load failed");
+        })
+        .mockResolvedValue(canisterIds);
+
+      importedSnsesStore.add(failingRoot.toText());
+      const olderCall = loadImportedSnses();
+      importedSnsesStore.remove(failingRoot.toText());
+      importedSnsesStore.add(root.toText());
+      await loadImportedSnses();
+      resolveOldLoad();
+      await olderCall;
+
+      expect(get(loadedImportedSnsesStore).rootCanisterIds).toEqual([
+        root.toText(),
+      ]);
+      expect(get(loadedImportedSnsesStore).snses).toHaveLength(1);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should not publish an older load when the list returns to an earlier value", async () => {
+      let rejectFirstLoad: () => void;
+      const firstLoad = new Promise<void>((_, reject) => {
+        rejectFirstLoad = () => reject(new Error("First load failed"));
+      });
+      querySnsCanisterIdsSpy().mockImplementationOnce(async () => {
+        await firstLoad;
+        throw new Error("unreachable");
+      });
+
+      // The list goes from A to A+B and back to A.
+      importedSnsesStore.add(root.toText());
+      const firstCall = loadImportedSnses();
+      importedSnsesStore.add(failingRoot.toText());
+      const secondCall = loadImportedSnses();
+      importedSnsesStore.remove(failingRoot.toText());
+      await loadImportedSnses();
+      rejectFirstLoad();
+      await Promise.all([firstCall, secondCall]);
+
+      expect(get(loadedImportedSnsesStore).rootCanisterIds).toEqual([
+        root.toText(),
+      ]);
+      expect(get(loadedImportedSnsesStore).snses).toHaveLength(1);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should not load anything if the feature flag is off", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
+      importedSnsesStore.add(root.toText());
+
+      await loadImportedSnses();
+
+      expect(querySnsCanisterIdsSpy()).not.toHaveBeenCalled();
+      expect(get(loadedImportedSnsesStore).snses).toEqual([]);
+    });
+
+    it("should show an error and keep the other SNSes if one SNS fails", async () => {
+      querySnsCanisterIdsSpy().mockImplementation(
+        async ({ rootCanisterId }) => {
+          if (rootCanisterId.toText() === failingRoot.toText()) {
+            throw new Error("Canister not found");
+          }
+          return {
+            root: [root],
+            governance: [governance],
+            ledger: [ledger],
+            swap: [swap],
+            index: [index],
+            dapps: [],
+            archives: [],
+            extensions: [],
+          };
+        }
+      );
+      importedSnsesStore.add(failingRoot.toText());
+      importedSnsesStore.add(root.toText());
+
+      await loadImportedSnses();
+
+      expect(
+        get(loadedImportedSnsesStore).snses.map(
+          ({ canister_ids }) => canister_ids.root_canister_id
+        )
+      ).toEqual([root.toText()]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `The imported SNS ${failingRoot.toText()} failed to load. Canister not found`,
+        },
+      ]);
+    });
+
+    it("should show an error for a root canister ID that is not valid", async () => {
+      importedSnsesStore.add("not-a-principal");
+
+      await loadImportedSnses();
+
+      expect(get(loadedImportedSnsesStore).snses).toEqual([]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: expect.stringContaining(
+            "The imported SNS not-a-principal failed to load."
+          ),
+        },
+      ]);
+    });
   });
 });

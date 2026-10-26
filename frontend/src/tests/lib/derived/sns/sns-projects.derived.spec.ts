@@ -2,6 +2,7 @@ import {
   snsProjectsActivePadStore,
   snsProjectsAdoptedStore,
   snsProjectsCommittedStore,
+  snsProjectsLaunchpadStore,
   snsProjectsRecordStore,
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
@@ -9,8 +10,9 @@ import {
   mockSnsMetrics,
   mockSnsRewardEvent,
   mockSnsRewardEventDto,
+  principal,
 } from "$tests/mocks/sns-projects.mock";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
@@ -84,6 +86,27 @@ describe("projects.derived", () => {
       setSnsProjects([{ lifecycle: SnsSwapLifecycle.Unspecified }]);
       const noOpen = get(snsProjectsActivePadStore);
       expect(noOpen.length).toEqual(0);
+    });
+
+    it("should not show imported SNSes on the Launchpad", () => {
+      const importedRootCanisterId = principal(99);
+      setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
+      setImportedSnses([importedRootCanisterId]);
+
+      expect(
+        get(snsProjectsLaunchpadStore).map(({ rootCanisterId }) =>
+          rootCanisterId.toText()
+        )
+      ).toEqual([principal(0).toText()]);
+    });
+
+    it("should keep imported SNSes in the other project lists", () => {
+      const importedRootCanisterId = principal(99);
+      setSnsProjects([{ lifecycle: SnsSwapLifecycle.Committed }]);
+      setImportedSnses([importedRootCanisterId]);
+
+      expect(get(snsProjectsActivePadStore)).toHaveLength(2);
+      expect(get(snsProjectsCommittedStore)).toHaveLength(2);
     });
 
     it("should filter projects that are committed only", () => {
