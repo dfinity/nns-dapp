@@ -39,7 +39,7 @@ import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -877,6 +877,34 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     it("should redirect to launchpad", async () => {
       renderComponent({
         rootCanisterId: "invalid-project",
+      });
+
+      await waitFor(() => {
+        const { path } = get(pageStore);
+        return expect(path).toEqual(AppPath.Launchpad);
+      });
+    });
+  });
+
+  describe("imported SNS", () => {
+    const importedRootCanisterId = principal(99);
+
+    beforeEach(() => {
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Open,
+          certified: true,
+        },
+      ]);
+      setImportedSnses([importedRootCanisterId]);
+      page.mock({ data: { universe: null } });
+      setNoIdentity();
+    });
+
+    it("should redirect to launchpad", async () => {
+      renderComponent({
+        rootCanisterId: importedRootCanisterId.toText(),
       });
 
       await waitFor(() => {

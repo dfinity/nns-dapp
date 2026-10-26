@@ -26,6 +26,7 @@
   import { loadUserCountry } from "$lib/services/user-country.services";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
     snsSummariesStore,
@@ -106,8 +107,13 @@
   $: ($snsSummariesStore,
     $snsSwapCommitmentsStore,
     $snsTotalSupplyTokenAmountStore,
+    $importedSnsRootCanisterIdsStore,
     (async () => {
-      if (isNullish(rootCanisterId)) {
+      // An imported SNS has no swap data to show.
+      if (
+        isNullish(rootCanisterId) ||
+        $importedSnsRootCanisterIdsStore.has(rootCanisterId)
+      ) {
         await goBack();
         return;
       }
