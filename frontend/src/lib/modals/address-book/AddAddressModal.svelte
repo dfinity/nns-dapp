@@ -97,6 +97,7 @@
   const disableSave = $derived(
     nickname === "" ||
       address === "" ||
+      $addressBookStore.certified !== true ||
       nonNullish(nicknameError) ||
       nonNullish(addressError) ||
       $busy ||
@@ -119,6 +120,10 @@
   const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
     normalizeNickname();
+
+    if ($addressBookStore.certified !== true) {
+      return;
+    }
 
     // Check if fields are empty after normalizing
     if (nickname === "" || address === "") {
@@ -144,29 +149,21 @@
       address: addressType,
     };
 
-    // Create temporary array with the updated addresses
-    const currentAddresses = $addressBookStore.namedAddresses ?? [];
-    let updatedAddresses: NamedAddress[];
-
-    if (isEditMode) {
-      // In edit mode, find and replace the existing entry
-      updatedAddresses = currentAddresses.map((entry) =>
-        normalizeName(entry.name) === normalizeName(namedAddress?.name ?? "")
-          ? updatedAddress
-          : entry
-      );
-    } else {
-      // In add mode, append the new address
-      updatedAddresses = [...currentAddresses, updatedAddress];
-    }
-
     const initiator = isEditMode
       ? "edit-address-book-entry"
       : "add-address-book-entry";
     startBusy({ initiator });
 
     try {
-      const result = await saveAddressBook(updatedAddresses);
+      const result = await saveAddressBook(
+        isEditMode
+          ? {
+              type: "update",
+              previousName: namedAddress?.name ?? "",
+              address: updatedAddress,
+            }
+          : { type: "add", address: updatedAddress }
+      );
 
       if (!result?.err) {
         toastsSuccess({
