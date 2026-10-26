@@ -163,6 +163,7 @@ describe("sns.store", () => {
       };
 
       beforeEach(() => {
+        snsDerivedStateStore.reset();
         snsAggregatorIncludingAbortedProjectsStore.setData([
           aggregatorSnsMockWith({
             rootCanisterId: rootCanisterId.toText(),

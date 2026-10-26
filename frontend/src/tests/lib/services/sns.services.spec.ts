@@ -409,6 +409,10 @@ describe("sns-services", () => {
       neurons_fund_participation_icp_e8s: [],
     });
 
+    beforeEach(() => {
+      snsDerivedStateStore.reset();
+    });
+
     it("should refresh the certified count on every Nth poll and ignore uncertified replies", async () => {
       const spy = vi
         .spyOn(api, "querySnsDerivedState")

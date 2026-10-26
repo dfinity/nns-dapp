@@ -4,6 +4,10 @@ import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns derived state store", () => {
+  beforeEach(() => {
+    snsDerivedStateStore.reset();
+  });
+
   it("should store derived state", () => {
     const rootCanisterId = principal(0);
 
