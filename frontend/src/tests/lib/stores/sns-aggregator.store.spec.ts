@@ -6,6 +6,7 @@ import {
 } from "$lib/stores/imported-snses.store";
 import {
   importedSnsRootCanisterIdsStore,
+  importedSnsesReadyStore,
   snsAggregatorIncludingAbortedProjectsStore,
   snsAggregatorStore,
 } from "$lib/stores/sns-aggregator.store";
@@ -203,7 +204,10 @@ describe("sns-aggregator store", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
       snsAggregatorIncludingAbortedProjectsStore.setData([listedSns]);
       importedSnsesStore.add(importedRootCanisterId);
-      loadedImportedSnsesStore.set([importedSns]);
+      loadedImportedSnsesStore.set({
+        rootCanisterIds: [importedRootCanisterId],
+        snses: [importedSns],
+      });
     });
 
     it("should add the imported SNSes after the listed SNSes", () => {
@@ -229,12 +233,49 @@ describe("sns-aggregator store", () => {
 
     it("should not add an SNS that the aggregator lists", () => {
       importedSnsesStore.add(listedSns.canister_ids.root_canister_id);
-      loadedImportedSnsesStore.set([importedSns, listedSns]);
+      loadedImportedSnsesStore.set({
+        rootCanisterIds: [
+          importedRootCanisterId,
+          listedSns.canister_ids.root_canister_id,
+        ],
+        snses: [importedSns, listedSns],
+      });
 
       expect(get(snsAggregatorStore).data).toEqual([listedSns, importedSns]);
       expect(get(importedSnsRootCanisterIdsStore)).toEqual(
         new Set([importedRootCanisterId])
       );
+    });
+
+    describe("importedSnsesReadyStore", () => {
+      it("should be ready when the list has loaded", () => {
+        expect(get(importedSnsesReadyStore)).toBe(true);
+      });
+
+      it("should not be ready before the first load", () => {
+        loadedImportedSnsesStore.reset();
+
+        expect(get(importedSnsesReadyStore)).toBe(false);
+      });
+
+      it("should not be ready when the list has an SNS that did not load yet", () => {
+        importedSnsesStore.add("2vxsx-fae");
+
+        expect(get(importedSnsesReadyStore)).toBe(false);
+      });
+
+      it("should stay ready when the user removes an SNS", () => {
+        importedSnsesStore.remove(importedRootCanisterId);
+
+        expect(get(importedSnsesReadyStore)).toBe(true);
+      });
+
+      it("should be ready if the feature flag is off", () => {
+        loadedImportedSnsesStore.reset();
+        overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
+
+        expect(get(importedSnsesReadyStore)).toBe(true);
+      });
     });
 
     it("should wait for the aggregator data", () => {

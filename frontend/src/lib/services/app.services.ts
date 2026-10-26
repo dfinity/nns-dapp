@@ -3,6 +3,7 @@ import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposa
 import { loadAddressBook } from "$lib/services/address-book.services";
 import { loadGovernanceMetrics } from "$lib/services/governance-metrics.service";
 import { initAccounts } from "$lib/services/icp-accounts.services";
+import { loadImportedSnses } from "$lib/services/imported-sns.services";
 import { loadImportedTokens } from "$lib/services/imported-tokens.services";
 import { loadNetworkEconomicsParameters } from "$lib/services/network-economics.services";
 import { loadNnsTotalVotingPower } from "$lib/services/nns-total-voting-power.service";
@@ -15,7 +16,8 @@ export const initAppPrivateData = async (): Promise<void> => {
   const initNns: Promise<void>[] = [initAccounts()];
   // Reload the SNS projects even if they were loaded.
   // Get latest data and create wrapper caches for the logged in identity.
-  const initSns: Promise<void>[] = [loadSnsProjects()];
+  // The actionable proposals below need the imported SNSes too.
+  const initSns: Promise<void>[] = [loadSnsProjects(), loadImportedSnses()];
   // Load imported tokens
   const initImportedTokens: Promise<void>[] = [
     loadImportedTokens({ ignoreAccountNotFoundError: true }),

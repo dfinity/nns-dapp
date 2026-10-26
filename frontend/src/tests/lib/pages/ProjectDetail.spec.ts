@@ -912,6 +912,25 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         return expect(path).toEqual(AppPath.Launchpad);
       });
     });
+
+    it("should not load the swap commitment when signed in", async () => {
+      resetIdentity();
+      const spyQuerySnsSwapCommitment = vi.spyOn(
+        snsApi,
+        "querySnsSwapCommitment"
+      );
+
+      renderComponent({
+        rootCanisterId: importedRootCanisterId.toText(),
+      });
+
+      await waitFor(() => {
+        const { path } = get(pageStore);
+        return expect(path).toEqual(AppPath.Launchpad);
+      });
+      await runResolvedPromises();
+      expect(spyQuerySnsSwapCommitment).not.toBeCalled();
+    });
   });
 
   describe("not found canister id", () => {

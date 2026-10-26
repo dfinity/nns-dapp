@@ -39,21 +39,30 @@ const initImportedSnsesStore = (): ImportedSnsesStore => {
 
 export const importedSnsesStore = initImportedSnsesStore();
 
-export interface LoadedImportedSnsesStore extends Readable<CachedSnsDto[]> {
-  set: (snses: CachedSnsDto[]) => void;
+export interface LoadedImportedSnsesData {
+  // The root canister IDs that the last load covered. `undefined` before the first load.
+  rootCanisterIds: RootCanisterIdText[] | undefined;
+  // The SNSes that loaded and passed the checks, in the format of the SNS aggregator.
+  snses: CachedSnsDto[];
+}
+
+export interface LoadedImportedSnsesStore
+  extends Readable<LoadedImportedSnsesData> {
+  set: (data: LoadedImportedSnsesData) => void;
   reset: () => void;
 }
 
-/**
- * The imported SNSes that loaded and passed the checks, in the format of the SNS aggregator.
- */
 const initLoadedImportedSnsesStore = (): LoadedImportedSnsesStore => {
-  const { subscribe, set } = writable<CachedSnsDto[]>([]);
+  const initialData: LoadedImportedSnsesData = {
+    rootCanisterIds: undefined,
+    snses: [],
+  };
+  const { subscribe, set } = writable<LoadedImportedSnsesData>(initialData);
 
   return {
     subscribe,
     set,
-    reset: () => set([]),
+    reset: () => set(initialData),
   };
 };
 

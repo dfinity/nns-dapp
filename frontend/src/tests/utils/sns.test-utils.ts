@@ -97,11 +97,12 @@ export const setImportedSnses = (rootCanisterIds: Principal[]) => {
   rootCanisterIds.forEach((rootCanisterId) =>
     importedSnsesStore.add(rootCanisterId.toText())
   );
-  loadedImportedSnsesStore.set(
-    rootCanisterIds.map((rootCanisterId) =>
+  loadedImportedSnsesStore.set({
+    rootCanisterIds: rootCanisterIds.map((id) => id.toText()),
+    snses: rootCanisterIds.map((rootCanisterId) =>
       aggregatorSnsMockWith({ rootCanisterId: rootCanisterId.toText() })
-    )
-  );
+    ),
+  });
 };
 
 export const resetSnsProjects = () => {

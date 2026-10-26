@@ -13,6 +13,11 @@ import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.co
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import {
+  importedSnsesStore,
+  loadedImportedSnsesStore,
+} from "$lib/stores/imported-snses.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -30,6 +35,7 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import {
   mockSnsFullProject,
   mockToken,
@@ -403,6 +409,39 @@ describe("Wallet", () => {
       await tick();
 
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
+
+    it("waits for the imported SNSes before it decides that the token is unknown", async () => {
+      const importedRootCanisterId = "3e3x2-xyaaa-aaaaq-aaalq-cai";
+      setNoIdentity();
+      page.mock({
+        data: { universe: importedRootCanisterId },
+        routeId: AppPath.Wallet,
+      });
+      setSnsProjects([{}]);
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
+      importedSnsesStore.add(importedRootCanisterId);
+
+      render(Wallet, {
+        props: {
+          accountIdentifier: undefined,
+        },
+      });
+      await runResolvedPromises();
+      await tick();
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+
+      loadedImportedSnsesStore.set({
+        rootCanisterIds: [importedRootCanisterId],
+        snses: [
+          aggregatorSnsMockWith({ rootCanisterId: importedRootCanisterId }),
+        ],
+      });
+      await runResolvedPromises();
+      await tick();
+
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
     });
 
     it("redirects to tokens for unknown universe when not signed in", async () => {

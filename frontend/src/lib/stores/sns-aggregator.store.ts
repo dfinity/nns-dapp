@@ -50,7 +50,7 @@ const importedSnsEntriesStore: Readable<CachedSnsDto[]> = derived(
     importedSnsesStore,
     loadedImportedSnsesStore,
   ],
-  ([aggregatorStore, isEnabled, rootCanisterIds, loadedSnses]) => {
+  ([aggregatorStore, isEnabled, rootCanisterIds, { snses: loadedSnses }]) => {
     if (!isEnabled || isNullish(aggregatorStore.data)) {
       return [];
     }
@@ -67,6 +67,16 @@ const importedSnsEntriesStore: Readable<CachedSnsDto[]> = derived(
         !listedRootCanisterIds.has(root_canister_id)
     );
   }
+);
+
+/**
+ * True when the imported SNSes in the list have loaded, or when there is nothing to load.
+ */
+export const importedSnsesReadyStore: Readable<boolean> = derived(
+  [ENABLE_IMPORT_SNS, importedSnsesStore, loadedImportedSnsesStore],
+  ([isEnabled, rootCanisterIds, { rootCanisterIds: loadedRootCanisterIds }]) =>
+    !isEnabled ||
+    rootCanisterIds.every((id) => loadedRootCanisterIds?.includes(id))
 );
 
 export const importedSnsRootCanisterIdsStore: Readable<

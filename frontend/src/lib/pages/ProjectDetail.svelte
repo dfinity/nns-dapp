@@ -160,7 +160,11 @@
   let swapCanisterId: Principal | undefined;
   $: swapCanisterId = $projectDetailStore.summary?.swapCanisterId;
 
-  $: if (nonNullish(rootCanisterId) && $authSignedInStore) {
+  // An imported SNS never gets a summary here, so its swap is not queried.
+  let hasSummary = false;
+  $: hasSummary = nonNullish($projectDetailStore.summary);
+
+  $: if (nonNullish(rootCanisterId) && hasSummary && $authSignedInStore) {
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {
