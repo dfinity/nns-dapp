@@ -70,6 +70,33 @@ for canister in nns-dapp sns_aggregator; do
   icp-canister-add-controller --network "$NETWORK" --canister "$canister_id"
 done
 
+# Stakes a large NNS neuron for the anonymous principal, if it does not exist.
+#
+# The network starts with one NNS neuron of 1 ICP. A test neuron would then
+# have the majority and decide every proposal at once. The large neuron does
+# not vote, so proposals stay open. The ledger funds the anonymous account.
+stake_large_neuron() {
+  local governance ledger nonce subaccount balance neuron_id
+  governance="$(canister-id --network "$NETWORK" nns-governance)"
+  ledger="$(canister-id --network "$NETWORK" nns-ledger)"
+  nonce=1
+  # The neuron subaccount: sha256(0x0c, "neuron-stake", controller bytes, nonce as big-endian u64).
+  # The anonymous principal is the single byte 0x04.
+  subaccount="$(echo -n "0c$(printf 'neuron-stake' | xxd -p)04$(printf '%016x' "$nonce")" | xxd -r -p | sha256sum | awk '{print $1}' | sed -e 's/../\\&/g')"
+  balance="$(icp canister call "$ledger" icrc1_balance_of "(record { owner = principal \"$governance\"; subaccount = opt blob \"$subaccount\" })" --network "$NETWORK" --query | tr -d '() :nat_')"
+  if ((balance > 0)); then
+    echo "The large NNS neuron exists already."
+    return
+  fi
+  echo "Staking a large NNS neuron..."
+  icp canister call "$ledger" icrc1_transfer "(record { to = record { owner = principal \"$governance\"; subaccount = opt blob \"$subaccount\" }; amount = 1_000_000_000_000_000 : nat; fee = null; memo = null; from_subaccount = null; created_at_time = null })" --network "$NETWORK" --identity anonymous >/dev/null
+  neuron_id="$(icp canister call "$governance" manage_neuron "(record { id = null; command = opt variant { ClaimOrRefresh = record { by = opt variant { MemoAndController = record { controller = opt principal \"2vxsx-fae\"; memo = $nonce : nat64 } } } }; neuron_id_or_subaccount = null })" --network "$NETWORK" --identity anonymous | idl2json | jq -r '.command[0].ClaimOrRefresh.refreshed_neuron_id[0].id')"
+  # Eight years, the maximum dissolve delay, for the maximum voting power.
+  icp canister call "$governance" manage_neuron "(record { id = opt record { id = $neuron_id : nat64 }; command = opt variant { Configure = record { operation = opt variant { IncreaseDissolveDelay = record { additional_dissolve_delay_seconds = 252_460_800 : nat32 } } } }; neuron_id_or_subaccount = null })" --network "$NETWORK" --identity anonymous >/dev/null
+  echo "Staked NNS neuron $neuron_id with 10,000,000 ICP."
+}
+stake_large_neuron
+
 if test -n "${NNS_DAPP_WASM:-}"; then
   test -f "$NNS_DAPP_ARG" || DFX_NETWORK="$NETWORK" ./config.sh >/dev/null
   install_canister nns-dapp --wasm "$NNS_DAPP_WASM" --mode "$NNS_DAPP_INSTALL_MODE" --args-file "$NNS_DAPP_ARG"

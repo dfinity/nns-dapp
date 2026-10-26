@@ -14,6 +14,14 @@ describe("IC Management Error utils", () => {
       expect(mapError(notControllerError)).toBeInstanceOf(
         UserNotTheControllerError
       );
+      const notAllowedToReadStatusError = new Error(`Call failed:
+        Request ID: e671eb5fb015b6b8a51b26c3503ff9a4a9bd81b5f265158bc160d78f847f1b73
+        Reject code: 5
+        Reject text: Caller 2vxsx-fae is not allowed to read the canister status
+        Error code: IC0542`);
+      expect(mapError(notAllowedToReadStatusError)).toBeInstanceOf(
+        UserNotTheControllerError
+      );
       expect(mapError(new Error("code: 403"))).toBeInstanceOf(Error);
       expect(
         mapError(

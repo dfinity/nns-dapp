@@ -24,7 +24,7 @@ import { ToastsPo } from "$tests/page-objects/Toasts.page-object";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { expect } from "@playwright/test";
 
 export class AppPo extends BasePageObject {
@@ -293,6 +293,23 @@ export class AppPo extends BasePageObject {
 
       await this.getButton("back").click();
       await currentView.waitForAbsent();
+      await this.waitForNextView();
+    }
+  }
+
+  // After a navigation, the next page is not rendered at once. Waits for
+  // either a top-level page, which has the menu button, or the next view
+  // with a back button.
+  private async waitForNextView(): Promise<void> {
+    const menuToggle = this.getButton("menu-toggle");
+    for (let attempt = 0; attempt < 50; attempt++) {
+      if (await menuToggle.root.isVisible()) {
+        return;
+      }
+      if (nonNullish(await this.getCurrentViewWithBackButtonPo())) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
 
