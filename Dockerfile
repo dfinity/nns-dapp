@@ -34,7 +34,6 @@ RUN mkdir -p config
 COPY dfx.json dfx.json
 COPY config.json config.json
 COPY frontend/package.json frontend/package.json
-RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.volta.node' frontend/package.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_RELEASE' config.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' config.json > config/optimizer_version
@@ -72,11 +71,7 @@ COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
-# Install dfx
 WORKDIR /
-# dfx is installed in `$HOME/.local/share/dfx/bin` but we can't reference `$HOME` here so we hardcode `/root`.
-ENV PATH="/root/.local/share/dfx/bin:${PATH}"
-RUN DFXVM_INIT_YES=true DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
 # TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
 RUN curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v$(cat config/binstall_version)/cargo-binstall-x86_64-unknown-linux-musl.tgz" | tar -xvzf -
@@ -84,7 +79,7 @@ RUN ./cargo-binstall -y --force "cargo-binstall@$(cat config/binstall_version)"
 RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
 
 # Title: Gets the deployment configuration
-# Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
+# Args: Everything in the environment.  Ideally also ~/.config/dfx/networks.json but that is inaccessible.
 # Note: This MUST NOT be used as an input for the frontend or wasm.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
@@ -92,6 +87,7 @@ COPY dfx.json config.json config.sh canister_ids.jso[n] /build/
 COPY global-config.json /root/.config/dfx/networks.json
 COPY scripts/network-config /build/scripts/network-config
 COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/canister-id /build/scripts/canister-id
 COPY scripts/clap.bash /build/scripts/clap.bash
 COPY .df[x]/ /build/.dfx
 WORKDIR /build
@@ -109,6 +105,7 @@ SHELL ["bash", "-c"]
 COPY dfx.json config.json config.sh /build/
 COPY scripts/network-config /build/scripts/network-config
 COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/canister-id /build/scripts/canister-id
 COPY scripts/clap.bash /build/scripts/clap.bash
 WORKDIR /build
 RUN mkdir -p frontend

@@ -14,8 +14,8 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
-clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=n long=network desc="The icp environment to use" variable=DFX_NETWORK default="local"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-dfx canister call --network "$DFX_NETWORK" nns-dapp get_stats | idl2json | node -e 'counters=JSON.parse(require("fs").readFileSync(0).toString()).performance_counts.reduce((d,e)=>(d[e.name]=Number(e.instruction_count),d), {});console.log(counters["post_upgrade stop"] - counters["post_upgrade start"])'
+icp canister call nns-dapp get_stats '()' --environment "$DFX_NETWORK" | idl2json | node -e 'counters=JSON.parse(require("fs").readFileSync(0).toString()).performance_counts.reduce((d,e)=>(d[e.name]=Number(e.instruction_count),d), {});console.log(counters["post_upgrade stop"] - counters["post_upgrade start"])'

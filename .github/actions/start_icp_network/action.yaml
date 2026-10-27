@@ -1,0 +1,67 @@
+name: 'Start the local icp network'
+description: |
+  Starts the local icp-cli network from icp.yaml. The network has the NNS,
+  the SNS, Internet Identity, the ICP ledger, the SNS aggregator and an
+  nns-dapp. Optionally installs the given nns-dapp and sns_aggregator wasms.
+
+  Also installs the tools that the test scripts need: icp, didc and idl2json.
+inputs:
+  nns_dapp_wasm:
+    description: "The name of the nns-dapp wasm to install"
+    required: false
+    default: ""
+  nns_dapp_install_mode:
+    description: "Passed as --mode to icp canister install"
+    required: false
+    default: "reinstall"
+  sns_aggregator_wasm:
+    description: "The name of the sns_aggregator wasm to install"
+    required: false
+    default: ""
+  sns_aggregator_install_mode:
+    description: "Passed as --mode to icp canister install"
+    required: false
+    default: "reinstall"
+runs:
+  using: "composite"
+  steps:
+    - name: Install cargo binstall
+      uses: ./.github/actions/install_binstall
+    - name: Install idl2json
+      shell: bash
+      run: |
+        cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)"
+    - name: Install didc and icp-cli
+      shell: bash
+      run: |
+        set -euo pipefail
+        command -v didc || scripts/install-didc
+        scripts/install-icp-cli
+        # Both tools are installed in $HOME/.local/bin, which is in the path by
+        # default on Linux but not on Mac.
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        # Keep the global icp-cli data in one place, so that the cache step can
+        # restore the network launcher.
+        echo "ICP_HOME=$HOME/.icp" >> "$GITHUB_ENV"
+        echo "DO_NOT_TRACK=1" >> "$GITHUB_ENV"
+    - name: Restore the network launcher
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: ~/.icp
+        key: icp-launcher-${{ runner.os }}-${{ hashFiles('icp.yaml', 'config.json') }}
+    - name: Start the network
+      shell: bash
+      env:
+        # The first start downloads the network launcher from GitHub.
+        ICP_CLI_GITHUB_TOKEN: ${{ github.token }}
+        NNS_DAPP_WASM: ${{ inputs.nns_dapp_wasm }}
+        NNS_DAPP_INSTALL_MODE: ${{ inputs.nns_dapp_install_mode }}
+        SNS_AGGREGATOR_WASM: ${{ inputs.sns_aggregator_wasm }}
+        SNS_AGGREGATOR_INSTALL_MODE: ${{ inputs.sns_aggregator_install_mode }}
+      run: |
+        set -euo pipefail
+        scripts/icp-network-start \
+          --nns_dapp_wasm "$NNS_DAPP_WASM" \
+          --nns_dapp_install_mode "$NNS_DAPP_INSTALL_MODE" \
+          --sns_aggregator_wasm "$SNS_AGGREGATOR_WASM" \
+          --sns_aggregator_install_mode "$SNS_AGGREGATOR_INSTALL_MODE"

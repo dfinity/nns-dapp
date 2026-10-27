@@ -34,18 +34,14 @@ if ! [ -f "$ARGS_FILE" ]; then
   exit 1
 fi
 
-# Check if a replica is running:
-if pgrep -x replica || pgrep -x pocket-ic; then
-  echo "A replica is already running. Shut it down first." >&2
-  exit 1
-fi
-
-dfx start --clean --background
+# Starts the local network, or reuses a running one. The test reinstalls
+# nns-dapp, so it does not need a clean network.
+"$SOURCE_DIR/../icp-network-start"
 
 prod_dir="$(mktemp -d prod-XXXXXX)"
 
 cleanup() {
-  dfx stop
+  icp network stop
   rm -rf "$prod_dir"
 }
 

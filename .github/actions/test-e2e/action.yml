@@ -33,13 +33,11 @@ runs:
       uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       with:
         name: sns_aggregator_dev
-    - name: Start snapshot environment
-      uses: ./.github/actions/start_dfx_snapshot
+    - name: Start the local network
+      uses: ./.github/actions/start_icp_network
       with:
         nns_dapp_wasm: "nns-dapp.wasm.gz"
         sns_aggregator_wasm: "sns_aggregator_dev.wasm.gz"
-        # Upgrade instead of reinstall to keep the preloaded SNSs.
-        sns_aggregator_install_mode: "upgrade"
     - name: Generate .env configuration for Playwright end-to-end tests
       shell: bash
       run: |
@@ -107,6 +105,6 @@ runs:
         echo "To update your local repo run:"
         echo "  scripts/update-e2e-screenshots --run_id ${{ github.run_id }}"
         exit 1
-    - name: Stop replica
+    - name: Stop the local network
       shell: bash
-      run: dfx stop
+      run: icp network stop

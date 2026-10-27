@@ -26,6 +26,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- No error toast when the SNS aggregator has no project.
+- The staking rewards and the APY load when there is no SNS project.
+- The canister page tells a user that they are not a controller also when the
+  Internet Computer answers with the newer error code IC0542.
+
 #### Security
 
 #### Not Published
@@ -35,6 +40,12 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 #### Changed
+
+- The local test network, for development and CI, runs on icp-cli instead of
+  dfx and the snsdemo snapshot. The network has no SNS project, no ckBTC and no
+  test token, so the end-to-end tests that need them are skipped.
+- The local test network has a mock of the ICP Swap price feed, so the app
+  shows token prices and the staking rewards.
 
 #### Deprecated
 

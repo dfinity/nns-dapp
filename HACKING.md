@@ -26,25 +26,37 @@ That is why we are providing a `./config.sh` script that generate the above envi
 
 ## Local
 
-To run the dapp against canisters deployed locally on a simulated IC network, use the steps below:
+The local network runs on [icp-cli](https://github.com/dfinity/icp-cli). The
+network launcher starts PocketIC with the NNS, the SNS, Internet Identity, the
+ICP ledger, the SNS aggregator and an nns-dapp release. See [`icp.yaml`](./icp.yaml).
 
-- Run `scripts/setup` to install necessary tools.
-- Clone the [snsdemo](https://github.com/dfinity/snsdemo/) repository. We'll use it to set up the test environment.
-- In the `snsdemo` repo, run:
-  - `bin/dfx-sns-demo-install` (to install necessary tools)
-  - `ulimit -n 65536` (increase the limit for the current shell session to avoid "Too many open files" OS errors)
-  - `bin/dfx-snapshot-stock-make --snapshot $HOME/my-snapshot.tar.xz` (to create a snapshot with a test environment)
-- Go back to the `nns-dapp` repo
-- Run `scripts/dfx-snapshot-start --snapshot $HOME/my-snapshot.tar.xz` (this will keep running so switch to another terminal window)
+To run the dapp against the local network, use the steps below:
+
+- Run `scripts/setup` to install necessary tools. It installs `icp` in `$HOME/.local/bin`.
+- Run `scripts/icp-network-start`. It starts the network in the background and
+  makes your icp identity a controller of the nns-dapp and the SNS aggregator.
+  If icp has only the anonymous identity, the script creates the identity
+  `nns-dapp-local`, because the nns-dapp rejects anonymous callers on some
+  methods.
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
 - In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
 With this setup, you can work on the frontend code without building the
-nns-dapp canister. If you want to change the back-end code, you can deploy it
-with `dfx deploy nns-dapp` and it replace the provided canister.
+nns-dapp canister. If you want to change the back-end code, build the wasm and
+install it:
 
-Once you have a running replica with NNS installed and a fixed
-`./frontend/.env` file, don't have to take all the steps every time.
+```bash
+./scripts/docker-build --network local
+scripts/icp-network-start --nns_dapp_wasm nns-dapp.wasm.gz --sns_aggregator_wasm sns_aggregator.wasm.gz
+```
+
+The network keeps its state while it runs. `icp network stop` discards it. The
+next `scripts/icp-network-start` begins from a clean state.
+
+The local network has no SNS project and no ckBTC, ckETH or ckUSDC tokens. A
+mock of the ICP Swap price feed sets the ICP price to 9 USD, see
+[`mocks/icp-swap`](./mocks/icp-swap/README.md). The ICP ledger funds the test
+account that the "Get ICP" menu uses.
 
 ## Testnet
 
@@ -72,7 +84,9 @@ e.g. replace `<testnet_name>` with `small11`
 
 ## Requirements
 
-The `dfx` version installed locally should match the one defined in [`dfx.json`](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
+The `icp` version installed locally should match `ICP_CLI_VERSION` in [`config.json`](./config.json). `scripts/install-icp-cli` installs that version.
+
+The release scripts still use `dfx`. Its version should match the one defined in [`dfx.json`](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
 
 [`canister_ids.json`]: https://github.com/dfinity/nns-dapp/blob/testnets/testnets/canister_ids.json
 [`package.json`]: https://github.com/dfinity/nns-dapp/blob/main/frontend/package.json

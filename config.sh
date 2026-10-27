@@ -45,9 +45,9 @@ first_not_null() {
 local_deployment_data="$(
   set -euo pipefail
   : "Try to find the nns-dapp canister ID:"
-  : "- may be set by dfx as an env var"
+  : "- may be set as an env var"
   : "- may be deployed locally"
-  LOCALLY_DEPLOYED_NNS_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-dapp 2>/dev/null || true)"
+  LOCALLY_DEPLOYED_NNS_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" nns-dapp 2>/dev/null || true)"
   test -n "${OWN_CANISTER_ID:-}" || OWN_CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
   export OWN_CANISTER_ID
   test -n "${OWN_CANISTER_ID:-}" || unset OWN_CANISTER_ID
@@ -66,7 +66,7 @@ local_deployment_data="$(
   : "- may be set as an env var"
   : "Note: If you want to use a wasm canister deployed by someone else, add the canister ID to the remote section in dfx.json:"
   : "      dfx.json -> canisters -> nns-sns-wasm -> remote -> id -> your DFX_NETWORK -> THE_WASM_CANISTER_ID"
-  LOCALLY_DEPLOYED_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm 2>/dev/null || echo "NO_SNS_WASM_CANISTER_SPECIFIED")"
+  LOCALLY_DEPLOYED_WASM_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" nns-sns-wasm 2>/dev/null || echo "NO_SNS_WASM_CANISTER_SPECIFIED")"
   test -n "${WASM_CANISTER_ID:-}" || WASM_CANISTER_ID="$LOCALLY_DEPLOYED_WASM_CANISTER_ID"
   export WASM_CANISTER_ID
 
@@ -76,49 +76,49 @@ local_deployment_data="$(
   export SNS_AGGREGATOR_URL
 
   : "Try to find the ckBTC canister IDs"
-  CKBTC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_ledger 2>/dev/null || true)"
+  CKBTC_LEDGER_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" ckbtc_ledger 2>/dev/null || true)"
   export CKBTC_LEDGER_CANISTER_ID
   test -n "${CKBTC_LEDGER_CANISTER_ID:-}" || unset CKBTC_LEDGER_CANISTER_ID
-  CKBTC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_index 2>/dev/null || true)"
+  CKBTC_INDEX_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" ckbtc_index 2>/dev/null || true)"
   export CKBTC_INDEX_CANISTER_ID
   test -n "${CKBTC_INDEX_CANISTER_ID:-}" || unset CKBTC_INDEX_CANISTER_ID
-  CKBTC_MINTER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_minter 2>/dev/null || true)"
+  CKBTC_MINTER_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" ckbtc_minter 2>/dev/null || true)"
   export CKBTC_MINTER_CANISTER_ID
   test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
   : "Try to find the ckETH canister IDs"
-  CKETH_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id cketh_ledger 2>/dev/null || true)"
+  CKETH_LEDGER_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" cketh_ledger 2>/dev/null || true)"
   export CKETH_LEDGER_CANISTER_ID
   test -n "${CKETH_LEDGER_CANISTER_ID:-}" || unset CKETH_LEDGER_CANISTER_ID
-  CKETH_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id cketh_index 2>/dev/null || true)"
+  CKETH_INDEX_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" cketh_index 2>/dev/null || true)"
   export CKETH_INDEX_CANISTER_ID
   test -n "${CKETH_INDEX_CANISTER_ID:-}" || unset CKETH_INDEX_CANISTER_ID
 
   : "Try to find the ckUSDC canister IDs"
-  CKUSDC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckusdc_ledger 2>/dev/null || true)"
+  CKUSDC_LEDGER_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" ckusdc_ledger 2>/dev/null || true)"
   export CKUSDC_LEDGER_CANISTER_ID
   test -n "${CKUSDC_LEDGER_CANISTER_ID:-}" || unset CKUSDC_LEDGER_CANISTER_ID
-  CKUSDC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckusdc_index 2>/dev/null || true)"
+  CKUSDC_INDEX_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" ckusdc_index 2>/dev/null || true)"
   export CKUSDC_INDEX_CANISTER_ID
   test -n "${CKUSDC_INDEX_CANISTER_ID:-}" || unset CKUSDC_INDEX_CANISTER_ID
 
   : "Get the governance canister ID - it should be defined"
-  GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
+  GOVERNANCE_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" nns-governance)"
   export GOVERNANCE_CANISTER_ID
 
   : "Get the ledger canister ID -it should be defined"
-  LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
+  LEDGER_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" nns-ledger)"
   export LEDGER_CANISTER_ID
   : "Try to find the NNS Index canister ID"
-  INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-index 2>/dev/null || true)"
+  INDEX_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" nns-index 2>/dev/null || true)"
   export INDEX_CANISTER_ID
 
   : "Get the minter canister ID - it should be defined"
-  CYCLES_MINTING_CANISTER_ID="$(dfx canister id --network "$DFX_NETWORK" nns-cycles-minting)"
+  CYCLES_MINTING_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" nns-cycles-minting)"
   export CYCLES_MINTING_CANISTER_ID
 
   : "Try to find the TVL canister ID"
-  TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
+  TVL_CANISTER_ID="$(canister-id --network "$DFX_NETWORK" tvl 2>/dev/null || true)"
   if [[ -z "${TVL_CANISTER_ID:-}" ]]; then
     # The TVL is now served by the nns-dapp canister.
     # We still pass the canister ID as a separate variable to allow the app

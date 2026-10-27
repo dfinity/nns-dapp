@@ -121,3 +121,6 @@ playwright-results/
 **/*.rs.bk
 
 tmp
+
+# icp-cli local network state (.icp/data holds the committed mainnet canister IDs)
+.icp/cache/

@@ -61,13 +61,13 @@ check_service() {
   (
     echo "It should be possible to query metadata from the sns_aggregator and nns-dapp canisters"
     for canister in nns-dapp sns_aggregator; do
-      dfx canister status "$canister" || {
+      icp canister status "$canister" --environment local || {
         echo "ERROR: Please deploy the $canister to the local network before running this test"
         exit 1
       }
       : "Make sure that the correct wasm is deployed."
-      dfx canister metadata "$canister" git_commit_id | check_commit
-      dfx canister metadata "$canister" candid:service | check_service
+      icp canister metadata "$canister" git_commit_id --environment local | check_commit
+      icp canister metadata "$canister" candid:service --environment local | check_service
     done
   )
 
