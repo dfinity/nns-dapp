@@ -2,11 +2,7 @@ import { ALL_CANDID_TXS_VERSION } from "$lib/constants/ledger-app.constants";
 import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
 import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { i18n } from "$lib/stores/i18n";
-import {
-  LedgerErrorKey,
-  LedgerErrorMessage,
-  type LedgerHQTransportError,
-} from "$lib/types/ledger.errors";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   createReadStatePaths,
@@ -36,7 +32,12 @@ import {
   type RequestId,
   type Signature,
 } from "@icp-sdk/core/agent";
-import type Transport from "@ledgerhq/hw-transport";
+import type {
+  DeviceManagementKit,
+  DeviceSessionId,
+  DiscoveredDevice,
+  DmkError,
+} from "@ledgerhq/device-management-kit";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
   ResponseAddress,
@@ -52,6 +53,27 @@ type ReadStateData = {
   signature: Signature;
   body: ReadStateRequest;
 };
+
+// How long to wait for the list of devices that the user already allowed.
+// The DMK lists them as soon as the browser answers. The timeout only covers a browser that does not answer.
+const KNOWN_DEVICES_TIMEOUT_MS = 5_000;
+
+// How long the device session stays open after the last operation.
+// Operations that follow each other reuse the session. The DMK does not wait for the device to close, so a reconnect right after a disconnect can get a device that is still closing.
+const SESSION_IDLE_TIMEOUT_MS = 5_000;
+
+// A promise, so that concurrent calls share one DMK.
+let deviceManagementKit: Promise<DeviceManagementKit> | undefined;
+
+type Session = {
+  // A promise, so that concurrent operations share one session.
+  id: Promise<DeviceSessionId>;
+  // The number of operations that use the session.
+  users: number;
+  idleTimer?: ReturnType<typeof setTimeout>;
+};
+
+let session: Session | undefined;
 
 export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
@@ -73,7 +95,7 @@ export class LedgerIdentity extends SignIdentity {
   public static async create(
     derivePath = LEDGER_DEFAULT_DERIVE_PATH
   ): Promise<LedgerIdentity> {
-    const { app, transport } = await this.connect();
+    const { app, release } = await this.connect();
 
     try {
       const publicKey = await this.fetchPublicKeyFromDevice({
@@ -83,8 +105,8 @@ export class LedgerIdentity extends SignIdentity {
 
       return new this(derivePath, publicKey);
     } finally {
-      // Always close the transport.
-      await transport.close();
+      // Always release the device.
+      release();
     }
   }
 
@@ -176,7 +198,7 @@ export class LedgerIdentity extends SignIdentity {
    *
    * Source: https://github.com/LedgerHQ/blue-loader-python?tab=readme-ov-file#target-id
    *
-   * PS: Another way to find the device model is under the `Transport` object, the `deviceModel` field.
+   * PS: Another way to find the device model is the `deviceModel` field of the discovered device.
    */
   public async getVersion(): Promise<ResponseVersion> {
     // See comment about `app` in function `showAddressAndPubKeyOnDevice`
@@ -186,52 +208,175 @@ export class LedgerIdentity extends SignIdentity {
     return this.executeWithApp<ResponseVersion>(callback);
   }
 
-  private static async getTransport(): Promise<Transport> {
-    const { default: TransportWebHID } = await import(
-      "@ledgerhq/hw-transport-webhid"
+  private static getDeviceManagementKit(): Promise<DeviceManagementKit> {
+    if (isNullish(deviceManagementKit)) {
+      deviceManagementKit = Promise.all([
+        import("@ledgerhq/device-management-kit"),
+        import("@ledgerhq/device-transport-kit-web-hid"),
+      ])
+        .then(([{ DeviceManagementKitBuilder }, { webHidTransportFactory }]) =>
+          new DeviceManagementKitBuilder()
+            .addTransport(webHidTransportFactory)
+            .build()
+        )
+        .catch((err: unknown) => {
+          // Let the next call load the DMK again.
+          deviceManagementKit = undefined;
+          throw err;
+        });
+    }
+    return deviceManagementKit;
+  }
+
+  // Uses a device that the user already allowed, so that the browser asks for a device only once.
+  private static async findDevice(
+    dmk: DeviceManagementKit
+  ): Promise<DiscoveredDevice> {
+    const { firstValueFrom, skip, take, timeout, TimeoutError } = await import(
+      "rxjs"
     );
-    return TransportWebHID.create();
+
+    let devices: DiscoveredDevice[] = [];
+    try {
+      // The DMK emits the devices it knows at once, and the devices that the browser lists after it asks the browser.
+      devices = await firstValueFrom(
+        dmk
+          .listenToAvailableDevices({})
+          .pipe(skip(1), take(1), timeout({ first: KNOWN_DEVICES_TIMEOUT_MS }))
+      );
+    } catch (err: unknown) {
+      if (!(err instanceof TimeoutError)) {
+        throw err;
+      }
+    }
+
+    const [device] = devices;
+    if (nonNullish(device)) {
+      return device;
+    }
+
+    return firstValueFrom(dmk.startDiscovering({}));
+  }
+
+  private static async connectDevice(
+    dmk: DeviceManagementKit
+  ): Promise<DeviceSessionId> {
+    const device = await this.findDevice(dmk);
+    return dmk.connect({
+      device,
+      // The refresher polls the device between the APDUs of a multi-APDU signature.
+      sessionRefresherOptions: { isRefresherDisabled: true },
+    });
+  }
+
+  private static forgetSession(forgotten: Session): void {
+    if (session === forgotten) {
+      session = undefined;
+    }
+  }
+
+  private static async openSession(dmk: DeviceManagementKit): Promise<{
+    id: DeviceSessionId;
+    release: () => void;
+  }> {
+    const reused = nonNullish(session);
+    if (nonNullish(session)) {
+      clearTimeout(session.idleTimer);
+      session.users += 1;
+    } else {
+      session = { id: this.connectDevice(dmk), users: 1 };
+    }
+    const current = session;
+
+    try {
+      const id = await current.id;
+
+      // The DMK ends the session if the device disconnects.
+      if (
+        reused &&
+        !dmk.listConnectedDevices().some(({ sessionId }) => sessionId === id)
+      ) {
+        this.forgetSession(current);
+        return this.openSession(dmk);
+      }
+
+      return { id, release: () => this.releaseSession({ dmk, current }) };
+    } catch (err: unknown) {
+      this.forgetSession(current);
+      throw err;
+    }
+  }
+
+  private static releaseSession({
+    dmk,
+    current,
+  }: {
+    dmk: DeviceManagementKit;
+    current: Session;
+  }): void {
+    current.users -= 1;
+    // A forgotten session is already closed.
+    if (current.users > 0 || session !== current) {
+      return;
+    }
+
+    current.idleTimer = setTimeout(() => {
+      this.forgetSession(current);
+      current.id
+        .then((sessionId) => dmk.disconnect({ sessionId }))
+        .catch((err: unknown) =>
+          console.warn("Failed to disconnect the Ledger device.", err)
+        );
+    }, SESSION_IDLE_TIMEOUT_MS);
   }
 
   // Public to be able to mock it in tests.
   public static async connect(): Promise<{
     app: LedgerApp;
-    transport: Transport;
+    release: () => void;
   }> {
     try {
-      const transport = await this.getTransport();
+      const dmk = await this.getDeviceManagementKit();
 
-      const { default: LedgerAppConstructor } = await import(
-        "@zondax/ledger-icp"
-      );
-      const app = new LedgerAppConstructor(transport);
+      if (!dmk.isEnvironmentSupported()) {
+        throw new LedgerErrorKey({
+          message: "error__ledger.browser_not_supported",
+        });
+      }
 
-      return { app, transport };
+      const [{ default: LedgerAppConstructor }, { DMKTransport }] =
+        await Promise.all([
+          import("@zondax/ledger-icp"),
+          import("@zondax/ledger-js"),
+        ]);
+
+      const { id: sessionId, release } = await this.openSession(dmk);
+      const app = new LedgerAppConstructor(new DMKTransport(dmk, sessionId));
+
+      return { app, release };
     } catch (err: unknown) {
-      if (
-        (err as LedgerHQTransportError)?.name === "TransportOpenUserCancelled"
-      ) {
-        if (
-          (err as LedgerHQTransportError)?.message.includes("not supported")
-        ) {
-          throw new LedgerErrorKey({
-            message: "error__ledger.browser_not_supported",
-          });
-        }
+      if (err instanceof LedgerErrorKey) {
+        throw err;
+      }
+
+      const {
+        _tag: tag,
+        originalError,
+        message,
+      } = (err ?? {}) as Partial<DmkError>;
+
+      if (tag === "NoAccessibleDeviceError") {
         throw new LedgerErrorKey({ message: "error__ledger.access_denied" });
       }
 
-      if ((err as LedgerHQTransportError)?.id === "NoDeviceFound") {
+      if (tag === "UnknownDeviceError") {
         throw new LedgerErrorKey({
           message: "error__ledger.connect_no_device",
         });
       }
 
-      if (
-        (err as LedgerHQTransportError).message?.includes(
-          "cannot open device with path"
-        )
-      ) {
+      // The browser cannot open the device if another application uses it.
+      if (tag === "ConnectionOpeningError") {
         throw new LedgerErrorKey({
           message: "error__ledger.connect_many_apps",
         });
@@ -240,9 +385,15 @@ export class LedgerIdentity extends SignIdentity {
       // Unsupported browser. Data on browser compatibility is taken from https://caniuse.com/webhid
       const labels = get(i18n);
 
+      // A DmkError is not an Error, so `${err}` renders as "[object Object]".
+      const errorText = isNullish(tag)
+        ? `${err}`
+        : (message ??
+          (originalError instanceof Error ? originalError.message : tag));
+
       throw new LedgerErrorMessage(
         replacePlaceholders(labels.error__ledger.connect_not_supported, {
-          $err: `${err}`,
+          $err: errorText,
         })
       );
     }
@@ -264,7 +415,7 @@ export class LedgerIdentity extends SignIdentity {
   private async executeWithApp<T>(
     callback: (app: LedgerApp) => Promise<T>
   ): Promise<T> {
-    const { app, transport } = await LedgerIdentity.connect();
+    const { app, release } = await LedgerIdentity.connect();
 
     try {
       // Verify that the public key of the device matches the public key of this identity.
@@ -283,7 +434,7 @@ export class LedgerIdentity extends SignIdentity {
       // Run the provided function.
       return await callback(app);
     } finally {
-      await transport.close();
+      release();
     }
   }
 
