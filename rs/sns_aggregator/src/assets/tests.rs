@@ -53,7 +53,7 @@ fn home_page_pins_every_external_script_and_stylesheet() {
         if !has_tag_name(tag_body, "script") && !has_tag_name(tag_body, "link") {
             continue;
         }
-        if !tag_body.contains("src=\"https://") && !tag_body.contains("href=\"https://") {
+        if !tag_body.contains("https://") {
             continue;
         }
         assert!(
