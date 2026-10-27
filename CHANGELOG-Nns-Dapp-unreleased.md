@@ -46,6 +46,9 @@ proposal is successful, the changes it released will be moved from this file to
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- The transactions sync now stops after a fixed number of pages, and it stops
+  when a page makes no progress. A hostile index canister can no longer make the
+  sync run without an end. The next syncs fetch the remaining pages.
 
 #### Not Published
 
