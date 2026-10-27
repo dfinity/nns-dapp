@@ -123,9 +123,35 @@ wait_for() {
   exit 1
 }
 
-# Submits the CreateServiceNervousSystem proposal and waits for the SNS.
+# Prints the ID of the newest proposal that creates the project and is not
+# rejected or failed, if any. An interrupted run may have submitted the
+# proposal before the SNS was deployed.
+pending_proposal() {
+  call "$NNS_GOVERNANCE" list_proposals '(record { include_reward_status = vec {}; omit_large_fields = opt true; before_proposal = null; limit = 100 : nat32; exclude_topic = vec {}; include_all_manage_neuron_proposals = null; include_status = vec {} })' --query | idl2json | jq -r --arg title "Create the $NAME SNS" '[.proposal_info[] | select(.proposal[0].title[0] == $title and (.status == 1 or .status == 3 or .status == 4))] | .[0].id[0].id // empty'
+}
+
+# Submits the CreateServiceNervousSystem proposal, unless an earlier run did, and waits for the SNS.
 propose_sns() {
   local neuron_id logo proposal response proposal_id
+  proposal_id="$(pending_proposal)"
+  if test -n "$proposal_id"; then
+    echo "Proposal $proposal_id creates the $NAME SNS already."
+  else
+    submit_proposal
+  fi
+  # The proposal executes at once. The execution deploys the SNS canisters.
+  wait_for "proposal $proposal_id to be decided" '.[0].executed_timestamp_seconds != "0" or .[0].failed_timestamp_seconds != "0"' \
+    proposal_info "$proposal_id"
+  proposal_info "$proposal_id" | jq -e '.[0].executed_timestamp_seconds != "0"' >/dev/null || {
+    echo "ERROR: Proposal $proposal_id failed: $(proposal_info "$proposal_id" | jq -c '.[0].failure_reason')"
+    exit 1
+  } >&2
+  echo "Proposal $proposal_id created the $NAME SNS."
+}
+
+# Submits the CreateServiceNervousSystem proposal. Sets proposal_id.
+submit_proposal() {
+  local neuron_id logo proposal response
   # The neuron with the largest stake of the anonymous principal decides proposals.
   neuron_id="$(call "$NNS_GOVERNANCE" list_neurons '(record { neuron_ids = vec {}; include_neurons_readable_by_caller = true; include_empty_neurons_readable_by_caller = null; include_public_neurons_in_full_neurons = null; page_number = null; page_size = null; neuron_subaccounts = null })' --query | idl2json | jq -r '.full_neurons | max_by(.cached_neuron_stake_e8s | tonumber) | .id[0].id')"
   logo="data:image/png;base64,$(base64 <"$LOGO" | tr -d '\n')"
@@ -206,14 +232,6 @@ propose_sns() {
     echo "ERROR: The proposal was not accepted: $response"
     exit 1
   } >&2
-  # The proposal executes at once. The execution deploys the SNS canisters.
-  wait_for "proposal $proposal_id to be decided" '.[0].executed_timestamp_seconds != "0" or .[0].failed_timestamp_seconds != "0"' \
-    proposal_info "$proposal_id"
-  proposal_info "$proposal_id" | jq -e '.[0].executed_timestamp_seconds != "0"' >/dev/null || {
-    echo "ERROR: Proposal $proposal_id failed: $(proposal_info "$proposal_id" | jq -c '.[0].failure_reason')"
-    exit 1
-  } >&2
-  echo "Proposal $proposal_id created the $NAME SNS."
 }
 
 # Prints the NNS proposal info as JSON.
