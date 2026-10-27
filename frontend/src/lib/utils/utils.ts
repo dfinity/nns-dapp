@@ -9,8 +9,75 @@ export const isPrincipal = (value: unknown): value is Principal =>
   typeof value === "object" && (value as Principal)?._isPrincipal === true;
 
 /**
- * Transform bigint to string to avoid serialization error.
- * devMode transforms 123n -> "BigInt(123)"
+ * Maps a value to the value that is serialized in its place.
+ * Returns the value itself when no mapping applies.
+ */
+const replaceJsonValue = (
+  value: unknown,
+  options?: {
+    devMode?: boolean;
+  }
+): unknown => {
+  switch (typeof value) {
+    case "function":
+      return "f () { ... }";
+    case "symbol":
+      return value.toString();
+    case "object": {
+      // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
+      if (isPrincipal(value)) {
+        const asText = value.toString();
+        // To not stringify NOT Principal instance that contains _isPrincipal field
+        return asText === "[object Object]" ? value : asText;
+      }
+
+      // JSON.stringify calls Principal.toJSON before this replacer runs, so a
+      // Principal arrives here as {"__principal__": "1234"}.
+      if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
+        return value[JSON_KEY_PRINCIPAL];
+      }
+
+      if (value instanceof Promise) {
+        return "Promise(...)";
+      }
+
+      if (value instanceof ArrayBuffer) {
+        return new Uint8Array(value).toString();
+      }
+
+      break;
+    }
+    case "bigint": {
+      if (options?.devMode !== undefined && options.devMode) {
+        return `BigInt('${value.toString()}')`;
+      }
+      return value.toString();
+    }
+  }
+  return value;
+};
+
+// The `indentation` that `JSON.stringify` accepts, clamped the same way.
+// `JSON.stringify` treats NaN as 0. `Math.max`/`Math.min` already clamp
+// `Infinity` to 10 and `-Infinity` to 0, so only NaN needs a guard here.
+const jsonGap = (indentation: number): string =>
+  " ".repeat(
+    Number.isNaN(indentation)
+      ? 0
+      : Math.min(10, Math.max(0, Math.floor(indentation)))
+  );
+
+/**
+ * Serializes a value the way `JSON.stringify` does, with two differences:
+ * - `undefined` is written as the bare word `undefined` instead of being dropped.
+ * - the values that `replaceJsonValue` maps are written in their mapped form.
+ *
+ * The word `undefined` is written only for a value that is `undefined`. A string
+ * of any content is written by `JSON.stringify`, so no payload string can read
+ * as `undefined`.
+ *
+ * A bigint becomes a string, to avoid a serialization error. With `devMode`,
+ * 123n becomes "BigInt('123')".
  */
 export const stringifyJson = (
   value: unknown,
@@ -19,54 +86,130 @@ export const stringifyJson = (
     devMode?: boolean;
   }
 ): string => {
-  const __UNDEFINED__ = "__UNDEFINED__";
-  const result = JSON.stringify(
-    value,
-    (_, value) => {
-      switch (typeof value) {
-        case "function":
-          return "f () { ... }";
-        case "symbol":
-          return value.toString();
-        case "object": {
-          // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
-          if (isPrincipal(value)) {
-            const asText = value.toString();
-            // To not stringify NOT Principal instance that contains _isPrincipal field
-            return asText === "[object Object]" ? value : asText;
-          }
+  const gap = jsonGap(options?.indentation ?? 0);
+  // `JSON.stringify` writes a space after the key colon only when it indents.
+  const colonSpace = gap === "" ? "" : " ";
+  // The objects that are currently open, to detect a circular structure.
+  const ancestors = new Set<object>();
 
-          // JSON.stringify calls Principal.toJSON before this replacer runs, so a
-          // Principal arrives here as {"__principal__": "1234"}.
-          if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
-            return value[JSON_KEY_PRINCIPAL];
-          }
+  const wrap = (
+    entries: string[],
+    open: string,
+    close: string,
+    level: number
+  ): string => {
+    if (entries.length === 0) {
+      return `${open}${close}`;
+    }
+    if (gap === "") {
+      return `${open}${entries.join(",")}${close}`;
+    }
+    const indent = gap.repeat(level + 1);
+    return `${open}\n${indent}${entries.join(
+      `,\n${indent}`
+    )}\n${gap.repeat(level)}${close}`;
+  };
 
-          if (value instanceof Promise) {
-            return "Promise(...)";
-          }
+  // An array or an object whose entries are being written.
+  type Frame = {
+    value: Record<string, unknown>;
+    // The keys of an object. An array reads the indexes 0 to length - 1.
+    names: string[] | undefined;
+    size: number;
+    next: number;
+    entries: string[];
+    level: number;
+    // What goes before this frame's text in its parent: the quoted key and the colon.
+    prefix: string;
+  };
 
-          if (value instanceof ArrayBuffer) {
-            return new Uint8Array(value).toString();
-          }
+  // The text of a value, or a frame when the value is an array or an object.
+  const open = (
+    raw: unknown,
+    key: string,
+    level: number,
+    prefix: string
+  ): string | Frame => {
+    // `JSON.stringify` calls `toJSON` before the replacer. `Principal` has one.
+    // Functions are looked up too, as `JSON.stringify` does.
+    const toJson =
+      (typeof raw === "object" && raw !== null) || typeof raw === "function"
+        ? (raw as { toJSON?: unknown }).toJSON
+        : undefined;
+    const value = replaceJsonValue(
+      typeof toJson === "function" ? toJson.call(raw, key) : raw,
+      options
+    );
 
-          break;
+    if (value === undefined) {
+      return "undefined";
+    }
+    if (
+      typeof value !== "object" ||
+      value === null ||
+      value instanceof String ||
+      value instanceof Number ||
+      value instanceof Boolean
+    ) {
+      return JSON.stringify(value);
+    }
+
+    if (ancestors.has(value)) {
+      throw new TypeError("Converting circular structure to JSON");
+    }
+    ancestors.add(value);
+    // Read each index from 0 to length - 1, like `JSON.stringify`. A hole reads as `undefined`.
+    const names = Array.isArray(value) ? undefined : Object.keys(value);
+    return {
+      value: value as Record<string, unknown>,
+      names,
+      size: names === undefined ? (value as unknown[]).length : names.length,
+      next: 0,
+      entries: [],
+      level,
+      prefix,
+    };
+  };
+
+  // An explicit stack instead of recursion, so that a deeply nested value does
+  // not exhaust the call stack. `JSON.stringify` has no such limit.
+  const root = open(value, "", 0, "");
+  if (typeof root === "string") {
+    return root;
+  }
+  const stack: Frame[] = [root];
+  try {
+    for (;;) {
+      const frame = stack[stack.length - 1];
+      if (frame.next < frame.size) {
+        const name = frame.names?.[frame.next] ?? `${frame.next}`;
+        frame.next += 1;
+        const prefix =
+          frame.names === undefined
+            ? ""
+            : `${JSON.stringify(name)}:${colonSpace}`;
+        const child = open(frame.value[name], name, frame.level + 1, prefix);
+        if (typeof child === "string") {
+          frame.entries.push(`${prefix}${child}`);
+        } else {
+          stack.push(child);
         }
-        case "bigint": {
-          if (options?.devMode !== undefined && options.devMode) {
-            return `BigInt('${value.toString()}')`;
-          }
-          return value.toString();
-        }
+        continue;
       }
-      return value === undefined ? __UNDEFINED__ : value;
-    },
-    options?.indentation ?? 0
-  );
-
-  return (
-    result?.replace(new RegExp(`"${__UNDEFINED__}"`, "g"), "undefined") ?? ""
-  );
+      stack.pop();
+      ancestors.delete(frame.value);
+      const text =
+        frame.names === undefined
+          ? wrap(frame.entries, "[", "]", frame.level)
+          : wrap(frame.entries, "{", "}", frame.level);
+      if (stack.length === 0) {
+        return text;
+      }
+      stack[stack.length - 1].entries.push(`${frame.prefix}${text}`);
+    }
+  } finally {
+    ancestors.clear();
+  }
 };
 
 /**
