@@ -18,3 +18,16 @@ fn test_implemented_interface_matches_declared_interface_exactly() {
     let result = service_equal(implemented_interface, declared_interface);
     assert!(result.is_ok(), "Error: {:?}", result);
 }
+
+#[test]
+fn api_doc_names_every_declared_method() {
+    let declared_interface = std::fs::read_to_string("nns-dapp.did").unwrap();
+    let (env, actor) = CandidSource::Text(&declared_interface).load().unwrap();
+    let actor = actor.expect("nns-dapp.did declares no service");
+    for (method, _) in env.as_service(&actor).unwrap() {
+        assert!(
+            API_DOC.contains(&format!("`{method}`")),
+            "api_doc.md does not name the method `{method}`."
+        );
+    }
+}
