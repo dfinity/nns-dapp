@@ -69,9 +69,23 @@ install_canister() {
   exit 1
 }
 
+# Records the ID of a canister in the icp-cli mappings of the environment.
+# --force replaces an existing entry, but fails when the mappings file does not exist yet.
+link_canister() {
+  local canister canister_id mappings
+  canister="$1"
+  canister_id="$2"
+  mappings=".icp/cache/mappings/$ENVIRONMENT.ids.json"
+  if test -f "$mappings" && jq -e --arg c "$canister" '.[$c]' "$mappings" >/dev/null; then
+    icp canister link "$canister" "$canister_id" --environment "$ENVIRONMENT" --force
+  else
+    icp canister link "$canister" "$canister_id" --environment "$ENVIRONMENT"
+  fi
+}
+
 for canister in nns-dapp sns_aggregator; do
   canister_id="$(canister-id --network "$NETWORK" "$canister")"
-  icp canister link "$canister" "$canister_id" --environment "$ENVIRONMENT" --force
+  link_canister "$canister" "$canister_id"
   icp-canister-add-controller --network "$NETWORK" --canister "$canister_id"
 done
 
