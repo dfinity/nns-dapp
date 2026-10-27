@@ -66,6 +66,8 @@ proposal is successful, the changes it released will be moved from this file to
   shows token prices and the staking rewards.
 - The local test network has a ckRED test token, so the import token
   end-to-end tests run again.
+- The local test network has four SNS projects, created through NNS proposals,
+  so the SNS end-to-end tests run again.
 - The local test network has a mock exchange rate canister, so the total value
   locked works and its test runs again.
 

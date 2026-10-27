@@ -7,9 +7,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-// TODO: Run this test again. It needs an SNS project with a faucet, which the local icp-cli
-// network does not have.
-test.skip("Test SNS governance", async ({ page, context }) => {
+test("Test SNS governance", async ({ page, context }) => {
   await page.goto("/tokens");
   await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
