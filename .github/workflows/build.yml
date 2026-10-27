@@ -348,7 +348,6 @@ jobs:
             echo "ERROR: wasm hashes differ between mainnet and local."
           }
   aggregator_test:
-    if: false
     needs: build
     runs-on: ubuntu-latest-m
     timeout-minutes: 60
@@ -363,42 +362,27 @@ jobs:
         uses: ./.github/actions/start_icp_network
         with:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
-      - name: Get the earliest data from the sns aggregator
+      - name: Create more SNS projects
+        # The network starts with four SNS projects. The pagination test needs
+        # more than one page of ten.
         run: |
-          AGGREGATOR_CANISTER_ID="$(scripts/canister-id --network local sns_aggregator)"
-          # Wait for the aggregator to be up:
-          for (( try=300; try>0; try-- )); do
-            if curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json; then
-              break
-            fi
-            sleep 2
+          names=("Echo Alot" "Foxtrot" "Golf Stream" "Hotel" "India" "Juliett" "Kilo Byte" "Lima Bean" "Mike Box")
+          symbols=(ECH FXT GLF HTL IND JLT KIO LIM MIK)
+          for ((i = 0; i < ${#names[@]}; i++)); do
+            scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png
           done
-          expect=10
-          actual="$(jq length aggregate-1.json)"
-          # Later we expect 10 SNSs. Make sure that when we do, it's because we
-          # actually collected the data and it wasn't preloaded from the
-          # snapshot.
-          (( actual < expect ))  || {
-            echo ERROR: Should not yet have $expected SNS before collecting.
-            scripts/sns/aggregator/get_log
-          }
+          scripts/icp-sns-aggregator-wait
       - name: Verify that configuration is as provided
         run: scripts/sns/aggregator/test-config
-      - name: Make the aggregator collect data quickly
-        run: icp canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })' --environment local
-      - name: Wait for the aggregator to get data
-        run: sleep 120
-        # sleep time > 12 SNS & 2 block heights each + a few extra calls.
-        # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
       - name: Get the latest data from the sns aggregator
         run: |
-          AGGREGATOR_CANISTER_ID="$(scripts/canister-id --network local sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          curl -Lf "$(scripts/dfx-canister-url --network local sns_aggregator)/v1/sns/list/latest/slow.json" | tee aggregate-1.json
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
             scripts/sns/aggregator/get_log
+            exit 1
           }
       - name: Test the paginated endpoint
         run: scripts/sns/aggregator/test-pagination --num 13
@@ -417,20 +401,12 @@ jobs:
         run: scripts/sns/aggregator/test-pagination --num 13
       - name: Expect the latest data to be retained over the upgrade
         run: |
-          AGGREGATOR_CANISTER_ID="$(scripts/canister-id --network local sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          curl -Lf "$(scripts/dfx-canister-url --network local sns_aggregator)/v1/sns/list/latest/slow.json" | tee aggregate-1.json
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
-          }
-      - name: Expect the upstream data to be retained over the upgrade
-        run: |
-          ./scripts/sns/aggregator/stream_slow_data
-          expect=12
-          actual="$(jq 'length' slow.json)"
-          (( expect == actual ))  || {
-            echo ERROR: Expected to have $expect SNS in the aggregator upstream data but found $actual.
+            exit 1
           }
       - name: Downgrade sns_aggregator to prod and upgrade back again
         run: |
@@ -442,7 +418,7 @@ jobs:
           else echo "Skipping test as there are no relevant code changes"
           fi
       # TODO: Verify that fast data is updated fast. scripts/sns/aggregator/test-fast
-      # creates an SNS with the snsdemo scripts, which the icp-cli network does not have.
+      # buys a swap with the snsdemo scripts. Port it to scripts/icp-sns-create.
       - name: Stop the local network
         run: icp network stop
   assets:

@@ -1,0 +1,294 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Creates an SNS project on a local icp-cli network, if it does not exist.
+
+	The script submits a CreateServiceNervousSystem proposal with the large NNS
+	neuron of the anonymous principal, see scripts/icp-network-start. The neuron
+	has the majority, so the NNS adopts and executes the proposal at once. The
+	local NNS governance is a test build, so the swap opens at once.
+
+	With --buy, the anonymous principal buys the whole swap. The swap then
+	commits and finalizes itself, which takes up to two minutes. With --commit,
+	the script also buys the swap if needed, waits for the finalization,
+	disburses the neuron of the anonymous principal that has no dissolve delay
+	and sends the tokens to the test account of the "Get tokens" menu, see
+	frontend/src/lib/api/dev.api.ts.
+
+	The script looks the project up by name. Each step is skipped when an
+	earlier run did it, so an interrupted run can be completed by the next run.
+	EOF
+}
+
+# The test account of the "Get tokens" menu.
+FAUCET_PRINCIPAL="jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe"
+ANONYMOUS_PRINCIPAL="2vxsx-fae"
+# The swap parameters. A participant can buy the whole swap, so that one
+# purchase commits it. The end-to-end tests buy a few ICP.
+MIN_PARTICIPANT_ICP_E8S=100_000_000
+MAX_PARTICIPANT_ICP_E8S=100_000_000_000
+MIN_DIRECT_PARTICIPATION_ICP_E8S=1_000_000_000
+MAX_DIRECT_PARTICIPATION_ICP_E8S=100_000_000_000
+# The longest duration that the swap canister accepts.
+SWAP_DURATION_SECONDS=1_209_600
+ONE_MONTH_SECONDS=2_629_800
+MAX_ATTEMPTS=120
+RETRY_DELAY_SECONDS=2
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The icp network" variable=NETWORK default="local"
+clap.define long=name desc="The project name" variable=NAME
+clap.define long=symbol desc="The token symbol" variable=SYMBOL
+clap.define long=logo desc="The project logo, a PNG file" variable=LOGO
+clap.define long=confirmation_text desc="A text that a participant of the swap confirms" variable=CONFIRMATION_TEXT default=""
+clap.define long=buy desc="Buy the whole swap, so that it commits, and return" variable=BUY nargs=0 default=""
+clap.define long=commit desc="Buy the whole swap, wait for the finalization and fund the test account" variable=COMMIT nargs=0 default=""
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+test -n "${NAME:-}" && test -n "${SYMBOL:-}" && test -n "${LOGO:-}" || {
+  echo "ERROR: Please specify --name, --symbol and --logo."
+  exit 1
+} >&2
+test -f "$LOGO" || {
+  echo "ERROR: The logo file does not exist: $LOGO"
+  exit 1
+} >&2
+
+cd "$SOURCE_DIR/.."
+
+CONFIRMATION_TEXT_CANDID=null
+test -z "${CONFIRMATION_TEXT:-}" || CONFIRMATION_TEXT_CANDID="opt \"$CONFIRMATION_TEXT\""
+NNS_GOVERNANCE="$(canister-id --network "$NETWORK" nns-governance)"
+NNS_LEDGER="$(canister-id --network "$NETWORK" nns-ledger)"
+SNS_WASM="$(canister-id --network "$NETWORK" nns-sns-wasm)"
+
+# Calls a canister by ID as the anonymous principal.
+call() {
+  icp canister call "$@" --network "$NETWORK" --identity anonymous
+}
+
+# Prints the lifecycle of the swap of the project.
+# Pending = 1, Open = 2, Committed = 3, Aborted = 4, Adopted = 5.
+swap_lifecycle() {
+  call "$SWAP_CANISTER_ID" get_lifecycle '(record {})' --query | idl2json | jq -r '.lifecycle[0]'
+}
+
+# Prints the status of the finalization of the swap as JSON.
+auto_finalization_status() {
+  call "$SWAP_CANISTER_ID" get_auto_finalization_status '(record {})' --query | idl2json
+}
+
+# Prints the deployed SNS with the given name as JSON, if any.
+find_sns() {
+  local instance governance name
+  while read -r instance; do
+    governance="$(jq -r '.governance_canister_id[0]' <<<"$instance")"
+    name="$(call "$governance" get_metadata '(record {})' --query | idl2json | jq -r '.name[0]')"
+    if [[ "$name" == "$NAME" ]]; then
+      echo "$instance"
+      return
+    fi
+  done < <(call "$SNS_WASM" list_deployed_snses '(record {})' --query | idl2json | jq -c '.instances[]')
+}
+
+# Waits until a jq condition on the JSON output of a command holds.
+#
+# Arguments: <description> <jq condition> <command>...
+wait_for() {
+  local description condition
+  description="$1"
+  condition="$2"
+  shift 2
+  for ((attempt = 0; attempt < MAX_ATTEMPTS; attempt++)); do
+    if "$@" | jq -e "$condition" >/dev/null; then
+      return
+    fi
+    sleep "$RETRY_DELAY_SECONDS"
+  done
+  echo "ERROR: Timed out while waiting for: $description" >&2
+  exit 1
+}
+
+# Submits the CreateServiceNervousSystem proposal and waits for the SNS.
+propose_sns() {
+  local neuron_id logo proposal response proposal_id
+  # The neuron with the largest stake of the anonymous principal decides proposals.
+  neuron_id="$(call "$NNS_GOVERNANCE" list_neurons '(record { neuron_ids = vec {}; include_neurons_readable_by_caller = true; include_empty_neurons_readable_by_caller = null; include_public_neurons_in_full_neurons = null; page_number = null; page_size = null; neuron_subaccounts = null })' --query | idl2json | jq -r '.full_neurons | max_by(.cached_neuron_stake_e8s | tonumber) | .id[0].id')"
+  logo="data:image/png;base64,$(base64 <"$LOGO" | tr -d '\n')"
+  proposal="(record {
+    id = opt record { id = $neuron_id : nat64 };
+    command = opt variant { MakeProposal = record {
+      title = opt \"Create the $NAME SNS\";
+      url = \"https://forum.dfinity.org\";
+      summary = \"Creates the $NAME SNS for the local test network.\";
+      action = opt variant { CreateServiceNervousSystem = record {
+        name = opt \"$NAME\";
+        description = opt \"The $NAME test project of the local network.\";
+        url = opt \"https://internetcomputer.org\";
+        logo = opt record { base64_encoding = opt \"$logo\" };
+        fallback_controller_principal_ids = vec { principal \"$ANONYMOUS_PRINCIPAL\" };
+        dapp_canisters = vec {};
+        ledger_parameters = opt record {
+          token_name = opt \"$NAME\";
+          token_symbol = opt \"$SYMBOL\";
+          token_logo = opt record { base64_encoding = opt \"$logo\" };
+          transaction_fee = opt record { e8s = opt (10_000 : nat64) };
+        };
+        governance_parameters = opt record {
+          proposal_rejection_fee = opt record { e8s = opt (10_000_000 : nat64) };
+          proposal_initial_voting_period = opt record { seconds = opt (345_600 : nat64) };
+          proposal_wait_for_quiet_deadline_increase = opt record { seconds = opt (86_400 : nat64) };
+          neuron_minimum_stake = opt record { e8s = opt (1_000_000 : nat64) };
+          neuron_minimum_dissolve_delay_to_vote = opt record { seconds = opt ($ONE_MONTH_SECONDS : nat64) };
+          neuron_maximum_dissolve_delay = opt record { seconds = opt (3_155_760_000 : nat64) };
+          neuron_maximum_dissolve_delay_bonus = opt record { basis_points = opt (10_000 : nat64) };
+          neuron_maximum_age_for_age_bonus = opt record { seconds = opt (15_778_800 : nat64) };
+          neuron_maximum_age_bonus = opt record { basis_points = opt (2_500 : nat64) };
+          voting_reward_parameters = opt record {
+            initial_reward_rate = opt record { basis_points = opt (0 : nat64) };
+            final_reward_rate = opt record { basis_points = opt (0 : nat64) };
+            reward_rate_transition_duration = opt record { seconds = opt (31_557_600 : nat64) };
+          };
+          custom_proposal_criticality = null;
+        };
+        initial_token_distribution = opt record {
+          developer_distribution = opt record { developer_neurons = vec { record {
+            controller = opt principal \"$ANONYMOUS_PRINCIPAL\";
+            stake = opt record { e8s = opt (100_000_000 : nat64) };
+            memo = opt (0 : nat64);
+            dissolve_delay = opt record { seconds = opt ($ONE_MONTH_SECONDS : nat64) };
+            vesting_period = opt record { seconds = opt (0 : nat64) };
+          } } };
+          treasury_distribution = opt record { total = opt record { e8s = opt (10_000_000_000_000 : nat64) } };
+          swap_distribution = opt record { total = opt record { e8s = opt (10_000_000_000_000 : nat64) } };
+        };
+        swap_parameters = opt record {
+          minimum_participants = opt (1 : nat64);
+          minimum_participant_icp = opt record { e8s = opt ($MIN_PARTICIPANT_ICP_E8S : nat64) };
+          maximum_participant_icp = opt record { e8s = opt ($MAX_PARTICIPANT_ICP_E8S : nat64) };
+          minimum_direct_participation_icp = opt record { e8s = opt ($MIN_DIRECT_PARTICIPATION_ICP_E8S : nat64) };
+          maximum_direct_participation_icp = opt record { e8s = opt ($MAX_DIRECT_PARTICIPATION_ICP_E8S : nat64) };
+          minimum_icp = null;
+          maximum_icp = null;
+          neurons_fund_investment_icp = null;
+          neurons_fund_participation = opt false;
+          confirmation_text = $CONFIRMATION_TEXT_CANDID;
+          restricted_countries = null;
+          start_time = null;
+          duration = opt record { seconds = opt ($SWAP_DURATION_SECONDS : nat64) };
+          neuron_basket_construction_parameters = opt record {
+            count = opt (2 : nat64);
+            dissolve_delay_interval = opt record { seconds = opt ($ONE_MONTH_SECONDS : nat64) };
+          };
+        };
+      } };
+    } };
+    neuron_id_or_subaccount = null;
+  })"
+  echo "Proposing the $NAME SNS with NNS neuron $neuron_id..."
+  response="$(call "$NNS_GOVERNANCE" manage_neuron "$proposal" | idl2json)"
+  proposal_id="$(jq -r '.command[0].MakeProposal.proposal_id[0].id // empty' <<<"$response")"
+  test -n "$proposal_id" || {
+    echo "ERROR: The proposal was not accepted: $response"
+    exit 1
+  } >&2
+  # The proposal executes at once. The execution deploys the SNS canisters.
+  wait_for "proposal $proposal_id to be decided" '.[0].executed_timestamp_seconds != "0" or .[0].failed_timestamp_seconds != "0"' \
+    proposal_info "$proposal_id"
+  proposal_info "$proposal_id" | jq -e '.[0].executed_timestamp_seconds != "0"' >/dev/null || {
+    echo "ERROR: Proposal $proposal_id failed: $(proposal_info "$proposal_id" | jq -c '.[0].failure_reason')"
+    exit 1
+  } >&2
+  echo "Proposal $proposal_id created the $NAME SNS."
+}
+
+# Prints the NNS proposal info as JSON.
+proposal_info() {
+  call "$NNS_GOVERNANCE" get_proposal_info "($1 : nat64)" --query | idl2json
+}
+
+# Buys the whole swap as the anonymous principal.
+buy_swap() {
+  local max_e8s principal_hex subaccount balance
+  max_e8s="$(call "$SWAP_CANISTER_ID" get_init '(record {})' --query | idl2json | jq -r '.init[0].max_participant_icp_e8s[0]')"
+  # The swap keeps the ICP of a buyer in a subaccount: the length of the
+  # principal, the principal bytes, then zeros.
+  principal_hex="$(convert-id --input text --output hex "$ANONYMOUS_PRINCIPAL")"
+  subaccount="$(printf '%02x%s' "$((${#principal_hex} / 2))" "$principal_hex")"
+  subaccount="$(printf '%-64s' "$subaccount" | tr ' ' 0 | sed -e 's/../\\&/g')"
+  balance="$(call "$NNS_LEDGER" icrc1_balance_of "(record { owner = principal \"$SWAP_CANISTER_ID\"; subaccount = opt blob \"$subaccount\" })" --query | tr -d '() :nat_')"
+  if ((balance < max_e8s)); then
+    echo "Buying the whole $NAME swap..."
+    call "$NNS_LEDGER" icrc1_transfer "(record { to = record { owner = principal \"$SWAP_CANISTER_ID\"; subaccount = opt blob \"$subaccount\" }; amount = $((max_e8s - balance)) : nat; fee = null; memo = null; from_subaccount = null; created_at_time = null })" >/dev/null
+  fi
+  call "$SWAP_CANISTER_ID" refresh_buyer_tokens "(record { buyer = \"$ANONYMOUS_PRINCIPAL\"; confirmation_text = $CONFIRMATION_TEXT_CANDID })" >/dev/null
+}
+
+# Sends the tokens of the neuron without dissolve delay to the test account.
+fund_faucet() {
+  local ledger governance balance neuron_id fee
+  ledger="$(jq -r '.ledger_canister_id[0]' <<<"$SNS")"
+  governance="$(jq -r '.governance_canister_id[0]' <<<"$SNS")"
+  balance="$(call "$ledger" icrc1_balance_of "(record { owner = principal \"$ANONYMOUS_PRINCIPAL\" })" --query | tr -d '() :nat_')"
+  if ((balance == 0)); then
+    # The first neuron of the swap basket has no dissolve delay, so it can be disbursed.
+    neuron_id="$(call "$governance" list_neurons "(record { of_principal = opt principal \"$ANONYMOUS_PRINCIPAL\"; limit = 100 : nat32; start_page_at = null })" --query | idl2json | jq -r '.neurons[] | select(.dissolve_state[0].DissolveDelaySeconds == "0" and (.cached_neuron_stake_e8s | tonumber) > 0) | .id[0].id | join("; ")' | head -n1)"
+    test -n "$neuron_id" || {
+      echo "ERROR: The anonymous principal has no $NAME neuron to disburse."
+      exit 1
+    } >&2
+    echo "Disbursing the $NAME neuron without dissolve delay..."
+    call "$governance" manage_neuron "(record { subaccount = vec { $neuron_id }; command = opt variant { Disburse = record { to_account = null; amount = null } } })" | idl2json | jq -e '.command[0].Disburse' >/dev/null || {
+      echo "ERROR: Could not disburse the $NAME neuron."
+      exit 1
+    } >&2
+    balance="$(call "$ledger" icrc1_balance_of "(record { owner = principal \"$ANONYMOUS_PRINCIPAL\" })" --query | tr -d '() :nat_')"
+  fi
+  fee="$(call "$ledger" icrc1_fee '()' --query | tr -d '() :nat_')"
+  echo "Sending $((balance - fee)) $SYMBOL units to the test account..."
+  call "$ledger" icrc1_transfer "(record { to = record { owner = principal \"$FAUCET_PRINCIPAL\"; subaccount = null }; amount = $((balance - fee)) : nat; fee = null; memo = null; from_subaccount = null; created_at_time = null })" >/dev/null
+}
+
+SNS="$(find_sns)"
+if test -z "$SNS"; then
+  propose_sns
+  SNS="$(find_sns)"
+  test -n "$SNS" || {
+    echo "ERROR: The SNS wasm canister does not list the $NAME SNS."
+    exit 1
+  } >&2
+fi
+ROOT_CANISTER_ID="$(jq -r '.root_canister_id[0]' <<<"$SNS")"
+SWAP_CANISTER_ID="$(jq -r '.swap_canister_id[0]' <<<"$SNS")"
+echo "The $NAME SNS has root canister $ROOT_CANISTER_ID."
+
+wait_for "the $NAME swap to open" 'tostring == "2" or tostring == "3"' swap_lifecycle
+if [[ "${BUY:-}" == "true" || "${COMMIT:-}" == "true" ]]; then
+  if [[ "$(swap_lifecycle)" == "2" ]]; then
+    buy_swap
+  fi
+fi
+if [[ "${COMMIT:-}" == "true" ]]; then
+  # The swap commits in its periodic task, which runs once a minute.
+  wait_for "the $NAME swap to commit" 'tostring == "3"' swap_lifecycle
+  # The swap finalizes itself. The finalization creates the neurons of the buyers.
+  wait_for "the $NAME swap to finalize" '.auto_finalize_swap_response | length > 0' auto_finalization_status
+  auto_finalization_status | jq -e '.auto_finalize_swap_response[0].error_message | length == 0' >/dev/null || {
+    echo "ERROR: The finalization of the $NAME swap failed: $(auto_finalization_status | jq -c '.auto_finalize_swap_response[0].error_message')"
+    exit 1
+  } >&2
+  SNS_LEDGER="$(jq -r '.ledger_canister_id[0]' <<<"$SNS")"
+  faucet_balance="$(call "$SNS_LEDGER" icrc1_balance_of "(record { owner = principal \"$FAUCET_PRINCIPAL\" })" --query | tr -d '() :nat_')"
+  if ((faucet_balance == 0)); then
+    fund_faucet
+  fi
+fi
+echo "The $NAME swap has lifecycle $(swap_lifecycle)."
