@@ -55,8 +55,11 @@ next `scripts/icp-network-start` begins from a clean state.
 
 The local network has no SNS project and no ckBTC, ckETH or ckUSDC tokens. A
 mock of the ICP Swap price feed sets the ICP price to 9 USD, see
-[`mocks/icp-swap`](./mocks/icp-swap/README.md). The ICP ledger funds the test
-account that the "Get ICP" menu uses.
+[`mocks/icp-swap`](./mocks/icp-swap/README.md). A ckRED test token exists for
+the import token tests, see [`mocks/ckred`](./mocks/ckred/README.md). A mock
+exchange rate canister answers the total value locked requests of the backend
+with the same ICP price. The ICP ledger funds the test account that the
+"Get ICP" menu uses.
 
 ## Testnet
 

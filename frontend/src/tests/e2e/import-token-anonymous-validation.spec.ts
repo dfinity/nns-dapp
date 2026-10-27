@@ -32,9 +32,7 @@ const isSigned = (request: IcRequest): boolean =>
 // This test covers finding 22: an import-token deep link must not send the user
 // principal to the canisters that the URL names. The user chose neither
 // canister ID, and the modal calls both of them with no click.
-// TODO: Run this test again. It needs the ckred test token, which the local icp-cli
-// network does not have.
-test.skip("Import token deep link validates the URL canisters anonymously", async ({
+test("Import token deep link validates the URL canisters anonymously", async ({
   page,
   context,
 }) => {
