@@ -4,8 +4,14 @@ import {
   querySnsSwapCommitment,
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
-import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import {
+  WATCH_SALE_CERTIFIED_EVERY_N_POLLS,
+  WATCH_SALE_STATE_EVERY_MILLISECONDS,
+} from "$lib/constants/sns.constants";
+import {
+  getAuthenticatedIdentity,
+  getCurrentIdentity,
+} from "$lib/services/auth.services";
 import { getLoadedSnsAggregatorData } from "$lib/services/public/sns.services";
 import {
   queryAndUpdate,
@@ -89,14 +95,25 @@ export const loadSnsSwapCommitment = async ({
   });
 };
 
+// Certified refreshes can overlap (a poll and a participation). The call that
+// started last wins: an older certified response that arrives after a newer one
+// has been applied is dropped.
+let derivedStateCallCounter = 0;
+const lastCertifiedDerivedStateCall: Record<string, number> = {};
+
 export const loadSnsDerivedState = async ({
   rootCanisterId,
   strategy,
 }: {
   rootCanisterId: string;
   strategy?: QueryAndUpdateStrategy;
-}) =>
-  queryAndUpdate<SnsSwapDid.GetDerivedStateResponse | undefined, unknown>({
+}) => {
+  derivedStateCallCounter += 1;
+  const callId = derivedStateCallCounter;
+  return queryAndUpdate<
+    SnsSwapDid.GetDerivedStateResponse | undefined,
+    unknown
+  >({
     strategy: strategy ?? FORCE_CALL_STRATEGY,
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -107,6 +124,12 @@ export const loadSnsDerivedState = async ({
       }),
     onLoad: ({ response: derivedState, certified }) => {
       if (derivedState !== undefined) {
+        if (certified) {
+          if (callId < (lastCertifiedDerivedStateCall[rootCanisterId] ?? 0)) {
+            return;
+          }
+          lastCertifiedDerivedStateCall[rootCanisterId] = callId;
+        }
         snsDerivedStateStore.setDerivedState({
           rootCanisterId: Principal.fromText(rootCanisterId),
           certified,
@@ -128,14 +151,26 @@ export const loadSnsDerivedState = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
+};
 
 export const watchSnsTotalCommitment = ({
   rootCanisterId,
 }: {
   rootCanisterId: string;
 }) => {
+  let polls = 0;
   const id = setInterval(() => {
-    loadSnsDerivedState({ rootCanisterId, strategy: "query" });
+    polls += 1;
+    // Query replies are not certified. A certified update call runs on every
+    // Nth poll to keep the certified participant count fresh. Anonymous
+    // viewers can only make query calls.
+    const certified =
+      polls % WATCH_SALE_CERTIFIED_EVERY_N_POLLS === 0 &&
+      !getCurrentIdentity().getPrincipal().isAnonymous();
+    loadSnsDerivedState({
+      rootCanisterId,
+      strategy: certified ? "update" : "query",
+    });
   }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
 
   return () => {

@@ -47,6 +47,10 @@ proposal is successful, the changes it released will be moved from this file to
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
 
+- Read the SNS swap participant count only from the certified swap canister
+  state. Before, a swap without that field read the count from the unverified
+  raw metrics page.
+
 #### Not Published
 
 ### Operations
