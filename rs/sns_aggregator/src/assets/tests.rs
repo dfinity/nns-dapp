@@ -49,10 +49,10 @@ fn normalize_attributes(tag_body: &str) -> String {
 fn home_page_pins_every_external_script_and_stylesheet() {
     let mut pinned_tags = 0;
     for tag_body in tag_bodies(HOME_PAGE) {
+        let tag_body = &normalize_attributes(tag_body);
         if !has_tag_name(tag_body, "script") && !has_tag_name(tag_body, "link") {
             continue;
         }
-        let tag_body = &normalize_attributes(tag_body);
         if !tag_body.contains("src=\"https://") && !tag_body.contains("href=\"https://") {
             continue;
         }
