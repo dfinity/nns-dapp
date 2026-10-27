@@ -94,6 +94,11 @@ have_correct_icp() {
 }
 install_icp() {
   scripts/install-icp-cli
+  # icp is installed in $USER_BIN, which is not on the path by default on Mac.
+  case ":$PATH:" in
+  *":$USER_BIN:"*) ;;
+  *) append_to_profile "export PATH=\"$USER_BIN:\$PATH\"" ;;
+  esac
 }
 
 install_rosetta_maybe() {

@@ -120,7 +120,7 @@ jobs:
             for canister in nns-dapp sns_aggregator ; do
               printf "## %s\n\n" "$canister"
               printf "URL:    "
-              dfx-canister-url --network "$DFX_NETWORK" "$canister"
+              scripts/dfx-canister-url --network "$DFX_NETWORK" "$canister"
               printf "Commit: "
               dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id || printf "NONE"
               echo
