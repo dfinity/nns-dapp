@@ -14,7 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Make the NNS dapp discoverable by AI agents, also through ICP MCP.
+
 #### Changed
+
+- Connect to the Ledger device through the Ledger Device Management Kit. It
+  replaces the old transport that Ledger deprecated.
 
 #### Deprecated
 
