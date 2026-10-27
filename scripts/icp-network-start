@@ -28,7 +28,8 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=n long=network desc="The icp network" variable=NETWORK default="local"
 clap.define long=nns_dapp_wasm desc="The nns-dapp wasm to install" variable=NNS_DAPP_WASM default=""
 clap.define long=nns_dapp_install_mode desc="Passed as --mode to icp canister install" variable=NNS_DAPP_INSTALL_MODE default="reinstall"
-clap.define long=nns_dapp_arg desc="The nns-dapp install argument file. Created with config.sh if missing." variable=NNS_DAPP_ARG default="nns-dapp-arg-local.did"
+DEFAULT_NNS_DAPP_ARG="nns-dapp-arg-local.did"
+clap.define long=nns_dapp_arg desc="The nns-dapp install argument file. The default is created with config.sh after the mocks are deployed." variable=NNS_DAPP_ARG default="$DEFAULT_NNS_DAPP_ARG"
 clap.define long=sns_aggregator_wasm desc="The sns_aggregator wasm to install" variable=SNS_AGGREGATOR_WASM default=""
 clap.define long=sns_aggregator_install_mode desc="Passed as --mode to icp canister install" variable=SNS_AGGREGATOR_INSTALL_MODE default="reinstall"
 # Source the output file ----------------------------------------------------------
@@ -118,7 +119,8 @@ deploy_icp_swap() {
 deploy_icp_swap
 
 if test -n "${NNS_DAPP_WASM:-}"; then
-  test -f "$NNS_DAPP_ARG" || DFX_NETWORK="$NETWORK" ./config.sh >/dev/null
+  # The default arguments hold the URLs of the mocks, so they are created after the mocks.
+  [[ "$NNS_DAPP_ARG" != "$DEFAULT_NNS_DAPP_ARG" ]] || DFX_NETWORK="$NETWORK" ./config.sh >/dev/null
   install_canister nns-dapp --wasm "$NNS_DAPP_WASM" --mode "$NNS_DAPP_INSTALL_MODE" --args-file "$NNS_DAPP_ARG"
   icp canister call nns-dapp get_stats '()' --environment "$ENVIRONMENT" --query >/dev/null
 fi
