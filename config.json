@@ -8,7 +8,8 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
         },
-        "PLAUSIBLE_DOMAIN": "nns.ic0.app"
+        "PLAUSIBLE_DOMAIN": "nns.ic0.app",
+        "II_DERIVATION_ORIGIN": "https://nns.ic0.app"
       }
     },
     "app": {
@@ -115,7 +116,8 @@
         "DIDC_VERSION": "didc 0.5.4",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2026-09-02",
+        "SNSDEMO_RELEASE": "release-2026-10-14",
+        "SNSDEMO_COMMIT": "357b42f0fcc9a8b7bfe7a44bc76f71da03d64339",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "f54e1f82c3cf8ae0b4be6b0fc3a940cdcd70dd97"
       },
       "packtool": ""

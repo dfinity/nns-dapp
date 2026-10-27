@@ -18,6 +18,10 @@ export default defineConfig(
           replacement: resolve(__dirname, "src/routes"),
         },
         {
+          find: "$scripts",
+          replacement: resolve(__dirname, "scripts"),
+        },
+        {
           find: "$tests",
           replacement: resolve(__dirname, "src/tests"),
         },

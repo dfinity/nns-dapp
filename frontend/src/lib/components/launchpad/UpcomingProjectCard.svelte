@@ -121,7 +121,11 @@
 
       .description {
         @include launchpad.text_h5;
-        @include text.clamp(5);
+        // The card frame has a fixed height. More lines overflow the footer.
+        @include text.clamp(2);
+        @include media.min-width(small) {
+          @include text.clamp(3);
+        }
 
         margin: 0;
         color: var(--color-text-secondary);

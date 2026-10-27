@@ -28,8 +28,13 @@ describe("CanistersTable", () => {
     canister,
   }));
 
-  const renderComponent = (data: CanistersTableRowData[] = rowData) => {
-    const { container } = render(CanistersTable, { props: { rowData: data } });
+  const renderComponent = ({
+    data = rowData,
+    loading = false,
+  }: { data?: CanistersTableRowData[]; loading?: boolean } = {}) => {
+    const { container } = render(CanistersTable, {
+      props: { rowData: data, loading },
+    });
     return CanistersTablePo.under(new JestPageObjectElement(container));
   };
 
@@ -66,5 +71,12 @@ describe("CanistersTable", () => {
     const po = renderComponent();
 
     expect(await po.getDesktopColumnHeaders()).toEqual(["Canister Name", ""]);
+  });
+
+  it("should render skeleton rows while loading", async () => {
+    const po = renderComponent({ data: [], loading: true });
+
+    expect(await po.getDesktopColumnHeaders()).toEqual(["Canister Name", ""]);
+    expect(await po.getSkeletonRows()).toHaveLength(3);
   });
 });

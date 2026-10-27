@@ -32,7 +32,9 @@ ci_build_run_id="$("$SOURCE_DIR/get-ci-build-run" --commit "$COMMIT" --limit "$L
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf $tmp_dir' EXIT
-gh run download "$ci_build_run_id" --dir "$tmp_dir" -n nns-dapp -n sns_aggregator
+# The "Upload assets" job keeps these artifacts for 90 days.
+# The "nns-dapp" and "sns_aggregator" artifacts expire after 3 days.
+gh run download "$ci_build_run_id" --dir "$tmp_dir" -p 'nns-dapp for*' -p 'sns_aggregator for*'
 
 mkdir -p "$OUTPUT_DIR"
 dst_wasm_file="$OUTPUT_DIR/$WASM_FILENAME"

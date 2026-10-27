@@ -3,7 +3,6 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
-  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
@@ -84,15 +83,12 @@
       </div>
     </div>
 
-    {#if loading}
-      <div class="card-grid">
-        <SkeletonCard />
-        <SkeletonCard />
-      </div>
-    {:else if noCanisters}
-      <p class="description empty">{$i18n.canisters.text}</p>
+    {#if noCanisters}
+      <p class="description empty" data-tid="no-canisters-message">
+        {$i18n.canisters.text}
+      </p>
     {:else}
-      <CanistersTable rowData={canistersTableData} />
+      <CanistersTable rowData={canistersTableData} {loading} />
     {/if}
   </main>
 
