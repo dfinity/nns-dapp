@@ -14,6 +14,7 @@ print_help() {
 	- adds the current icp identity as a controller of both canisters,
 	- stakes a large NNS neuron, so that test neurons cannot decide proposals,
 	- deploys the mock ICP Swap price feed,
+	- deploys the ckRED test token,
 	- installs the given wasms, if any.
 
 	If the network runs already, the script keeps it and only does the steps
@@ -101,21 +102,52 @@ stake_large_neuron() {
 }
 stake_large_neuron
 
-# Deploys the mock ICP Swap price feed, an asset canister that serves mocks/icp-swap/tickers.
+# Deploys a canister of icp.yaml on an application subnet.
 #
 # icp-cli creates a new canister on the subnet of the existing canisters, which
 # is the NNS subnet here. The NNS subnet refuses that, so the canister is
-# created on an application subnet first.
-deploy_icp_swap() {
-  local cmc subnet
-  if ! jq -e '.["icp-swap"]' ".icp/cache/mappings/$ENVIRONMENT.ids.json" >/dev/null 2>&1; then
+# created on an application subnet first. Extra arguments go to icp deploy.
+deploy_on_application_subnet() {
+  local canister cmc subnet
+  canister="$1"
+  shift
+  if ! jq -e --arg c "$canister" '.[$c]' ".icp/cache/mappings/$ENVIRONMENT.ids.json" >/dev/null 2>&1; then
     cmc="$(canister-id --network "$NETWORK" nns-cycles-minting)"
     subnet="$(icp canister call "$cmc" get_default_subnets '()' --network "$NETWORK" --query | idl2json | jq -r '.[0]')"
-    icp canister create icp-swap --environment "$ENVIRONMENT" --subnet "$subnet"
+    icp canister create "$canister" --environment "$ENVIRONMENT" --subnet "$subnet"
   fi
-  icp deploy icp-swap --environment "$ENVIRONMENT" --yes
+  icp deploy "$canister" --environment "$ENVIRONMENT" --yes "$@"
 }
-deploy_icp_swap
+
+# The mock ICP Swap price feed, an asset canister that serves mocks/icp-swap/tickers.
+deploy_on_application_subnet icp-swap
+
+# The ckRED test token, see mocks/ckred/README.md. The test account of the
+# "Get tokens" menu holds the initial supply. The anonymous principal mints.
+deploy_ckred() {
+  local logo ledger_id
+  logo="$(base64 <"mocks/ckred/ckRED-logo.svg" | tr -d '\n')"
+  deploy_on_application_subnet ckred_ledger --args "(variant { Init = record {
+    token_symbol = \"ckRED\";
+    token_name = \"ckRED\";
+    minting_account = record { owner = principal \"2vxsx-fae\" };
+    transfer_fee = 4_000 : nat;
+    max_memo_length = opt (64 : nat16);
+    decimals = opt (7 : nat8);
+    metadata = vec { record { \"icrc1:logo\"; variant { Text = \"data:image/svg+xml;base64,$logo\" } } };
+    initial_balances = vec { record { record { owner = principal \"jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe\" }; 100_000_000_000_000 : nat } };
+    archive_options = record {
+      num_blocks_to_archive = 10_000 : nat64;
+      trigger_threshold = 20_000 : nat64;
+      controller_id = principal \"2vxsx-fae\";
+      cycles_for_archive_creation = opt (4_000_000_000_000 : nat64);
+    };
+    feature_flags = opt record { icrc2 = true };
+  } })"
+  ledger_id="$(canister-id --network "$NETWORK" ckred_ledger)"
+  deploy_on_application_subnet ckred_index --args "(opt variant { Init = record { ledger_id = principal \"$ledger_id\" } })"
+}
+deploy_ckred
 
 if test -n "${NNS_DAPP_WASM:-}"; then
   test -f "$NNS_DAPP_ARG" || DFX_NETWORK="$NETWORK" ./config.sh >/dev/null
@@ -129,6 +161,6 @@ fi
 
 echo
 echo "The '$NETWORK' network is ready:"
-for canister in nns-dapp sns_aggregator internet_identity icp-swap; do
+for canister in nns-dapp sns_aggregator internet_identity icp-swap ckred_ledger ckred_index; do
   printf "  %-18s %s\n" "$canister" "$(dfx-canister-url --network "$NETWORK" "$canister")"
 done

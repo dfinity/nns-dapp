@@ -10,9 +10,7 @@ import { expect, test } from "@playwright/test";
 
 const TEST_TOKEN_NAME = "ckRED";
 
-// TODO: Run this test again. It needs the ckred test token, which the local icp-cli
-// network does not have.
-test.skip("Test imported tokens", async ({ page, context }) => {
+test("Test imported tokens", async ({ page, context }) => {
   const testLedgerCanisterId = await localCanisterId("ckred_ledger");
   const testIndexCanisterId = await localCanisterId("ckred_index");
 

@@ -64,6 +64,8 @@ proposal is successful, the changes it released will be moved from this file to
   test token, so the end-to-end tests that need them are skipped.
 - The local test network has a mock of the ICP Swap price feed, so the app
   shows token prices and the staking rewards.
+- The local test network has a ckRED test token, so the import token
+  end-to-end tests run again.
 
 #### Deprecated
 
