@@ -35,6 +35,9 @@ To run the dapp against the local network, use the steps below:
 - Run `scripts/setup` to install necessary tools. It installs `icp` in `$HOME/.local/bin`.
 - Run `scripts/icp-network-start`. It starts the network in the background and
   makes your icp identity a controller of the nns-dapp and the SNS aggregator.
+  If icp has only the anonymous identity, the script creates the identity
+  `nns-dapp-local`, because the nns-dapp rejects anonymous callers on some
+  methods.
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
 - In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
