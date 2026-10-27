@@ -47,6 +47,14 @@ command -v icp >/dev/null || {
 # The network and the environment have the same name, see icp.yaml.
 ENVIRONMENT="$NETWORK"
 
+# A fresh icp-cli home has only the anonymous identity, which the nns-dapp
+# rejects on some methods. Create a local identity, stored in plaintext.
+if [[ "$(icp identity principal)" == "2vxsx-fae" ]]; then
+  echo "Creating the icp identity 'nns-dapp-local'..."
+  icp identity new nns-dapp-local --storage plaintext --quiet >/dev/null
+  icp identity default nns-dapp-local
+fi
+
 if icp network status "$NETWORK" >/dev/null 2>&1; then
   echo "The '$NETWORK' network is running already."
 else
