@@ -67,8 +67,14 @@ LOGO="$(realpath "$LOGO")"
 
 cd "$SOURCE_DIR/.."
 
+# Escapes a text for a candid string literal.
+candid_text() {
+  printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
+}
+NAME_CANDID="$(candid_text "$NAME")"
+SYMBOL_CANDID="$(candid_text "$SYMBOL")"
 CONFIRMATION_TEXT_CANDID=null
-test -z "${CONFIRMATION_TEXT:-}" || CONFIRMATION_TEXT_CANDID="opt \"$CONFIRMATION_TEXT\""
+test -z "${CONFIRMATION_TEXT:-}" || CONFIRMATION_TEXT_CANDID="opt \"$(candid_text "$CONFIRMATION_TEXT")\""
 NNS_GOVERNANCE="$(canister-id --network "$NETWORK" nns-governance)"
 NNS_LEDGER="$(canister-id --network "$NETWORK" nns-ledger)"
 SNS_WASM="$(canister-id --network "$NETWORK" nns-sns-wasm)"
@@ -158,19 +164,19 @@ submit_proposal() {
   proposal="(record {
     id = opt record { id = $neuron_id : nat64 };
     command = opt variant { MakeProposal = record {
-      title = opt \"Create the $NAME SNS\";
+      title = opt \"Create the $NAME_CANDID SNS\";
       url = \"https://forum.dfinity.org\";
-      summary = \"Creates the $NAME SNS for the local test network.\";
+      summary = \"Creates the $NAME_CANDID SNS for the local test network.\";
       action = opt variant { CreateServiceNervousSystem = record {
-        name = opt \"$NAME\";
-        description = opt \"The $NAME test project of the local network.\";
+        name = opt \"$NAME_CANDID\";
+        description = opt \"The $NAME_CANDID test project of the local network.\";
         url = opt \"https://internetcomputer.org\";
         logo = opt record { base64_encoding = opt \"$logo\" };
         fallback_controller_principal_ids = vec { principal \"$ANONYMOUS_PRINCIPAL\" };
         dapp_canisters = vec {};
         ledger_parameters = opt record {
-          token_name = opt \"$NAME\";
-          token_symbol = opt \"$SYMBOL\";
+          token_name = opt \"$NAME_CANDID\";
+          token_symbol = opt \"$SYMBOL_CANDID\";
           token_logo = opt record { base64_encoding = opt \"$logo\" };
           transaction_fee = opt record { e8s = opt (10_000 : nat64) };
         };
