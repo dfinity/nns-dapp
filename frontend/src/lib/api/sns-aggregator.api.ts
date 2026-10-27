@@ -5,7 +5,7 @@ import {
 import { AGGREGATOR_CANISTER_VERSION } from "$lib/constants/sns.constants";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 
 const aggregatorPageUrl = (page: number) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/list/page/${page}/slow.json`;
@@ -43,13 +43,15 @@ export const queryParallelSnsAggregator = async (): Promise<CachedSnsDto[]> => {
   );
 
   const results = await Promise.all(pagePromises);
-  const loadedPages = results.filter(nonNullish);
+  const allProjects = results.filter(nonNullish).flat();
 
   // A local network can have no SNS. That is not an error, as long as the
-  // aggregator answers.
-  if (loadedPages.length === 0) throw new Error("Error loading SNS projects");
+  // first page loaded.
+  if (allProjects.length === 0 && isNullish(results[0])) {
+    throw new Error("Error loading SNS projects");
+  }
 
-  return loadedPages.flat();
+  return allProjects;
 };
 
 export const querySnsProjects = async (): Promise<CachedSnsDto[]> => {

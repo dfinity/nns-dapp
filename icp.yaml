@@ -40,3 +40,7 @@ environments:
   - name: local
     network: local
     canisters: [nns-dapp, sns_aggregator, icp-swap]
+  # Mainnet, for read-only queries. The canister IDs are in .icp/data/mappings/ic.ids.json.
+  - name: ic
+    network: ic
+    canisters: [nns-dapp, sns_aggregator]

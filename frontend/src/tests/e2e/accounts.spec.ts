@@ -116,9 +116,22 @@ test("Test accounts requirements", async ({ page, context }) => {
     .getNnsWalletPo()
     .getUiTransactionsListPo();
   await transactionList.waitForLoaded();
-  const transactions = await transactionList.getTransactionCardPos();
-  expect(transactions).toHaveLength(1);
-  const transaction = transactions[0];
+  // The index canister syncs the ledger with a delay. Reload until it has the
+  // transfer.
+  await expect
+    .poll(
+      async () => {
+        const count = (await transactionList.getTransactionCardPos()).length;
+        if (count === 0) {
+          await page.reload({ waitUntil: "load" });
+          await transactionList.waitForLoaded();
+        }
+        return count;
+      },
+      { timeout: 30_000 }
+    )
+    .toBe(1);
+  const transaction = (await transactionList.getTransactionCardPos())[0];
 
   expect(await transaction.getIdentifier()).toBe(`From: ${mainAccountAddress}`);
   expect(await transaction.getAmount()).toBe("+5.00");

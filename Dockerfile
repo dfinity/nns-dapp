@@ -87,6 +87,7 @@ COPY dfx.json config.json config.sh canister_ids.jso[n] /build/
 COPY global-config.json /root/.config/dfx/networks.json
 COPY scripts/network-config /build/scripts/network-config
 COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/canister-id /build/scripts/canister-id
 COPY scripts/clap.bash /build/scripts/clap.bash
 COPY .df[x]/ /build/.dfx
 WORKDIR /build
@@ -104,6 +105,7 @@ SHELL ["bash", "-c"]
 COPY dfx.json config.json config.sh /build/
 COPY scripts/network-config /build/scripts/network-config
 COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/canister-id /build/scripts/canister-id
 COPY scripts/clap.bash /build/scripts/clap.bash
 WORKDIR /build
 RUN mkdir -p frontend

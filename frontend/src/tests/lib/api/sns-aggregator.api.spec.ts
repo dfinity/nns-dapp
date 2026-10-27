@@ -98,6 +98,21 @@ describe("sns-aggregator api", () => {
       expect(mockFetch).toHaveBeenCalledTimes(6);
     });
 
+    it("should throw when the first page fails and the other pages are empty", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      const mockFetch = vi.fn((url: string) => {
+        if (url.endsWith("/page/0/slow.json")) {
+          return Promise.resolve({ ok: false });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      });
+      global.fetch = mockFetch as unknown as typeof fetch;
+
+      await expect(querySnsProjects()).rejects.toThrow(
+        "Error loading SNS projects"
+      );
+    });
+
     it("should throw when all pages fail", async () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
       const mockFetch = vi.fn(() => Promise.resolve({ ok: false }));

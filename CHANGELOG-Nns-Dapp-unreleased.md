@@ -26,6 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 - No error toast when the SNS aggregator has no project.
+- The staking rewards and the APY load when there is no SNS project.
 - The canister page tells a user that they are not a controller also when the
   Internet Computer answers with the newer error code IC0542.
 - The proposal detail page no longer parses the text fields of a payload as
