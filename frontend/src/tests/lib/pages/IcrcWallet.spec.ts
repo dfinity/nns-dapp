@@ -689,6 +689,11 @@ describe("IcrcWallet", () => {
           certified: true,
         });
         // Needs to pass the index canister validation.
+        // The ledger names no index canister, so the check falls back to
+        // `getLedgerId` on the index canister.
+        vi.spyOn(icrcLedgerApi, "queryIcrcIndexPrincipal").mockResolvedValue(
+          undefined
+        );
         vi.spyOn(icrcIndexApi, "getLedgerId").mockResolvedValue(
           ledgerCanisterId
         );
