@@ -12,6 +12,8 @@ print_help() {
 	SNS aggregator and an nns-dapp release. This script then:
 	- links the nns-dapp and sns_aggregator names to those canisters,
 	- adds the current icp identity as a controller of both canisters,
+	- stakes a large NNS neuron, so that test neurons cannot decide proposals,
+	- deploys the mock ICP Swap price feed,
 	- installs the given wasms, if any.
 
 	If the network runs already, the script keeps it and only does the steps
@@ -46,6 +48,8 @@ if icp network status "$NETWORK" >/dev/null 2>&1; then
   echo "The '$NETWORK' network is running already."
 else
   echo "Starting the '$NETWORK' network..."
+  # The canister IDs of an earlier network are not valid on the new one.
+  rm -f ".icp/cache/mappings/$ENVIRONMENT.ids.json"
   icp network start "$NETWORK" --background
 fi
 icp network ping "$NETWORK" --wait-healthy >/dev/null
@@ -97,6 +101,22 @@ stake_large_neuron() {
 }
 stake_large_neuron
 
+# Deploys the mock ICP Swap price feed, an asset canister that serves mocks/icp-swap/tickers.
+#
+# icp-cli creates a new canister on the subnet of the existing canisters, which
+# is the NNS subnet here. The NNS subnet refuses that, so the canister is
+# created on an application subnet first.
+deploy_icp_swap() {
+  local cmc subnet
+  if ! jq -e '.["icp-swap"]' ".icp/cache/mappings/$ENVIRONMENT.ids.json" >/dev/null 2>&1; then
+    cmc="$(canister-id --network "$NETWORK" nns-cycles-minting)"
+    subnet="$(icp canister call "$cmc" get_default_subnets '()' --network "$NETWORK" --query | idl2json | jq -r '.[0]')"
+    icp canister create icp-swap --environment "$ENVIRONMENT" --subnet "$subnet"
+  fi
+  icp deploy icp-swap --environment "$ENVIRONMENT" --yes
+}
+deploy_icp_swap
+
 if test -n "${NNS_DAPP_WASM:-}"; then
   test -f "$NNS_DAPP_ARG" || DFX_NETWORK="$NETWORK" ./config.sh >/dev/null
   install_canister nns-dapp --wasm "$NNS_DAPP_WASM" --mode "$NNS_DAPP_INSTALL_MODE" --args-file "$NNS_DAPP_ARG"
@@ -109,6 +129,6 @@ fi
 
 echo
 echo "The '$NETWORK' network is ready:"
-for canister in nns-dapp sns_aggregator internet_identity; do
+for canister in nns-dapp sns_aggregator internet_identity icp-swap; do
   printf "  %-18s %s\n" "$canister" "$(dfx-canister-url --network "$NETWORK" "$canister")"
 done

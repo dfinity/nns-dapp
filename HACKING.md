@@ -50,9 +50,10 @@ scripts/icp-network-start --nns_dapp_wasm nns-dapp.wasm.gz --sns_aggregator_wasm
 The network keeps its state while it runs. `icp network stop` discards it. The
 next `scripts/icp-network-start` begins from a clean state.
 
-The local network has no SNS project, no ckBTC, ckETH or ckUSDC tokens, and no
-token prices. The ICP ledger funds the test account that the "Get ICP" menu
-uses.
+The local network has no SNS project and no ckBTC, ckETH or ckUSDC tokens. A
+mock of the ICP Swap price feed sets the ICP price to 9 USD, see
+[`mocks/icp-swap`](./mocks/icp-swap/README.md). The ICP ledger funds the test
+account that the "Get ICP" menu uses.
 
 ## Testnet
 

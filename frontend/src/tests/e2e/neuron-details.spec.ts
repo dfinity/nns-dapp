@@ -68,19 +68,12 @@ test("Test neuron details", async ({ page, context }) => {
     pattern: /\b[A-Za-z]{3} \d{1,2}, \d{4}\b/,
     replacements: ["Sep 26, 2024"],
   });
-  // TODO: Replace the APY values again. The APY needs the ICP price, and the
-  // local icp-cli network has no price feed, so the card shows an error.
-  if ((await page.locator('[data-tid="apy-current-value"]').count()) > 0) {
-    await replaceContent({
-      page,
-      selectors: [
-        '[data-tid="apy-current-value"]',
-        '[data-tid="apy-max-value"]',
-      ],
-      pattern: /\(?\d+\.\d+%\)?/,
-      replacements: ["12.25%"],
-    });
-  }
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="apy-current-value"]', '[data-tid="apy-max-value"]'],
+    pattern: /\(?\d+\.\d+%\)?/,
+    replacements: ["12.25%"],
+  });
 
   // set viewport to capture the entire advanced section
   const advancedSectionElement = await page.locator(

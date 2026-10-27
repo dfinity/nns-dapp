@@ -61,6 +61,8 @@ proposal is successful, the changes it released will be moved from this file to
 - The local test network, for development and CI, runs on icp-cli instead of
   dfx and the snsdemo snapshot. The network has no SNS project, no ckBTC and no
   test token, so the end-to-end tests that need them are skipped.
+- The local test network has a mock of the ICP Swap price feed, so the app
+  shows token prices and the staking rewards.
 
 #### Deprecated
 

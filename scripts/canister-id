@@ -8,6 +8,8 @@ print_help() {
 	Prints the ID of a canister on a network.
 
 	The ID comes from, in this order:
+	- .icp/cache/mappings/<network>.ids.json, if the file exists.
+	  icp-cli records the canisters it creates on a local network there.
 	- canister_ids.json in the repository root, if the file exists.
 	  Testnets and devenvs record their canister IDs there.
 	- the "remote" section of the canister in dfx.json, for the network
@@ -36,7 +38,11 @@ cd "$SOURCE_DIR/.."
 export DFX_NETWORK DFX_CANISTER
 
 id=""
-if test -f canister_ids.json; then
+ICP_MAPPINGS=".icp/cache/mappings/$DFX_NETWORK.ids.json"
+if test -f "$ICP_MAPPINGS"; then
+  id="$(jq -r '.[env.DFX_CANISTER] // empty' "$ICP_MAPPINGS")"
+fi
+test -n "$id" || if test -f canister_ids.json; then
   id="$(jq -r '.[env.DFX_CANISTER][env.DFX_NETWORK] // empty' canister_ids.json)"
 fi
 test -n "$id" || id="$(jq -r '.canisters[env.DFX_CANISTER].remote.id | (.[env.DFX_NETWORK] // .__default) // empty' dfx.json)"

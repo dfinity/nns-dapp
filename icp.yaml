@@ -18,7 +18,6 @@ networks:
     # The same delay on update calls as dfx had by default. Without it, some
     # end-to-end tests read a state before the index canister has synced.
     artificial-delay-ms: 600
-
 canisters:
   - name: nns-dapp
     build:
@@ -30,8 +29,14 @@ canisters:
       steps:
         - type: pre-built
           path: sns_aggregator.wasm.gz
-
+  # A mock of the ICP Swap price feed. The asset canister serves mocks/icp-swap/tickers.
+  - name: icp-swap
+    recipe:
+      type: "@dfinity/asset-canister@v2.3.0"
+      configuration:
+        version: "0.32.0"
+        dir: mocks/icp-swap
 environments:
   - name: local
     network: local
-    canisters: [nns-dapp, sns_aggregator]
+    canisters: [nns-dapp, sns_aggregator, icp-swap]
