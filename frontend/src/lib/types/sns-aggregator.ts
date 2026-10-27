@@ -341,7 +341,8 @@ export type CachedSnsDto = {
     derived: CachedSnsSwapDerivedDto;
   };
   icrc1_metadata: CachedSnsTokenMetadataDto;
-  icrc1_fee: [] | [number];
+  // A Candid Nat as 32-bit digits, least significant first.
+  icrc1_fee: number[];
   icrc1_total_supply: number;
   derived_state: CachedSnsSwapDerivedDto;
   swap_params: CachedSwapParamsResponseDto;

@@ -38,6 +38,7 @@ export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "ENABLE_APY_PORTFOLIO",
   "ENABLE_NEW_TABLES",
   "ENABLE_ADDRESS_BOOK",
+  "ENABLE_IMPORT_SNS",
 ];
 
 /**
@@ -159,4 +160,5 @@ export const {
   ENABLE_APY_PORTFOLIO,
   ENABLE_NEW_TABLES,
   ENABLE_ADDRESS_BOOK,
+  ENABLE_IMPORT_SNS,
 } = featureFlagsStore;
