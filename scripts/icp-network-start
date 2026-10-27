@@ -116,7 +116,7 @@ stake_large_neuron() {
   neuron_id="$(icp canister call "$governance" manage_neuron "(record { id = null; command = opt variant { ClaimOrRefresh = record { by = opt variant { MemoAndController = record { controller = opt principal \"2vxsx-fae\"; memo = $nonce : nat64 } } } }; neuron_id_or_subaccount = null })" --network "$NETWORK" --identity anonymous | idl2json | jq -r '.command[0].ClaimOrRefresh.refreshed_neuron_id[0].id')"
   # A neuron needs a dissolve delay of six months to vote. Set the maximum, eight years.
   dissolve_delay="$(icp canister call "$governance" list_neurons "(record { neuron_ids = vec { $neuron_id : nat64 }; include_neurons_readable_by_caller = false; include_empty_neurons_readable_by_caller = null; include_public_neurons_in_full_neurons = null; page_number = null; page_size = null; neuron_subaccounts = null })" --network "$NETWORK" --identity anonymous --query | idl2json | jq -r '.full_neurons[0].dissolve_state[0].DissolveDelaySeconds // 0')"
-  if ((dissolve_delay < 15_778_800)); then
+  if ((dissolve_delay < 15778800)); then
     icp canister call "$governance" manage_neuron "(record { id = opt record { id = $neuron_id : nat64 }; command = opt variant { Configure = record { operation = opt variant { IncreaseDissolveDelay = record { additional_dissolve_delay_seconds = 252_460_800 : nat32 } } } }; neuron_id_or_subaccount = null })" --network "$NETWORK" --identity anonymous >/dev/null
   fi
   echo "NNS neuron $neuron_id has 10,000,000 ICP."
