@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
 
 print_help() {
   cat <<-EOF
@@ -19,24 +20,27 @@ clap.define short=a long=nns_dapp_arg desc="The argument file to use when instal
 source "$(clap.build)"
 
 E8S_PER_UNIT="100000000"
-TOTAL_ICP_LOCKED_E8S="$(dfx canister call nns-governance get_metrics | idl2json | jq -r '.Ok.total_locked_e8s')"
+GOVERNANCE_CANISTER_ID="$(canister-id --network local nns-governance)"
+TOTAL_ICP_LOCKED_E8S="$(icp canister call "$GOVERNANCE_CANISTER_ID" get_metrics '()' --network local --query | idl2json | jq -r '.Ok.total_locked_e8s')"
 
 test_exchange_rate() {
   exchange_rate="$1"
   exchange_rate_e8s="$(echo "$exchange_rate $E8S_PER_UNIT" | awk '{ printf "%d\n", $1 * $2 }')"
   expected_tvl="$(echo "$TOTAL_ICP_LOCKED_E8S $exchange_rate $E8S_PER_UNIT" | awk '{ printf "%d\n", $1 * $2 / $3}')"
 
-  dfx canister call xrc set_exchange_rate "(record{base_asset=\"ICP\"; quote_asset=\"USD\"; rate=$exchange_rate_e8s:nat64})"
+  icp canister call xrc set_exchange_rate "(record{base_asset=\"ICP\"; quote_asset=\"USD\"; rate=$exchange_rate_e8s:nat64})" --environment local
 
   # We upgrade nns-dapp to avoid waiting for its timer to update the TVL value.
-  dfx canister install nns-dapp --wasm "$NNS_DAPP_WASM" --upgrade-unchanged --mode upgrade --yes -v --argument "$(cat "$NNS_DAPP_ARG")"
+  icp canister install nns-dapp --wasm "$NNS_DAPP_WASM" --mode upgrade --yes --args-file "$NNS_DAPP_ARG" --environment local
 
-  actual_tvl="$(dfx canister call nns-dapp get_tvl | idl2json | jq -r '.Ok.tvl' | sed -e 's/_//g')"
-
-  if [[ "$actual_tvl" -ne "$expected_tvl" ]]; then
-    echo "Expected TVL: $expected_tvl, Actual TVL: $actual_tvl"
-    exit 1
-  fi
+  # The nns-dapp reads the exchange rate on a timer, one second after the upgrade.
+  for ((try = 0; try < 30; try++)); do
+    actual_tvl="$(icp canister call nns-dapp get_tvl '()' --environment local --query | idl2json | jq -r '.Ok.tvl' | sed -e 's/_//g')"
+    [[ "$actual_tvl" -ne "$expected_tvl" ]] || return 0
+    sleep 1
+  done
+  echo "Expected TVL: $expected_tvl, Actual TVL: $actual_tvl"
+  exit 1
 }
 
 test_exchange_rate "10"
