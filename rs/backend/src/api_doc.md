@@ -51,6 +51,29 @@ where tokens go, for example an address from `get_address_book` or an account
 identifier from `get_account`. Also make it as an update call if its result goes
 into a `set_` call. An update call goes through consensus.
 
+## Data that decides where tokens go
+
+The web app uses some account data as the target of a transfer. A wrong value
+can send the tokens of the user to another person. A ledger transfer cannot be
+undone.
+
+- The address book: in the send flow, the user picks a name, and the web app
+  sends the tokens to the address of that name.
+- The hardware wallets: the web app shows each registered principal as an
+  account of the user, with its balance. No method removes a registered
+  principal.
+- The linked canisters: the user can top up each canister in the list with
+  cycles, paid in ICP.
+
+Correct use of `set_address_book`, `register_hardware_wallet`, and
+`attach_canister`:
+
+- Make a change only if the user asks for that change.
+- Use only an address, a principal, or a canister ID that the user gives or
+  confirms.
+- Before the call, show the user each name and each full address, principal,
+  or canister ID that the call adds or changes.
+
 ## Methods that change state
 
 All of these are update calls. Each call changes only the data of the caller.
