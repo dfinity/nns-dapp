@@ -44,6 +44,17 @@ runs:
         # restore the network launcher.
         echo "ICP_HOME=$HOME/.icp" >> "$GITHUB_ENV"
         echo "DO_NOT_TRACK=1" >> "$GITHUB_ENV"
+    - name: Create the CI identity
+      shell: bash
+      run: |
+        set -euo pipefail
+        # A fresh icp-cli home has only the anonymous identity, which the
+        # nns-dapp rejects on some methods. The keyring is not available on CI.
+        if [[ "$(icp identity principal)" == "2vxsx-fae" ]]; then
+          icp identity new ci --storage plaintext --quiet >/dev/null
+          icp identity default ci
+        fi
+        echo "icp identity: $(icp identity principal)"
     - name: Restore the network launcher
       uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
