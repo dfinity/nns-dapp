@@ -187,12 +187,9 @@ deploy_xrc() {
   local xrc_id="uf6dk-hyaaa-aaaaq-qaaaq-cai"
   icp-canister-create-with-id --network "$NETWORK" --canister "$xrc_id"
   icp canister link xrc "$xrc_id" --environment "$ENVIRONMENT" --force
-  # An installed mock keeps the rate that a test set.
-  if ! is_installed xrc; then
-    # The mock answers with this response until a rate is set.
-    icp deploy xrc --environment "$ENVIRONMENT" --yes --args '(record { response = variant { Error = variant { CryptoBaseAssetNotFound = null } } })'
-    icp canister call xrc set_exchange_rate '(record { base_asset = "ICP"; quote_asset = "USD"; rate = 900_000_000 : nat64 })' --environment "$ENVIRONMENT" >/dev/null
-  fi
+  # The mock starts with 9 USD per ICP, with the default assets and metadata.
+  # An installed mock keeps the rate that a test set with set_exchange_rate.
+  is_installed xrc || icp deploy xrc --environment "$ENVIRONMENT" --yes --args '(record { response = variant { ExchangeRate = record { base_asset = null; quote_asset = null; metadata = null; rate = 900_000_000 : nat64 } } })'
 }
 deploy_xrc
 
