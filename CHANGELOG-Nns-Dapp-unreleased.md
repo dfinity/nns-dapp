@@ -42,10 +42,11 @@ proposal is successful, the changes it released will be moved from this file to
   could previously end the `content` attribute and add live `HTML` to the page.
   The install or the upgrade now fails if a value is not a web address. The
   check also limits the `ROBOTS` argument to the `robots` `meta` tag.
-
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- Refuse to import the ledger of any SNS project, whatever its swap state, and
+  wait for the SNS project list before the import form validates a ledger.
 
 #### Not Published
 
