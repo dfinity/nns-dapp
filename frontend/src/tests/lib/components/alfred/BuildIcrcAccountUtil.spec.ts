@@ -176,7 +176,12 @@ describe("BuildIcrcAccountUtil", () => {
     });
 
     expect(getError(container)).toBeNull();
-    expect(getOutput(container)).not.toBeNull();
+    expect(getOutput(container)?.textContent).toBe(
+      expectedIcrcAccount({
+        principal: testPrincipal,
+        subaccountBytes: new Uint8Array(32).fill(0xff),
+      })
+    );
   });
 
   it("should show error for a very long digit string", async () => {
