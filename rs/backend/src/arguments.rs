@@ -27,11 +27,15 @@ pub struct CanisterArguments {
 ///
 /// The front end puts these values in the `Content-Security-Policy` of every
 /// page.  It also uses them as the target of network requests.
-const URL_ARGUMENT_NAMES: [&str; 6] = [
+/// `II_DERIVATION_ORIGIN` is the exception: the canister serves it as the body
+/// of `/.well-known/ii-derivation-origin`, and serves the service
+/// discoverability files only if it is set.
+const URL_ARGUMENT_NAMES: [&str; 7] = [
     "API_HOST",
     "HOST",
     "ICP_SWAP_URL",
     "IDENTITY_SERVICE_URL",
+    "II_DERIVATION_ORIGIN",
     "SNS_AGGREGATOR_URL",
     "STATIC_HOST",
 ];
