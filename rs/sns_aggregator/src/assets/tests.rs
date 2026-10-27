@@ -23,10 +23,16 @@ fn has_tag_name(tag_body: &str, name: &str) -> bool {
         .is_some_and(|rest| rest.is_empty() || rest.starts_with('/') || rest.starts_with(char::is_whitespace))
 }
 
-/// Rewrites single quotes as double quotes and removes whitespace around `=`,
-/// so that `src = 'https://x'` is checked as `src="https://x"`.
+/// Lowercases the tag, rewrites single quotes as double quotes, turns every
+/// run of whitespace (spaces, tabs, newlines) into one space and removes the
+/// whitespace around `=`, so that `SRC\n=\n'https://x'` is checked as `src="https://x"`.
 fn normalize_attributes(tag_body: &str) -> String {
-    let mut normalized = tag_body.replace('\'', "\"");
+    let mut normalized = tag_body
+        .to_lowercase()
+        .replace('\'', "\"")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
     for spaced in [" =", "= "] {
         while normalized.contains(spaced) {
             normalized = normalized.replace(spaced, "=");
