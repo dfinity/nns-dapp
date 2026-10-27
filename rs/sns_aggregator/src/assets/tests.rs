@@ -23,6 +23,18 @@ fn has_tag_name(tag_body: &str, name: &str) -> bool {
         .is_some_and(|rest| rest.is_empty() || rest.starts_with('/') || rest.starts_with(char::is_whitespace))
 }
 
+/// Rewrites single quotes as double quotes and removes whitespace around `=`,
+/// so that `src = 'https://x'` is checked as `src="https://x"`.
+fn normalize_attributes(tag_body: &str) -> String {
+    let mut normalized = tag_body.replace('\'', "\"");
+    for spaced in [" =", "= "] {
+        while normalized.contains(spaced) {
+            normalized = normalized.replace(spaced, "=");
+        }
+    }
+    normalized
+}
+
 /// Every external `<script>` and `<link>` on the home page must be pinned with a
 /// Subresource Integrity hash and must come from a certified gateway.
 ///
@@ -34,6 +46,7 @@ fn home_page_pins_every_external_script_and_stylesheet() {
         if !has_tag_name(tag_body, "script") && !has_tag_name(tag_body, "link") {
             continue;
         }
+        let tag_body = &normalize_attributes(tag_body);
         if !tag_body.contains("src=\"https://") && !tag_body.contains("href=\"https://") {
             continue;
         }
