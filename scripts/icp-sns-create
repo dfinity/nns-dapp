@@ -61,6 +61,7 @@ test -f "$LOGO" || {
   echo "ERROR: The logo file does not exist: $LOGO"
   exit 1
 } >&2
+LOGO="$(realpath "$LOGO")"
 
 cd "$SOURCE_DIR/.."
 
@@ -87,16 +88,19 @@ auto_finalization_status() {
 }
 
 # Prints the deployed SNS with the given name as JSON, if any.
+# A failed request stops the script, so that a rerun does not create the SNS twice.
 find_sns() {
-  local instance governance name
+  local instances instance governance name
+  instances="$(call "$SNS_WASM" list_deployed_snses '(record {})' --query | idl2json | jq -c '.instances[]')"
   while read -r instance; do
+    test -n "$instance" || continue
     governance="$(jq -r '.governance_canister_id[0]' <<<"$instance")"
     name="$(call "$governance" get_metadata '(record {})' --query | idl2json | jq -r '.name[0]')"
     if [[ "$name" == "$NAME" ]]; then
       echo "$instance"
       return
     fi
-  done < <(call "$SNS_WASM" list_deployed_snses '(record {})' --query | idl2json | jq -c '.instances[]')
+  done <<<"$instances"
 }
 
 # Waits until a jq condition on the JSON output of a command holds.

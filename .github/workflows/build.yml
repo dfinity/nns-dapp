@@ -354,6 +354,10 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Get sns_aggregator
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sns_aggregator
       - name: Get sns_aggregator_dev
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
@@ -374,6 +378,9 @@ jobs:
           scripts/icp-sns-aggregator-wait
       - name: Verify that configuration is as provided
         run: scripts/sns/aggregator/test-config
+      - name: Wait for the aggregator to get the data again
+        # The configuration test reinstalls the aggregator, which clears its cache.
+        run: scripts/icp-sns-aggregator-wait
       - name: Get the latest data from the sns aggregator
         run: |
           curl -Lf "$(scripts/dfx-canister-url --network local sns_aggregator)/v1/sns/list/latest/slow.json" | tee aggregate-1.json

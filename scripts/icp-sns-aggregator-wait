@@ -13,11 +13,11 @@ print_help() {
 	The aggregator refreshes one SNS per update interval, which is two minutes
 	by default. If the aggregator is a dev build, which has the reconfigure
 	method, the script sets the interval to one second while it waits and
-	restores the configuration afterwards.
+	restores the configuration afterwards. Otherwise the script waits for
+	two refresh cycles.
 	EOF
 }
 
-MAX_ATTEMPTS=300
 RETRY_DELAY_SECONDS=1
 
 # Source the clap.bash file ---------------------------------------------------
@@ -35,14 +35,17 @@ SNS_WASM="$(canister-id --network "$NETWORK" nns-sns-wasm)"
 AGGREGATOR_URL="$(dfx-canister-url --network "$NETWORK" sns_aggregator)"
 
 # Prints the root canister ID and the swap lifecycle of every deployed SNS, as sorted JSON.
+# A failed request stops the script.
 expected_snses() {
-  local instance root swap lifecycle
+  local instances instance root swap lifecycle
+  instances="$(icp canister call "$SNS_WASM" list_deployed_snses '(record {})' --network "$NETWORK" --query | idl2json | jq -c '.instances[]')"
   while read -r instance; do
+    test -n "$instance" || continue
     root="$(jq -r '.root_canister_id[0]' <<<"$instance")"
     swap="$(jq -r '.swap_canister_id[0]' <<<"$instance")"
     lifecycle="$(icp canister call "$swap" get_lifecycle '(record {})' --network "$NETWORK" --query | idl2json | jq -r '.lifecycle[0]')"
     jq -n --arg root "$root" --argjson lifecycle "$lifecycle" '{root: $root, lifecycle: $lifecycle}'
-  done < <(icp canister call "$SNS_WASM" list_deployed_snses '(record {})' --network "$NETWORK" --query | idl2json | jq -c '.instances[]') | jq -s -c 'sort_by(.root)'
+  done <<<"$instances" | jq -s -c 'sort_by(.root)'
 }
 
 # Prints the root canister ID and the swap lifecycle of every SNS that the aggregator lists, as sorted JSON.
@@ -53,13 +56,11 @@ aggregator_snses() {
   done | jq -s -c 'sort_by(.root)'
 }
 
-has_reconfigure() {
-  icp canister metadata sns_aggregator candid:service --environment "$ENVIRONMENT" | grep -q '^ *reconfigure *:'
-}
-
 # Arguments: <update_interval_ms> <fast_interval_ms>
+# Fails on a production build, which has no reconfigure method. The candid
+# metadata lists the method in both builds, so a call is the only test.
 reconfigure() {
-  icp canister call sns_aggregator reconfigure "(opt record { update_interval_ms = $1 : nat64; fast_interval_ms = $2 : nat64 })" --environment "$ENVIRONMENT" >/dev/null
+  icp canister call sns_aggregator reconfigure "(opt record { update_interval_ms = $1 : nat64; fast_interval_ms = $2 : nat64 })" --environment "$ENVIRONMENT" >/dev/null 2>&1
 }
 
 # Restores the configuration that the aggregator had before the script.
@@ -68,17 +69,22 @@ restore_config() {
   reconfigure "$(jq -r .update_interval_ms <<<"$SAVED_CONFIG")" "$(jq -r .fast_interval_ms <<<"$SAVED_CONFIG")"
 }
 
+expected="$(expected_snses)"
+count="$(jq length <<<"$expected")"
+
 SAVED_CONFIG="$(icp canister call sns_aggregator get_canister_config '()' --environment "$ENVIRONMENT" --query | idl2json)"
-if has_reconfigure; then
+if reconfigure 1000 1000; then
   trap restore_config EXIT
-  reconfigure 1000 1000
+  max_attempts=300
 else
-  echo "The SNS aggregator has no reconfigure method, so it refreshes one SNS every $(jq -r '.update_interval_ms | tonumber / 1000' <<<"$SAVED_CONFIG") seconds."
+  interval_seconds="$(jq -r '.update_interval_ms | tonumber / 1000 | ceil' <<<"$SAVED_CONFIG")"
+  echo "The SNS aggregator has no reconfigure method, so it refreshes one SNS every $interval_seconds seconds."
+  # Two cycles: one to list the new SNSs and one to get their data.
+  max_attempts=$((2 * (count + 1) * interval_seconds + 60))
 fi
 
-expected="$(expected_snses)"
-echo "Waiting for the SNS aggregator to list $(jq length <<<"$expected") SNS projects..."
-for ((attempt = 0; attempt < MAX_ATTEMPTS; attempt++)); do
+echo "Waiting for the SNS aggregator to list $count SNS projects..."
+for ((attempt = 0; attempt < max_attempts; attempt++)); do
   if [[ "$(aggregator_snses)" == "$expected" ]]; then
     echo "The SNS aggregator lists every SNS project."
     exit 0
