@@ -87,6 +87,8 @@ fi
 
 echo "Waiting for the SNS aggregator to list $count SNS projects..."
 for ((attempt = 0; attempt < max_attempts; attempt++)); do
+  # A swap can commit while the script waits, so the lifecycles are read again.
+  expected="$(expected_snses)"
   if [[ "$(aggregator_snses)" == "$expected" ]]; then
     echo "The SNS aggregator lists every SNS project."
     exit 0
