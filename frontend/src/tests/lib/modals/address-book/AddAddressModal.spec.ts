@@ -990,5 +990,30 @@ describe("AddAddressModal", () => {
       expect(saveAddressBookSpy).not.toHaveBeenCalled();
       expect(onClose).not.toHaveBeenCalled();
     });
+
+    it("should not save when the certified entry has the same name but another address", async () => {
+      addressBookStore.set({
+        namedAddresses: [
+          { ...mockNamedAddressIcp, address: { Icp: "forged" } },
+        ],
+        certified: true,
+      });
+
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose: vi.fn(), namedAddress: mockNamedAddressIcp },
+      });
+
+      await fillForm(container, "Alice renamed", validIcrc1Address);
+      await fireEvent.click(queryByTestId("save-address-button"));
+
+      await waitFor(() => expect(get(toastsStore)).toHaveLength(1));
+
+      expect(saveAddressBookSpy).not.toHaveBeenCalled();
+    });
   });
 });

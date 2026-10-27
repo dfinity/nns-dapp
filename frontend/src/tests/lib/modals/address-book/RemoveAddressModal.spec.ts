@@ -153,4 +153,23 @@ describe("RemoveAddressModal", () => {
     expect(saveAddressBookSpy).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
   });
+
+  it("should not save when the certified entry has the same name but another address", async () => {
+    addressBookStore.set({
+      namedAddresses: [{ ...mockNamedAddressIcp, address: { Icp: "forged" } }],
+      certified: true,
+    });
+
+    const saveAddressBookSpy = vi
+      .spyOn(addressBookServices, "saveAddressBook")
+      .mockResolvedValue({});
+
+    const { queryByTestId } = await renderRemoveModal();
+
+    await fireEvent.click(queryByTestId("confirm-yes"));
+
+    await waitFor(() => expect(get(toastsStore)).toHaveLength(1));
+
+    expect(saveAddressBookSpy).not.toHaveBeenCalled();
+  });
 });

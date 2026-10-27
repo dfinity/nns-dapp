@@ -10,6 +10,7 @@
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconErrorOutline } from "@dfinity/gix-components";
+  import { isSameAddress } from "$lib/utils/address-book.utils";
   import { isNullish } from "@dfinity/utils";
 
   interface Props {
@@ -35,7 +36,11 @@
       }
 
       const updatedAddresses = currentAddresses.filter(
-        (entry) => entry.name !== namedAddress.name
+        (entry) =>
+          !(
+            entry.name === namedAddress.name &&
+            isSameAddress(entry, namedAddress)
+          )
       );
 
       // The certified address book no longer holds the entry to remove.

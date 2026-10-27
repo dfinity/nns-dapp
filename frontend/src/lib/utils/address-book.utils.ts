@@ -79,3 +79,10 @@ export const filterAddressesByToken = ({
     isIcrc1Address(namedAddress.address)
   );
 };
+
+/**
+ * Tell if two named addresses hold the same address, of the same kind.
+ */
+export const isSameAddress = (a: NamedAddress, b: NamedAddress): boolean =>
+  isIcpAddress(a.address) === isIcpAddress(b.address) &&
+  getAddressString(a.address) === getAddressString(b.address);

@@ -13,7 +13,10 @@
     invalidIcpAddress,
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
-  import { getAddressString } from "$lib/utils/address-book.utils";
+  import {
+    getAddressString,
+    isSameAddress,
+  } from "$lib/utils/address-book.utils";
   import { Modal, busy } from "@dfinity/gix-components";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
@@ -171,8 +174,13 @@
 
       if (isEditMode) {
         const previousName = normalizeName(namedAddress?.name ?? "");
+        // Match the name and the address. A forged query response could keep
+        // the name of a trusted entry and swap its address.
         const isPresent = currentAddresses.some(
-          (entry) => normalizeName(entry.name) === previousName
+          (entry) =>
+            normalizeName(entry.name) === previousName &&
+            namedAddress !== undefined &&
+            isSameAddress(entry, namedAddress)
         );
 
         // The certified address book no longer holds the entry to edit.
