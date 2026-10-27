@@ -46,6 +46,7 @@ proposal is successful, the changes it released will be moved from this file to
 - The import token validation no longer sends the user principal to the entered
   canisters. The ledger and index canister IDs come from the form or from the
   URL, so the two validation calls now use the anonymous identity.
+- Stop an imported token from spoofing the USD price of ICP or of an SNS token.
 
 #### Not Published
 
