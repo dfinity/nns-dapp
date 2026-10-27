@@ -407,6 +407,36 @@ describe("imported-tokens-services", () => {
   });
 
   describe("removeImportedTokens", () => {
+    it("should ignore a load that was in flight when the remove started", async () => {
+      let resolveOlderUpdate: (value: {
+        imported_tokens: ImportedToken[];
+      }) => void = () => undefined;
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockImplementation(
+        async () =>
+          new Promise((resolve) => {
+            resolveOlderUpdate = resolve;
+          })
+      );
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue(
+        undefined
+      );
+      importedTokensStore.set({
+        importedTokens: [importedTokenDataA, importedTokenDataB],
+        certified: true,
+      });
+
+      const olderLoad = loadImportedTokens({ strategy: "update" });
+      await removeImportedTokens(importedTokenDataA.ledgerCanisterId);
+
+      resolveOlderUpdate({ imported_tokens: [importedTokenA, importedTokenB] });
+      await olderLoad;
+
+      expect(get(importedTokensStore)).toEqual({
+        importedTokens: [importedTokenDataB],
+        certified: true,
+      });
+    });
+
     it("should call setImportedTokens with updated token list", async () => {
       const spySetImportedTokens = vi
         .spyOn(importedTokensApi, "setImportedTokens")

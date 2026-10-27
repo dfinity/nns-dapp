@@ -172,6 +172,9 @@ const saveImportedToken = async ({
 }: {
   tokens: ImportedTokenData[];
 }): Promise<{ err: Error | undefined }> => {
+  // A load that started before this save can still be in flight. Its response
+  // may hold the list from before the save, so make it stale.
+  latestLoadId++;
   try {
     const identity = await getAuthenticatedIdentity();
     const importedTokens = tokens.map(fromImportedTokenData);

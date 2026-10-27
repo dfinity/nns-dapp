@@ -16,7 +16,10 @@
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
-  import { isImportedToken } from "$lib/utils/imported-tokens.utils";
+  import {
+    isImportedToken,
+    isImportedTokensCertified,
+  } from "$lib/utils/imported-tokens.utils";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
   import {
@@ -112,7 +115,10 @@
       });
     }
   };
+  // Only a certified list may short-circuit the import. An uncertified entry
+  // could be forged, and the service checks the certified list on confirm.
   const wasAlreadyImported = (ledgerCanisterId: Principal): boolean =>
+    isImportedTokensCertified($importedTokensStore?.certified) &&
     isImportedToken({
       ledgerCanisterId,
       importedTokens: $importedTokensStore?.importedTokens,

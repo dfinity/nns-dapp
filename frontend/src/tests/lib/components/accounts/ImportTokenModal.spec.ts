@@ -693,6 +693,19 @@ describe("ImportTokenModal", () => {
       ]);
     });
 
+    it("should not treat an uncertified entry as a duplicate", async () => {
+      importedTokensStore.set({
+        importedTokens: [{ ledgerCanisterId, indexCanisterId: undefined }],
+        certified: false,
+      });
+
+      renderComponent();
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toEqual([]);
+      expect(get(pageStore).path).not.toEqual(AppPath.Wallet);
+    });
+
     it("should navigate to tokens on close w/o query params", async () => {
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
         imported_tokens: [],
