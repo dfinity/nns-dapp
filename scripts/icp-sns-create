@@ -53,10 +53,10 @@ clap.define long=commit desc="Buy the whole swap, wait for the finalization and 
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-test -n "${NAME:-}" && test -n "${SYMBOL:-}" && test -n "${LOGO:-}" || {
-  echo "ERROR: Please specify --name, --symbol and --logo."
+if test -z "${NAME:-}" || test -z "${SYMBOL:-}" || test -z "${LOGO:-}"; then
+  echo "ERROR: Please specify --name, --symbol and --logo." >&2
   exit 1
-} >&2
+fi
 test -f "$LOGO" || {
   echo "ERROR: The logo file does not exist: $LOGO"
   exit 1

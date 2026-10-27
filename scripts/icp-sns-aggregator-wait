@@ -3,7 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
-# shellcheck disable=SC2329
+# shellcheck disable=SC2317,SC2329
 print_help() {
   cat <<-EOF
 
@@ -63,7 +63,7 @@ reconfigure() {
 }
 
 # Restores the configuration that the aggregator had before the script.
-# shellcheck disable=SC2329
+# shellcheck disable=SC2317,SC2329
 restore_config() {
   reconfigure "$(jq -r .update_interval_ms <<<"$SAVED_CONFIG")" "$(jq -r .fast_interval_ms <<<"$SAVED_CONFIG")"
 }
