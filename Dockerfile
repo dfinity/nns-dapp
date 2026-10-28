@@ -39,16 +39,29 @@ RUN jq -r '.volta.node' frontend/package.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_RELEASE' config.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' config.json > config/optimizer_version
 RUN jq -r '.defaults.build.config.IC_WASM_VERSION' config.json > config/ic_wasm_version
-RUN jq -r '.defaults.build.config.BINSTALL_VERSION' config.json > config/binstall_version
+RUN jq -r '.defaults.build.config.RUSTUP_INIT_VERSION' config.json > config/rustup_init_version
+# Every tool below is downloaded and then verified against one of these checksums.
+# Run scripts/update-tool-checksums after you change a pinned tool version.
+RUN jq -r '.defaults.build.config.RUSTUP_INIT_SHA256' config.json > config/rustup_init_sha256
+RUN jq -r '.defaults.build.config.NODE_SHA256' config.json > config/node_sha256
+RUN jq -r '.defaults.build.config.DFX_SHA256' config.json > config/dfx_sha256
+RUN jq -r '.defaults.build.config.DIDC_SHA256' config.json > config/didc_sha256
+RUN jq -r '.defaults.build.config.IC_WASM_SHA256' config.json > config/ic_wasm_sha256
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
 SHELL ["bash", "-c"]
-# Get tool versions
-COPY --from=tool_versions /config/*_version config/
+# Get tool versions and the checksums of the tools that are downloaded
+COPY --from=tool_versions /config/ config/
+# Downloads a file and verifies its sha256 checksum.  A mismatch fails the build.
+COPY scripts/download-verified /usr/local/bin/download-verified
 # Install node
-RUN npm install -g n
-RUN n "$(cat config/node_version)"
+RUN node_version="$(cat config/node_version)" \
+    && mkdir -p /opt/node \
+    && download-verified "https://nodejs.org/dist/v${node_version}/node-v${node_version}-linux-x64.tar.gz" "$(cat config/node_sha256)" /tmp/node.tar.gz \
+    && tar -xzf /tmp/node.tar.gz -C /opt/node --strip-components=1 \
+    && rm /tmp/node.tar.gz
+ENV PATH=/opt/node/bin:$PATH
 RUN node --version
 RUN npm --version
 # Install Rust and Cargo in /opt
@@ -57,8 +70,11 @@ ENV RUSTUP_HOME=/opt/rustup \
     CARGO_HOME=/opt/cargo \
     PATH=/opt/cargo/bin:$PATH
 
-RUN curl --fail https://raw.githubusercontent.com/rust-lang/rustup/refs/tags/1.28.1/rustup-init.sh -sSf \
-    | sh -s -- -y --no-modify-path
+# rustup-init installs the toolchain that rust-toolchain.toml pins.
+RUN download-verified "https://static.rust-lang.org/rustup/archive/$(cat config/rustup_init_version)/x86_64-unknown-linux-gnu/rustup-init" "$(cat config/rustup_init_sha256)" /tmp/rustup-init \
+    && chmod 755 /tmp/rustup-init \
+    && /tmp/rustup-init -y --no-modify-path \
+    && rm /tmp/rustup-init
 RUN cargo --version
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
@@ -74,14 +90,24 @@ COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
-# dfx is installed in `$HOME/.local/share/dfx/bin` but we can't reference `$HOME` here so we hardcode `/root`.
-ENV PATH="/root/.local/share/dfx/bin:${PATH}"
-RUN DFXVM_INIT_YES=true DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
-# TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
-RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
-RUN curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v$(cat config/binstall_version)/cargo-binstall-x86_64-unknown-linux-musl.tgz" | tar -xvzf -
-RUN ./cargo-binstall -y --force "cargo-binstall@$(cat config/binstall_version)"
-RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
+# The dfx release asset holds one file, the dfx binary.
+# The dfxvm installer is not used here because it downloads dfx without a checksum from this repository.
+RUN dfx_version="$(cat config/dfx_version)" \
+    && download-verified "https://github.com/dfinity/sdk/releases/download/${dfx_version}/dfx-${dfx_version}-x86_64-linux.tar.gz" "$(cat config/dfx_sha256)" /tmp/dfx.tar.gz \
+    && tar -xzf /tmp/dfx.tar.gz -C /usr/local/bin dfx \
+    && chmod 755 /usr/local/bin/dfx \
+    && rm /tmp/dfx.tar.gz \
+    && dfx --version
+RUN download-verified "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" "$(cat config/didc_sha256)" /tmp/didc \
+    && install -m 755 /tmp/didc /usr/local/bin/didc \
+    && rm /tmp/didc \
+    && didc --version
+# ic-wasm shrinks the wasm, so it is the last tool to change the released code.
+# The binary below is the same file that cargo binstall installed before.
+RUN download-verified "https://github.com/dfinity/ic-wasm/releases/download/$(cat config/ic_wasm_version)/ic-wasm-linux64" "$(cat config/ic_wasm_sha256)" /tmp/ic-wasm \
+    && install -m 755 /tmp/ic-wasm /usr/local/bin/ic-wasm \
+    && rm /tmp/ic-wasm \
+    && command -v ic-wasm
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
