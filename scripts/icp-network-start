@@ -148,10 +148,15 @@ create_on_application_subnet() {
   icp canister create "$canister" --environment "$ENVIRONMENT" --subnet "$subnet"
 }
 
-# Whether a canister of the environment has code. A failed status request stops the script.
+# Whether a canister of the environment has code. A failed status request stops
+# the script, also when the caller runs the function in an `||` chain.
 is_installed() {
-  local module_hash
-  module_hash="$(icp canister status "$1" --environment "$ENVIRONMENT" --json | jq -r .module_hash)"
+  local status module_hash
+  status="$(icp canister status "$1" --environment "$ENVIRONMENT" --json)" || {
+    echo "ERROR: Could not get the status of the $1 canister." >&2
+    exit 1
+  }
+  module_hash="$(jq -r .module_hash <<<"$status")"
   [[ "$module_hash" != "null" ]]
 }
 
