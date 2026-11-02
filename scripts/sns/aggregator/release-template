@@ -2,15 +2,36 @@
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
 
-WASM="release/ci/sns_aggregator.wasm.gz"
+WASM_FILENAME="sns_aggregator.wasm.gz"
+WASM="release/ci/$WASM_FILENAME"
+COMMIT="aggregator-release-candidate"
 mkdir -p release/ci
-./scripts/nns-dapp/download-ci-wasm --commit aggregator-release-candidate --wasm-filename sns_aggregator.wasm.gz
+./scripts/nns-dapp/download-ci-wasm --commit "$COMMIT" --wasm-filename "$WASM_FILENAME"
 
 if test -f "$WASM"; then
   SHA="$(sha256sum "$WASM" | awk '{print $1}')"
 else
   echo "Please populate ${WASM} and run this again."
-  exit 0
+  exit 1
+fi
+
+# The proposal states this hash, so compare it with the hash in the CI build log.
+# The helper exits non-zero if the log holds no hash, so test the status here.
+if ! CI_SHA="$(./scripts/nns-dapp/get-hash-from-ci-log --commit "$COMMIT" --filename "$WASM_FILENAME")" || test -z "${CI_SHA:-}"; then
+  {
+    echo "ERROR: Found no $WASM_FILENAME hash in the CI build log for $COMMIT."
+    echo "       The CI run may be too old, so a rebuild of the commit may be necessary."
+    exit 1
+  } >&2
+fi
+if test "$CI_SHA" != "$SHA"; then
+  {
+    echo "ERROR: The wasm hash differs from the hash in the CI build log."
+    echo "       CI build log: $CI_SHA"
+    echo "       $WASM: $SHA"
+    echo "       Please delete $WASM and run this again."
+    exit 1
+  } >&2
 fi
 
 cat <<EOF >release/AGGREGATOR_PROPOSAL.md
