@@ -53,13 +53,21 @@ scripts/icp-network-start --nns_dapp_wasm nns-dapp.wasm.gz --sns_aggregator_wasm
 The network keeps its state while it runs. `icp network stop` discards it. The
 next `scripts/icp-network-start` begins from a clean state.
 
-The local network has no SNS project and no ckBTC, ckETH or ckUSDC tokens. A
-mock of the ICP Swap price feed sets the ICP price to 9 USD, see
-[`mocks/icp-swap`](./mocks/icp-swap/README.md). A ckRED test token exists for
-the import token tests, see [`mocks/ckred`](./mocks/ckred/README.md). A mock
-exchange rate canister answers the total value locked requests of the backend
-with the same ICP price. The ICP ledger funds the test account that the
+The local network has four SNS projects, two with a committed swap and two
+with an open swap, see [`mocks/sns`](./mocks/sns/README.md). It has no ckBTC,
+ckETH or ckUSDC tokens. A mock of the ICP Swap price feed sets the ICP price to
+9 USD, see [`mocks/icp-swap`](./mocks/icp-swap/README.md). A ckRED test token
+exists for the import token tests, see [`mocks/ckred`](./mocks/ckred/README.md).
+A mock exchange rate canister answers the total value locked requests of the
+backend with the same ICP price. The ICP ledger funds the test account that the
 "Get ICP" menu uses.
+
+To create one more SNS project, for example with an open swap:
+
+```bash
+scripts/icp-sns-create --name "Echo Alot" --symbol ECH --logo mocks/sns/delta.png
+scripts/icp-sns-aggregator-wait
+```
 
 ## Testnet
 

@@ -7,9 +7,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-// TODO: Run this test again. It needs an open SNS swap, which the local icp-cli
-// network does not have.
-test.skip("Test SNS participation", async ({ page, context }) => {
+test("Test SNS participation", async ({ page, context }) => {
   await page.goto("/");
   await disableCssAnimations(page);
 

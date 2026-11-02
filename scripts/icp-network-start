@@ -16,7 +16,8 @@ print_help() {
 	- deploys the mock ICP Swap price feed,
 	- deploys the ckRED test token,
 	- deploys a mock exchange rate canister with the mainnet canister ID,
-	- installs the given wasms, if any.
+	- installs the given wasms, if any,
+	- creates the SNS projects of the end-to-end tests, see mocks/sns/README.md.
 
 	If the network runs already, the script keeps it and only does the steps
 	above. A stopped network loses its state. Stop the network with:
@@ -211,6 +212,23 @@ fi
 if test -n "${SNS_AGGREGATOR_WASM:-}"; then
   install_canister sns_aggregator --wasm "$SNS_AGGREGATOR_WASM" --mode "$SNS_AGGREGATOR_INSTALL_MODE" --args '(null)'
 fi
+
+# Creates the SNS projects of the end-to-end tests, see mocks/sns/README.md.
+#
+# A bought swap needs up to two minutes to commit and finalize, so the two
+# committed projects are bought first and completed last. The open swaps are
+# created in between. The launchpad lists them in the order of their opening.
+# The participation test accepts the confirmation text of an open swap.
+create_sns_projects() {
+  icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --buy
+  icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --buy
+  icp-sns-create --network "$NETWORK" --name "Bravo" --symbol BRV --logo mocks/sns/bravo.png --confirmation_text "I confirm that I take part in the Bravo swap at my own risk."
+  icp-sns-create --network "$NETWORK" --name "Charlie" --symbol CHR --logo mocks/sns/charlie.png --confirmation_text "I confirm that I take part in the Charlie swap at my own risk."
+  icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --commit
+  icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --commit
+  icp-sns-aggregator-wait --network "$NETWORK"
+}
+create_sns_projects
 
 echo
 echo "The '$NETWORK' network is ready:"
