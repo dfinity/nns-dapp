@@ -11,6 +11,20 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 144655
+
+### Application
+
+#### Added
+
+- Make the NNS dapp discoverable by AI agents, also through ICP MCP.
+
+#### Changed
+
+* Connect to the Ledger device through the Ledger Device Management Kit. It
+
+### Operations
+
 ## Proposal 144564
 
 ### Application
