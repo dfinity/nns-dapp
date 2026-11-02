@@ -26,7 +26,7 @@ jobs:
         # First, check rust GitHub releases for a new version. We assume that the
         # latest version's tag name is the version.
       - name: Install yq
-        run: sudo snap install yq
+        uses: ./.github/actions/install_yq
       - name: Check new rust version
         id: update
         run: |
