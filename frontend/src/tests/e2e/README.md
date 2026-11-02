@@ -31,9 +31,8 @@ export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url --network local nns-da
 npm run test-e2e
 ```
 
-The SNS tests need the SNS projects that `scripts/icp-network-start` creates,
-see [`mocks/sns`](../../../../mocks/sns/README.md). The ckBTC test is skipped,
-because the local network has no ckBTC.
+Some tests are skipped, because they need an SNS project, ckBTC or a test
+token, which the local network does not have.
 
 # Debugging
 
