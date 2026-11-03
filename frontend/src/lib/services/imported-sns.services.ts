@@ -7,10 +7,18 @@ import {
   querySnsLedgerData,
   querySnsTopics,
 } from "$lib/api/imported-sns.api";
+import { MAX_IMPORTED_SNSES } from "$lib/constants/imported-snses.constants";
+import { authSignedInStore } from "$lib/derived/auth.derived";
+import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
+import {
+  actionableSnsProposalsStore,
+  failedActionableSnsesStore,
+} from "$lib/stores/actionable-sns-proposals.store";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
 } from "$lib/stores/imported-snses.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { ImportedSnsError } from "$lib/types/imported-sns.errors";
 import type { RootCanisterIdText } from "$lib/types/sns";
@@ -40,6 +48,12 @@ const getSnsCanisterIds = async ({
     identity,
     rootCanisterId,
     certified: false,
+  }).catch((error) => {
+    // The canister is not an SNS root canister.
+    if (isMethodNotFoundError(error)) {
+      throw new ImportedSnsError("missing-canisters");
+    }
+    throw error;
   });
   const governance = fromNullable(response.governance);
   const ledger = fromNullable(response.ledger);
@@ -246,4 +260,55 @@ export const loadImportedSnses = (): Promise<void> => {
   });
   currentLoad = load;
   return load.promise;
+};
+
+/**
+ * Loads an SNS for the review before the user imports it.
+ *
+ * Throws an `ImportedSnsError` if the user cannot import the SNS, or if it fails one of the checks.
+ */
+export const getSnsToImport = async (
+  rootCanisterId: Principal
+): Promise<CachedSnsDto> => {
+  const rootCanisterIdText = rootCanisterId.toText();
+  const importedRootCanisterIds = get(importedSnsesStore);
+
+  if (importedRootCanisterIds.includes(rootCanisterIdText)) {
+    throw new ImportedSnsError("already-imported");
+  }
+
+  // If the aggregator data is not loaded yet, `snsAggregatorStore` still hides a listed SNS.
+  const isListed = get(snsAggregatorIncludingAbortedProjectsStore).data?.some(
+    ({ canister_ids }) => canister_ids.root_canister_id === rootCanisterIdText
+  );
+  if (isListed === true) {
+    throw new ImportedSnsError("already-listed");
+  }
+
+  if (importedRootCanisterIds.length >= MAX_IMPORTED_SNSES) {
+    throw new ImportedSnsError("limit");
+  }
+
+  return getImportedSns(rootCanisterId);
+};
+
+/**
+ * Adds the SNS to the imported list and loads the imported SNSes again.
+ * If the user is signed in, it also loads the actionable proposals of the SNS.
+ */
+export const importSns = async (rootCanisterId: Principal): Promise<void> => {
+  importedSnsesStore.add(rootCanisterId.toText());
+  await loadImportedSnses();
+
+  if (get(authSignedInStore)) {
+    await loadActionableProposalsForSns(rootCanisterId);
+  }
+};
+
+export const removeImportedSns = (rootCanisterId: Principal): void => {
+  importedSnsesStore.remove(rootCanisterId.toText());
+
+  // The actionable proposal counts include each SNS in these stores.
+  actionableSnsProposalsStore.resetForSns(rootCanisterId);
+  failedActionableSnsesStore.remove(rootCanisterId.toText());
 };

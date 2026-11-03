@@ -14,6 +14,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- The quick search panel has an "Import SNS" tool. It adds an SNS that the NNS
+  dapp does not list, with its root canister ID. The SNS then shows in the
+  tokens, staking, neuron and proposal pages with an "Imported" tag. The list
+  stays in the browser.
+
 #### Changed
 
 #### Deprecated
@@ -22,6 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- In a tool of the quick search panel, the Enter key no longer opens the first
+  search result.
 - The proposal detail page no longer parses the text fields of a payload as
   JSON, so a text that nests JSON thousands of levels deep no longer breaks
   the page.

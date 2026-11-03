@@ -28,7 +28,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import {
   setTickers,
@@ -179,6 +179,25 @@ describe("ProjectsTable", () => {
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getProjectTitle()).toBe("Internet Computer");
     expect(await rowPos[1].getProjectTitle()).toBe(snsTitle);
+  });
+
+  it("should render a tag for an imported SNS", async () => {
+    const importedRootCanisterId = principal(5);
+    setImportedSnses([importedRootCanisterId]);
+
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    const tags = await Promise.all(
+      rowPos.map(async (rowPo) => [
+        await rowPo.getProjectTitle(),
+        await rowPo.hasImportedSnsTag(),
+      ])
+    );
+
+    expect(tags).toHaveLength(3);
+    expect(tags.filter(([, hasTag]) => hasTag)).toHaveLength(1);
+    expect(tags).toContainEqual(["Internet Computer", false]);
+    expect(tags).toContainEqual([snsTitle, false]);
   });
 
   it("should render stake as -/- when neurons not loaded", async () => {

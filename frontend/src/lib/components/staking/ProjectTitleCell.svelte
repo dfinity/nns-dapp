@@ -3,9 +3,10 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { i18n } from "$lib/stores/i18n";
+  import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
   import type { TableProject } from "$lib/types/staking";
   import { FailedTokenAmount } from "$lib/utils/token.utils";
-  import { IconError, Tooltip } from "@dfinity/gix-components";
+  import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
 
   export let rowData: TableProject;
 </script>
@@ -17,6 +18,9 @@
   </div>
   {#if rowData.universeId === OWN_CANISTER_ID_TEXT}
     <NnsNeuronsMissingRewardsBadge />
+  {/if}
+  {#if $importedSnsRootCanisterIdsStore.has(rowData.universeId)}
+    <Tag testId="imported-sns-tag">{$i18n.import_sns.imported}</Tag>
   {/if}
   {#if rowData.stake instanceof FailedTokenAmount}
     <div data-tid="failed-project-info" class="failed-project-info">

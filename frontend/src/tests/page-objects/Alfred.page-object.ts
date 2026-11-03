@@ -40,6 +40,10 @@ export class AlfredPo extends BasePageObject {
     await this.root.keyDown("Escape");
   }
 
+  async pressEnter(): Promise<void> {
+    await this.root.keyDown("Enter");
+  }
+
   async getResultsPo(): Promise<AlfredResultPo[]> {
     return AlfredResultPo.allUnder(this.root);
   }

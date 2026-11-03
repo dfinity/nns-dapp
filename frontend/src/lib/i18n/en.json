@@ -239,7 +239,9 @@
     "build_icrc_account_principal_placeholder": "Enter principal",
     "build_icrc_account_subaccount_label": "Subaccount",
     "build_icrc_account_subaccount_placeholder": "Number, hex (0x...), or 64-char hex",
-    "build_icrc_account_subaccount_error": "Invalid subaccount. Use a number, a 0x-prefixed hex, or a 64-char hex string."
+    "build_icrc_account_subaccount_error": "Invalid subaccount. Use a number, a 0x-prefixed hex, or a 64-char hex string.",
+    "import_sns_title": "Import SNS",
+    "import_sns_description": "Add an SNS that the NNS dapp does not list, with its root canister ID."
   },
   "header": {
     "menu": "Open menu to access navigation options",
@@ -1388,6 +1390,29 @@
     "maximum_reached_tooltip": "You've already imported the maximum number of $max tokens. You need to remove another token before you can import more.",
     "doc_link_label": "How to find ICRC token ledger",
     "remove_imported": "Remove from imported"
+  },
+  "import_sns": {
+    "description": "Use this to test an SNS that the NNS dapp does not list. The list of imported SNSes stays in this browser.",
+    "root_canister_id_label": "Root canister ID",
+    "root_canister_id_placeholder": "Enter the root canister ID",
+    "check": "Check",
+    "checking": "Checking the SNS...",
+    "import": "Import",
+    "importing": "Importing the SNS...",
+    "back": "Back",
+    "warning": "The NNS dapp does not verify imported SNSes. Import only an SNS that you trust.",
+    "imported_list_title": "Imported SNSes",
+    "remove": "Remove $name",
+    "imported": "Imported",
+    "error_invalid_id": "Enter a valid canister ID.",
+    "error_already_imported": "You already imported this SNS.",
+    "error_already_listed": "The NNS dapp already lists this SNS.",
+    "error_limit": "You can import up to $max SNSes. Remove an SNS first.",
+    "error_missing_canisters": "This canister is not an SNS root canister. It does not list the governance, ledger, index and swap canisters.",
+    "error_controllers": "The SNS canisters do not have the controllers of an SNS.",
+    "error_minting_account": "The minting account of the ledger is not the governance canister.",
+    "error_governance_mode": "The governance canister is not in Normal mode.",
+    "error_load": "The NNS dapp could not load this SNS."
   },
   "portfolio": {
     "login_title": "Session expired",
