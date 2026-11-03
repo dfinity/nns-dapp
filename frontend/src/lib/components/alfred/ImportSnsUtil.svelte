@@ -407,6 +407,12 @@
       display: flex;
       flex-direction: column;
       gap: var(--padding);
+
+      // The list can hold 20 SNSes. Keep the last ones in the viewport, also on a phone.
+      // A browser without `dvh` support drops the second declaration.
+      max-height: min(320px, 30vh);
+      max-height: min(320px, 30dvh);
+      overflow-y: auto;
     }
 
     li {

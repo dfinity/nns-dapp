@@ -235,5 +235,29 @@ describe("actionable proposals derived stores", () => {
 
       expect(get(actionableProposalsLoadedStore)).toEqual(true);
     });
+
+    it("should ignore the results of SNSes that are not in the list", async () => {
+      setSnsProjects([
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId: principal0,
+        },
+      ]);
+      actionableNnsProposalsStore.setProposals([mockProposalInfo]);
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal1,
+        proposals: [],
+      });
+      failedActionableSnsesStore.add(principal2.toText());
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal0,
+        proposals: [],
+      });
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(true);
+    });
   });
 });

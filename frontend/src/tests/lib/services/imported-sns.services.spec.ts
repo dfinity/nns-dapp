@@ -26,6 +26,7 @@ import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import {
   IcrcMetadataResponseEntries,
@@ -528,7 +529,9 @@ describe("imported-sns.services", () => {
       vi.spyOn(actionableSnsProposalsServices, "loadActionableProposalsForSns");
 
     beforeEach(() => {
+      vi.spyOn(console, "error").mockReturnValue();
       loadActionableProposalsSpy().mockResolvedValue();
+      snsAggregatorIncludingAbortedProjectsStore.setData([]);
     });
 
     it("should add the SNS to the list and load it", async () => {
@@ -559,9 +562,67 @@ describe("imported-sns.services", () => {
 
       expect(loadActionableProposalsSpy()).not.toHaveBeenCalled();
     });
+
+    it("should not load actionable proposals if the SNS fails to load", async () => {
+      resetIdentity();
+      querySnsCanisterIdsSpy().mockRejectedValue(new Error("Failed to fetch"));
+
+      await importSns(root);
+
+      expect(get(importedSnsesStore)).toEqual([root.toText()]);
+      expect(get(loadedImportedSnsesStore).snses).toEqual([]);
+      expect(loadActionableProposalsSpy()).not.toHaveBeenCalled();
+    });
+
+    it("should load the SNS again after a failed load of the same list", async () => {
+      setNoIdentity();
+      querySnsCanisterIdsSpy().mockRejectedValueOnce(
+        new Error("Failed to fetch")
+      );
+      importedSnsesStore.add(root.toText());
+      await loadImportedSnses();
+      expect(get(loadedImportedSnsesStore).snses).toEqual([]);
+
+      removeImportedSns(root);
+      await importSns(root);
+
+      expect(get(loadedImportedSnsesStore).snses).toEqual([
+        await getImportedSns(root),
+      ]);
+    });
+
+    it("should remove the actionable proposals if the user removes the SNS while they load", async () => {
+      resetIdentity();
+      loadActionableProposalsSpy().mockImplementation(
+        async (rootCanisterId) => {
+          removeImportedSns(rootCanisterId);
+          actionableSnsProposalsStore.set({ rootCanisterId, proposals: [] });
+        }
+      );
+
+      await importSns(root);
+
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(1);
+      expect(get(actionableSnsProposalsStore)).toEqual({});
+    });
   });
 
   describe("removeImportedSns", () => {
+    it("should keep the actionable proposals if the aggregator lists the SNS", () => {
+      setSnsProjects([{ rootCanisterId: root }]);
+      importedSnsesStore.add(root.toText());
+      actionableSnsProposalsStore.set({
+        rootCanisterId: root,
+        proposals: [],
+      });
+
+      removeImportedSns(root);
+
+      expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
+        root.toText(),
+      ]);
+    });
+
     it("should remove the SNS from the list", () => {
       importedSnsesStore.add(root.toText());
       importedSnsesStore.add(stranger.toText());

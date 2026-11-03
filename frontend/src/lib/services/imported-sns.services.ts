@@ -9,6 +9,7 @@ import {
 } from "$lib/api/imported-sns.api";
 import { MAX_IMPORTED_SNSES } from "$lib/constants/imported-snses.constants";
 import { authSignedInStore } from "$lib/derived/auth.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import {
   actionableSnsProposalsStore,
@@ -18,7 +19,10 @@ import {
   importedSnsesStore,
   loadedImportedSnsesStore,
 } from "$lib/stores/imported-snses.store";
-import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
+import {
+  importedSnsRootCanisterIdsStore,
+  snsAggregatorIncludingAbortedProjectsStore,
+} from "$lib/stores/sns-aggregator.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { ImportedSnsError } from "$lib/types/imported-sns.errors";
 import type { RootCanisterIdText } from "$lib/types/sns";
@@ -292,23 +296,45 @@ export const getSnsToImport = async (
   return getImportedSns(rootCanisterId);
 };
 
+// The actionable proposal counts include each SNS in these stores.
+const resetActionableProposalsIfNotListed = (rootCanisterId: Principal) => {
+  const rootCanisterIdText = rootCanisterId.toText();
+  const isListed = get(snsProjectsCommittedStore).some(
+    (project) => project.rootCanisterId.toText() === rootCanisterIdText
+  );
+  if (isListed) {
+    return;
+  }
+
+  actionableSnsProposalsStore.resetForSns(rootCanisterId);
+  failedActionableSnsesStore.remove(rootCanisterIdText);
+};
+
 /**
  * Adds the SNS to the imported list and loads the imported SNSes again.
- * If the user is signed in, it also loads the actionable proposals of the SNS.
+ * If the SNS loads and the user is signed in, it also loads the actionable proposals of the SNS.
  */
 export const importSns = async (rootCanisterId: Principal): Promise<void> => {
   importedSnsesStore.add(rootCanisterId.toText());
+
+  // The last load can be for the same list, for example after a failed load, a removal and a new import.
+  currentLoad = undefined;
   await loadImportedSnses();
 
-  if (get(authSignedInStore)) {
-    await loadActionableProposalsForSns(rootCanisterId);
+  if (
+    !get(authSignedInStore) ||
+    !get(importedSnsRootCanisterIdsStore).has(rootCanisterId.toText())
+  ) {
+    return;
   }
+
+  await loadActionableProposalsForSns(rootCanisterId);
+
+  // The user can remove the SNS while its proposals load.
+  resetActionableProposalsIfNotListed(rootCanisterId);
 };
 
 export const removeImportedSns = (rootCanisterId: Principal): void => {
   importedSnsesStore.remove(rootCanisterId.toText());
-
-  // The actionable proposal counts include each SNS in these stores.
-  actionableSnsProposalsStore.resetForSns(rootCanisterId);
-  failedActionableSnsesStore.remove(rootCanisterId.toText());
+  resetActionableProposalsIfNotListed(rootCanisterId);
 };
