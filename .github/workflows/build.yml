@@ -121,7 +121,7 @@ jobs:
         run: |
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Run uprade-downgrade test
-        run: ./scripts/nns-dapp/upgrade-downgrade-test --wasm out/nns-dapp_test.wasm.gz --args out/nns-dapp-arg-local.did --github_step_summary "$GITHUB_STEP_SUMMARY"
+        run: ./scripts/nns-dapp/upgrade-downgrade-test --reuse_network --wasm out/nns-dapp_test.wasm.gz --args out/nns-dapp-arg-local.did --github_step_summary "$GITHUB_STEP_SUMMARY"
   test-upgrade-stable:
     needs: build
     runs-on: ubuntu-24.04
