@@ -22,6 +22,7 @@
     title: $i18n.navigation.hotkeys,
   });
 
+  // The loads use update calls only, so they end with certified data.
   let pendingLoads = $state(0);
   const requestedSnsRootCanisterIds = new Set<string>();
 
@@ -35,7 +36,7 @@
   };
 
   onMount(() => {
-    trackLoad(() => listNeurons());
+    trackLoad(() => listNeurons({ strategy: "update" }));
   });
 
   // The SNS projects can load after the page.
@@ -46,7 +47,9 @@
         continue;
       }
       requestedSnsRootCanisterIds.add(rootCanisterIdText);
-      untrack(() => trackLoad(() => syncSnsNeurons(rootCanisterId)));
+      untrack(() =>
+        trackLoad(() => syncSnsNeurons(rootCanisterId, { strategy: "update" }))
+      );
     }
   });
 

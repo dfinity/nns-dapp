@@ -11,6 +11,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
@@ -166,6 +167,44 @@ describe("Hotkeys", () => {
       rootCanisterId: snsRootCanisterId,
       certified: true,
     });
+    expect(governanceApi.queryNeurons).not.toHaveBeenCalledWith(
+      expect.objectContaining({ certified: false })
+    );
+    expect(snsGovernanceApi.querySnsNeurons).not.toHaveBeenCalledWith(
+      expect.objectContaining({ certified: false })
+    );
+  });
+
+  it("should wait for the certified neurons before it shows the empty state", async () => {
+    setSnsProjects([
+      { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+    ]);
+    let resolveSnsNeurons: (neurons: SnsGovernanceDid.Neuron[]) => void;
+    vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockImplementation(
+      ({ certified }) =>
+        certified
+          ? new Promise((resolve) => {
+              resolveSnsNeurons = resolve;
+            })
+          : Promise.resolve([])
+    );
+
+    const po = renderComponent();
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(false);
+    expect(await po.isLoading()).toBe(true);
+
+    resolveSnsNeurons([snsNeuron(1, [hotkeyA])]);
+    await runResolvedPromises();
+
+    expect(await po.getRowsData()).toEqual([
+      {
+        principal: hotkeyA.toText(),
+        projects: [`${snsTitle}: 1`],
+        neuronCount: "1",
+      },
+    ]);
   });
 
   it("should load the neurons of an SNS that loads after the page", async () => {
