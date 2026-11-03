@@ -175,7 +175,37 @@ describe("Hotkeys", () => {
     );
   });
 
-  it("should wait for the certified neurons before it shows the empty state", async () => {
+  it("should wait for the certified NNS neurons before it shows the empty state", async () => {
+    setSnsProjects([]);
+    let resolveNnsNeurons: (neurons: NeuronInfo[]) => void;
+    vi.spyOn(governanceApi, "queryNeurons").mockImplementation(
+      ({ certified }) =>
+        certified
+          ? new Promise((resolve) => {
+              resolveNnsNeurons = resolve;
+            })
+          : Promise.resolve([])
+    );
+
+    const po = renderComponent();
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(false);
+    expect(await po.isLoading()).toBe(true);
+
+    resolveNnsNeurons([nnsNeuron(1n, [hotkeyA])]);
+    await runResolvedPromises();
+
+    expect(await po.getRowsData()).toEqual([
+      {
+        principal: hotkeyA.toText(),
+        projects: ["Internet Computer: 1"],
+        neuronCount: "1",
+      },
+    ]);
+  });
+
+  it("should wait for the certified SNS neurons before it shows the empty state", async () => {
     setSnsProjects([
       { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
     ]);
