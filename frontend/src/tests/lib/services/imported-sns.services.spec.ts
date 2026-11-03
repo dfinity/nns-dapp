@@ -27,6 +27,7 @@ import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import {
   IcrcMetadataResponseEntries,
@@ -305,6 +306,10 @@ describe("imported-sns.services", () => {
 
     beforeEach(() => {
       vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(
+        actionableSnsProposalsServices,
+        "loadActionableProposalsForSns"
+      ).mockResolvedValue();
     });
 
     it("should load each imported SNS", async () => {
@@ -528,10 +533,42 @@ describe("imported-sns.services", () => {
     const loadActionableProposalsSpy = () =>
       vi.spyOn(actionableSnsProposalsServices, "loadActionableProposalsForSns");
 
+    // The root canister IDs of the SNSes that fail to load.
+    const failingRoots = new Set<string>();
+
     beforeEach(() => {
       vi.spyOn(console, "error").mockReturnValue();
       loadActionableProposalsSpy().mockResolvedValue();
       snsAggregatorIncludingAbortedProjectsStore.setData([]);
+      // The app loads the imported SNSes at start.
+      loadedImportedSnsesStore.set({ rootCanisterIds: [], snses: [] });
+      failingRoots.clear();
+      querySnsCanisterIdsSpy().mockImplementation(
+        async ({ rootCanisterId }) => {
+          if (failingRoots.has(rootCanisterId.toText())) {
+            throw new Error("Failed to fetch");
+          }
+          return {
+            root: [rootCanisterId],
+            governance: [governance],
+            ledger: [ledger],
+            swap: [swap],
+            index: [index],
+            dapps: [],
+            archives: [],
+            extensions: [],
+          };
+        }
+      );
+      // Root controls governance, and governance controls each root.
+      vi.spyOn(importedSnsApi, "queryCanistersControllers").mockImplementation(
+        async ({ canisterIds: [, rootCanisterId] }) => [
+          [rootCanisterId],
+          [governance],
+          [rootCanisterId],
+          [rootCanisterId],
+        ]
+      );
     });
 
     it("should add the SNS to the list and load it", async () => {
@@ -565,7 +602,7 @@ describe("imported-sns.services", () => {
 
     it("should not load actionable proposals if the SNS fails to load", async () => {
       resetIdentity();
-      querySnsCanisterIdsSpy().mockRejectedValue(new Error("Failed to fetch"));
+      failingRoots.add(root.toText());
 
       await importSns(root);
 
@@ -576,14 +613,13 @@ describe("imported-sns.services", () => {
 
     it("should load the SNS again after a failed load of the same list", async () => {
       setNoIdentity();
-      querySnsCanisterIdsSpy().mockRejectedValueOnce(
-        new Error("Failed to fetch")
-      );
+      failingRoots.add(root.toText());
       importedSnsesStore.add(root.toText());
       await loadImportedSnses();
       expect(get(loadedImportedSnsesStore).snses).toEqual([]);
 
       removeImportedSns(root);
+      failingRoots.clear();
       await importSns(root);
 
       expect(get(loadedImportedSnsesStore).snses).toEqual([
@@ -601,9 +637,42 @@ describe("imported-sns.services", () => {
       );
 
       await importSns(root);
+      await runResolvedPromises();
 
       expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(1);
       expect(get(actionableSnsProposalsStore)).toEqual({});
+    });
+
+    it("should load the actionable proposals of another SNS that loads again", async () => {
+      resetIdentity();
+      failingRoots.add(stranger.toText());
+      importedSnsesStore.add(stranger.toText());
+      await loadImportedSnses();
+      expect(loadActionableProposalsSpy()).not.toHaveBeenCalled();
+
+      failingRoots.clear();
+      await importSns(root);
+
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(2);
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(stranger);
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(root);
+    });
+
+    it("should remove the actionable proposals of another SNS that fails to load again", async () => {
+      resetIdentity();
+      importedSnsesStore.add(stranger.toText());
+      await loadImportedSnses();
+      actionableSnsProposalsStore.set({
+        rootCanisterId: stranger,
+        proposals: [],
+      });
+      failedActionableSnsesStore.add(stranger.toText());
+
+      failingRoots.add(stranger.toText());
+      await importSns(root);
+
+      expect(get(actionableSnsProposalsStore)).toEqual({});
+      expect(get(failedActionableSnsesStore)).toEqual([]);
     });
   });
 

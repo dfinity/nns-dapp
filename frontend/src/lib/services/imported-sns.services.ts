@@ -226,6 +226,56 @@ const loadSnses = async (
   return { snses, failures };
 };
 
+// The actionable proposal counts include each SNS in these stores.
+const resetActionableProposalsIfNotListed = (rootCanisterId: Principal) => {
+  const rootCanisterIdText = rootCanisterId.toText();
+  const isListed = get(snsProjectsCommittedStore).some(
+    (project) => project.rootCanisterId.toText() === rootCanisterIdText
+  );
+  if (isListed) {
+    return;
+  }
+
+  actionableSnsProposalsStore.resetForSns(rootCanisterId);
+  failedActionableSnsesStore.remove(rootCanisterIdText);
+};
+
+/**
+ * Keeps the actionable proposals in line with the imported SNSes that the app shows.
+ *
+ * A load after the first one can show an SNS that failed before, or hide an SNS that loaded before.
+ * The private app data loads the actionable proposals of the SNSes after the first load.
+ */
+const updateActionableProposals = ({
+  shownBefore,
+  shownAfter,
+}: {
+  shownBefore: Set<RootCanisterIdText>;
+  shownAfter: Set<RootCanisterIdText>;
+}) => {
+  for (const rootCanisterId of shownBefore) {
+    if (!shownAfter.has(rootCanisterId)) {
+      resetActionableProposalsIfNotListed(Principal.fromText(rootCanisterId));
+    }
+  }
+
+  if (!get(authSignedInStore)) {
+    return;
+  }
+
+  for (const rootCanisterIdText of shownAfter) {
+    if (shownBefore.has(rootCanisterIdText)) {
+      continue;
+    }
+
+    const rootCanisterId = Principal.fromText(rootCanisterIdText);
+    // The user can remove the SNS while its proposals load.
+    loadActionableProposalsForSns(rootCanisterId).then(() =>
+      resetActionableProposalsIfNotListed(rootCanisterId)
+    );
+  }
+};
+
 /**
  * Loads each imported SNS into `loadedImportedSnsesStore`.
  *
@@ -234,6 +284,9 @@ const loadSnses = async (
  *
  * The app calls this function on each navigation. Calls for the same list
  * share one load, and a load for an older list does not publish its result.
+ *
+ * After the first load, it also loads or removes the actionable proposals of
+ * the imported SNSes that the load shows or hides.
  */
 export const loadImportedSnses = (): Promise<void> => {
   const rootCanisterIds = get(importedSnsesStore);
@@ -260,7 +313,18 @@ export const loadImportedSnses = (): Promise<void> => {
         showDetails: true,
       });
     }
+    const isFirstLoad = isNullish(
+      get(loadedImportedSnsesStore).rootCanisterIds
+    );
+    const shownBefore = get(importedSnsRootCanisterIdsStore);
     loadedImportedSnsesStore.set({ rootCanisterIds, snses });
+
+    if (!isFirstLoad) {
+      updateActionableProposals({
+        shownBefore,
+        shownAfter: get(importedSnsRootCanisterIdsStore),
+      });
+    }
   });
   currentLoad = load;
   return load.promise;
@@ -296,23 +360,8 @@ export const getSnsToImport = async (
   return getImportedSns(rootCanisterId);
 };
 
-// The actionable proposal counts include each SNS in these stores.
-const resetActionableProposalsIfNotListed = (rootCanisterId: Principal) => {
-  const rootCanisterIdText = rootCanisterId.toText();
-  const isListed = get(snsProjectsCommittedStore).some(
-    (project) => project.rootCanisterId.toText() === rootCanisterIdText
-  );
-  if (isListed) {
-    return;
-  }
-
-  actionableSnsProposalsStore.resetForSns(rootCanisterId);
-  failedActionableSnsesStore.remove(rootCanisterIdText);
-};
-
 /**
  * Adds the SNS to the imported list and loads the imported SNSes again.
- * If the SNS loads and the user is signed in, it also loads the actionable proposals of the SNS.
  */
 export const importSns = async (rootCanisterId: Principal): Promise<void> => {
   importedSnsesStore.add(rootCanisterId.toText());
@@ -320,18 +369,6 @@ export const importSns = async (rootCanisterId: Principal): Promise<void> => {
   // The last load can be for the same list, for example after a failed load, a removal and a new import.
   currentLoad = undefined;
   await loadImportedSnses();
-
-  if (
-    !get(authSignedInStore) ||
-    !get(importedSnsRootCanisterIdsStore).has(rootCanisterId.toText())
-  ) {
-    return;
-  }
-
-  await loadActionableProposalsForSns(rootCanisterId);
-
-  // The user can remove the SNS while its proposals load.
-  resetActionableProposalsIfNotListed(rootCanisterId);
 };
 
 export const removeImportedSns = (rootCanisterId: Principal): void => {
