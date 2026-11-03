@@ -1,10 +1,14 @@
 import ImportSnsUtil from "$lib/components/alfred/ImportSnsUtil.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import * as importedSnsServices from "$lib/services/imported-sns.services";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
 } from "$lib/stores/imported-snses.store";
 import { ImportedSnsError } from "$lib/types/imported-sns.errors";
+import { page } from "$mocks/$app/stores";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { ImportSnsUtilPo } from "$tests/page-objects/ImportSnsUtil.page-object";
@@ -179,5 +183,35 @@ describe("ImportSnsUtil", () => {
 
     expect(get(importedSnsesStore)).toEqual([rootCanisterId]);
     expect(await po.getImportedSnsTexts()).toEqual([rootCanisterId]);
+  });
+
+  it("should switch to the NNS universe if the page shows the removed SNS", async () => {
+    page.mock({
+      routeId: AppPath.Neurons,
+      data: { universe: rootCanisterId },
+    });
+    importedSnsesStore.add(rootCanisterId);
+    const po = renderComponent();
+
+    const [item] = await po.getImportedSnsItemPos();
+    await item.clickRemove();
+    await runResolvedPromises();
+
+    expect(get(pageStore).universe).toBe(OWN_CANISTER_ID_TEXT);
+  });
+
+  it("should keep the universe if the page shows another SNS", async () => {
+    page.mock({
+      routeId: AppPath.Neurons,
+      data: { universe: otherRootCanisterId },
+    });
+    importedSnsesStore.add(rootCanisterId);
+    const po = renderComponent();
+
+    const [item] = await po.getImportedSnsItemPos();
+    await item.clickRemove();
+    await runResolvedPromises();
+
+    expect(get(pageStore).universe).toBe(otherRootCanisterId);
   });
 });

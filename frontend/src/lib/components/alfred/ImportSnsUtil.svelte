@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import DEFAULT_SNS_LOGO from "$lib/assets/sns-logo-default.svg";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { MAX_IMPORTED_SNSES } from "$lib/constants/imported-snses.constants";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import {
     getSnsToImport,
     importSns,
@@ -20,6 +23,7 @@
   import type { CachedSnsDto } from "$lib/types/sns-aggregator";
   import { errorToString } from "$lib/utils/error.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
   import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
   import { IconAdd, IconBin, Input, Spinner } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
@@ -120,8 +124,13 @@
     clearError();
   };
 
-  const remove = (rootCanisterId: RootCanisterIdText) => {
+  const remove = async (rootCanisterId: RootCanisterIdText) => {
     removeImportedSns(Principal.fromText(rootCanisterId));
+
+    // The page cannot show the universe of a removed SNS.
+    if ($selectedUniverseIdStore.toText() === rootCanisterId) {
+      await goto(buildSwitchUniverseUrl(OWN_CANISTER_ID_TEXT));
+    }
   };
 
   onMount(() => {
