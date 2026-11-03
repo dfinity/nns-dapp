@@ -60,6 +60,9 @@
   };
 
   const handleKeyNavigation = async (event: KeyboardEvent): Promise<void> => {
+    // A util form handles its own keys, for example Enter to submit.
+    if (nonNullish(UtilComponent) && event.key !== "Escape") return;
+
     const prevIndex = selectedIndex;
 
     switch (event.key) {

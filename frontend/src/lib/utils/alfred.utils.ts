@@ -1,4 +1,5 @@
 import BuildIcrcAccountUtil from "$lib/components/alfred/BuildIcrcAccountUtil.svelte";
+import ImportSnsUtil from "$lib/components/alfred/ImportSnsUtil.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { login, logout } from "$lib/services/auth.services";
 import {
@@ -11,6 +12,7 @@ import {
   type TransactionMemoOption,
 } from "$lib/stores/transaction-memo-option.store";
 import {
+  IconAdd,
   IconCopy,
   IconDarkMode,
   IconDocument,
@@ -218,6 +220,14 @@ const getAlfredItems = (): AlfredItem[] => {
       description: alfred.build_icrc_account_description,
       icon: IconKey,
       component: BuildIcrcAccountUtil,
+    },
+    {
+      id: "import-sns",
+      type: "util",
+      title: alfred.import_sns_title,
+      description: alfred.import_sns_description,
+      icon: IconAdd,
+      component: ImportSnsUtil,
     },
     {
       id: "log-in",

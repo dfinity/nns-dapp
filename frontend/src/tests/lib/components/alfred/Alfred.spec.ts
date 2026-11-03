@@ -2,6 +2,7 @@ import Alfred from "$lib/components/alfred/Alfred.svelte";
 import { alfredVisibleStore } from "$lib/stores/alfred.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { AlfredPo } from "$tests/page-objects/Alfred.page-object";
+import { ImportSnsUtilPo } from "$tests/page-objects/ImportSnsUtil.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
@@ -19,6 +20,7 @@ describe("Alfred Component", () => {
     "Canisters",
     "Settings",
     "Encode ICRC-1 Account",
+    "Import SNS",
     "Log In",
   ];
 
@@ -36,6 +38,7 @@ describe("Alfred Component", () => {
     "Hide Balance",
     "Show transaction memo",
     "Encode ICRC-1 Account",
+    "Import SNS",
     "Log Out",
   ];
 
@@ -138,5 +141,30 @@ describe("Alfred Component", () => {
     await runResolvedPromises();
 
     expect(await po.getResultsTitle()).toEqual(signedOffOptions);
+  });
+
+  it("should open the Import SNS util", async () => {
+    const po = renderComponent();
+    await po.open("mac");
+    await po.type("import sns");
+
+    const [result] = await po.getResultsPo();
+    await result.select();
+
+    expect(await ImportSnsUtilPo.under(po.root).isPresent()).toBe(true);
+  });
+
+  it("should not select a result when the user presses Enter in a util", async () => {
+    const po = renderComponent();
+    await po.open("mac");
+    await po.type("import sns");
+
+    const [result] = await po.getResultsPo();
+    await result.select();
+    await po.pressEnter();
+    vi.advanceTimersByTime(500);
+
+    expect(await po.isPresent()).toBe(true);
+    expect(await ImportSnsUtilPo.under(po.root).isPresent()).toBe(true);
   });
 });

@@ -21,6 +21,7 @@ import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
@@ -117,6 +118,19 @@ describe("SelectUniverseCard", () => {
         props: { universe: mockSnsUniverse, selected: false },
       });
       expect(await po.getName()).toBe(mockSummary.metadata.name);
+      expect(await po.hasImportedSnsTag()).toBe(false);
+    });
+
+    it("should display a tag for an imported SNS", async () => {
+      setSnsProjects([]);
+      setImportedSnses([mockSummary.rootCanisterId]);
+
+      const po = await renderComponent({
+        props: { universe: mockSnsUniverse, selected: false },
+      });
+
+      expect(await po.getName()).toBe(mockSummary.metadata.name);
+      expect(await po.hasImportedSnsTag()).toBe(true);
     });
 
     it("should use a big framed logo", async () => {

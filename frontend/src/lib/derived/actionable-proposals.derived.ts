@@ -74,6 +74,12 @@ export const actionableProposalsLoadedStore: Readable<boolean> = derived(
     nonNullish(nnsProposals.proposals) &&
     // It is expected to have at least one SNS to cover when the projects have not yet been loaded.
     committedSnsProjects.length > 0 &&
-    committedSnsProjects.length ===
-      Object.keys(snsProposals).length + failedSnses.length
+    // The stores can also hold the result of an SNS that is not in the list anymore, for example a removed imported SNS.
+    committedSnsProjects.every(({ rootCanisterId }) => {
+      const rootCanisterIdText = rootCanisterId.toText();
+      return (
+        nonNullish(snsProposals[rootCanisterIdText]) ||
+        failedSnses.includes(rootCanisterIdText)
+      );
+    })
 );

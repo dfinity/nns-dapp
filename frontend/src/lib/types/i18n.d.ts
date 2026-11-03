@@ -248,6 +248,8 @@ interface I18nAlfred {
   build_icrc_account_subaccount_label: string;
   build_icrc_account_subaccount_placeholder: string;
   build_icrc_account_subaccount_error: string;
+  import_sns_title: string;
+  import_sns_description: string;
 }
 
 interface I18nHeader {
@@ -1463,6 +1465,30 @@ interface I18nImport_token {
   remove_imported: string;
 }
 
+interface I18nImport_sns {
+  description: string;
+  root_canister_id_label: string;
+  root_canister_id_placeholder: string;
+  check: string;
+  checking: string;
+  import: string;
+  importing: string;
+  back: string;
+  warning: string;
+  imported_list_title: string;
+  remove: string;
+  imported: string;
+  error_invalid_id: string;
+  error_already_imported: string;
+  error_already_listed: string;
+  error_limit: string;
+  error_missing_canisters: string;
+  error_controllers: string;
+  error_minting_account: string;
+  error_governance_mode: string;
+  error_load: string;
+}
+
 interface I18nPortfolio {
   login_title: string;
   login_description: string;
@@ -1701,6 +1727,7 @@ interface I18n {
   sync: I18nSync;
   tokens: I18nTokens;
   import_token: I18nImport_token;
+  import_sns: I18nImport_sns;
   portfolio: I18nPortfolio;
   highlight: I18nHighlight;
   neuron_state: I18nNeuron_state;

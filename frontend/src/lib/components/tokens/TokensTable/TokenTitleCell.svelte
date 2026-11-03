@@ -3,6 +3,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
   import type {
     UserTokenData,
     UserTokenFailed,
@@ -23,6 +24,10 @@
     ledgerCanisterId: rowData?.universeId,
     importedTokens: $importedTokensStore.importedTokens,
   });
+  let importedSns = false;
+  $: importedSns = $importedSnsRootCanisterIdsStore.has(
+    rowData.universeId.toText()
+  );
   let shouldShowHashInsteadOfTitle = false;
   $: shouldShowHashInsteadOfTitle = isUserTokenFailed(rowData) && importedToken;
 </script>
@@ -43,6 +48,9 @@
   {/if}
   {#if importedToken}
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
+  {/if}
+  {#if importedSns}
+    <Tag testId="imported-sns-tag">{$i18n.import_sns.imported}</Tag>
   {/if}
 
   {#if isUserTokenFailed(rowData) || isIndexCanisterOfTokenUninstalled(rowData)}
