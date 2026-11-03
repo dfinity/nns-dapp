@@ -1,5 +1,4 @@
 import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
-import { ENABLE_IMPORT_SNS } from "$lib/stores/feature-flags.store";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
@@ -40,18 +39,17 @@ export const snsAggregatorIncludingAbortedProjectsStore =
   initSnsAggreagatorStore();
 
 /**
- * The imported SNSes that the app shows: the feature is on, the user did not
- * remove them, and the aggregator does not list them.
+ * The imported SNSes that the app shows: the user did not remove them, and
+ * the aggregator does not list them.
  */
 const importedSnsEntriesStore: Readable<CachedSnsDto[]> = derived(
   [
     snsAggregatorIncludingAbortedProjectsStore,
-    ENABLE_IMPORT_SNS,
     importedSnsesStore,
     loadedImportedSnsesStore,
   ],
-  ([aggregatorStore, isEnabled, rootCanisterIds, { snses: loadedSnses }]) => {
-    if (!isEnabled || isNullish(aggregatorStore.data)) {
+  ([aggregatorStore, rootCanisterIds, { snses: loadedSnses }]) => {
+    if (isNullish(aggregatorStore.data)) {
       return [];
     }
 
@@ -73,9 +71,8 @@ const importedSnsEntriesStore: Readable<CachedSnsDto[]> = derived(
  * True when the imported SNSes in the list have loaded, or when there is nothing to load.
  */
 export const importedSnsesReadyStore: Readable<boolean> = derived(
-  [ENABLE_IMPORT_SNS, importedSnsesStore, loadedImportedSnsesStore],
-  ([isEnabled, rootCanisterIds, { rootCanisterIds: loadedRootCanisterIds }]) =>
-    !isEnabled ||
+  [importedSnsesStore, loadedImportedSnsesStore],
+  ([rootCanisterIds, { rootCanisterIds: loadedRootCanisterIds }]) =>
     rootCanisterIds.every((id) => loadedRootCanisterIds?.includes(id))
 );
 

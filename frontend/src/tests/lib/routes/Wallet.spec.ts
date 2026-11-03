@@ -13,7 +13,6 @@ import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.co
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
@@ -419,7 +418,6 @@ describe("Wallet", () => {
         routeId: AppPath.Wallet,
       });
       setSnsProjects([{}]);
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
       importedSnsesStore.add(importedRootCanisterId);
 
       render(Wallet, {

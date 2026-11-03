@@ -7,7 +7,6 @@ import {
   querySnsLedgerData,
   querySnsTopics,
 } from "$lib/api/imported-sns.api";
-import { ENABLE_IMPORT_SNS } from "$lib/stores/feature-flags.store";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
@@ -219,10 +218,6 @@ const loadSnses = async (
  * share one load, and a load for an older list does not publish its result.
  */
 export const loadImportedSnses = (): Promise<void> => {
-  if (!get(ENABLE_IMPORT_SNS)) {
-    return Promise.resolve();
-  }
-
   const rootCanisterIds = get(importedSnsesStore);
   const key = rootCanisterIds.join(",");
   if (currentLoad?.key === key) {

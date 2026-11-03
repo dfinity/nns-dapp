@@ -1,4 +1,3 @@
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
@@ -93,7 +92,6 @@ export const setSnsProjects = (
  * Imported SNSes show only after the aggregator data loads, so also call `setSnsProjects`.
  */
 export const setImportedSnses = (rootCanisterIds: Principal[]) => {
-  overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
   rootCanisterIds.forEach((rootCanisterId) =>
     importedSnsesStore.add(rootCanisterId.toText())
   );

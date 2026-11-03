@@ -4,7 +4,6 @@ import {
   getImportedSns,
   loadImportedSnses,
 } from "$lib/services/imported-sns.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
@@ -276,7 +275,6 @@ describe("imported-sns.services", () => {
 
     beforeEach(() => {
       vi.spyOn(console, "error").mockReturnValue();
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
     });
 
     it("should load each imported SNS", async () => {
@@ -385,16 +383,6 @@ describe("imported-sns.services", () => {
       ]);
       expect(get(loadedImportedSnsesStore).snses).toHaveLength(1);
       expect(get(toastsStore)).toEqual([]);
-    });
-
-    it("should not load anything if the feature flag is off", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
-      importedSnsesStore.add(root.toText());
-
-      await loadImportedSnses();
-
-      expect(querySnsCanisterIdsSpy()).not.toHaveBeenCalled();
-      expect(get(loadedImportedSnsesStore).snses).toEqual([]);
     });
 
     it("should show an error and keep the other SNSes if one SNS fails", async () => {

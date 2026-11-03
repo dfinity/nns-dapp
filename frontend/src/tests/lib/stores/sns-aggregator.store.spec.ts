@@ -1,5 +1,4 @@
 import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   importedSnsesStore,
   loadedImportedSnsesStore,
@@ -201,7 +200,6 @@ describe("sns-aggregator store", () => {
     });
 
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", true);
       snsAggregatorIncludingAbortedProjectsStore.setData([listedSns]);
       importedSnsesStore.add(importedRootCanisterId);
       loadedImportedSnsesStore.set({
@@ -215,13 +213,6 @@ describe("sns-aggregator store", () => {
       expect(get(importedSnsRootCanisterIdsStore)).toEqual(
         new Set([importedRootCanisterId])
       );
-    });
-
-    it("should not add the imported SNSes if the feature flag is off", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
-
-      expect(get(snsAggregatorStore).data).toEqual([listedSns]);
-      expect(get(importedSnsRootCanisterIdsStore)).toEqual(new Set());
     });
 
     it("should not add an SNS that the user removed", () => {
@@ -270,9 +261,9 @@ describe("sns-aggregator store", () => {
         expect(get(importedSnsesReadyStore)).toBe(true);
       });
 
-      it("should be ready if the feature flag is off", () => {
+      it("should be ready before the first load if the list is empty", () => {
+        importedSnsesStore.remove(importedRootCanisterId);
         loadedImportedSnsesStore.reset();
-        overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_SNS", false);
 
         expect(get(importedSnsesReadyStore)).toBe(true);
       });
