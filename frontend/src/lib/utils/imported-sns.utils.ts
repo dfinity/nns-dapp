@@ -282,6 +282,14 @@ const toMetadataDto = ({
   description: fromNullable(description) ?? null,
 });
 
+// SNS governance accepts only PNG data URLs as logo.
+const toImportedLogo = ({
+  logo,
+}: SnsGovernanceDid.GetMetadataResponse): string | undefined => {
+  const value = fromNullable(logo);
+  return value?.startsWith("data:image/png;base64,") ? value : undefined;
+};
+
 // An imported SNS has no usable swap data, and the dapp never shows its swap.
 // These values only satisfy the aggregator format.
 const SWAP_PARAMS_PLACEHOLDER: CachedSwapParamsDto = {
@@ -401,5 +409,6 @@ export const toCachedSnsDto = ({
       decentralization_sale_open_timestamp_seconds: null,
     },
     topics: isNullish(topics) ? undefined : toListTopicsResponseDto(topics),
+    imported_logo: toImportedLogo(metadata),
   };
 };

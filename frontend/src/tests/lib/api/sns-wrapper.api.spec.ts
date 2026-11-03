@@ -1,5 +1,5 @@
 import * as agent from "$lib/api/agent.api";
-import { clearWrapperCache, wrappers } from "$lib/api/sns-wrapper.api";
+import { clearWrapperCache, wrapper, wrappers } from "$lib/api/sns-wrapper.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -67,6 +67,52 @@ describe("sns-wrapper api", () => {
       expect(
         snsWrappers.get(canisterIds2.rootCanisterId.toText()).canisterIds
       ).toEqual(canisterIds2);
+    });
+  });
+
+  describe("wrapper", () => {
+    const canisterIds1 = {
+      rootCanisterId: principal(0),
+      swapCanisterId: principal(1),
+      governanceCanisterId: principal(2),
+      ledgerCanisterId: principal(3),
+      indexCanisterId: principal(4),
+    };
+    const canisterIds2 = {
+      rootCanisterId: principal(5),
+      swapCanisterId: principal(6),
+      governanceCanisterId: principal(7),
+      ledgerCanisterId: principal(8),
+      indexCanisterId: principal(9),
+    };
+
+    it("finds an SNS that loads after the wrappers are cached", async () => {
+      setSnsProjects([canisterIds1]);
+      await wrappers({ identity: mockIdentity, certified: false });
+
+      setSnsProjects([canisterIds1, canisterIds2]);
+      const snsWrapper = await wrapper({
+        identity: mockIdentity,
+        rootCanisterId: canisterIds2.rootCanisterId.toText(),
+        certified: false,
+      });
+
+      expect(snsWrapper.canisterIds).toEqual(canisterIds2);
+      expect(
+        await wrappers({ identity: mockIdentity, certified: false })
+      ).toHaveLength(2);
+    });
+
+    it("throws for an unknown SNS", async () => {
+      setSnsProjects([canisterIds1]);
+
+      await expect(
+        wrapper({
+          identity: mockIdentity,
+          rootCanisterId: canisterIds2.rootCanisterId.toText(),
+          certified: false,
+        })
+      ).rejects.toThrow("error__sns.undefined_project");
     });
   });
 });

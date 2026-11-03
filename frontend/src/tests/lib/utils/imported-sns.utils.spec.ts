@@ -362,6 +362,24 @@ describe("imported-sns.utils", () => {
       ).toEqual([705_032_704, 1]);
     });
 
+    it("should keep a PNG data URL as the logo", () => {
+      expect(toCachedSnsDto(data).imported_logo).toBe(
+        "data:image/png;base64,abc"
+      );
+    });
+
+    it.each([
+      ["an SVG data URL", "data:image/svg+xml;base64,abc"],
+      ["a web address", "https://example.com/logo.png"],
+    ])("should drop %s as the logo", (_, logo) => {
+      expect(
+        toCachedSnsDto({
+          ...data,
+          metadata: { ...data.metadata, logo: [logo] },
+        }).imported_logo
+      ).toBeUndefined();
+    });
+
     it("should leave the topics empty if they are missing", () => {
       expect(toCachedSnsDto({ ...data, topics: undefined }).topics).toBe(
         undefined

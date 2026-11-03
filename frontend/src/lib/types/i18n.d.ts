@@ -1205,6 +1205,10 @@ interface I18nError__address_book {
   duplicate_name: string;
 }
 
+interface I18nError__imported_sns {
+  load: string;
+}
+
 interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
@@ -1674,6 +1678,7 @@ interface I18n {
   error__imported_tokens: I18nError__imported_tokens;
   error__fav_projects: I18nError__fav_projects;
   error__address_book: I18nError__address_book;
+  error__imported_sns: I18nError__imported_sns;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_report: I18nAuth_report;

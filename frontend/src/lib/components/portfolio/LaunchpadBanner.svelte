@@ -4,7 +4,7 @@
   import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
+  import { snsProjectsLaunchpadStore } from "$lib/derived/sns/sns-projects.derived";
   import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import { compactCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
@@ -18,7 +18,7 @@
   };
   const { withUpcomingLaunchesCards = false }: Props = $props();
 
-  const snsProjects = $derived($snsProjectsActivePadStore);
+  const snsProjects = $derived($snsProjectsLaunchpadStore);
   const launchedSnsProjects = $derived(
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,

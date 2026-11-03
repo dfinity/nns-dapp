@@ -1,4 +1,9 @@
 import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
+import {
+  importedSnsesStore,
+  loadedImportedSnsesStore,
+} from "$lib/stores/imported-snses.store";
+import type { RootCanisterIdText } from "$lib/types/sns";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
@@ -33,9 +38,55 @@ const initSnsAggreagatorStore =
 export const snsAggregatorIncludingAbortedProjectsStore =
   initSnsAggreagatorStore();
 
+/**
+ * The imported SNSes that the app shows: the user did not remove them, and
+ * the aggregator does not list them.
+ */
+const importedSnsEntriesStore: Readable<CachedSnsDto[]> = derived(
+  [
+    snsAggregatorIncludingAbortedProjectsStore,
+    importedSnsesStore,
+    loadedImportedSnsesStore,
+  ],
+  ([aggregatorStore, rootCanisterIds, { snses: loadedSnses }]) => {
+    if (isNullish(aggregatorStore.data)) {
+      return [];
+    }
+
+    const listedRootCanisterIds = new Set(
+      aggregatorStore.data.map(
+        ({ canister_ids }) => canister_ids.root_canister_id
+      )
+    );
+
+    return loadedSnses.filter(
+      ({ canister_ids: { root_canister_id } }) =>
+        rootCanisterIds.includes(root_canister_id) &&
+        !listedRootCanisterIds.has(root_canister_id)
+    );
+  }
+);
+
+/**
+ * True when the imported SNSes in the list have loaded, or when there is nothing to load.
+ */
+export const importedSnsesReadyStore: Readable<boolean> = derived(
+  [importedSnsesStore, loadedImportedSnsesStore],
+  ([rootCanisterIds, { rootCanisterIds: loadedRootCanisterIds }]) =>
+    rootCanisterIds.every((id) => loadedRootCanisterIds?.includes(id))
+);
+
+export const importedSnsRootCanisterIdsStore: Readable<
+  Set<RootCanisterIdText>
+> = derived(
+  importedSnsEntriesStore,
+  (entries) =>
+    new Set(entries.map(({ canister_ids }) => canister_ids.root_canister_id))
+);
+
 export const snsAggregatorStore: SnsAggregatorStore = derived(
-  snsAggregatorIncludingAbortedProjectsStore,
-  (store) => {
+  [snsAggregatorIncludingAbortedProjectsStore, importedSnsEntriesStore],
+  ([store, importedSnses]) => {
     const data = store.data?.filter(
       (sns) =>
         nonNullish(sns.lifecycle) &&
@@ -50,7 +101,7 @@ export const snsAggregatorStore: SnsAggregatorStore = derived(
     );
 
     return {
-      data: [...dataWithoutAbandonedProjects],
+      data: [...dataWithoutAbandonedProjects, ...importedSnses],
     };
   }
 );

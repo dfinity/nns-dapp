@@ -1,6 +1,6 @@
 <script lang="ts">
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
+  import { snsProjectsLaunchpadStore } from "$lib/derived/sns/sns-projects.derived";
   import Launchpad2 from "$lib/pages/Launchpad2.svelte";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
@@ -23,7 +23,7 @@
     }
   });
 
-  const snsProjects = $derived($snsProjectsActivePadStore);
+  const snsProjects = $derived($snsProjectsLaunchpadStore);
   const openSnsProposals = $derived($openSnsProposalsStore);
 </script>
 

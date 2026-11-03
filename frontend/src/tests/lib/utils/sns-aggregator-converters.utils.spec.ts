@@ -401,6 +401,15 @@ describe("sns aggregator converters utils", () => {
       },
     };
 
+    it("uses the logo of an imported SNS", () => {
+      const logo = "data:image/png;base64,abc";
+
+      expect(
+        convertDtoToSnsSummary({ ...mockData, imported_logo: logo })?.metadata
+          .logo
+      ).toBe(logo);
+    });
+
     it("returns sns summary from aggregator data", () => {
       const {
         canister_ids: {

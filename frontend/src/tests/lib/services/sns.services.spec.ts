@@ -13,7 +13,7 @@ import {
   mockSnsSwapCommitment,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -51,6 +51,21 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsSwapCommitments", () => {
+    it("should not load the commitment of an imported SNS", async () => {
+      setSnsProjects([{ rootCanisterId: rootCanisterId1 }]);
+      setImportedSnses([rootCanisterId2]);
+      const spy = vi
+        .spyOn(api, "querySnsSwapCommitment")
+        .mockResolvedValue(mockSnsSwapCommitment(rootCanisterId1));
+
+      await loadSnsSwapCommitments();
+
+      expect(spy).toBeCalledTimes(2);
+      expect(spy).not.toBeCalledWith(
+        expect.objectContaining({ rootCanisterId: rootCanisterId2.toText() })
+      );
+    });
+
     it("should call api to get commitments and load them in store", async () => {
       setSnsProjects([
         { rootCanisterId: rootCanisterId1 },

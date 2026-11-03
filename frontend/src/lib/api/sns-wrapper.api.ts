@@ -151,6 +151,27 @@ export const wrappers = async ({
   }
 };
 
+/**
+ * Adds the wrappers of the SNSes that loaded after the cache was created, for example imported SNSes.
+ */
+const addMissingWrappers = async ({
+  identity,
+  certified,
+  snsWrappers,
+}: {
+  identity: Identity;
+  certified: boolean;
+  snsWrappers: Map<QueryRootCanisterId, SnsWrapper>;
+}): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
+  for (const snsWrapper of await loadSnsWrappers({ identity, certified })) {
+    const rootCanisterId = snsWrapper.canisterIds.rootCanisterId.toText();
+    if (!snsWrappers.has(rootCanisterId)) {
+      snsWrappers.set(rootCanisterId, snsWrapper);
+    }
+  }
+  return snsWrappers;
+};
+
 export const wrapper = async ({
   identity,
   rootCanisterId,
@@ -160,9 +181,12 @@ export const wrapper = async ({
   rootCanisterId: QueryRootCanisterId;
   certified: boolean;
 }): Promise<SnsWrapper> => {
-  const snsWrapper: SnsWrapper | undefined = (
-    await wrappers({ identity, certified })
-  ).get(rootCanisterId);
+  const snsWrappers = await wrappers({ identity, certified });
+  const snsWrapper: SnsWrapper | undefined =
+    snsWrappers.get(rootCanisterId) ??
+    (await addMissingWrappers({ identity, certified, snsWrappers })).get(
+      rootCanisterId
+    );
 
   if (snsWrapper === undefined) {
     throw new ApiErrorKey("error__sns.undefined_project");
