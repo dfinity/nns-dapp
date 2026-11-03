@@ -21,7 +21,7 @@ here after a successful release.
 
 #### Changed
 
-* Connect to the Ledger device through the Ledger Device Management Kit. It
+* Connect to the Ledger device through the Ledger Device Management Kit.
 
 ### Operations
 
