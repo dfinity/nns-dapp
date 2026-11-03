@@ -289,6 +289,7 @@ const updateActionableProposals = ({
  *
  * The app calls this function on each navigation. Calls for the same list
  * share one load, and a load for an older list does not publish its result.
+ * The promise of such a load resolves after the newer load publishes.
  *
  * After the first load, it also loads or removes the actionable proposals of
  * the imported SNSes that the load shows or hides.
@@ -306,8 +307,9 @@ export const loadImportedSnses = (): Promise<void> => {
   };
   load.promise = loadSnses(rootCanisterIds).then(({ snses, failures }) => {
     // A newer call started another load, maybe for the same list.
+    // The callers of this load, for example the private app data, wait for the newer one.
     if (currentLoad !== load) {
-      return;
+      return currentLoad?.promise;
     }
 
     for (const { rootCanisterId, err } of failures) {

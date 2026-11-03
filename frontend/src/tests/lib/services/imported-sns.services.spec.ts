@@ -393,6 +393,48 @@ describe("imported-sns.services", () => {
       expect(get(toastsStore)).toEqual([]);
     });
 
+    it("should resolve a replaced load after the newer load publishes", async () => {
+      let resolveNewerLoad: () => void;
+      const newerLoad = new Promise<void>((resolve) => {
+        resolveNewerLoad = resolve;
+      });
+
+      importedSnsesStore.add(root.toText());
+      const olderCall = loadImportedSnses();
+      let isOlderCallDone = false;
+      olderCall.then(() => (isOlderCallDone = true));
+
+      querySnsCanisterIdsSpy().mockImplementation(
+        async ({ rootCanisterId }) => {
+          await newerLoad;
+          return {
+            root: [rootCanisterId],
+            governance: [governance],
+            ledger: [ledger],
+            swap: [swap],
+            index: [index],
+            dapps: [],
+            archives: [],
+            extensions: [],
+          };
+        }
+      );
+      importedSnsesStore.add(stranger.toText());
+      loadImportedSnses();
+      await runResolvedPromises();
+
+      expect(isOlderCallDone).toBe(false);
+      expect(get(loadedImportedSnsesStore).rootCanisterIds).toBeUndefined();
+
+      resolveNewerLoad();
+      await olderCall;
+
+      expect(get(loadedImportedSnsesStore).rootCanisterIds).toEqual([
+        root.toText(),
+        stranger.toText(),
+      ]);
+    });
+
     it("should not publish an older load when the list returns to an earlier value", async () => {
       let rejectFirstLoad: () => void;
       const firstLoad = new Promise<void>((_, reject) => {
