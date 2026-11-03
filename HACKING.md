@@ -58,8 +58,11 @@ mock of the ICP Swap price feed sets the ICP price to 9 USD, see
 [`mocks/icp-swap`](./mocks/icp-swap/README.md). A ckRED test token exists for
 the import token tests, see [`mocks/ckred`](./mocks/ckred/README.md). A mock
 exchange rate canister answers the total value locked requests of the backend
-with the same ICP price. The ICP ledger funds the test account that the
-"Get ICP" menu uses.
+with the same ICP price. The backend reads the price one second after its
+installation, and then every six hours. On a fresh network without
+`--nns_dapp_wasm`, the nns-dapp of the launcher reads it before the mock
+exists, so the total value locked stays zero for six hours. The ICP ledger
+funds the test account that the "Get ICP" menu uses.
 
 ## Testnet
 

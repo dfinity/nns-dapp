@@ -21,6 +21,11 @@ print_help() {
 	If the network runs already, the script keeps it and only does the steps
 	above. A stopped network loses its state. Stop the network with:
 	  icp network stop
+
+	The nns-dapp reads the ICP price one second after its installation, and
+	then every six hours. On a fresh network without --nns_dapp_wasm, the
+	nns-dapp of the launcher reads it before the mock exists, so the total
+	value locked stays zero for six hours.
 	EOF
 }
 
@@ -59,11 +64,13 @@ fi
 
 if icp network status "$NETWORK" >/dev/null 2>&1; then
   echo "The '$NETWORK' network is running already."
+  started_network="false"
 else
   echo "Starting the '$NETWORK' network..."
   # The canister IDs of an earlier network are not valid on the new one.
   rm -f ".icp/cache/mappings/$ENVIRONMENT.ids.json"
   icp network start "$NETWORK" --background
+  started_network="true"
 fi
 icp network ping "$NETWORK" --wait-healthy >/dev/null
 
@@ -207,6 +214,11 @@ deploy_xrc() {
   is_installed xrc || icp deploy xrc --environment "$ENVIRONMENT" --yes --args '(record { response = variant { ExchangeRate = record { base_asset = null; quote_asset = null; metadata = null; rate = 900_000_000 : nat64 } } })'
 }
 deploy_xrc
+
+if test -z "${NNS_DAPP_WASM:-}" && [[ "$started_network" == "true" ]]; then
+  echo "NOTE: The nns-dapp of the launcher read the ICP price before the mock exchange rate canister existed." >&2
+  echo "      The total value locked stays zero for six hours. Pass --nns_dapp_wasm to install an nns-dapp after the mocks." >&2
+fi
 
 if test -n "${NNS_DAPP_WASM:-}"; then
   # The default arguments hold the URLs of the mocks, so they are created after the mocks.
