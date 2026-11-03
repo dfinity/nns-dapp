@@ -33,7 +33,7 @@ import {
   type ImportedSnsCanisterIds,
 } from "$lib/utils/imported-sns.utils";
 import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
@@ -240,10 +240,15 @@ const resetActionableProposalsIfNotListed = (rootCanisterId: Principal) => {
   failedActionableSnsesStore.remove(rootCanisterIdText);
 };
 
+const hasActionableProposals = (rootCanisterId: RootCanisterIdText) =>
+  nonNullish(get(actionableSnsProposalsStore)[rootCanisterId]) ||
+  get(failedActionableSnsesStore).includes(rootCanisterId);
+
 /**
  * Keeps the actionable proposals in line with the imported SNSes that the app shows.
  *
  * A load after the first one can show an SNS that failed before, or hide an SNS that loaded before.
+ * A removed SNS that the user imports again has no actionable proposals either.
  * The private app data loads the actionable proposals of the SNSes after the first load.
  */
 const updateActionableProposals = ({
@@ -264,7 +269,7 @@ const updateActionableProposals = ({
   }
 
   for (const rootCanisterIdText of shownAfter) {
-    if (shownBefore.has(rootCanisterIdText)) {
+    if (hasActionableProposals(rootCanisterIdText)) {
       continue;
     }
 

@@ -658,6 +658,41 @@ describe("imported-sns.services", () => {
       expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(root);
     });
 
+    it("should load the actionable proposals again after a removal and a new import", async () => {
+      resetIdentity();
+      loadActionableProposalsSpy().mockImplementation(async (rootCanisterId) =>
+        actionableSnsProposalsStore.set({ rootCanisterId, proposals: [] })
+      );
+      await importSns(root);
+      await runResolvedPromises();
+      removeImportedSns(root);
+      expect(get(actionableSnsProposalsStore)).toEqual({});
+
+      await importSns(root);
+      await runResolvedPromises();
+
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(2);
+      expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
+        root.toText(),
+      ]);
+    });
+
+    it("should not load the actionable proposals of an SNS that has them", async () => {
+      resetIdentity();
+      importedSnsesStore.add(stranger.toText());
+      await loadImportedSnses();
+      actionableSnsProposalsStore.set({
+        rootCanisterId: stranger,
+        proposals: [],
+      });
+      loadActionableProposalsSpy().mockClear();
+
+      await importSns(root);
+
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(1);
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(root);
+    });
+
     it("should remove the actionable proposals of another SNS that fails to load again", async () => {
       resetIdentity();
       importedSnsesStore.add(stranger.toText());
