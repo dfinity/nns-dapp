@@ -62,6 +62,22 @@ describe("Hotkeys", () => {
     expect(await po.hasEmptyState()).toBe(false);
   });
 
+  it("should render the column headers", async () => {
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
+      nnsNeuron(1n, [hotkeyA]),
+    ]);
+
+    const po = renderComponent();
+    await runResolvedPromises();
+
+    expect(await po.getResponsiveTablePo().getDesktopColumnHeaders()).toEqual([
+      "Hotkey",
+      "Projects",
+      "Neurons",
+      "",
+    ]);
+  });
+
   it("should list the hotkeys of the NNS and SNS neurons", async () => {
     setSnsProjects([
       { rootCanisterId: snsRootCanisterId, projectName: snsTitle },

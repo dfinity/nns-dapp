@@ -83,6 +83,12 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
+    // The table does not show a title for the last column.
+    {
+      title: "",
+      alignment: "right",
+      templateColumns: ["max-content"],
+    },
   ] as unknown as ResponsiveTableColumn<HotkeysTableRowData, string>[];
 </script>
 
