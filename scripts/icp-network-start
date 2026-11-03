@@ -74,6 +74,21 @@ else
 fi
 icp network ping "$NETWORK" --wait-healthy >/dev/null
 
+# icp-cli gives cycles to the identities that exist when the network starts.
+# An identity created later has none, so it cannot create canisters. The
+# anonymous identity has almost unlimited cycles on the local network.
+fund_identity() {
+  local principal balance
+  principal="$(icp identity principal)"
+  [[ "$principal" != "2vxsx-fae" ]] || return 0
+  balance="$(icp cycles balance --network "$NETWORK" --quiet | tr -d '_' | awk '{print $1}')"
+  if ((balance < 100000000000000)); then
+    echo "Funding the identity $principal with cycles..."
+    icp cycles transfer 1000t "$principal" --network "$NETWORK" --identity anonymous >/dev/null
+  fi
+}
+fund_identity
+
 # Installs a wasm. Retries, because a call can time out while the network warms up.
 install_canister() {
   local canister="$1"
