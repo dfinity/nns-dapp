@@ -1,6 +1,7 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import {
   ENABLE_ADDRESS_BOOK,
+  ENABLE_HOTKEYS_PAGE,
   overrideFeatureFlagsStore,
 } from "$lib/stores/feature-flags.store";
 import {
@@ -212,6 +213,30 @@ describe("AccountMenu", () => {
 
         expect(get(ENABLE_ADDRESS_BOOK)).toBe(false);
         expect(await accountMenuPo.getLinkToAddressBookPo().isPresent()).toBe(
+          false
+        );
+      });
+    });
+
+    describe("hotkeys page feature flag", () => {
+      it("should display the Hotkeys link when the feature flag is enabled", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_HOTKEYS_PAGE", true);
+        const { accountMenuPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        expect(get(ENABLE_HOTKEYS_PAGE)).toBe(true);
+        const linkPo = accountMenuPo.getLinkToHotkeysPo();
+        expect(await linkPo.isPresent()).toBe(true);
+        expect(await linkPo.getHref()).toBe("/hotkeys");
+      });
+
+      it("should not display the Hotkeys link when the feature flag is disabled", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_HOTKEYS_PAGE", false);
+        const { accountMenuPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        expect(get(ENABLE_HOTKEYS_PAGE)).toBe(false);
+        expect(await accountMenuPo.getLinkToHotkeysPo().isPresent()).toBe(
           false
         );
       });

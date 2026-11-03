@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import ManageAllHotkeysLink from "$lib/components/hotkeys/ManageAllHotkeysLink.svelte";
   import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
@@ -96,6 +97,7 @@
   {#if isControllable}
     <div class="actions">
       <AddHotkeyButton />
+      <ManageAllHotkeysLink />
     </div>
   {/if}
 </CardInfo>
@@ -134,7 +136,10 @@
 
   .actions {
     display: flex;
-    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--padding-2x);
   }
 
   p {

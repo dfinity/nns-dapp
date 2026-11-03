@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Make the NNS dapp discoverable by AI agents, also through ICP MCP.
+- Add a Hotkeys page with the hotkeys of all your neurons, behind the `ENABLE_HOTKEYS_PAGE` feature flag.
 
 #### Changed
 
