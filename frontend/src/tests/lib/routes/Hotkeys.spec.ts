@@ -122,11 +122,29 @@ describe("Hotkeys", () => {
   });
 
   it("should show the empty state if the neurons have no hotkeys", async () => {
+    setSnsProjects([]);
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
       nnsNeuron(1n, []),
     ]);
 
     const po = renderComponent();
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(true);
+  });
+
+  it("should wait for the SNS projects before it shows the empty state", async () => {
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+
+    const po = renderComponent();
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(false);
+    expect(await po.isLoading()).toBe(true);
+
+    setSnsProjects([
+      { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+    ]);
     await runResolvedPromises();
 
     expect(await po.hasEmptyState()).toBe(true);

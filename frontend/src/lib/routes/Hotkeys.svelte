@@ -11,6 +11,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
+  import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import type { HotkeysTableRowData } from "$lib/types/hotkeys";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
   import { IconKey } from "@dfinity/gix-components";
@@ -50,7 +51,9 @@
   });
 
   const isLoading = $derived(
-    pendingLoads > 0 || isNullish($neuronsStore.neurons)
+    pendingLoads > 0 ||
+      isNullish($neuronsStore.neurons) ||
+      $isLoadingSnsProjectsStore
   );
 
   const tableData = $derived(
