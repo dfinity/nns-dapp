@@ -498,10 +498,21 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api stakeNeuron if fee is not present", async () => {
+      // The token has no name, so it is dropped from the token stores and
+      // the fee is not found. The nervous system parameters stay available.
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, name: undefined },
+          neuronMinimumStakeE8s: 100_000_000n,
+        },
+      ]);
       tokensStore.reset();
       const spyStake = vi
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+
+      expect(get(toastsStore)).toEqual([]);
 
       const { success } = await stakeNeuron({
         rootCanisterId: mockPrincipal,
@@ -511,6 +522,13 @@ describe("sns-neurons-services", () => {
 
       expect(success).toBe(false);
       expect(spyStake).not.toBeCalled();
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "Sorry, there was an error loading the transaction fee.",
+        },
+      ]);
     });
 
     it("should call sns api stakeNeuron if fee is 0", async () => {

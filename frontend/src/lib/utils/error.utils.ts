@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import {
+  AccountTranslateError,
+  HardwareWalletAttachError,
+  SubAccountLimitExceededError,
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { ApiErrorKey } from "$lib/types/api.errors";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
-import { LedgerErrorMessage } from "$lib/types/ledger.errors";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import {
   CannotBeMerged,
   InvalidAmountError,
@@ -36,6 +42,26 @@ import {
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 
+// A constructor of an Error subclass. Used instead of the built-in Function
+// type, so I18N_KEY_ERRORS cannot hold a non-constructor such as an arrow
+// function.
+type ErrorClass = abstract new (...args: never[]) => Error;
+
+// The error classes that the app throws with an i18n label key as their
+// message. Every other error carries free text, which can come from a
+// third-party canister, so its message must never select an application text.
+const I18N_KEY_ERRORS: Array<ErrorClass> = [
+  AccountTranslateError,
+  SubAccountLimitExceededError,
+  HardwareWalletAttachError,
+  LedgerErrorKey,
+  ApiErrorKey,
+  NotEnoughAmountError,
+];
+
+export const isI18nKeyError = (err: unknown): err is Error =>
+  I18N_KEY_ERRORS.some((errorClass) => err instanceof errorClass);
+
 export const errorToString = (err?: unknown): string | undefined => {
   const text =
     typeof err === "string"
@@ -48,8 +74,10 @@ export const errorToString = (err?: unknown): string | undefined => {
             ? (err as Error).message
             : undefined;
 
-  // replace with i18n version if available
-  return typeof text === "string" ? translate({ labelKey: text }) : text;
+  // Replace with the i18n version if the error carries a label key.
+  return typeof text === "string" && isI18nKeyError(err)
+    ? translate({ labelKey: text })
+    : text;
 };
 
 const factoryMappingErrorToToastMessage =
@@ -124,9 +152,10 @@ export const mapCanisterErrorToToastMessage =
   factoryMappingErrorToToastMessage(canisterMapper);
 
 /**
- * The "message" of some type of errors that extends Error is used to map an i18n label.
- * This helper map such "message" to the "labelKey" of the toast.
- * If the error does not contain a matching "message", it fallbacks to the "fallbackErrorLabelKey" and add the error as details of the toast.
+ * The "message" of the error classes listed in I18N_KEY_ERRORS is an i18n label key.
+ * This helper maps such a "message" to the "labelKey" of the toast.
+ * Every other error, and a listed error whose key is absent from the catalog,
+ * falls back to the "fallbackErrorLabelKey" and is added as details of the toast.
  */
 export const toToastError = ({
   err,
@@ -144,7 +173,7 @@ export const toToastError = ({
   const error = err as Error | undefined;
   const message: string | undefined = error?.message;
 
-  if (message !== undefined) {
+  if (isI18nKeyError(err) && message !== undefined) {
     const label = translate({ labelKey: message });
     errorKey = label !== message;
   }

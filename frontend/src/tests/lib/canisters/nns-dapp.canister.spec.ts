@@ -21,6 +21,7 @@ import type {
   SetFavProjectsResponse,
   SetImportedTokensResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { ApiErrorKey } from "$lib/types/api.errors";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 import { mockFavProject } from "$tests/mocks/fav-projects.mock";
@@ -89,6 +90,20 @@ describe("NNSDapp", () => {
 
       await expect(call).rejects.toThrow(AccountNotFoundError);
     });
+
+    it("throws an ApiErrorKey if the response has no known variant", async () => {
+      const service = mock<NNSDappService>();
+      service.get_account.mockResolvedValue({} as GetAccountResponse);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.getAccount({ certified: true });
+
+      await expect(call).rejects.toThrow(
+        new ApiErrorKey("error__account.no_details")
+      );
+      await expect(call).rejects.toBeInstanceOf(ApiErrorKey);
+    });
   });
 
   describe("NNSDapp.createSubAccount", () => {
@@ -151,6 +166,23 @@ describe("NNSDapp", () => {
         nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
 
       await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("throws an ApiErrorKey if the response has no known variant", async () => {
+      const service = mock<NNSDappService>();
+      service.create_sub_account.mockResolvedValue(
+        {} as CreateSubAccountResponse
+      );
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () =>
+        nnsDapp.createSubAccount({ subAccountName: "testSubaccount" });
+
+      await expect(call).rejects.toThrow(
+        new ApiErrorKey("error__account.create_subaccount")
+      );
+      await expect(call).rejects.toBeInstanceOf(ApiErrorKey);
     });
   });
 
