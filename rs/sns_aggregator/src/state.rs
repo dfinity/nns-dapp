@@ -2,6 +2,7 @@
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
 use crate::fast_scheduler::FastScheduler;
+use crate::time::time;
 use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
@@ -13,7 +14,6 @@ use crate::{
 };
 use anyhow::anyhow;
 use candid::Principal as CanisterId;
-use ic_cdk::api::time;
 use ic_cdk_timers::TimerId;
 use std::cell::RefCell;
 use std::collections::VecDeque;
