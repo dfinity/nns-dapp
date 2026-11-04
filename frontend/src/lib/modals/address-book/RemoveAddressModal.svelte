@@ -8,7 +8,6 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconErrorOutline } from "@dfinity/gix-components";
-  import { isNullish } from "@dfinity/utils";
 
   interface Props {
     onClose: () => void;
@@ -18,19 +17,18 @@
   const { onClose, namedAddress }: Props = $props();
 
   const handleDeleteConfirm = async () => {
-    if (isNullish($addressBookStore.namedAddresses)) {
+    if ($addressBookStore.certified !== true) {
       return;
     }
-
-    const updatedAddresses = $addressBookStore.namedAddresses.filter(
-      (entry) => entry.name !== namedAddress.name
-    );
 
     const initiator = "delete-address-book-entry";
     startBusy({ initiator });
 
     try {
-      const result = await saveAddressBook(updatedAddresses);
+      const result = await saveAddressBook({
+        type: "remove",
+        name: namedAddress.name,
+      });
 
       if (!result?.err) {
         toastsSuccess({
@@ -47,7 +45,11 @@
   };
 </script>
 
-<ConfirmationModal on:nnsClose={onClose} on:nnsConfirm={handleDeleteConfirm}>
+<ConfirmationModal
+  on:nnsClose={onClose}
+  on:nnsConfirm={handleDeleteConfirm}
+  disabledConfirm={$addressBookStore.certified !== true}
+>
   <div data-tid="remove-address-confirmation" class="wrapper">
     <h4>
       {replacePlaceholders($i18n.address_book.remove_address_title, {

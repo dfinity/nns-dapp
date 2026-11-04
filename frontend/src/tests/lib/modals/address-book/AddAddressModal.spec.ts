@@ -20,7 +20,7 @@ describe("AddAddressModal", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    addressBookStore.reset();
+    addressBookStore.set({ namedAddresses: [], certified: true });
   });
 
   it("should display modal", async () => {
@@ -52,6 +52,24 @@ describe("AddAddressModal", () => {
 
     const saveButton = queryByTestId("save-address-button");
     expect(saveButton?.hasAttribute("disabled")).toBe(true);
+  });
+
+  it("should disable save while the address book is uncertified", async () => {
+    addressBookStore.set({ namedAddresses: [], certified: false });
+
+    const { container, queryByTestId } = await renderModal({
+      component: AddAddressModal,
+      props: { onClose: vi.fn() },
+    });
+
+    await fireEvent.input(container.querySelector("input[name='nickname']"), {
+      target: { value: "MyAddress" },
+    });
+    await fireEvent.input(container.querySelector("input[name='address']"), {
+      target: { value: validIcpAddress },
+    });
+
+    expect(queryByTestId("save-address-button")).toBeDisabled();
   });
 
   it("should display error if nickname is too short on submit", async () => {
@@ -312,12 +330,13 @@ describe("AddAddressModal", () => {
     const saveButton = queryByTestId("save-address-button");
     await fireEvent.click(saveButton);
 
-    expect(saveAddressBookSpy).toHaveBeenCalledWith([
-      {
+    expect(saveAddressBookSpy).toHaveBeenCalledWith({
+      type: "add",
+      address: {
         name: "MyAddress",
         address: { Icp: validIcpAddress },
       },
-    ]);
+    });
 
     expect(onClose).toHaveBeenCalled();
   });
@@ -350,12 +369,13 @@ describe("AddAddressModal", () => {
     const saveButton = queryByTestId("save-address-button");
     await fireEvent.click(saveButton);
 
-    expect(saveAddressBookSpy).toHaveBeenCalledWith([
-      {
+    expect(saveAddressBookSpy).toHaveBeenCalledWith({
+      type: "add",
+      address: {
         name: "MyICRC1",
         address: { Icrc1: validIcrc1Address },
       },
-    ]);
+    });
 
     expect(onClose).toHaveBeenCalled();
   });
@@ -389,13 +409,13 @@ describe("AddAddressModal", () => {
     const saveButton = queryByTestId("save-address-button");
     await fireEvent.click(saveButton);
 
-    expect(saveAddressBookSpy).toHaveBeenCalledWith([
-      mockNamedAddressIcp,
-      {
+    expect(saveAddressBookSpy).toHaveBeenCalledWith({
+      type: "add",
+      address: {
         name: "NewAddress",
         address: { Icrc1: validIcrc1Address },
       },
-    ]);
+    });
   });
 
   it("should not close modal on error", async () => {
@@ -680,12 +700,14 @@ describe("AddAddressModal", () => {
       const saveButton = queryByTestId("save-address-button");
       await fireEvent.click(saveButton);
 
-      expect(saveAddressBookSpy).toHaveBeenCalledWith([
-        {
+      expect(saveAddressBookSpy).toHaveBeenCalledWith({
+        type: "update",
+        previousName: mockNamedAddressIcp.name,
+        address: {
           name: "UpdatedNickname",
           address: mockNamedAddressIcp.address,
         },
-      ]);
+      });
 
       expect(onClose).toHaveBeenCalled();
     });
@@ -718,13 +740,14 @@ describe("AddAddressModal", () => {
       const saveButton = queryByTestId("save-address-button");
       await fireEvent.click(saveButton);
 
-      expect(saveAddressBookSpy).toHaveBeenCalledWith([
-        {
+      expect(saveAddressBookSpy).toHaveBeenCalledWith({
+        type: "update",
+        previousName: mockNamedAddressIcp.name,
+        address: {
           name: mockNamedAddressIcp.name,
           address: { Icrc1: validIcrc1Address },
         },
-        mockNamedAddressIcrc1,
-      ]);
+      });
     });
   });
 
@@ -791,12 +814,13 @@ describe("AddAddressModal", () => {
       const saveButton = queryByTestId("save-address-button");
       await fireEvent.click(saveButton);
 
-      expect(saveAddressBookSpy).toHaveBeenCalledWith([
-        {
+      expect(saveAddressBookSpy).toHaveBeenCalledWith({
+        type: "add",
+        address: {
           name: "My Test Address",
           address: { Icp: validIcpAddress },
         },
-      ]);
+      });
 
       expect(onClose).toHaveBeenCalled();
     });

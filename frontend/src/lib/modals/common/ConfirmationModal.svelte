@@ -5,6 +5,7 @@
 
   export let testId = "confirmation-modal-component";
   export let yesLabel: string | undefined = undefined;
+  export let disabledConfirm = false;
 
   const dispatch = createEventDispatcher();
 
@@ -27,7 +28,7 @@
       </button>
       <button
         data-tid="confirm-yes"
-        disabled={$busy}
+        disabled={$busy || disabledConfirm}
         class="primary"
         on:click={() => dispatch("nnsConfirm")}
       >
