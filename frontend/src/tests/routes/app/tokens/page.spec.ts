@@ -181,6 +181,9 @@ describe("Tokens route", () => {
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
             [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: mockCkUSDCToken,
+            // sns tokens
+            [ledgerCanisterIdTetris.toText()]: tetrisToken,
+            [ledgerCanisterIdPacman.toText()]: pacmanToken,
             // imported tokens
             [importedToken1Id.toText()]: importedToken1Metadata,
             [importedToken2Id.toText()]: importedToken2Metadata,
