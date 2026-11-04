@@ -15,5 +15,5 @@ clap.define short=l long=lines desc="The number of lines of output" variable=DFX
 source "$(clap.build)"
 
 # The network and the environment have the same name, see icp.yaml.
-icp canister call sns_aggregator tail_log '(null)' --environment "$DFX_NETWORK" |
+icp canister call sns_aggregator tail_log '(null)' --query --environment "$DFX_NETWORK" |
   idl2json | jq -r | tail -n "$DFX_LINES"
