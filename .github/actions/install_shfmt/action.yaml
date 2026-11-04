@@ -1,0 +1,16 @@
+name: 'Installs shfmt'
+description: |
+  Installs a pinned `shfmt` release binary from GitHub
+runs:
+  using: "composite"
+  steps:
+    - name: Install shfmt
+      shell: bash
+      env:
+        SHFMT_VERSION: "3.12.0"
+        SHFMT_SHA256: "d9fbb2a9c33d13f47e7618cf362a914d029d02a6df124064fff04fd688a745ea"
+      run: |
+        curl -L --proto '=https' --tlsv1.2 -sSf --retry 5 -o "$RUNNER_TEMP/shfmt" "https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64"
+        echo "$SHFMT_SHA256  $RUNNER_TEMP/shfmt" | sha256sum -c -
+        sudo install -m 755 "$RUNNER_TEMP/shfmt" /usr/local/bin/shfmt
+        shfmt --version
