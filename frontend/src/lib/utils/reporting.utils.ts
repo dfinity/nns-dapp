@@ -84,12 +84,22 @@ const escapeCsvValue = (value: unknown): string => {
     return stringValue;
   }
 
-  const patternForSpecialCharacters = /[",\r\n=@|]/;
+  // A signed amount such as "+1.00" or "-1'234.5678" is a number, not a
+  // formula. A spreadsheet shows the quote prefix literally, so these cells
+  // stay as they are.
+  const patternForSignedNumber = /^[+-]\d[\d'.]*$/;
+  if (patternForSignedNumber.test(stringValue)) {
+    return stringValue;
+  }
+
+  const patternForSpecialCharacters = /[",\r\n\t=+\-@|]/;
   if (!patternForSpecialCharacters.test(stringValue)) {
     return stringValue;
   }
 
-  const formulaInjectionCharacters = "=@|";
+  // Excel and LibreOffice read a cell that starts with one of these
+  // characters as a formula.
+  const formulaInjectionCharacters = "=+-@|\t\r\n";
   const characterToBreakFormula = "'";
   if (formulaInjectionCharacters.includes(stringValue[0])) {
     stringValue = `${characterToBreakFormula}${stringValue}`;
