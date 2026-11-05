@@ -232,8 +232,9 @@ jobs:
           scripts/dfx-wasm-metadata-add.test --verbose
       - name: Verify that metrics are present
         run: scripts/nns-dapp/e2e-test-metrics-present
-      # TODO: Test the TVL again. scripts/nns-dapp/test-tvl needs a mock
-      # exchange rate canister, which the icp-cli network does not have.
+      - name: Test TVL
+        run: |
+          scripts/nns-dapp/test-tvl --nns_dapp_wasm nns-dapp.wasm.gz --nns_dapp_arg nns-dapp-arg-local.did
       - name: Test import canister IDs
         run: |
           ./scripts/canister_ids --import-from-index-html "$(scripts/dfx-canister-url --network local nns-dapp)/" --network local --create

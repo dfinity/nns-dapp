@@ -31,8 +31,8 @@ export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url --network local nns-da
 npm run test-e2e
 ```
 
-Some tests are skipped, because they need an SNS project, ckBTC or a test
-token, which the local network does not have.
+Some tests are skipped, because they need an SNS project or ckBTC, which the
+local network does not have.
 
 # Debugging
 
