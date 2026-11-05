@@ -9,6 +9,7 @@ import {
   actionableSnsProposalsStore,
   failedActionableSnsesStore,
 } from "$lib/stores/actionable-sns-proposals.store";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { mapEntries } from "$lib/utils/utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
@@ -69,11 +70,18 @@ export const actionableProposalsLoadedStore: Readable<boolean> = derived(
     actionableSnsProposalsStore,
     snsProjectsCommittedStore,
     failedActionableSnsesStore,
+    snsAggregatorStore,
   ],
-  ([nnsProposals, snsProposals, committedSnsProjects, failedSnses]) =>
+  ([
+    nnsProposals,
+    snsProposals,
+    committedSnsProjects,
+    failedSnses,
+    snsAggregator,
+  ]) =>
     nonNullish(nnsProposals.proposals) &&
-    // It is expected to have at least one SNS to cover when the projects have not yet been loaded.
-    committedSnsProjects.length > 0 &&
+    // The SNS projects must be loaded. The list can be empty on a test network.
+    nonNullish(snsAggregator.data) &&
     committedSnsProjects.length ===
       Object.keys(snsProposals).length + failedSnses.length
 );

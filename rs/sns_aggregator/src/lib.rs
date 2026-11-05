@@ -7,6 +7,7 @@
 pub mod assets;
 mod conversion;
 mod state;
+mod time;
 mod types;
 mod upstream;
 
