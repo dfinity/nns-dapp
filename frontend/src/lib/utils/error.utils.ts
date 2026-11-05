@@ -194,9 +194,8 @@ export const isPayloadSizeError = (err: unknown): boolean => {
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;
 
-// TOOD: Rename the function for generic errors
-export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
-  if (!(error instanceof AgentError)) return false;
+const getRejectErrorCode = (error: unknown): string | undefined => {
+  if (!(error instanceof AgentError)) return undefined;
 
   const { code } = error;
 
@@ -204,12 +203,23 @@ export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
     !(code instanceof UncertifiedRejectErrorCode) &&
     !(code instanceof CertifiedRejectErrorCode)
   )
-    return false;
+    return undefined;
 
-  const { rejectErrorCode } = code;
+  return code.rejectErrorCode;
+};
+
+// TOOD: Rename the function for generic errors
+export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
+  const rejectErrorCode = getRejectErrorCode(error);
 
   if (isNullish(rejectErrorCode)) return false;
 
   const errorPrefix = "IC0";
   return rejectErrorCode.startsWith(errorPrefix);
 };
+
+/**
+ * The IC rejects a call to a method that the canister does not have with `IC0536`.
+ */
+export const isMethodNotFoundError = (error: unknown): boolean =>
+  getRejectErrorCode(error) === "IC0536";

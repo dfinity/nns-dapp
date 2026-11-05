@@ -4,6 +4,7 @@ import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.erro
 import {
   errorToString,
   isCanisterOutOfCyclesError,
+  isMethodNotFoundError,
   isMethodNotSupportedError,
   isPayloadSizeError,
   toToastError,
@@ -205,6 +206,49 @@ describe("error-utils", () => {
       expect(isCanisterOutOfCyclesError(123)).toBe(false);
       expect(isCanisterOutOfCyclesError({})).toBe(false);
       expect(isCanisterOutOfCyclesError({ type: "unknown" })).toBe(false);
+    });
+  });
+
+  describe("isMethodNotFoundError", () => {
+    const rejectError = (rejectErrorCode: string | undefined) =>
+      new AgentError(
+        new UncertifiedRejectErrorCode(
+          requestIdOf({}),
+          ReplicaRejectCode.CanisterError,
+          "Canister has no query method 'list_topics'",
+          rejectErrorCode,
+          []
+        ),
+        ErrorKindEnum.Unknown
+      );
+
+    it("should return true for a query error with the IC0536 code", () => {
+      expect(isMethodNotFoundError(rejectError("IC0536"))).toBe(true);
+    });
+
+    it("should return true for an update error with the IC0536 code", () => {
+      const updateError = new AgentError(
+        new CertifiedRejectErrorCode(
+          requestIdOf({}),
+          ReplicaRejectCode.CanisterError,
+          "Canister has no update method 'list_topics'",
+          "IC0536"
+        ),
+        ErrorKindEnum.Unknown
+      );
+
+      expect(isMethodNotFoundError(updateError)).toBe(true);
+    });
+
+    it("should return false for other reject codes", () => {
+      expect(isMethodNotFoundError(rejectError("IC0503"))).toBe(false);
+      expect(isMethodNotFoundError(rejectError(undefined))).toBe(false);
+    });
+
+    it("should return false for other errors", () => {
+      expect(isMethodNotFoundError(new Error("Failed to fetch"))).toBe(false);
+      expect(isMethodNotFoundError("string error")).toBe(false);
+      expect(isMethodNotFoundError(undefined)).toBe(false);
     });
   });
 });
