@@ -179,14 +179,9 @@ describe("error-utils", () => {
       ).toBe(true);
     });
 
-    it("should return true for a server error", () => {
-      expect(isUnknownOutcomeError(httpError(500))).toBe(true);
+    it("should return true for an HTTP error", () => {
+      expect(isUnknownOutcomeError(httpError(429))).toBe(true);
       expect(isUnknownOutcomeError(httpError(503))).toBe(true);
-    });
-
-    it("should return false for a client error", () => {
-      expect(isUnknownOutcomeError(httpError(400))).toBe(false);
-      expect(isUnknownOutcomeError(httpError(429))).toBe(false);
     });
 
     it("should return false for a reject", () => {

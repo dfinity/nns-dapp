@@ -34,7 +34,6 @@ import {
   AgentError,
   CertifiedRejectErrorCode,
   ErrorKindEnum,
-  HttpErrorCode,
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 
@@ -197,20 +196,14 @@ export const isPayloadSizeError = (err: unknown): boolean => {
  * True if the agent stopped without a definite answer from the IC.
  * The canister may have executed the call, so a retry can repeat its effect.
  */
-export const isUnknownOutcomeError = (err: unknown): boolean => {
-  if (!(err instanceof AgentError)) return false;
-
-  const { code, kind } = err;
-
-  if (code instanceof HttpErrorCode) return code.status >= 500;
-
-  return [
+export const isUnknownOutcomeError = (err: unknown): boolean =>
+  err instanceof AgentError &&
+  [
     ErrorKindEnum.Protocol,
     ErrorKindEnum.Transport,
     ErrorKindEnum.Trust,
     ErrorKindEnum.Unknown,
-  ].includes(kind);
-};
+  ].includes(err.kind);
 
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;
