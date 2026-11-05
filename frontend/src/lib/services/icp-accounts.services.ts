@@ -352,7 +352,9 @@ export const transferICP = async ({
         amount: tokenAmount.toE8s(),
         fee: feeE8s,
         // A legacy transfer with no memo uses the memo 0.
-        memo: (icrc1Memo ?? icpMemo ?? 0n).toString(),
+        memo: nonNullish(icrc1Memo)
+          ? `icrc1:${icrc1Memo}`
+          : `icp:${icpMemo ?? 0n}`,
       })
     );
     const { createdAt } = attempt;

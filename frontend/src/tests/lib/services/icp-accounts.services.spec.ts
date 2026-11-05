@@ -909,6 +909,36 @@ describe("icp-accounts.services", () => {
         );
       });
 
+      it("should keep the attempt apart from a legacy memo with the same value", async () => {
+        localStorage.clear();
+        spySendICP.mockClear();
+        spySendIcpIcrc1.mockClear();
+        const hexAddress = toIcpAccountIdentifier(
+          mockSnsMainAccount.identifier
+        );
+        spySendICP.mockRejectedValueOnce(
+          TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+        );
+        await transferICP({
+          ...icrcParams,
+          destinationAddress: hexAddress,
+          memo: "49",
+        });
+        vi.setSystemTime(Date.now() + 1_000);
+        await transferICP({ ...icrcParams, memo: "1" });
+        await transferICP({
+          ...icrcParams,
+          destinationAddress: hexAddress,
+          memo: "49",
+        });
+
+        const { calls } = spySendICP.mock;
+        expect(calls[1][0].createdAt).toEqual(calls[0][0].createdAt);
+        expect(spySendIcpIcrc1.mock.calls[0][0].createdAt).not.toEqual(
+          calls[0][0].createdAt
+        );
+      });
+
       it("should report a duplicate as already sent", async () => {
         spySendIcpIcrc1.mockRejectedValueOnce(new TxDuplicateError(10n));
 
