@@ -34,11 +34,6 @@ import {
 } from "$lib/stores/icp-account-details.store";
 import type { SingleMutationStore } from "$lib/stores/queued-store";
 import { toastsError } from "$lib/stores/toasts.store";
-import {
-  toTransferKey,
-  unknownTransfersStore,
-  type TransferAttempt,
-} from "$lib/stores/unknown-transfers.store";
 import type { Account, AccountIdentifierText } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
@@ -56,6 +51,12 @@ import {
   isValidIcpMemo,
   isValidIcrc1Memo,
 } from "$lib/utils/icp-transactions.utils";
+import {
+  clearTransferAttempt,
+  startTransferAttempt,
+  toTransferKey,
+  type TransferAttempt,
+} from "$lib/utils/transfer-attempts.utils";
 import {
   cancelPoll,
   poll,
@@ -343,14 +344,14 @@ export const transferICP = async ({
         ? encodeMemoToIcrc1(memo)
         : undefined;
 
-    attempt = unknownTransfersStore.startAttempt(
+    attempt = startTransferAttempt(
       toTransferKey({
         ledgerCanisterId: LEDGER_CANISTER_ID.toText(),
         source: identifier,
         destination: to,
         amount: tokenAmount.toE8s(),
         fee: feeE8s,
-        memo,
+        memo: (icpMemo ?? icrc1Memo)?.toString(),
       })
     );
     const { createdAt } = attempt;
@@ -375,7 +376,7 @@ export const transferICP = async ({
           createdAt,
         }));
 
-    unknownTransfersStore.remove(attempt.key);
+    clearTransferAttempt(attempt.key);
 
     await loadTransferBalances({ identifier, to });
 
@@ -384,22 +385,25 @@ export const transferICP = async ({
     const { identifier } = sourceAccount;
 
     if (attempt?.isRetry === true && err instanceof TxDuplicateError) {
-      unknownTransfersStore.remove(attempt.key);
+      clearTransferAttempt(attempt.key);
       await loadTransferBalances({ identifier, to });
 
       return { success: true, alreadySent: true };
     }
 
-    if (nonNullish(attempt) && err instanceof TxTooOldError) {
-      unknownTransfersStore.remove(attempt.key);
+    const unknownOutcome = isUnknownOutcomeError(err);
+
+    // After a rejected retry, an earlier attempt can still execute.
+    if (
+      nonNullish(attempt) &&
+      (err instanceof TxTooOldError || (!attempt.isRetry && !unknownOutcome))
+    ) {
+      clearTransferAttempt(attempt.key);
     }
 
     const result = transferError(err);
 
-    if (isUnknownOutcomeError(err)) {
-      if (nonNullish(attempt)) {
-        unknownTransfersStore.add(attempt);
-      }
+    if (unknownOutcome) {
       await loadTransferBalances({ identifier, to });
     }
 

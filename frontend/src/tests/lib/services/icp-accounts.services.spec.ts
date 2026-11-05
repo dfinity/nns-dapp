@@ -6,6 +6,7 @@ import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import * as icpLedgerServicesProxy from "$lib/proxy/icp-ledger.services.proxy";
@@ -26,7 +27,6 @@ import {
 } from "$lib/services/icp-accounts.services";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
-import { unknownTransfersStore } from "$lib/stores/unknown-transfers.store";
 import type { Account } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
@@ -600,7 +600,7 @@ describe("icp-accounts.services", () => {
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
       spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(20n);
-      unknownTransfersStore.resetForTesting();
+      localStorage.clear();
     });
 
     it("should transfer ICP", async () => {
@@ -778,6 +778,16 @@ describe("icp-accounts.services", () => {
         expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
       });
 
+      it("should reuse the timestamp for an equivalent ICP memo", async () => {
+        localStorage.clear();
+        spySendICP.mockClear();
+        spySendICP.mockRejectedValueOnce(unknownOutcomeError);
+        await transferICP({ ...transferICPParams, memo: "1" });
+        await transferICP({ ...transferICPParams, memo: "01" });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
       it("should keep the timestamp after another unknown outcome", async () => {
         spySendICP.mockRejectedValueOnce(unknownOutcomeError);
         await transferICP(transferICPParams);
@@ -833,6 +843,30 @@ describe("icp-accounts.services", () => {
 
         expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
       });
+    });
+
+    it("should save the attempt before the ledger call", async () => {
+      let saved: string | null = null;
+      spySendICP.mockImplementationOnce(async () => {
+        saved = localStorage.getItem(StoreLocalStorageKey.TransferAttempts);
+        return 20n;
+      });
+
+      await transferICP(transferICPParams);
+
+      expect(saved).toContain(transferICPParams.destinationAddress);
+    });
+
+    it("should use a new timestamp after a rejected first attempt", async () => {
+      vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+      spySendICP.mockRejectedValueOnce(new Error("test"));
+      await transferICP(transferICPParams);
+      vi.setSystemTime(Date.now() + 1_000);
+      await transferICP(transferICPParams);
+      vi.useRealTimers();
+
+      const [[first], [second]] = spySendICP.mock.calls;
+      expect(second.createdAt).not.toEqual(first.createdAt);
     });
 
     it("should report a duplicate of a new transfer as a failure", async () => {

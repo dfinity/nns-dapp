@@ -21,7 +21,6 @@ import {
 } from "$lib/stores/imported-tokens.store";
 import { outOfCyclesCanistersStore } from "$lib/stores/out-of-cycles-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { unknownTransfersStore } from "$lib/stores/unknown-transfers.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
@@ -763,7 +762,7 @@ describe("icrc-accounts-services", () => {
     });
 
     beforeEach(() => {
-      unknownTransfersStore.resetForTesting();
+      localStorage.clear();
     });
 
     it("calls icrcTransfer from icrc ledger api", async () => {
