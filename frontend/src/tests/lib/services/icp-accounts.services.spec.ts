@@ -861,6 +861,72 @@ describe("icp-accounts.services", () => {
       });
     });
 
+    describe("when the user repeats an ICRC-1 transfer with an unknown outcome", () => {
+      const icrcParams: NewTransaction = {
+        ...transferICPParams,
+        destinationAddress: mockSnsMainAccount.identifier,
+      };
+      let spySendIcpIcrc1: MockInstance;
+
+      beforeEach(async () => {
+        vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+        setAccountsForTesting({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+        });
+        spySendIcpIcrc1 = vi
+          .spyOn(ledgerApi, "sendIcpIcrc1")
+          .mockResolvedValue(20n)
+          .mockRejectedValueOnce(
+            TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+          );
+        await transferICP(icrcParams);
+        vi.setSystemTime(Date.now() + 1_000);
+        toastsStore.reset();
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it("should reuse the timestamp", async () => {
+        await transferICP(icrcParams);
+
+        const [[first], [second]] = spySendIcpIcrc1.mock.calls;
+        expect(second.createdAt).toEqual(first.createdAt);
+      });
+
+      it("should reuse the timestamp for the same account in hex", async () => {
+        await transferICP({
+          ...icrcParams,
+          destinationAddress: toIcpAccountIdentifier(
+            mockSnsMainAccount.identifier
+          ),
+        });
+
+        expect(spySendICP.mock.calls[0][0].createdAt).toEqual(
+          spySendIcpIcrc1.mock.calls[0][0].createdAt
+        );
+      });
+
+      it("should report a duplicate as already sent", async () => {
+        spySendIcpIcrc1.mockRejectedValueOnce(new TxDuplicateError(10n));
+
+        const result = await transferICP(icrcParams);
+
+        expect(result).toEqual({ success: true, alreadySent: true });
+        expect(get(toastsStore)).toEqual([]);
+      });
+
+      it("should use a new timestamp after the retry succeeds", async () => {
+        await transferICP(icrcParams);
+        await transferICP(icrcParams);
+
+        const { calls } = spySendIcpIcrc1.mock;
+        expect(calls[2][0].createdAt).not.toEqual(calls[0][0].createdAt);
+      });
+    });
+
     it("should save the attempt before the ledger call", async () => {
       let saved: string | null = null;
       spySendICP.mockImplementationOnce(async () => {
