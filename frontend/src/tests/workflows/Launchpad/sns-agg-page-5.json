@@ -56,19 +56,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 12707777371395,
-              "amount_e8s": 180206074351,
+              "amount_e8s": 204354984446,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793237860
+              "timestamp_seconds": 1793846720
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 400373692014805,
+              "amount_e8s": 394373692004805,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": {
@@ -81,30 +81,51 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793237860
+              "timestamp_seconds": 1793846720
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 652792311993220,
-            "timestamp_seconds": 1793237860
+            "governance_total_potential_voting_power": 658717738893698,
+            "timestamp_seconds": 1793846720
           },
-          "last_ledger_block_timestamp": 1793240567,
-          "num_recently_executed_proposals": 28,
-          "num_recently_submitted_proposals": 31,
+          "last_ledger_block_timestamp": 1793844510,
+          "num_recently_executed_proposals": 48,
+          "num_recently_submitted_proposals": 48,
           "genesis_timestamp_seconds": 1746713375
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793196580,
-      "end_timestamp_seconds": 1793196575,
+      "actual_timestamp_seconds": 1793801379,
+      "end_timestamp_seconds": 1793801375,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 538,
+      "round": 545,
       "settled_proposals": [
         {
-          "id": 531
+          "id": 534
+        },
+        {
+          "id": 536
+        },
+        {
+          "id": 537
+        },
+        {
+          "id": 538
+        },
+        {
+          "id": 539
+        },
+        {
+          "id": 540
+        },
+        {
+          "id": 541
+        },
+        {
+          "id": 542
         }
       ]
     },
@@ -1180,6 +1201,118 @@
               "target_method_name": "snsDeregister"
             }
           }
+        },
+        {
+          "id": 4014,
+          "name": "ICPSwap TACO/ICP: decreaseLiquidity",
+          "description": "Calls decreaseLiquidity on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Removes liquidity from a position; the tokens go to SNS governance's balance inside the pool.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+              "validator_method_name": "validate_icpswap_decreaseLiquidity",
+              "target_method_name": "decreaseLiquidity"
+            }
+          }
+        },
+        {
+          "id": 4015,
+          "name": "ICPSwap TACO/ICP: claim",
+          "description": "Calls claim on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Collects a position's earned fees into SNS governance's balance inside the pool.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+              "validator_method_name": "validate_icpswap_claim",
+              "target_method_name": "claim"
+            }
+          }
+        },
+        {
+          "id": 4016,
+          "name": "ICPSwap TACO/ICP: withdraw",
+          "description": "Calls withdraw on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Withdraws a token from the pool to SNS governance's default account (the ICP treasury for ICP). The validator refuses TACO, which would be burned this way.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+              "validator_method_name": "validate_icpswap_withdraw",
+              "target_method_name": "withdraw"
+            }
+          }
+        },
+        {
+          "id": 4017,
+          "name": "ICPSwap TACO/ICP: withdrawToSubaccount",
+          "description": "Calls withdrawToSubaccount on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Withdraws TACO from the pool to the SNS TACO treasury subaccount. The validator only allows TACO to that subaccount.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+              "validator_method_name": "validate_icpswap_withdrawToSubaccount",
+              "target_method_name": "withdrawToSubaccount"
+            }
+          }
+        },
+        {
+          "id": 4018,
+          "name": "TACO Exchange: addLiquidity",
+          "description": "Calls addLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Adds full-range liquidity from two deposits (TACO and ICP block indexes). Any part the pool can't use is refunded.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+              "validator_method_name": "validate_exchange_addLiquidity",
+              "target_method_name": "addLiquidity"
+            }
+          }
+        },
+        {
+          "id": 4019,
+          "name": "TACO Exchange: addConcentratedLiquidity",
+          "description": "Calls addConcentratedLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Adds liquidity in a price range from two deposits. Bounds are the price (token1 per token0) times 10^60.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+              "validator_method_name": "validate_exchange_addConcentratedLiquidity",
+              "target_method_name": "addConcentratedLiquidity"
+            }
+          }
+        },
+        {
+          "id": 4020,
+          "name": "TACO Exchange: removeLiquidity",
+          "description": "Calls removeLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Removes full-range liquidity, with its share of LP fees.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+              "validator_method_name": "validate_exchange_removeLiquidity",
+              "target_method_name": "removeLiquidity"
+            }
+          }
+        },
+        {
+          "id": 4021,
+          "name": "TACO Exchange: removeConcentratedLiquidity",
+          "description": "Calls removeConcentratedLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Removes liquidity from a price-range position, with its share of LP fees.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+              "validator_method_name": "validate_exchange_removeConcentratedLiquidity",
+              "target_method_name": "removeConcentratedLiquidity"
+            }
+          }
         }
       ]
     },
@@ -1360,7 +1493,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 776168937848394,
+    "icrc1_total_supply": 776164185413394,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -1967,6 +2100,118 @@
                   "target_canister_id": "o6ncl-lyaaa-aaaan-q6dua-cai",
                   "validator_method_name": "validate_transfer_nacho_treasury",
                   "target_method_name": "icrc1_transfer"
+                }
+              }
+            },
+            {
+              "id": 4014,
+              "name": "ICPSwap TACO/ICP: decreaseLiquidity",
+              "description": "Calls decreaseLiquidity on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Removes liquidity from a position; the tokens go to SNS governance's balance inside the pool.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+                  "validator_method_name": "validate_icpswap_decreaseLiquidity",
+                  "target_method_name": "decreaseLiquidity"
+                }
+              }
+            },
+            {
+              "id": 4015,
+              "name": "ICPSwap TACO/ICP: claim",
+              "description": "Calls claim on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Collects a position's earned fees into SNS governance's balance inside the pool.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+                  "validator_method_name": "validate_icpswap_claim",
+                  "target_method_name": "claim"
+                }
+              }
+            },
+            {
+              "id": 4016,
+              "name": "ICPSwap TACO/ICP: withdraw",
+              "description": "Calls withdraw on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Withdraws a token from the pool to SNS governance's default account (the ICP treasury for ICP). The validator refuses TACO, which would be burned this way.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+                  "validator_method_name": "validate_icpswap_withdraw",
+                  "target_method_name": "withdraw"
+                }
+              }
+            },
+            {
+              "id": 4017,
+              "name": "ICPSwap TACO/ICP: withdrawToSubaccount",
+              "description": "Calls withdrawToSubaccount on the ICPSwap TACO/ICP pool vhoia-myaaa-aaaar-qbmja-cai. Withdraws TACO from the pool to the SNS TACO treasury subaccount. The validator only allows TACO to that subaccount.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vhoia-myaaa-aaaar-qbmja-cai",
+                  "validator_method_name": "validate_icpswap_withdrawToSubaccount",
+                  "target_method_name": "withdrawToSubaccount"
+                }
+              }
+            },
+            {
+              "id": 4018,
+              "name": "TACO Exchange: addLiquidity",
+              "description": "Calls addLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Adds full-range liquidity from two deposits (TACO and ICP block indexes). Any part the pool can't use is refunded.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+                  "validator_method_name": "validate_exchange_addLiquidity",
+                  "target_method_name": "addLiquidity"
+                }
+              }
+            },
+            {
+              "id": 4019,
+              "name": "TACO Exchange: addConcentratedLiquidity",
+              "description": "Calls addConcentratedLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Adds liquidity in a price range from two deposits. Bounds are the price (token1 per token0) times 10^60.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+                  "validator_method_name": "validate_exchange_addConcentratedLiquidity",
+                  "target_method_name": "addConcentratedLiquidity"
+                }
+              }
+            },
+            {
+              "id": 4020,
+              "name": "TACO Exchange: removeLiquidity",
+              "description": "Calls removeLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Removes full-range liquidity, with its share of LP fees.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+                  "validator_method_name": "validate_exchange_removeLiquidity",
+                  "target_method_name": "removeLiquidity"
+                }
+              }
+            },
+            {
+              "id": 4021,
+              "name": "TACO Exchange: removeConcentratedLiquidity",
+              "description": "Calls removeConcentratedLiquidity on the TACO exchange qioex-5iaaa-aaaan-q52ba-cai. Removes liquidity from a price-range position, with its share of LP fees.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "qioex-5iaaa-aaaan-q52ba-cai",
+                  "validator_method_name": "validate_exchange_removeConcentratedLiquidity",
+                  "target_method_name": "removeConcentratedLiquidity"
                 }
               }
             }
@@ -2622,14 +2867,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 348736271571,
-              "amount_e8s": 97149967788,
+              "amount_e8s": 97183922010,
               "account": {
                 "owner": "kri5s-daaaa-aaaaq-aae6q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793239106
+              "timestamp_seconds": 1793844370
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -2647,27 +2892,27 @@
               },
               "ledger_canister_id": "kylwo-viaaa-aaaaq-aae7a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793239106
+              "timestamp_seconds": 1793844370
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 64207777318887,
-            "timestamp_seconds": 1793239106
+            "governance_total_potential_voting_power": 64364147292049,
+            "timestamp_seconds": 1793844370
           },
-          "last_ledger_block_timestamp": 1793239517,
+          "last_ledger_block_timestamp": 1793827181,
           "num_recently_executed_proposals": 2,
-          "num_recently_submitted_proposals": 2,
+          "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1763609136
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793157945,
-      "end_timestamp_seconds": 1793157936,
-      "total_available_e8s_equivalent": 86280573465,
+      "actual_timestamp_seconds": 1793762742,
+      "end_timestamp_seconds": 1793762736,
+      "total_available_e8s_equivalent": 97990239092,
       "distributed_e8s_equivalent": 0,
-      "round": 342,
+      "round": 349,
       "settled_proposals": []
     },
     "parameters": {
@@ -3337,7 +3582,7 @@
       ]
     ],
     "icrc1_fee": [420],
-    "icrc1_total_supply": 31061938013848,
+    "icrc1_total_supply": 31065618481952,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4499,7 +4744,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793237761
+              "timestamp_seconds": 1793846680
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -4517,27 +4762,27 @@
               },
               "ledger_canister_id": "a6urt-aaaaa-aaaaq-aafeq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793237761
+              "timestamp_seconds": 1793846680
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 77316385162972,
-            "timestamp_seconds": 1793237761
+            "governance_total_potential_voting_power": 77278724098719,
+            "timestamp_seconds": 1793846680
           },
-          "last_ledger_block_timestamp": 1793108492,
+          "last_ledger_block_timestamp": 1793719535,
           "num_recently_executed_proposals": 3,
-          "num_recently_submitted_proposals": 4,
+          "num_recently_submitted_proposals": 5,
           "genesis_timestamp_seconds": 1787414928
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793203731,
-      "end_timestamp_seconds": 1793203728,
+      "actual_timestamp_seconds": 1793808530,
+      "end_timestamp_seconds": 1793808528,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 67,
+      "round": 74,
       "settled_proposals": []
     },
     "parameters": {
@@ -4881,7 +5126,7 @@
       ]
     ],
     "icrc1_fee": [10000000],
-    "icrc1_total_supply": 999993090000000,
+    "icrc1_total_supply": 999992990000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 2500000000,
@@ -5226,7 +5471,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793237040
+              "timestamp_seconds": 1793845890
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -5244,12 +5489,12 @@
               },
               "ledger_canister_id": "alta6-biaaa-aaaaq-aafha-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793237040
+              "timestamp_seconds": 1793845890
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 3875385084015582,
-            "timestamp_seconds": 1793237040
+            "governance_total_potential_voting_power": 3880027621210373,
+            "timestamp_seconds": 1793845890
           },
           "last_ledger_block_timestamp": 1789919222,
           "num_recently_executed_proposals": 0,
@@ -5260,11 +5505,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793202420,
-      "end_timestamp_seconds": 1793202417,
+      "actual_timestamp_seconds": 1793807220,
+      "end_timestamp_seconds": 1793807217,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 38,
+      "round": 45,
       "settled_proposals": []
     },
     "parameters": {
