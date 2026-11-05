@@ -117,12 +117,25 @@ describe("transfer-attempts.utils", () => {
 
   describe("clearTransferAttempt", () => {
     it("should clear only the attempt of the key", () => {
-      startTransferAttempt(key);
+      const attempt = startTransferAttempt(key);
       startTransferAttempt("other");
-      clearTransferAttempt(key);
+      clearTransferAttempt(attempt);
 
       expect(startTransferAttempt(key).isRetry).toBe(false);
       expect(startTransferAttempt("other").isRetry).toBe(true);
+    });
+
+    it("should keep a newer attempt with the same key", () => {
+      const attempt = startTransferAttempt(key);
+      const createdAt = attempt.createdAt + 1n;
+      saveFromOtherTab({ [key]: createdAt });
+      clearTransferAttempt(attempt);
+
+      expect(startTransferAttempt(key)).toEqual({
+        key,
+        createdAt,
+        isRetry: true,
+      });
     });
   });
 });

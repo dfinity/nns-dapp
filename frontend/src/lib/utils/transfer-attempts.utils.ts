@@ -83,7 +83,12 @@ export const startTransferAttempt = (key: string): TransferAttempt => {
   return { key, createdAt, isRetry: nonNullish(savedCreatedAt) };
 };
 
-export const clearTransferAttempt = (key: string) =>
+/** Keeps a newer attempt with the same key, for example from another tab. */
+export const clearTransferAttempt = ({ key, createdAt }: TransferAttempt) =>
   writeAttempts(
-    filterAttempts(readAttempts(), ([entryKey]) => entryKey !== key)
+    filterAttempts(
+      readAttempts(),
+      ([entryKey, entryCreatedAt]) =>
+        entryKey !== key || entryCreatedAt !== createdAt
+    )
   );

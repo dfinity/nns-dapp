@@ -376,7 +376,7 @@ export const transferICP = async ({
           createdAt,
         }));
 
-    clearTransferAttempt(attempt.key);
+    clearTransferAttempt(attempt);
 
     await loadTransferBalances({ identifier, to });
 
@@ -385,7 +385,7 @@ export const transferICP = async ({
     const { identifier } = sourceAccount;
 
     if (attempt?.isRetry === true && err instanceof TxDuplicateError) {
-      clearTransferAttempt(attempt.key);
+      clearTransferAttempt(attempt);
       await loadTransferBalances({ identifier, to });
 
       return { success: true, alreadySent: true };
@@ -398,7 +398,7 @@ export const transferICP = async ({
       nonNullish(attempt) &&
       (err instanceof TxTooOldError || (!attempt.isRetry && !unknownOutcome))
     ) {
-      clearTransferAttempt(attempt.key);
+      clearTransferAttempt(attempt);
     }
 
     const result = transferError(err);

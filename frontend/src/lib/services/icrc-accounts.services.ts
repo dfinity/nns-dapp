@@ -319,7 +319,7 @@ export const transferTokens = async ({
       createdAt: attempt.createdAt,
     });
 
-    clearTransferAttempt(attempt.key);
+    clearTransferAttempt(attempt);
 
     await loadAccounts({ ledgerCanisterId });
 
@@ -330,7 +330,7 @@ export const transferTokens = async ({
       err instanceof IcrcTransferError &&
       "Duplicate" in err.errorType
     ) {
-      clearTransferAttempt(attempt.key);
+      clearTransferAttempt(attempt);
       await loadAccounts({ ledgerCanisterId });
 
       return {
@@ -348,7 +348,7 @@ export const transferTokens = async ({
       nonNullish(attempt) &&
       (tooOld || (!attempt.isRetry && !unknownOutcome))
     ) {
-      clearTransferAttempt(attempt.key);
+      clearTransferAttempt(attempt);
     }
 
     toastsError(
