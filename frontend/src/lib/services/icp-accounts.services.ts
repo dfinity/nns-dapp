@@ -69,7 +69,10 @@ import {
   TxDuplicateError,
   TxTooOldError,
 } from "@icp-sdk/canisters/ledger/icp";
-import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import {
+  decodeIcrcAccount,
+  encodeIcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 
@@ -348,10 +351,15 @@ export const transferICP = async ({
       toTransferKey({
         ledgerCanisterId: LEDGER_CANISTER_ID.toText(),
         source: identifier,
-        destination: to,
+        destination: validIcrcAddress
+          ? encodeIcrcAccount(decodeIcrcAccount(to))
+          : to.toLowerCase(),
         amount: tokenAmount.toE8s(),
         fee: feeE8s,
-        memo: (icpMemo ?? icrc1Memo)?.toString(),
+        // A legacy transfer with no memo uses the memo 0.
+        memo: validIcrcAddress
+          ? icrc1Memo?.toString()
+          : (icpMemo ?? 0n).toString(),
       })
     );
     const { createdAt } = attempt;

@@ -788,6 +788,22 @@ describe("icp-accounts.services", () => {
         expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
       });
 
+      it("should reuse the timestamp for a destination in uppercase", async () => {
+        await transferICP({
+          ...transferICPParams,
+          destinationAddress:
+            transferICPParams.destinationAddress.toUpperCase(),
+        });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should reuse the timestamp for a zero ICP memo", async () => {
+        await transferICP({ ...transferICPParams, memo: "0" });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
       it("should keep the timestamp after another unknown outcome", async () => {
         spySendICP.mockRejectedValueOnce(unknownOutcomeError);
         await transferICP(transferICPParams);

@@ -888,6 +888,25 @@ describe("icrc-accounts-services", () => {
         expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
       });
 
+      it("should reuse the timestamp for an equivalent destination", async () => {
+        const destination = encodeIcrcAccount({
+          ...destinationAccount,
+          subaccount: new Uint8Array(32).fill(1, 31),
+        });
+        const subaccountParams = { ...params, destinationAddress: destination };
+        vi.mocked(ledgerApi.icrcTransfer).mockClear();
+        vi.mocked(ledgerApi.icrcTransfer).mockRejectedValueOnce(
+          TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+        );
+        await transferTokens(subaccountParams);
+        await transferTokens({
+          ...subaccountParams,
+          destinationAddress: destination.replace(/\.1$/, ".01"),
+        });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
       it("should use a new timestamp after the retry succeeds", async () => {
         await transferTokens(params);
         await transferTokens(params);

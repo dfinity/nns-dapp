@@ -303,7 +303,7 @@ export const transferTokens = async ({
       toTransferKey({
         ledgerCanisterId: ledgerCanisterId.toText(),
         source: source.identifier,
-        destination: destinationAddress,
+        destination: encodeIcrcAccount(to),
         amount: amountUlps,
         fee,
       })
