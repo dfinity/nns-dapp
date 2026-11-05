@@ -1,4 +1,5 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -52,6 +53,13 @@ export class SnsNeuronHotkeysCardPo extends BasePageObject {
 
   clickAddHotkey(): Promise<void> {
     return this.getAddHotkeyButtonPo().click();
+  }
+
+  getManageAllHotkeysLinkPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "manage-all-hotkeys-link",
+    });
   }
 
   async removeHotkey(principal: string): Promise<void> {

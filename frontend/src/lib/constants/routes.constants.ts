@@ -14,6 +14,7 @@ export enum AppPath {
   AddressBook = "/address-book",
   Tokens = "/tokens",
   Reporting = "/reporting",
+  Hotkeys = "/hotkeys",
   // We point to the home page to prevent different tracking for both pages
   Portfolio = "/",
 }

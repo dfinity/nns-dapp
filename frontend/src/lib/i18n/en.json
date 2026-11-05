@@ -164,6 +164,7 @@
     "privacy_mode_show": "Show Balance",
     "project_page": "Project Page",
     "address_book": "Address Book",
+    "hotkeys": "Hotkeys",
     "search": "Search"
   },
   "address_book": {
@@ -194,6 +195,15 @@
     "check_address_book_link": "Check out the address book!",
     "select_address_placeholder": "Select an address"
   },
+  "hotkeys": {
+    "description": "See the hotkeys of all your NNS and SNS neurons in one place.",
+    "hotkey": "Hotkey",
+    "projects": "Projects",
+    "neurons": "Neurons",
+    "empty_title": "No Hotkeys",
+    "empty_description": "To vote with your neurons from another dapp, add the principal id that you have in the other dapp as a hotkey.",
+    "manage_on_all_neurons": "Manage hotkeys on all neurons"
+  },
   "alfred": {
     "no_results": "No results found",
     "home_title": "Home",
@@ -212,6 +222,8 @@
     "address_book_description": "Manage your saved wallet addresses",
     "canisters_title": "Canisters",
     "canisters_description": "Manage your canisters",
+    "hotkeys_title": "Hotkeys",
+    "hotkeys_description": "Manage the hotkeys on all your neurons",
     "settings_title": "Settings",
     "settings_description": "Adjust your preferences",
     "principalId_title": "Copy principal ID",
