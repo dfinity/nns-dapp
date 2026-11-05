@@ -353,6 +353,7 @@
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier",
     "transaction_success": "Transaction completed.",
+    "transaction_already_sent": "This transaction already went through, so we did not send it again. To send the same amount again, repeat the transaction.",
     "rename": "Rename",
     "rename_linked_account": "Rename Linked Account",
     "rename_new_name_placeholder": "New Name",

@@ -14,6 +14,7 @@ import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
@@ -33,6 +34,11 @@ import {
 } from "$lib/stores/icp-account-details.store";
 import type { SingleMutationStore } from "$lib/stores/queued-store";
 import { toastsError } from "$lib/stores/toasts.store";
+import {
+  toTransferKey,
+  unknownTransfersStore,
+  type TransferAttempt,
+} from "$lib/stores/unknown-transfers.store";
 import type { Account, AccountIdentifierText } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
@@ -59,6 +65,7 @@ import {
 import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
 import {
   TxCreatedInFutureError,
+  TxDuplicateError,
   TxTooOldError,
 } from "@icp-sdk/canisters/ledger/icp";
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
@@ -298,7 +305,13 @@ export const transferICP = async ({
   destinationAddress: to,
   amount,
   memo,
-}: NewTransaction): Promise<{ success: boolean; err?: string }> => {
+}: NewTransaction): Promise<{
+  success: boolean;
+  err?: string;
+  alreadySent?: boolean;
+}> => {
+  let attempt: TransferAttempt | undefined;
+
   try {
     const { identifier, subAccount } = sourceAccount;
 
@@ -330,6 +343,18 @@ export const transferICP = async ({
         ? encodeMemoToIcrc1(memo)
         : undefined;
 
+    attempt = unknownTransfersStore.startAttempt(
+      toTransferKey({
+        ledgerCanisterId: LEDGER_CANISTER_ID.toText(),
+        source: identifier,
+        destination: to,
+        amount: tokenAmount.toE8s(),
+        fee: feeE8s,
+        memo,
+      })
+    );
+    const { createdAt } = attempt;
+
     await (validIcrcAddress
       ? sendIcpIcrc1({
           identity,
@@ -338,6 +363,7 @@ export const transferICP = async ({
           amount: tokenAmount,
           fee: feeE8s,
           icrc1Memo,
+          createdAt,
         })
       : sendICP({
           identity,
@@ -346,19 +372,35 @@ export const transferICP = async ({
           amount: tokenAmount.toE8s(),
           fee: feeE8s,
           memo: icpMemo,
+          createdAt,
         }));
+
+    unknownTransfersStore.remove(attempt.key);
 
     await loadTransferBalances({ identifier, to });
 
     return { success: true };
   } catch (err) {
+    const { identifier } = sourceAccount;
+
+    if (attempt?.isRetry === true && err instanceof TxDuplicateError) {
+      unknownTransfersStore.remove(attempt.key);
+      await loadTransferBalances({ identifier, to });
+
+      return { success: true, alreadySent: true };
+    }
+
+    if (nonNullish(attempt) && err instanceof TxTooOldError) {
+      unknownTransfersStore.remove(attempt.key);
+    }
+
     const result = transferError(err);
 
     if (isUnknownOutcomeError(err)) {
-      await loadTransferBalances({
-        identifier: sourceAccount.identifier,
-        to,
-      });
+      if (nonNullish(attempt)) {
+        unknownTransfersStore.add(attempt);
+      }
+      await loadTransferBalances({ identifier, to });
     }
 
     return result;

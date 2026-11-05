@@ -10,6 +10,7 @@ export enum StoreLocalStorageKey {
   HighlightDisplay = "nnsHighlightDisplay-",
   BalancePrivacyOption = "nnsBalancePrivacyOption",
   NewNnsAppBanner = "nnsNewNnsAppBanner",
+  UnknownTransfers = "nnsUnknownTransfers",
 }
 
 export const NOT_LOADED = Symbol("NOT_LOADED");

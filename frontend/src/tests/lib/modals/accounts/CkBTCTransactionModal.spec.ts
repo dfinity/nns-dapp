@@ -172,6 +172,29 @@ describe("CkBTCTransactionModal", () => {
     expect(get(toastsStore)).toEqual([]);
   });
 
+  it("should tell the user if the transaction was already sent", async () => {
+    vi.mocked(transferTokens).mockResolvedValue({
+      blockIndex: 10n,
+      alreadySent: true,
+    });
+
+    const nnsTransfer = vi.fn();
+    const po = await renderModalToPo({ nnsTransfer });
+
+    await po.transferToAddress({
+      destinationAddress: mockCkBTCMainAccount.identifier,
+      amount: 10,
+    });
+
+    await waitFor(() => expect(nnsTransfer).toBeCalledTimes(1));
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "success",
+        text: en.accounts.transaction_already_sent,
+      },
+    ]);
+  });
+
   const testConvertCkBTCToBTCWithIcrc2 = async ({
     success,
     eventName,

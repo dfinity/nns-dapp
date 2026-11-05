@@ -23,6 +23,11 @@ import {
 import { outOfCyclesCanistersStore } from "$lib/stores/out-of-cycles-canisters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import {
+  toTransferKey,
+  unknownTransfersStore,
+  type TransferAttempt,
+} from "$lib/stores/unknown-transfers.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isLastCall } from "$lib/utils/env.utils";
@@ -35,6 +40,7 @@ import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import {
+  IcrcTransferError,
   decodeIcrcAccount,
   encodeIcrcAccount,
   type IcrcLedgerDid,
@@ -280,7 +286,10 @@ export const transferTokens = async ({
 }: IcrcTransferTokensUserParams): Promise<{
   blockIndex: IcrcLedgerDid.BlockIndex | undefined;
   unknownOutcome?: boolean;
+  alreadySent?: boolean;
 }> => {
+  let attempt: TransferAttempt | undefined;
+
   try {
     if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
@@ -289,6 +298,16 @@ export const transferTokens = async ({
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
+    attempt = unknownTransfersStore.startAttempt(
+      toTransferKey({
+        ledgerCanisterId: ledgerCanisterId.toText(),
+        source: source.identifier,
+        destination: destinationAddress,
+        amount: amountUlps,
+        fee,
+      })
+    );
+
     const blockIndex = await icrcTransfer({
       identity,
       to,
@@ -296,12 +315,37 @@ export const transferTokens = async ({
       amount: amountUlps,
       fee,
       canisterId: ledgerCanisterId,
+      createdAt: attempt.createdAt,
     });
+
+    unknownTransfersStore.remove(attempt.key);
 
     await loadAccounts({ ledgerCanisterId });
 
     return { blockIndex };
   } catch (err) {
+    if (
+      attempt?.isRetry === true &&
+      err instanceof IcrcTransferError &&
+      "Duplicate" in err.errorType
+    ) {
+      unknownTransfersStore.remove(attempt.key);
+      await loadAccounts({ ledgerCanisterId });
+
+      return {
+        blockIndex: err.errorType.Duplicate.duplicate_of,
+        alreadySent: true,
+      };
+    }
+
+    if (
+      nonNullish(attempt) &&
+      err instanceof IcrcTransferError &&
+      "TooOld" in err.errorType
+    ) {
+      unknownTransfersStore.remove(attempt.key);
+    }
+
     const unknownOutcome = isUnknownOutcomeError(err);
 
     toastsError(
@@ -314,6 +358,9 @@ export const transferTokens = async ({
     );
 
     if (unknownOutcome) {
+      if (nonNullish(attempt)) {
+        unknownTransfersStore.add(attempt);
+      }
       await loadAccounts({ ledgerCanisterId });
     }
 

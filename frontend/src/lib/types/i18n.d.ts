@@ -365,6 +365,7 @@ interface I18nAccounts {
   confirm_and_send: string;
   account_identifier: string;
   transaction_success: string;
+  transaction_already_sent: string;
   rename: string;
   rename_linked_account: string;
   rename_new_name_placeholder: string;

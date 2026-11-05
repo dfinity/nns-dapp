@@ -26,6 +26,7 @@ import {
 } from "$lib/services/icp-accounts.services";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
+import { unknownTransfersStore } from "$lib/stores/unknown-transfers.store";
 import type { Account } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
@@ -60,6 +61,7 @@ import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   AccountIdentifier,
   TxCreatedInFutureError,
+  TxDuplicateError,
   TxTooOldError,
 } from "@icp-sdk/canisters/ledger/icp";
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
@@ -598,6 +600,7 @@ describe("icp-accounts.services", () => {
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
       spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(20n);
+      unknownTransfersStore.resetForTesting();
     });
 
     it("should transfer ICP", async () => {
@@ -639,6 +642,7 @@ describe("icp-accounts.services", () => {
           amount: transferICPParams.amount,
           token: ICPToken,
         }),
+        createdAt: expect.any(BigInt),
         fee: feeE8s,
         fromSubAccount: undefined,
         identity: mockIdentity,
@@ -745,6 +749,103 @@ describe("icp-accounts.services", () => {
       });
     });
 
+    describe("when the user repeats a transfer with an unknown outcome", () => {
+      const unknownOutcomeError = TransportError.fromCode(
+        new HttpFetchErrorCode(new Error("fetch"))
+      );
+      const createdAtOfCall = (index: number): bigint =>
+        spySendICP.mock.calls[index][0].createdAt;
+
+      beforeEach(async () => {
+        vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+        setAccountsForTesting({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+        });
+        spySendICP.mockRejectedValueOnce(unknownOutcomeError);
+        await transferICP(transferICPParams);
+        vi.setSystemTime(Date.now() + 1_000);
+        toastsStore.reset();
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it("should reuse the timestamp", async () => {
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should keep the timestamp after another unknown outcome", async () => {
+        spySendICP.mockRejectedValueOnce(unknownOutcomeError);
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should keep the timestamp after a rejection", async () => {
+        spySendICP.mockRejectedValueOnce(new Error("test"));
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp for another amount", async () => {
+        await transferICP({ ...transferICPParams, amount: 2 });
+
+        expect(createdAtOfCall(1)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp after the retry succeeds", async () => {
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp after TxTooOldError", async () => {
+        spySendICP.mockRejectedValueOnce(new TxTooOldError());
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should report a duplicate as already sent", async () => {
+        spySendICP.mockRejectedValueOnce(new TxDuplicateError(10n));
+        queryAccountBalanceSpy.mockClear();
+
+        const result = await transferICP(transferICPParams);
+
+        expect(result).toEqual({ success: true, alreadySent: true });
+        expect(get(toastsStore)).toEqual([]);
+        expect(queryAccountBalanceSpy).toHaveBeenCalled();
+      });
+
+      it("should use a new timestamp after a duplicate", async () => {
+        spySendICP.mockRejectedValueOnce(new TxDuplicateError(10n));
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+    });
+
+    it("should report a duplicate of a new transfer as a failure", async () => {
+      spySendICP.mockRejectedValue(new TxDuplicateError(10n));
+
+      const result = await transferICP(transferICPParams);
+
+      expect(result).toEqual({
+        success: false,
+        err: "error.transaction_error",
+      });
+    });
+
     it("should show toast on TxTooOldError", async () => {
       spySendICP.mockRejectedValue(new TxTooOldError());
 
@@ -787,6 +888,7 @@ describe("icp-accounts.services", () => {
 
       expect(spySendICP).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: transferICPParams.destinationAddress,
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({
@@ -809,6 +911,7 @@ describe("icp-accounts.services", () => {
 
       expect(spy).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: decodeIcrcAccount(mockSnsMainAccount.identifier),
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({
@@ -828,6 +931,7 @@ describe("icp-accounts.services", () => {
 
       expect(spySendICP).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: transferICPParams.destinationAddress,
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({
@@ -850,6 +954,7 @@ describe("icp-accounts.services", () => {
 
       expect(spy).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: decodeIcrcAccount(mockSnsMainAccount.identifier),
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({

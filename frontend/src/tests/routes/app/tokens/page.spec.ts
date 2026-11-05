@@ -406,6 +406,7 @@ describe("Tokens route", () => {
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
           expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
+            createdAt: expect.any(BigInt),
             canisterId: ledgerCanisterIdTetris,
             fee: tetrisToken.fee,
             to: toAccount,
@@ -496,6 +497,7 @@ describe("Tokens route", () => {
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
           expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
+            createdAt: expect.any(BigInt),
             canisterId: CKBTC_UNIVERSE_CANISTER_ID,
             fee: mockCkBTCToken.fee,
             to: toAccount,
@@ -548,6 +550,7 @@ describe("Tokens route", () => {
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
           expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
+            createdAt: expect.any(BigInt),
             canisterId: CKETH_UNIVERSE_CANISTER_ID,
             fee: mockCkETHToken.fee,
             to: toAccount,
