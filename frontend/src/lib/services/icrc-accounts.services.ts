@@ -279,6 +279,7 @@ export const transferTokens = async ({
   ledgerCanisterId,
 }: IcrcTransferTokensUserParams): Promise<{
   blockIndex: IcrcLedgerDid.BlockIndex | undefined;
+  unknownOutcome?: boolean;
 }> => {
   try {
     if (isNullish(fee)) {
@@ -316,6 +317,6 @@ export const transferTokens = async ({
       await loadAccounts({ ledgerCanisterId });
     }
 
-    return { blockIndex: undefined };
+    return { blockIndex: undefined, unknownOutcome };
   }
 };

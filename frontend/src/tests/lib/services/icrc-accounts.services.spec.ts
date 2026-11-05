@@ -831,7 +831,7 @@ describe("icrc-accounts-services", () => {
         ledgerCanisterId,
       });
 
-      expect(result).toEqual({ blockIndex: undefined });
+      expect(result).toEqual({ blockIndex: undefined, unknownOutcome: true });
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",

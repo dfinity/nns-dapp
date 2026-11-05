@@ -77,7 +77,7 @@
       initiator: "accounts",
     });
 
-    const { blockIndex } = await transferIcrcTokens({
+    const { blockIndex, unknownOutcome } = await transferIcrcTokens({
       source: sourceAccount,
       destinationAddress,
       amountUlps: numberToE8s(amount),
@@ -89,6 +89,9 @@
 
     if (nonNullish(blockIndex)) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
+    }
+
+    if (nonNullish(blockIndex) || unknownOutcome) {
       dispatcher("nnsTransfer");
     }
   };
