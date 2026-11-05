@@ -10,9 +10,12 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+  import RestoreSaleParticipationModal from "$lib/modals/sns/sale/RestoreSaleParticipationModal.svelte";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import {
+    cancelSnsSaleParticipation,
+    findOpenSnsSaleTicket,
     hidePollingToast,
     restoreSnsSaleParticipation,
   } from "$lib/services/sns-sale.services";
@@ -24,6 +27,7 @@
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { loadUserCountry } from "$lib/services/user-country.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -42,7 +46,7 @@
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { Principal } from "@icp-sdk/core/principal";
-  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+  import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
@@ -227,7 +231,9 @@
       progressStep = undefined;
     }, 1000);
   }
-  // skip ticket update if
+  const updateProgress = (step: SaleStep) => (progressStep = step);
+
+  // skip ticket lookup if
   // - the sns is not open
   // - the user is not sign in
   // - user commitment information is not loaded
@@ -244,16 +250,60 @@
   ) {
     loadingTicketRootCanisterIdText = rootCanisterId;
 
-    const updateProgress = (step: SaleStep) => (progressStep = step);
-
-    restoreSnsSaleParticipation({
+    findOpenSnsSaleTicket({
       rootCanisterId: Principal.fromText(rootCanisterId),
-      userCommitment,
       swapCanisterId,
-      postprocess: reload,
-      updateProgress,
     });
   }
+
+  // A ticket found on the swap canister waits for the user to complete or cancel it.
+  // No ICP is transferred before the user confirms.
+  let ticketToConfirm: SnsSwapDid.Ticket | undefined;
+  $: {
+    const entry = nonNullish(rootCanisterId)
+      ? $snsTicketsStore[rootCanisterId]
+      : undefined;
+    ticketToConfirm =
+      entry?.requiresConfirmation === true
+        ? (entry.ticket ?? undefined)
+        : undefined;
+  }
+
+  const restoreParticipation = async () => {
+    if (
+      isNullish(ticketToConfirm) ||
+      isNullish(rootCanisterId) ||
+      isNullish(swapCanisterId) ||
+      isNullish(userCommitment)
+    ) {
+      return;
+    }
+
+    await restoreSnsSaleParticipation({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId,
+      userCommitment,
+      postprocess: reload,
+      updateProgress,
+      ticket: ticketToConfirm,
+    });
+  };
+
+  const cancelParticipation = async () => {
+    if (isNullish(rootCanisterId) || isNullish(userCommitment)) {
+      return;
+    }
+
+    startBusy({ initiator: "cancel-sale-participation" });
+
+    await cancelSnsSaleParticipation({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      userCommitment,
+      postprocess: reload,
+    });
+
+    stopBusy("cancel-sale-participation");
+  };
 
   /////////////////////////////////
   // Clean up and checks
@@ -277,7 +327,7 @@
     }
 
     try {
-      // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
+      // remove the ticket so that the next visit asks the user again to complete or cancel it
       snsTicketsStore.setTicket({
         rootCanisterId: Principal.fromText(rootCanisterId),
         ticket: undefined,
@@ -288,7 +338,7 @@
     }
 
     // TODO: Improve cancellatoin of actions onDestroy
-    // The polling was triggered by `restoreSnsSaleParticipation` call and needs to be canceled explicitly.
+    // The polling was triggered by `findOpenSnsSaleTicket` call and needs to be canceled explicitly.
     // TODO: Reenable https://dfinity.atlassian.net/browse/GIX-1574
     // cancelPollGetOpenTicket();
 
@@ -317,6 +367,15 @@
       </div>
     </div>
   </main>
+
+  {#if nonNullish(ticketToConfirm)}
+    <RestoreSaleParticipationModal
+      ticket={ticketToConfirm}
+      projectName={$projectDetailStore.summary?.metadata.name ?? ""}
+      on:nnsConfirm={restoreParticipation}
+      on:nnsClose={cancelParticipation}
+    />
+  {/if}
 
   {#if nonNullish(progressStep)}
     <SaleInProgressModal {progressStep} />

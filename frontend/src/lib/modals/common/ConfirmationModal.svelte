@@ -5,6 +5,7 @@
 
   export let testId = "confirmation-modal-component";
   export let yesLabel: string | undefined = undefined;
+  export let noLabel: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
 
@@ -23,7 +24,7 @@
         class="secondary"
         on:click={() => dispatch("nnsClose")}
       >
-        {$i18n.core.confirm_no}
+        {noLabel ?? $i18n.core.confirm_no}
       </button>
       <button
         data-tid="confirm-yes"
