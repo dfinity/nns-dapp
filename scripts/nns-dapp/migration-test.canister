@@ -21,27 +21,27 @@ migration_test_canisters_help() {
 
 # Verifies that the nns-dapp canister is healthy
 verify_healthy() {
-  dfx canister call nns-dapp get_stats
-  dfx canister call nns-dapp get_canisters
+  icp canister call nns-dapp get_stats '()' --environment local
+  icp canister call nns-dapp get_canisters '()' --environment local
 }
 
 # Gets the number of transactions; this list may be pruned so is not invariant.
 get_transactions_count() {
-  dfx canister call nns-dapp get_stats | idl2json | jq -r '.transactions_count'
+  icp canister call nns-dapp get_stats '()' --environment local | idl2json | jq -r '.transactions_count'
 }
 
 # Gets stats that should be invariant across upgrades
 get_upgrade_invariant_stats() {
-  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, sub_accounts_count}'
+  icp canister call nns-dapp get_stats '()' --environment local | idl2json | jq '{accounts_count, sub_accounts_count}'
 }
 
 get_accounts_count() {
-  dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count
+  icp canister call nns-dapp get_stats '()' --environment local | idl2json | jq -r .accounts_count
 }
 
 # Gets some sample accounts
 sample_toy_accounts() {
-  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$(($(get_accounts_count) - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
+  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$(($(get_accounts_count) - 1))" | xargs -I{} icp canister call nns-dapp get_toy_account "({})" --environment local --query
 }
 
 # Gets data that should be invariant across upgrades
@@ -75,7 +75,7 @@ check_state_size() {
 wait_for_migration() {
   local migration_countdown
   for ((i = 0; i < 1200; i++)); do
-    migration_countdown="$(dfx canister call nns-dapp get_stats --query | idl2json | jq '.migration_countdown[0] // 0')" # TODO: Remove the default when prod has migration countdown stats
+    migration_countdown="$(icp canister call nns-dapp get_stats '()' --environment local --query | idl2json | jq '.migration_countdown[0] // 0')" # TODO: Remove the default when prod has migration countdown stats
     echo "Migration countdown: $migration_countdown"
     if ((migration_countdown == 0)); then
       return
@@ -86,27 +86,27 @@ wait_for_migration() {
     echo "ERROR: Migration did not complete within the expected time."
     echo "       For a migration to be considered complete, the migration_countdown should reach zero."
     echo "       Here are the current stats:"
-    dfx canister call nns-dapp get_stats
+    icp canister call nns-dapp get_stats '()' --environment local
     exit 1
   } >&2
 }
 
-# Installs the nns-dapp canister
+# Installs the nns-dapp canister with a clean state
 # - Creates the canister if it doesn't exist
-# - Installs the canister even if the wasm is the same
+# - Reinstalls the canister if it exists, also if the wasm is the same
 install_nnsdapp() {
-  local wasm argfile argument
+  local wasm argfile mode
   wasm="$1"
   argfile="$2"
-  argument="$(cat "$argfile")"
-  if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
-    upgrade_nnsdapp "$wasm" "$argfile"
+  if icp canister status nns-dapp --environment local >/dev/null 2>/dev/null; then
+    mode=reinstall
   else
-    dfx canister create nns-dapp
-    dfx canister install nns-dapp --wasm "$wasm" --argument "$argument" --yes --upgrade-unchanged
-    scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
-    verify_healthy
+    icp canister create nns-dapp --environment local
+    mode=install
   fi
+  icp canister install nns-dapp --wasm "$wasm" --args-file "$argfile" --mode "$mode" --yes --environment local
+  scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
+  verify_healthy
 }
 
 # Installs the current build of nns-dapp
@@ -114,17 +114,16 @@ install_nnsdapp() {
 # TODO: Record upgrade cycles
 # TODO: Record state size
 upgrade_nnsdapp() {
-  local prestate poststate wasm argfile argument
+  local prestate poststate wasm argfile
   wasm="$1"
   argfile="$2"
-  argument="$(cat "$argfile")"
   prestate="$(get_upgrade_invariants | tee /dev/stderr)"
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
-  dfx canister stop nns-dapp
-  dfx canister install --upgrade-unchanged nns-dapp --wasm "$wasm" --mode upgrade --argument "$argument" --yes
-  dfx canister start nns-dapp
+  icp canister stop nns-dapp --environment local
+  icp canister install nns-dapp --wasm "$wasm" --args-file "$argfile" --mode upgrade --yes --environment local
+  icp canister start nns-dapp --environment local
   scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
   verify_healthy
   poststate="$(get_upgrade_invariants)"

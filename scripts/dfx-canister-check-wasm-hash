@@ -16,7 +16,7 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=n long=network desc="The icp environment to use" variable=DFX_NETWORK default="local"
 clap.define short=c long=canister desc="The canister name or ID" variable=DFX_CANISTER
 clap.define short=w long=wasm desc="The path to the local wasm file" variable=DFX_WASM
 # Source the output file ----------------------------------------------------------
@@ -31,7 +31,7 @@ test -e "${DFX_WASM:-}" || {
 } >&2
 
 build_hash="$(sha256sum "$DFX_WASM" | awk '{print $1}')"
-deployed_hash="$(dfx canister info "$DFX_CANISTER" --network "$DFX_NETWORK" | awk '/Module hash/{print $3}')"
+deployed_hash="$(icp canister status "$DFX_CANISTER" --environment "$DFX_NETWORK" --json | jq -r '.module_hash')"
 if [[ "0x$build_hash" == "$deployed_hash" ]]; then
   echo "Check passed: Installed $DFX_CANISTER matches local wasm."
 else

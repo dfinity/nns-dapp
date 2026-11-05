@@ -13,6 +13,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Deprecated
 ### Removed
 ### Fixed
+- Serve an empty list of the latest SNSs when no SNS exists, instead of a 404.
 ### Security
 
 - Pin the home page's Prism script and stylesheet with Subresource Integrity and load them from the certified gateway.

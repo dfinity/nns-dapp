@@ -14,7 +14,9 @@ export function mapError(error: Error | unknown): Error | unknown {
           .find((l) => l.startsWith("error code"))
       : "";
 
-  if (statusLine?.includes("ic0512")) {
+  // IC0512: the caller is not a controller.
+  // IC0542: the caller may not read the canister status.
+  if (statusLine?.includes("ic0512") || statusLine?.includes("ic0542")) {
     return new UserNotTheControllerError();
   }
   return error;

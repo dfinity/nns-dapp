@@ -2,7 +2,9 @@
 use crate::state::STATE;
 use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::CandidType;
-use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
+use ic_certified_map::{labeled, Hash, RbTree};
+#[cfg(not(test))]
+use ic_certified_map::{labeled_hash, AsHashTree};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
@@ -234,10 +236,15 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
 }
 
 /// System call to certify the root hash.
+#[cfg(not(test))]
 fn update_root_hash(a: &AssetHashes) {
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.0.root_hash());
     ic_cdk::api::certified_data_set(&prefixed_root_hash[..]);
 }
+
+/// Unit tests run outside a canister, where the system call panics.
+#[cfg(test)]
+fn update_root_hash(_a: &AssetHashes) {}
 
 /// Responds to an HTTP request for an asset.
 ///
