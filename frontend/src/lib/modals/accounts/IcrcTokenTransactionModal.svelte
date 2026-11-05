@@ -68,7 +68,7 @@
     const isBurn =
       nonNullish(burnAddress) && destinationAddress === burnAddress;
 
-    const { blockIndex } = await transferTokens({
+    const { blockIndex, unknownOutcome } = await transferTokens({
       source: sourceAccount,
       destinationAddress,
       amountUlps: numberToUlps({ amount, token }),
@@ -78,9 +78,11 @@
 
     stopBusy("accounts");
 
-    if (nonNullish(blockIndex)) {
+    if (nonNullish(blockIndex) || unknownOutcome) {
       reloadSourceAccount?.();
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      if (nonNullish(blockIndex)) {
+        toastsSuccess({ labelKey: "accounts.transaction_success" });
+      }
       dispatcher("nnsClose");
     }
   };

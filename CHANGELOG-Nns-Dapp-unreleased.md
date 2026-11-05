@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Warn the user to check the balance when a transaction outcome is unknown, instead of reporting a failure.
 - No error toast when the SNS aggregator has no project.
 - The staking rewards and the APY load when there is no SNS project.
 - The canister page tells a user that they are not a controller also when the

@@ -6,17 +6,30 @@ import {
   isCanisterOutOfCyclesError,
   isMethodNotSupportedError,
   isPayloadSizeError,
+  isUnknownOutcomeError,
   toToastError,
 } from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
 import { UnsupportedMethodError } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
+  CertificateVerificationErrorCode,
   CertifiedRejectErrorCode,
   ErrorKindEnum,
+  HttpErrorCode,
+  HttpFetchErrorCode,
+  IngressExpiryInvalidErrorCode,
+  InputError,
+  ProtocolError,
+  RejectError,
   ReplicaRejectCode,
   requestIdOf,
+  RequestStatusDoneNoReplyErrorCode,
+  TimeoutWaitingForResponseErrorCode,
+  TransportError,
+  TrustError,
   UncertifiedRejectErrorCode,
+  UnknownError,
 } from "@icp-sdk/core/agent";
 
 class TestError extends Error {
@@ -132,6 +145,71 @@ describe("error-utils", () => {
       expect(isMethodNotSupportedError(new Error("another error"))).toBe(false);
       expect(isMethodNotSupportedError(undefined)).toBe(false);
       expect(isMethodNotSupportedError({})).toBe(false);
+    });
+  });
+
+  describe("isUnknownOutcomeError", () => {
+    const httpError = (status: number) =>
+      ProtocolError.fromCode(new HttpErrorCode(status, "status", [], "body"));
+
+    it("should return true if the agent has no definite answer", () => {
+      expect(
+        isUnknownOutcomeError(
+          TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+        )
+      ).toBe(true);
+      expect(
+        isUnknownOutcomeError(
+          ProtocolError.fromCode(
+            new TimeoutWaitingForResponseErrorCode("timeout")
+          )
+        )
+      ).toBe(true);
+      expect(
+        isUnknownOutcomeError(
+          TrustError.fromCode(new CertificateVerificationErrorCode("invalid"))
+        )
+      ).toBe(true);
+      expect(
+        isUnknownOutcomeError(
+          UnknownError.fromCode(
+            new RequestStatusDoneNoReplyErrorCode(requestIdOf({}))
+          )
+        )
+      ).toBe(true);
+    });
+
+    it("should return true for an HTTP error", () => {
+      expect(isUnknownOutcomeError(httpError(429))).toBe(true);
+      expect(isUnknownOutcomeError(httpError(503))).toBe(true);
+    });
+
+    it("should return false for a reject", () => {
+      expect(
+        isUnknownOutcomeError(
+          RejectError.fromCode(
+            new CertifiedRejectErrorCode(
+              requestIdOf({}),
+              ReplicaRejectCode.CanisterError,
+              "There was an error",
+              "IC0503"
+            )
+          )
+        )
+      ).toBe(false);
+    });
+
+    it("should return false for an invalid request", () => {
+      expect(
+        isUnknownOutcomeError(
+          InputError.fromCode(new IngressExpiryInvalidErrorCode("expiry", 5))
+        )
+      ).toBe(false);
+    });
+
+    it("should return false for an error outside the agent", () => {
+      expect(isUnknownOutcomeError(new Error("test"))).toBe(false);
+      expect(isUnknownOutcomeError(undefined)).toBe(false);
     });
   });
 

@@ -15,8 +15,11 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { TokenAmountV2 } from "@dfinity/utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import { HttpFetchErrorCode, TransportError } from "@icp-sdk/core/agent";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
 
@@ -50,7 +53,13 @@ describe("IcrcTokenTransactionModal", () => {
     });
   };
 
-  const renderModalComponent = async () => {
+  const renderModalComponent = async ({
+    reloadSourceAccount,
+    nnsClose,
+  }: {
+    reloadSourceAccount?: () => void;
+    nnsClose?: () => void;
+  } = {}) => {
     const { container } = await renderModal({
       component: IcrcTokenTransactionModal,
       props: {
@@ -58,7 +67,9 @@ describe("IcrcTokenTransactionModal", () => {
         universeId: ledgerCanisterId,
         token,
         transactionFee,
+        reloadSourceAccount,
       },
+      events: { ...(nonNullish(nnsClose) && { nnsClose }) },
     });
 
     await runResolvedPromises();
@@ -164,6 +175,47 @@ describe("IcrcTokenTransactionModal", () => {
       amount: BigInt(amount) * 10n ** 18n,
       to: toAccount,
       fee: token.fee,
+    });
+  });
+
+  describe("when the transfer fails", () => {
+    const transfer = async (err: unknown) => {
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(ledgerApi, "icrcTransfer").mockRejectedValue(err);
+      setupAccount();
+
+      const reloadSourceAccount = vi.fn();
+      const nnsClose = vi.fn();
+      const po = await renderModalComponent({ reloadSourceAccount, nnsClose });
+
+      await po.transferToAddress({
+        destinationAddress: encodeIcrcAccount({ owner: principal(2) }),
+        amount: 10,
+      });
+      await runResolvedPromises();
+
+      return { reloadSourceAccount, nnsClose };
+    };
+
+    it("should reload the account and close if the outcome is unknown", async () => {
+      const { reloadSourceAccount, nnsClose } = await transfer(
+        TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+      );
+
+      expect(reloadSourceAccount).toHaveBeenCalledTimes(1);
+      expect(nnsClose).toHaveBeenCalledTimes(1);
+      expect(get(toastsStore)).not.toMatchObject(
+        expect.arrayContaining([expect.objectContaining({ level: "success" })])
+      );
+    });
+
+    it("should stay open after a definite failure", async () => {
+      const { reloadSourceAccount, nnsClose } = await transfer(
+        new Error("test")
+      );
+
+      expect(reloadSourceAccount).not.toHaveBeenCalled();
+      expect(nnsClose).not.toHaveBeenCalled();
     });
   });
 
