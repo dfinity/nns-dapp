@@ -18,6 +18,7 @@ source "$SOURCE_DIR/../clap.bash"
 clap.define short=w long=wasm desc="WASM to test" variable=WASM default="nns-dapp_test.wasm.gz"
 clap.define short=a long=args desc="Args file for WASM installation" variable=ARGS_FILE default="nns-dapp-arg-local.did"
 clap.define long=github_step_summary desc="File to append stats to" variable=GITHUB_STEP_SUMMARY default=""
+clap.define long=reuse_network desc="Use the running local network. The test reinstalls nns-dapp on it and leaves it running." variable=REUSE_NETWORK nargs=0 default="false"
 
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
@@ -34,18 +35,23 @@ if ! [ -f "$ARGS_FILE" ]; then
   exit 1
 fi
 
-# Check if a replica is running:
-if pgrep -x replica || pgrep -x pocket-ic; then
-  echo "A replica is already running. Shut it down first." >&2
-  exit 1
+# The test stops the network that it started. A running network belongs to
+# someone else, so the test only uses it with --reuse_network.
+if icp network status local >/dev/null 2>&1; then
+  if [[ "$REUSE_NETWORK" != "true" ]]; then
+    echo "The local network is running already. Stop it first, or pass --reuse_network." >&2
+    exit 1
+  fi
+  started_network="false"
+else
+  started_network="true"
 fi
-
-dfx start --clean --background
+"$SOURCE_DIR/../icp-network-start"
 
 prod_dir="$(mktemp -d prod-XXXXXX)"
 
 cleanup() {
-  dfx stop
+  [[ "$started_network" != "true" ]] || icp network stop local
   rm -rf "$prod_dir"
 }
 

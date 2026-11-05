@@ -19,15 +19,20 @@ This will run only the e2e tests which have `account` in the filename.
 
 # Environment
 
-Some of the tests will require a specific environment, such as an existing SNS
-project. The environment that we run against on CI is created by
-[`.github/workflows/run.yml`](https://github.com/dfinity/snsdemo/blob/main/.github/workflows/run.yml)
-in the snsdemo repository. After setting up the environment, it creates a
-snapshot of the replica state, which is then used for CI by the nns-dapp repo.
+The tests run against the local icp-cli network with the nns-dapp build under
+test. See the [Local](../../../../HACKING.md#local) section of HACKING.md. On
+CI, `.github/actions/test-e2e/action.yml` starts the network and installs the
+wasms.
 
-You can run locally with such a snapshot by using `scripts/dfx-snapshot-start`.
-However, this only seems to work if the snapshot was created on the same
-machine.
+To run the tests locally against the installed nns-dapp canister:
+
+```
+export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url --network local nns-dapp)"
+npm run test-e2e
+```
+
+Some tests are skipped, because they need an SNS project, ckBTC or a test
+token, which the local network does not have.
 
 # Debugging
 

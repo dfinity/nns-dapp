@@ -1,0 +1,19 @@
+[
+  {
+    "ticker_id": "mohjv-bqaaa-aaaag-qjyia-cai",
+    "ticker_name": "ckUSDC_ICP",
+    "base_id": "yfumr-cyaaa-aaaar-qaela-cai",
+    "base_currency": "ckUSDC",
+    "target_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    "target_currency": "ICP",
+    "last_price": "9.00",
+    "base_volume": "21176081.947944",
+    "target_volume": "21036115.232038",
+    "base_volume_24H": "396573.802868",
+    "target_volume_24H": "35434.014785",
+    "total_volume_usd": "37747146.085648",
+    "volume_usd_24H": "396974.748666",
+    "fee_usd": "736.687374",
+    "liquidity_in_usd": "653394.543845"
+  }
+]

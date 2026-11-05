@@ -100,7 +100,7 @@ done
 # - https://CANISTER_ID.NETWORK_URL
 # - https://CANISTER_ID.raw.NETWORK_URL
 canister_id() {
-  dfx canister id --network "$DFX_NETWORK" "$DFX_CANISTER" 2>/dev/null || echo "$DFX_CANISTER"
+  canister-id --network "$DFX_NETWORK" --canister "$DFX_CANISTER" 2>/dev/null || echo "$DFX_CANISTER"
 }
 inject_canister_id() {
   read -r root_url
