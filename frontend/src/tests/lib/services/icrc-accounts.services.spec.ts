@@ -26,6 +26,7 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
@@ -38,8 +39,10 @@ import {
   AgentError,
   AnonymousIdentity,
   ErrorKindEnum,
+  HttpFetchErrorCode,
   ReplicaRejectCode,
   requestIdOf,
+  TransportError,
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -812,6 +815,51 @@ describe("icrc-accounts-services", () => {
       const finalAccount =
         get(icrcAccountsStore)[ledgerCanisterId.toText()]?.accounts[0];
       expect(finalAccount.balanceUlps).toEqual(balanceE8s);
+    });
+
+    it("should warn and reload accounts if the transfer outcome is unknown", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(ledgerApi, "icrcTransfer").mockRejectedValue(
+        TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+      );
+
+      const result = await transferTokens({
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        fee,
+        ledgerCanisterId,
+      });
+
+      expect(result).toEqual({ blockIndex: undefined });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: en.error.transaction_unknown_outcome,
+        },
+      ]);
+      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalled();
+    });
+
+    it("should not reload accounts after a definite failure", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(ledgerApi, "icrcTransfer").mockRejectedValue(new Error("test"));
+
+      await transferTokens({
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        fee,
+        ledgerCanisterId,
+      });
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: en.error.transaction_error,
+        },
+      ]);
+      expect(ledgerApi.queryIcrcBalance).not.toHaveBeenCalled();
     });
   });
 

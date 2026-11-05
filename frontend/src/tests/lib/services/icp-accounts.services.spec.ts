@@ -63,6 +63,7 @@ import {
   TxTooOldError,
 } from "@icp-sdk/canisters/ledger/icp";
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import { HttpFetchErrorCode, TransportError } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 
@@ -709,6 +710,39 @@ describe("icp-accounts.services", () => {
       ]);
 
       expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
+    });
+
+    it("should warn and reload balances if the transfer outcome is unknown", async () => {
+      setAccountsForTesting({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+      });
+      spySendICP.mockRejectedValue(
+        TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+      );
+
+      const result = await transferICP(transferICPParams);
+
+      expect(result).toEqual({
+        success: false,
+        err: "error.transaction_unknown_outcome",
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: en.error.transaction_unknown_outcome,
+        },
+      ]);
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        icpAccountIdentifier: sourceAccount.identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        icpAccountIdentifier: mockSubAccount.identifier,
+        certified: true,
+      });
     });
 
     it("should show toast on TxTooOldError", async () => {

@@ -43,7 +43,7 @@ import {
   toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { isForceCallStrategy } from "$lib/utils/call.utils";
-import { toToastError } from "$lib/utils/error.utils";
+import { isUnknownOutcomeError, toToastError } from "$lib/utils/error.utils";
 import {
   encodeMemoToIcp,
   encodeMemoToIcrc1,
@@ -348,24 +348,43 @@ export const transferICP = async ({
           memo: icpMemo,
         }));
 
-    // Transfer can be to one of the user's account.
-    const toAccount = findAccount({
-      identifier: to,
-      accounts: get(nnsAccountsListStore),
-    });
-
-    // TODO: GIX-1704 use ICRC
-    await Promise.all([
-      loadBalance({ accountIdentifier: identifier }),
-      nonNullish(toAccount)
-        ? loadBalance({ accountIdentifier: to })
-        : Promise.resolve(),
-    ]);
+    await loadTransferBalances({ identifier, to });
 
     return { success: true };
   } catch (err) {
-    return transferError(err);
+    const result = transferError(err);
+
+    if (isUnknownOutcomeError(err)) {
+      await loadTransferBalances({
+        identifier: sourceAccount.identifier,
+        to,
+      });
+    }
+
+    return result;
   }
+};
+
+const loadTransferBalances = async ({
+  identifier,
+  to,
+}: {
+  identifier: AccountIdentifierText;
+  to: string;
+}): Promise<void> => {
+  // Transfer can be to one of the user's account.
+  const toAccount = findAccount({
+    identifier: to,
+    accounts: get(nnsAccountsListStore),
+  });
+
+  // TODO: GIX-1704 use ICRC
+  await Promise.all([
+    loadBalance({ accountIdentifier: identifier }),
+    nonNullish(toAccount)
+      ? loadBalance({ accountIdentifier: to })
+      : Promise.resolve(),
+  ]);
 };
 
 const transferError = (err: unknown): { success: boolean; err?: string } => {
@@ -374,6 +393,8 @@ const transferError = (err: unknown): { success: boolean; err?: string } => {
     labelKey = "error.transaction_too_old";
   } else if (err instanceof TxCreatedInFutureError) {
     labelKey = "error.transaction_created_in_future";
+  } else if (isUnknownOutcomeError(err)) {
+    labelKey = "error.transaction_unknown_outcome";
   }
   toastsError(
     toToastError({
