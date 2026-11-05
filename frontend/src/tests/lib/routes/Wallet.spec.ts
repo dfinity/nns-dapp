@@ -314,6 +314,7 @@ describe("Wallet", () => {
 
     expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
     expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
+      createdAt: expect.any(BigInt),
       identity: mockIdentity,
       canisterId: CKETH_LEDGER_CANISTER_ID,
       amount: amountE18s,

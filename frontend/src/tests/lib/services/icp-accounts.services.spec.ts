@@ -6,6 +6,7 @@ import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import * as icpLedgerServicesProxy from "$lib/proxy/icp-ledger.services.proxy";
@@ -60,6 +61,7 @@ import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   AccountIdentifier,
   TxCreatedInFutureError,
+  TxDuplicateError,
   TxTooOldError,
 } from "@icp-sdk/canisters/ledger/icp";
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
@@ -598,6 +600,7 @@ describe("icp-accounts.services", () => {
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
       spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(20n);
+      localStorage.clear();
     });
 
     it("should transfer ICP", async () => {
@@ -639,6 +642,7 @@ describe("icp-accounts.services", () => {
           amount: transferICPParams.amount,
           token: ICPToken,
         }),
+        createdAt: expect.any(BigInt),
         fee: feeE8s,
         fromSubAccount: undefined,
         identity: mockIdentity,
@@ -745,6 +749,249 @@ describe("icp-accounts.services", () => {
       });
     });
 
+    describe("when the user repeats a transfer with an unknown outcome", () => {
+      const unknownOutcomeError = TransportError.fromCode(
+        new HttpFetchErrorCode(new Error("fetch"))
+      );
+      const createdAtOfCall = (index: number): bigint =>
+        spySendICP.mock.calls[index][0].createdAt;
+
+      beforeEach(async () => {
+        vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+        setAccountsForTesting({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+        });
+        spySendICP.mockRejectedValueOnce(unknownOutcomeError);
+        await transferICP(transferICPParams);
+        vi.setSystemTime(Date.now() + 1_000);
+        toastsStore.reset();
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it("should reuse the timestamp", async () => {
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should reuse the timestamp for an equivalent ICP memo", async () => {
+        localStorage.clear();
+        spySendICP.mockClear();
+        spySendICP.mockRejectedValueOnce(unknownOutcomeError);
+        await transferICP({ ...transferICPParams, memo: "1" });
+        await transferICP({ ...transferICPParams, memo: "01" });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should reuse the timestamp for a destination in uppercase", async () => {
+        await transferICP({
+          ...transferICPParams,
+          destinationAddress:
+            transferICPParams.destinationAddress.toUpperCase(),
+        });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should reuse the timestamp for a zero ICP memo", async () => {
+        await transferICP({ ...transferICPParams, memo: "0" });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should keep the timestamp after another unknown outcome", async () => {
+        spySendICP.mockRejectedValueOnce(unknownOutcomeError);
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should keep the timestamp after a rejection", async () => {
+        spySendICP.mockRejectedValueOnce(new Error("test"));
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp for another amount", async () => {
+        await transferICP({ ...transferICPParams, amount: 2 });
+
+        expect(createdAtOfCall(1)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp after the retry succeeds", async () => {
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp after TxTooOldError", async () => {
+        spySendICP.mockRejectedValueOnce(new TxTooOldError());
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should report a duplicate as already sent", async () => {
+        spySendICP.mockRejectedValueOnce(new TxDuplicateError(10n));
+        queryAccountBalanceSpy.mockClear();
+
+        const result = await transferICP(transferICPParams);
+
+        expect(result).toEqual({ success: true, alreadySent: true });
+        expect(get(toastsStore)).toEqual([]);
+        expect(queryAccountBalanceSpy).toHaveBeenCalled();
+      });
+
+      it("should use a new timestamp after a duplicate", async () => {
+        spySendICP.mockRejectedValueOnce(new TxDuplicateError(10n));
+        await transferICP(transferICPParams);
+        await transferICP(transferICPParams);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+    });
+
+    describe("when the user repeats an ICRC-1 transfer with an unknown outcome", () => {
+      const icrcParams: NewTransaction = {
+        ...transferICPParams,
+        destinationAddress: mockSnsMainAccount.identifier,
+      };
+      let spySendIcpIcrc1: MockInstance;
+
+      beforeEach(async () => {
+        vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+        setAccountsForTesting({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+        });
+        spySendIcpIcrc1 = vi
+          .spyOn(ledgerApi, "sendIcpIcrc1")
+          .mockResolvedValue(20n)
+          .mockRejectedValueOnce(
+            TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+          );
+        await transferICP(icrcParams);
+        vi.setSystemTime(Date.now() + 1_000);
+        toastsStore.reset();
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it("should reuse the timestamp", async () => {
+        await transferICP(icrcParams);
+
+        const [[first], [second]] = spySendIcpIcrc1.mock.calls;
+        expect(second.createdAt).toEqual(first.createdAt);
+      });
+
+      it("should reuse the timestamp for the same account in hex", async () => {
+        await transferICP({
+          ...icrcParams,
+          destinationAddress: toIcpAccountIdentifier(
+            mockSnsMainAccount.identifier
+          ),
+        });
+
+        expect(spySendICP.mock.calls[0][0].createdAt).toEqual(
+          spySendIcpIcrc1.mock.calls[0][0].createdAt
+        );
+      });
+
+      it("should keep the attempt apart from a legacy memo with the same value", async () => {
+        localStorage.clear();
+        spySendICP.mockClear();
+        spySendIcpIcrc1.mockClear();
+        const hexAddress = toIcpAccountIdentifier(
+          mockSnsMainAccount.identifier
+        );
+        spySendICP.mockRejectedValueOnce(
+          TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+        );
+        await transferICP({
+          ...icrcParams,
+          destinationAddress: hexAddress,
+          memo: "49",
+        });
+        vi.setSystemTime(Date.now() + 1_000);
+        await transferICP({ ...icrcParams, memo: "1" });
+        await transferICP({
+          ...icrcParams,
+          destinationAddress: hexAddress,
+          memo: "49",
+        });
+
+        const { calls } = spySendICP.mock;
+        expect(calls[1][0].createdAt).toEqual(calls[0][0].createdAt);
+        expect(spySendIcpIcrc1.mock.calls[0][0].createdAt).not.toEqual(
+          calls[0][0].createdAt
+        );
+      });
+
+      it("should report a duplicate as already sent", async () => {
+        spySendIcpIcrc1.mockRejectedValueOnce(new TxDuplicateError(10n));
+
+        const result = await transferICP(icrcParams);
+
+        expect(result).toEqual({ success: true, alreadySent: true });
+        expect(get(toastsStore)).toEqual([]);
+      });
+
+      it("should use a new timestamp after the retry succeeds", async () => {
+        await transferICP(icrcParams);
+        await transferICP(icrcParams);
+
+        const { calls } = spySendIcpIcrc1.mock;
+        expect(calls[2][0].createdAt).not.toEqual(calls[0][0].createdAt);
+      });
+    });
+
+    it("should save the attempt before the ledger call", async () => {
+      let saved: string | null = null;
+      spySendICP.mockImplementationOnce(async () => {
+        saved = localStorage.getItem(StoreLocalStorageKey.TransferAttempts);
+        return 20n;
+      });
+
+      await transferICP(transferICPParams);
+
+      expect(saved).toContain(transferICPParams.destinationAddress);
+    });
+
+    it("should use a new timestamp after a rejected first attempt", async () => {
+      vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+      spySendICP.mockRejectedValueOnce(new Error("test"));
+      await transferICP(transferICPParams);
+      vi.setSystemTime(Date.now() + 1_000);
+      await transferICP(transferICPParams);
+      vi.useRealTimers();
+
+      const [[first], [second]] = spySendICP.mock.calls;
+      expect(second.createdAt).not.toEqual(first.createdAt);
+    });
+
+    it("should report a duplicate of a new transfer as a failure", async () => {
+      spySendICP.mockRejectedValue(new TxDuplicateError(10n));
+
+      const result = await transferICP(transferICPParams);
+
+      expect(result).toEqual({
+        success: false,
+        err: "error.transaction_error",
+      });
+    });
+
     it("should show toast on TxTooOldError", async () => {
       spySendICP.mockRejectedValue(new TxTooOldError());
 
@@ -787,6 +1034,7 @@ describe("icp-accounts.services", () => {
 
       expect(spySendICP).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: transferICPParams.destinationAddress,
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({
@@ -809,6 +1057,7 @@ describe("icp-accounts.services", () => {
 
       expect(spy).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: decodeIcrcAccount(mockSnsMainAccount.identifier),
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({
@@ -828,6 +1077,7 @@ describe("icp-accounts.services", () => {
 
       expect(spySendICP).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: transferICPParams.destinationAddress,
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({
@@ -850,6 +1100,7 @@ describe("icp-accounts.services", () => {
 
       expect(spy).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         to: decodeIcrcAccount(mockSnsMainAccount.identifier),
         fromSubAccount: undefined,
         amount: TokenAmount.fromNumber({

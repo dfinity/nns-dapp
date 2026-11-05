@@ -77,18 +77,23 @@
       initiator: "accounts",
     });
 
-    const { blockIndex, unknownOutcome } = await transferIcrcTokens({
-      source: sourceAccount,
-      destinationAddress,
-      amountUlps: numberToE8s(amount),
-      ledgerCanisterId: universeId,
-      fee: transactionFee.toUlps(),
-    });
+    const { blockIndex, unknownOutcome, alreadySent } =
+      await transferIcrcTokens({
+        source: sourceAccount,
+        destinationAddress,
+        amountUlps: numberToE8s(amount),
+        ledgerCanisterId: universeId,
+        fee: transactionFee.toUlps(),
+      });
 
     stopBusy("accounts");
 
     if (nonNullish(blockIndex)) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      toastsSuccess({
+        labelKey: alreadySent
+          ? "accounts.transaction_already_sent"
+          : "accounts.transaction_success",
+      });
     }
 
     if (nonNullish(blockIndex) || unknownOutcome) {

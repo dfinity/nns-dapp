@@ -34,7 +34,10 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import {
+  encodeIcrcAccount,
+  IcrcTransferError,
+} from "@icp-sdk/canisters/ledger/icrc";
 import {
   AgentError,
   AnonymousIdentity,
@@ -753,6 +756,14 @@ describe("icrc-accounts-services", () => {
     const destinationAccount = {
       owner: principal(2),
     };
+    const duplicateError = new IcrcTransferError({
+      errorType: { Duplicate: { duplicate_of: 10n } },
+      msg: "test",
+    });
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
 
     it("calls icrcTransfer from icrc ledger api", async () => {
       await transferTokens({
@@ -765,6 +776,7 @@ describe("icrc-accounts-services", () => {
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         amount: amountE8s,
         fee,
         canisterId: ledgerCanisterId,
@@ -786,6 +798,7 @@ describe("icrc-accounts-services", () => {
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
+        createdAt: expect.any(BigInt),
         amount: amountE8s,
         fee,
         canisterId: ledgerCanisterId,
@@ -839,6 +852,117 @@ describe("icrc-accounts-services", () => {
         },
       ]);
       expect(ledgerApi.queryIcrcBalance).toHaveBeenCalled();
+    });
+
+    describe("when the user repeats a transfer with an unknown outcome", () => {
+      const params = {
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        fee,
+        ledgerCanisterId,
+      };
+      const createdAtOfCall = (index: number): bigint | undefined =>
+        vi.mocked(ledgerApi.icrcTransfer).mock.calls[index][0].createdAt;
+
+      beforeEach(async () => {
+        vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+        vi.spyOn(console, "error").mockReturnValue();
+        vi.spyOn(ledgerApi, "icrcTransfer")
+          .mockResolvedValue(1n)
+          .mockRejectedValueOnce(
+            TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+          );
+        await transferTokens(params);
+        vi.setSystemTime(Date.now() + 1_000);
+        toastsStore.reset();
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it("should reuse the timestamp", async () => {
+        await transferTokens(params);
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should reuse the timestamp for an equivalent destination", async () => {
+        const destination = encodeIcrcAccount({
+          ...destinationAccount,
+          subaccount: new Uint8Array(32).fill(1, 31),
+        });
+        const subaccountParams = { ...params, destinationAddress: destination };
+        vi.mocked(ledgerApi.icrcTransfer).mockClear();
+        vi.mocked(ledgerApi.icrcTransfer).mockRejectedValueOnce(
+          TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+        );
+        await transferTokens(subaccountParams);
+        await transferTokens({
+          ...subaccountParams,
+          destinationAddress: destination.replace(/\.1$/, ".01"),
+        });
+
+        expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp after the retry succeeds", async () => {
+        await transferTokens(params);
+        await transferTokens(params);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should use a new timestamp after a TooOld error", async () => {
+        vi.mocked(ledgerApi.icrcTransfer).mockRejectedValueOnce(
+          new IcrcTransferError({ errorType: { TooOld: null }, msg: "test" })
+        );
+        await transferTokens(params);
+        await transferTokens(params);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+
+      it("should report a duplicate as already sent", async () => {
+        vi.mocked(ledgerApi.icrcTransfer).mockRejectedValueOnce(duplicateError);
+        vi.mocked(ledgerApi.queryIcrcBalance).mockClear();
+
+        const result = await transferTokens(params);
+
+        expect(result).toEqual({ blockIndex: 10n, alreadySent: true });
+        expect(get(toastsStore)).toEqual([]);
+        expect(ledgerApi.queryIcrcBalance).toHaveBeenCalled();
+      });
+
+      it("should use a new timestamp after a duplicate", async () => {
+        vi.mocked(ledgerApi.icrcTransfer).mockRejectedValueOnce(duplicateError);
+        await transferTokens(params);
+        await transferTokens(params);
+
+        expect(createdAtOfCall(2)).not.toEqual(createdAtOfCall(0));
+      });
+    });
+
+    it("should report a duplicate of a new transfer as a failure", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(ledgerApi, "icrcTransfer").mockRejectedValue(duplicateError);
+
+      const result = await transferTokens({
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        fee,
+        ledgerCanisterId,
+      });
+
+      expect(result).toEqual({ blockIndex: undefined, unknownOutcome: false });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: en.error__sns.ledger_duplicate,
+        },
+      ]);
     });
 
     it("should not reload accounts after a definite failure", async () => {

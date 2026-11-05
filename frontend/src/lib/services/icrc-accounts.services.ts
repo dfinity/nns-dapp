@@ -33,8 +33,15 @@ import {
 } from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
+import {
+  clearTransferAttempt,
+  startTransferAttempt,
+  toTransferKey,
+  type TransferAttempt,
+} from "$lib/utils/transfer-attempts.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import {
+  IcrcTransferError,
   decodeIcrcAccount,
   encodeIcrcAccount,
   type IcrcLedgerDid,
@@ -280,7 +287,10 @@ export const transferTokens = async ({
 }: IcrcTransferTokensUserParams): Promise<{
   blockIndex: IcrcLedgerDid.BlockIndex | undefined;
   unknownOutcome?: boolean;
+  alreadySent?: boolean;
 }> => {
+  let attempt: TransferAttempt | undefined;
+
   try {
     if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
@@ -289,6 +299,16 @@ export const transferTokens = async ({
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
+    attempt = startTransferAttempt(
+      toTransferKey({
+        ledgerCanisterId: ledgerCanisterId.toText(),
+        source: source.identifier,
+        destination: encodeIcrcAccount(to),
+        amount: amountUlps,
+        fee,
+      })
+    );
+
     const blockIndex = await icrcTransfer({
       identity,
       to,
@@ -296,13 +316,40 @@ export const transferTokens = async ({
       amount: amountUlps,
       fee,
       canisterId: ledgerCanisterId,
+      createdAt: attempt.createdAt,
     });
+
+    clearTransferAttempt(attempt);
 
     await loadAccounts({ ledgerCanisterId });
 
     return { blockIndex };
   } catch (err) {
+    if (
+      attempt?.isRetry === true &&
+      err instanceof IcrcTransferError &&
+      "Duplicate" in err.errorType
+    ) {
+      clearTransferAttempt(attempt);
+      await loadAccounts({ ledgerCanisterId });
+
+      return {
+        blockIndex: err.errorType.Duplicate.duplicate_of,
+        alreadySent: true,
+      };
+    }
+
     const unknownOutcome = isUnknownOutcomeError(err);
+    const tooOld =
+      err instanceof IcrcTransferError && "TooOld" in err.errorType;
+
+    // After a rejected retry, an earlier attempt can still execute.
+    if (
+      nonNullish(attempt) &&
+      (tooOld || (!attempt.isRetry && !unknownOutcome))
+    ) {
+      clearTransferAttempt(attempt);
+    }
 
     toastsError(
       ledgerErrorToToastError({

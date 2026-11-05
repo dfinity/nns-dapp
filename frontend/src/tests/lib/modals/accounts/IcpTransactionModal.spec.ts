@@ -5,6 +5,7 @@ import { transferICP } from "$lib/services/icp-accounts.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -14,7 +15,9 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("IcpTransactionModal", () => {
   const renderTransactionModal = () =>
@@ -46,6 +49,29 @@ describe("IcpTransactionModal", () => {
     const po = await renderModalToPo();
 
     expect(await po.getModalTitle()).toBe("Send ICP");
+  });
+
+  it("should tell the user if the transaction was already sent", async () => {
+    vi.mocked(transferICP).mockResolvedValue({
+      success: true,
+      alreadySent: true,
+    });
+
+    const po = await renderModalToPo();
+
+    await po.transferToAddress({
+      destinationAddress: mockMainAccount.identifier,
+      amount: 1,
+    });
+
+    await waitFor(() =>
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: en.accounts.transaction_already_sent,
+        },
+      ])
+    );
   });
 
   it("should transfer icps", async () => {

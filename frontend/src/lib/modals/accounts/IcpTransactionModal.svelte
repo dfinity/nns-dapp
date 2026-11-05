@@ -43,7 +43,7 @@
       }),
     });
 
-    const { success } = await transferICP({
+    const { success, alreadySent } = await transferICP({
       sourceAccount,
       destinationAddress,
       amount,
@@ -51,7 +51,11 @@
     });
 
     if (success) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      toastsSuccess({
+        labelKey: alreadySent
+          ? "accounts.transaction_already_sent"
+          : "accounts.transaction_success",
+      });
     }
 
     stopBusy("accounts");

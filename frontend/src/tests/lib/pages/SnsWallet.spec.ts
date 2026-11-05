@@ -267,6 +267,7 @@ describe("SnsWallet", () => {
 
       expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
       expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
+        createdAt: expect.any(BigInt),
         identity: mockIdentity,
         canisterId: ledgerCanisterId,
         amount: amountToBeTransferred,
