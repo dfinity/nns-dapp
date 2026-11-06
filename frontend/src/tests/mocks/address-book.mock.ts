@@ -13,3 +13,14 @@ export const mockNamedAddressIcrc1: NamedAddress = {
     Icrc1: "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe",
   },
 };
+
+/**
+ * An entry that only a query response holds.
+ * It stands for an entry that a single replica forged.
+ */
+export const mockForgedNamedAddress: NamedAddress = {
+  name: "Mallory",
+  address: {
+    Icrc1: "aaaaa-aa",
+  },
+};
