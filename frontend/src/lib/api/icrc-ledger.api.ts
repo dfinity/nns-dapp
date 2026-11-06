@@ -5,6 +5,7 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { isCanisterMethodNotFoundError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import {
   arrayOfNumberToUint8Array,
@@ -15,6 +16,7 @@ import {
 } from "@dfinity/utils";
 import {
   IcrcLedgerCanister,
+  IndexPrincipalNotSetError,
   type IcrcAccount,
   type IcrcLedgerDid,
   type TransferParams,
@@ -62,6 +64,37 @@ export const queryIcrcMintingAccount = async ({
     owner: result.owner,
     subaccount: fromNullable(result.subaccount),
   };
+};
+
+/**
+ * Asks the ledger canister which index canister belongs to it (ICRC-106).
+ *
+ * Returns `undefined` when the ledger names no index canister, and when the
+ * ledger has no `icrc106_get_index_principal` method at all. Every other error
+ * is rethrown.
+ */
+export const queryIcrcIndexPrincipal = async ({
+  identity,
+  certified,
+  canisterId,
+}: {
+  identity: Identity;
+  certified: boolean;
+  canisterId: Principal;
+}): Promise<Principal | undefined> => {
+  const { canister } = await icrcLedgerCanister({ identity, canisterId });
+
+  try {
+    return await canister.getIndexPrincipal({ certified });
+  } catch (err: unknown) {
+    if (
+      err instanceof IndexPrincipalNotSetError ||
+      isCanisterMethodNotFoundError(err)
+    ) {
+      return undefined;
+    }
+    throw err;
+  }
 };
 
 export const queryIcrcBalance = async ({
