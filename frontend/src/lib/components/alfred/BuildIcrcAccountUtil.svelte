@@ -28,6 +28,18 @@
     return sub;
   };
 
+  // The largest 32-byte value, 2**256 - 1, has 78 decimal digits.
+  const MAX_DECIMAL_SUBACCOUNT_DIGITS = 78;
+
+  // A decimal ID is the big-endian value of the 32-byte subaccount.
+  const parseDecimalSubAccount = (decimal: string): SubAccount => {
+    const digits = decimal.replace(/^0+/, "") || "0";
+    if (digits.length > MAX_DECIMAL_SUBACCOUNT_DIGITS) {
+      throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
+    }
+    return parseHexSubAccount(BigInt(digits).toString(16));
+  };
+
   const parseSubAccount = (input: string): SubAccount => {
     const trimmed = input.trim();
 
@@ -42,11 +54,7 @@
 
     const isDecimalNumber = /^\d+$/.test(trimmed);
     if (isDecimalNumber) {
-      const num = Number(trimmed);
-      if (num > Number.MAX_SAFE_INTEGER) {
-        return parseHexSubAccount(trimmed);
-      }
-      return SubAccount.fromID(num);
+      return parseDecimalSubAccount(trimmed);
     }
 
     throw new Error($i18n.alfred.build_icrc_account_subaccount_error);
