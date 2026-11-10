@@ -6,6 +6,10 @@ import {
   CKETH_LEDGER_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import {
+  CKSOL_INDEX_CANISTER_ID,
+  CKSOL_LEDGER_CANISTER_ID,
+} from "$lib/constants/cksol-canister-ids.constants";
+import {
   CKUSDC_INDEX_CANISTER_ID,
   CKUSDC_LEDGER_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
@@ -50,6 +54,17 @@ export const loadIcrcCanisters = async () => {
     defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
       indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+    });
+  }
+  // Skip for test environment, because these canisters do not exist there.
+  if (
+    !disableCkTokens &&
+    !IS_TESTNET &&
+    isNullish(storeData[CKSOL_LEDGER_CANISTER_ID.toText()])
+  ) {
+    defaultIcrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKSOL_LEDGER_CANISTER_ID,
+      indexCanisterId: CKSOL_INDEX_CANISTER_ID,
     });
   }
   // Skip for test environment, because these canisters do not exist there.
