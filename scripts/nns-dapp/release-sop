@@ -383,7 +383,7 @@ review_feature_flags() {
 
 post_proposal_on_slack() {
   DASHBOARD_PROPOSAL_URL="https://dashboard.internetcomputer.org/proposal/$PROPOSAL_ID"
-  NNS_DAPP_PROPOSAL_URL="https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=$PROPOSAL_ID"
+  GOVERNANCE_APP_PROPOSAL_URL="https://nns.icp.net/voting/proposals/$PROPOSAL_ID"
   NNS_RELEASES_CHANNEL_URL="https://dfinity.slack.com/channels/eng-nns-releases"
   (
     echo
@@ -391,7 +391,7 @@ post_proposal_on_slack() {
     echo
     echo "NNS-dapp upgrade proposal:"
     echo "* $DASHBOARD_PROPOSAL_URL"
-    echo "* $NNS_DAPP_PROPOSAL_URL"
+    echo "* $GOVERNANCE_APP_PROPOSAL_URL"
     echo
     echo '````'
     cat "release/PROPOSAL.md"
