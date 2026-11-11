@@ -170,6 +170,7 @@ interface I18nNavigation {
   privacy_mode_show: string;
   project_page: string;
   address_book: string;
+  hotkeys: string;
   search: string;
 }
 
@@ -202,6 +203,16 @@ interface I18nAddress_book {
   select_address_placeholder: string;
 }
 
+interface I18nHotkeys {
+  description: string;
+  hotkey: string;
+  projects: string;
+  neurons: string;
+  empty_title: string;
+  empty_description: string;
+  manage_on_all_neurons: string;
+}
+
 interface I18nAlfred {
   no_results: string;
   home_title: string;
@@ -220,6 +231,8 @@ interface I18nAlfred {
   address_book_description: string;
   canisters_title: string;
   canisters_description: string;
+  hotkeys_title: string;
+  hotkeys_description: string;
   settings_title: string;
   settings_description: string;
   principalId_title: string;
@@ -1631,6 +1644,7 @@ interface I18n {
   warning: I18nWarning;
   navigation: I18nNavigation;
   address_book: I18nAddress_book;
+  hotkeys: I18nHotkeys;
   alfred: I18nAlfred;
   header: I18nHeader;
   reporting: I18nReporting;
