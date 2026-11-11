@@ -12,6 +12,11 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import {
+  CKSOL_INDEX_CANISTER_ID,
+  CKSOL_LEDGER_CANISTER_ID,
+  CKSOL_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cksol-canister-ids.constants";
+import {
   CKUSDC_INDEX_CANISTER_ID,
   CKUSDC_LEDGER_CANISTER_ID,
   CKUSDC_UNIVERSE_CANISTER_ID,
@@ -36,8 +41,9 @@ export const NNS_TOKEN: TokensStoreUniverseData = {
 export const IMPORTANT_CK_TOKEN_IDS = [
   CKBTC_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
-  CKUSDC_UNIVERSE_CANISTER_ID,
   // Skip for test environment, because these canisters do not exist there.
+  ...(IS_TESTNET ? [] : [CKSOL_UNIVERSE_CANISTER_ID]),
+  CKUSDC_UNIVERSE_CANISTER_ID,
   ...(IS_TESTNET
     ? []
     : allCkTokens.map(({ ledgerCanisterId }) => ledgerCanisterId)),
@@ -59,5 +65,13 @@ export const ALL_CK_TOKENS_CANISTER_IDS = [
     ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
     indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
   },
-  ...(IS_TESTNET ? [] : allCkTokens),
+  ...(IS_TESTNET
+    ? []
+    : [
+        {
+          ledgerCanisterId: CKSOL_LEDGER_CANISTER_ID,
+          indexCanisterId: CKSOL_INDEX_CANISTER_ID,
+        },
+        ...allCkTokens,
+      ]),
 ];
