@@ -21,6 +21,28 @@ describe("snsTicketsStore", () => {
     expect($snsTicketsStore[mockPrincipal.toText()].ticket).toEqual(ticket);
   });
 
+  it("should set ticket that requires confirmation", () => {
+    snsTicketsStore.setTicket({
+      rootCanisterId: mockPrincipal,
+      ticket,
+      requiresConfirmation: true,
+    });
+
+    expect(get(snsTicketsStore)[mockPrincipal.toText()]).toEqual({
+      ticket,
+      requiresConfirmation: true,
+    });
+
+    snsTicketsStore.setTicket({
+      rootCanisterId: mockPrincipal,
+      ticket,
+    });
+
+    expect(get(snsTicketsStore)[mockPrincipal.toText()]).toEqual({
+      ticket,
+    });
+  });
+
   it("should set no-ticket for a project", () => {
     snsTicketsStore.setNoTicket(mockPrincipal);
 

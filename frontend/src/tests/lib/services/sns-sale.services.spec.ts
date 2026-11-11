@@ -5,6 +5,8 @@ import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import {
   cancelPollGetOpenTicket,
+  cancelSnsSaleParticipation,
+  findOpenSnsSaleTicket,
   initiateSnsSaleParticipation,
   loadNewSaleTicket,
   loadOpenTicket,
@@ -12,7 +14,6 @@ import {
   restoreSnsSaleParticipation,
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
-import * as busyStore from "$lib/stores/busy.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
@@ -202,9 +203,10 @@ describe("sns-api", () => {
         });
 
         expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(1);
-        expect(ticketFromStore(testSnsTicket.rootCanisterId).ticket).toEqual(
-          testTicket
-        );
+        expect(ticketFromStore(testSnsTicket.rootCanisterId)).toEqual({
+          ticket: testTicket,
+          requiresConfirmation: true,
+        });
       });
 
       it("should retry until gets an open ticket", async () => {
@@ -626,10 +628,13 @@ describe("sns-api", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There is an existing participation started at Jan 1, 1970 12:00 AM. Completing that participation.",
+          text: "There is an unfinished participation of 10.00 ICP started at Jan 1, 1970 12:00 AM. Complete or cancel it before you start a new one.",
         },
       ]);
-      expect(ticketFromStore()?.ticket).toEqual(testTicket);
+      expect(ticketFromStore()).toEqual({
+        ticket: testTicket,
+        requiresConfirmation: true,
+      });
     });
 
     it("should handle invalid user amount error", async () => {
@@ -807,23 +812,86 @@ describe("sns-api", () => {
     });
   });
 
-  describe("restoreSnsSaleParticipation", () => {
-    it("should perform successful participation flow if open ticket", async () => {
+  describe("findOpenSnsSaleTicket", () => {
+    it("should load the open ticket without transfer", async () => {
       snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
+
+      await findOpenSnsSaleTicket({
+        rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
+      });
+
+      expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(1);
+      expect(ticketFromStore()).toEqual({
+        ticket: testTicket,
+        requiresConfirmation: true,
+      });
+      expect(spyOnSendICP).not.toBeCalled();
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should mark no ticket if there is no open ticket", async () => {
+      snsSwapCanister.getOpenTicket.mockResolvedValue(undefined);
+
+      await findOpenSnsSaleTicket({
+        rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
+      });
+
+      expect(spyOnSendICP).not.toBeCalled();
+      expect(ticketFromStore().ticket).toEqual(null);
+    });
+
+    it("should not call api if a ticket is already in the store", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+
+      await findOpenSnsSaleTicket({
+        rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
+      });
+
+      expect(snsSwapCanister.getOpenTicket).not.toBeCalled();
+      expect(ticketFromStore()).toEqual({ ticket: testTicket });
+    });
+  });
+
+  describe("restoreSnsSaleParticipation", () => {
+    beforeEach(() => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+        requiresConfirmation: true,
+      });
+    });
+
+    it("should perform successful participation flow with the confirmed ticket", async () => {
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
 
       expect(get(toastsStore)).toEqual([]);
 
-      await restoreSnsSaleParticipation({
+      const { success } = await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         swapCanisterId: swapCanisterIdMock,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
+        ticket: testTicket,
       });
 
+      expect(success).toBe(true);
       expect(spyOnSendICP).toBeCalledTimes(1);
+      expect(spyOnSendICP).toBeCalledWith(
+        expect.objectContaining({
+          amount: testTicket.amount_icp_e8s,
+          memo: testTicket.ticket_id,
+          createdAt: testTicket.creation_time,
+        })
+      );
       expect(postprocessSpy).toBeCalledTimes(1);
 
       // All steps called
@@ -844,27 +912,23 @@ describe("sns-api", () => {
       ]);
     });
 
-    it("should not start flow if no open ticket", async () => {
-      snsSwapCanister.getOpenTicket.mockResolvedValue(undefined);
-      const postprocessSpy = vi.fn().mockResolvedValue(undefined);
-      const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
-      const startBusySpy = vi
-        .spyOn(busyStore, "startBusy")
-        .mockImplementation(vi.fn());
+    it("should mark the ticket as in progress before the transfer", async () => {
+      let ticketDuringTransfer;
+      spyOnSendICP.mockImplementation(async () => {
+        ticketDuringTransfer = ticketFromStore();
+        return 13n;
+      });
 
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         swapCanisterId: swapCanisterIdMock,
         userCommitment: 0n,
-        postprocess: postprocessSpy,
-        updateProgress: updateProgressSpy,
+        postprocess: vi.fn().mockResolvedValue(undefined),
+        updateProgress: vi.fn(),
+        ticket: testTicket,
       });
 
-      expect(startBusySpy).not.toBeCalled();
-      expect(spyOnSendICP).not.toBeCalled();
-      expect(postprocessSpy).not.toBeCalled();
-      expect(updateProgressSpy).not.toBeCalled();
-      expect(ticketFromStore().ticket).toEqual(null);
+      expect(ticketDuringTransfer).toEqual({ ticket: testTicket });
     });
 
     it("should pass confirmation_text to notifyParticipation", async () => {
@@ -874,7 +938,6 @@ describe("sns-api", () => {
         confirmationText,
       });
 
-      snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
 
@@ -884,6 +947,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
+        ticket: testTicket,
       });
 
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
@@ -901,7 +965,6 @@ describe("sns-api", () => {
         confirmationText,
       });
 
-      snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
 
@@ -911,6 +974,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
+        ticket: testTicket,
       });
 
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
@@ -919,6 +983,83 @@ describe("sns-api", () => {
           confirmation_text: toNullable(confirmationText),
         })
       );
+    });
+  });
+
+  describe("cancelSnsSaleParticipation", () => {
+    beforeEach(() => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+        requiresConfirmation: true,
+      });
+    });
+
+    it("should remove the ticket without transfer if no ICP was transferred", async () => {
+      spyOnNotifyParticipation.mockRejectedValue(
+        new Error("Amount transferred: 0; minimum required to participate: 1")
+      );
+      const postprocessSpy = vi.fn().mockResolvedValue(undefined);
+
+      await cancelSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+      });
+
+      expect(spyOnSendICP).not.toBeCalled();
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
+      expect(postprocessSpy).not.toBeCalled();
+      expect(ticketFromStore().ticket).toEqual(null);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "The unfinished participation was cancelled. No ICP was transferred.",
+        },
+      ]);
+    });
+
+    it("should remove the ticket if the commitment did not change", async () => {
+      const userCommitment = 100_000_000n;
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: userCommitment,
+      });
+      const postprocessSpy = vi.fn().mockResolvedValue(undefined);
+
+      await cancelSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        userCommitment,
+        postprocess: postprocessSpy,
+      });
+
+      expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
+      expect(postprocessSpy).not.toBeCalled();
+      expect(ticketFromStore().ticket).toEqual(null);
+    });
+
+    it("should commit the participation if the ICP was already transferred", async () => {
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
+      });
+      const postprocessSpy = vi.fn().mockResolvedValue(undefined);
+
+      await cancelSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+      });
+
+      expect(spyOnSendICP).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
+      expect(postprocessSpy).toBeCalledTimes(1);
+      expect(ticketFromStore().ticket).toEqual(null);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "Your participation has been successfully committed.",
+        },
+      ]);
     });
   });
 
@@ -968,6 +1109,55 @@ describe("sns-api", () => {
         {
           level: "success",
           text: "Your participation has been successfully committed.",
+        },
+      ]);
+    });
+
+    it("should not transfer if an existing ticket requires confirmation", async () => {
+      const existingTicket = {
+        ...testTicket,
+        amount_icp_e8s: 10_000_000_000n,
+      };
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS,
+          existingTicket,
+        })
+      );
+      const account = {
+        ...mockMainAccount,
+        balance: TokenAmount.fromE8s({
+          amount: 1_000_000_000_000n,
+          token: ICPToken,
+        }),
+      };
+      const postprocessSpy = vi.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
+
+      const { success } = await initiateSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        amount: TokenAmount.fromNumber({
+          amount: 1,
+          token: ICPToken,
+        }),
+        account,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      expect(success).toBe(false);
+      expect(spyOnSendICP).not.toBeCalled();
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(postprocessSpy).not.toBeCalled();
+      expect(ticketFromStore()).toEqual({
+        ticket: existingTicket,
+        requiresConfirmation: true,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There is an unfinished participation of 100.00 ICP started at Jan 1, 1970 12:00 AM. Complete or cancel it before you start a new one.",
         },
       ]);
     });
