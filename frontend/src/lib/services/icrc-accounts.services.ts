@@ -28,6 +28,7 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isLastCall } from "$lib/utils/env.utils";
 import {
   isCanisterOutOfCyclesError,
+  isUnknownOutcomeError,
   toToastError,
 } from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
@@ -278,6 +279,7 @@ export const transferTokens = async ({
   ledgerCanisterId,
 }: IcrcTransferTokensUserParams): Promise<{
   blockIndex: IcrcLedgerDid.BlockIndex | undefined;
+  unknownOutcome?: boolean;
 }> => {
   try {
     if (isNullish(fee)) {
@@ -300,13 +302,21 @@ export const transferTokens = async ({
 
     return { blockIndex };
   } catch (err) {
+    const unknownOutcome = isUnknownOutcomeError(err);
+
     toastsError(
       ledgerErrorToToastError({
-        fallbackErrorLabelKey: "error.transaction_error",
+        fallbackErrorLabelKey: unknownOutcome
+          ? "error.transaction_unknown_outcome"
+          : "error.transaction_error",
         err,
       })
     );
 
-    return { blockIndex: undefined };
+    if (unknownOutcome) {
+      await loadAccounts({ ledgerCanisterId });
+    }
+
+    return { blockIndex: undefined, unknownOutcome };
   }
 };

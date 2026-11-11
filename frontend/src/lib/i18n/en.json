@@ -85,6 +85,7 @@
     "amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need to stake a minimum of 1 ICP.",
     "amount_not_enough_top_up_neuron": "Sorry, the amount is too small. The amount plus the current stake need to be at least 1 ICP",
     "transaction_error": "Sorry, there was an error trying to execute the transaction.",
+    "transaction_unknown_outcome": "We could not confirm this transaction, and it may have gone through. Check your balance and transactions before you send again.",
     "transaction_too_old": "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
     "transaction_created_in_future": "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
     "transaction_invalid_memo_icp": "The memo field should be a numeric value no longer than 64 bits. Please check the memo and try again.",

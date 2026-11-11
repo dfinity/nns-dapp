@@ -89,6 +89,7 @@ interface I18nError {
   amount_not_enough_stake_neuron: string;
   amount_not_enough_top_up_neuron: string;
   transaction_error: string;
+  transaction_unknown_outcome: string;
   transaction_too_old: string;
   transaction_created_in_future: string;
   transaction_invalid_memo_icp: string;
