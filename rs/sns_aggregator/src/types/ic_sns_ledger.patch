@@ -1,31 +1,29 @@
-diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 7566582df..00c91ff35 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -129,7 +129,7 @@ pub struct GetBlocksResponseArchivedBlocksItem {
-     pub start: BlockIndex,
+@@ -154,7 +154,7 @@
      pub length: candid::Nat,
  }
+ /// The result of a "get_blocks" call.
 -#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 +#[derive(CandidType, Deserialize)]
  pub struct GetBlocksResponse {
-     pub certificate: Option<serde_bytes::ByteBuf>,
-     pub first_index: BlockIndex,
-@@ -205,7 +205,7 @@ pub struct GetTransactionsResponseArchivedTransactionsItem {
-     pub start: TxIndex,
+     /// System certificate for the hash of the latest block in the chain.
+     /// Only present if `get_blocks` is called in a non-replicated query context.
+@@ -299,7 +299,7 @@
+     /// The number of transactions you can fetch using the callback.
      pub length: candid::Nat,
  }
 -#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 +#[derive(CandidType, Deserialize)]
  pub struct GetTransactionsResponse {
-     pub first_index: TxIndex,
-     pub log_length: candid::Nat,
-@@ -339,7 +339,7 @@ pub struct GetBlocksResultArchivedBlocksItem {
+     /// The index of the first transaction in [transactions].
+     /// If the transaction vector is empty, the exact value of this field is not specified.
+@@ -567,7 +567,7 @@
      pub args: Vec<GetBlocksArgs>,
      pub callback: GetBlocksResultArchivedBlocksItemCallback,
  }
 -#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 +#[derive(CandidType, Deserialize)]
  pub struct GetBlocksResult {
-     pub log_length: candid::Nat,
-     pub blocks: Vec<GetBlocksResultBlocksItem>,
+     /// Total number of blocks in the
+     /// block log
