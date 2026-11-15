@@ -29,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 - In a tool of the quick search panel, the Enter key no longer opens the first
   search result.
+- Screen readers can now read and use the quick search panel.
 - The proposal detail page no longer parses the text fields of a payload as
   JSON, so a text that nests JSON thousands of levels deep no longer breaks
   the page.

@@ -154,7 +154,9 @@
   <div
     class="overlay"
     transition:fade={{ duration: 150 }}
-    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-label={$i18n.alfred.dialog_label}
     data-tid="alfred-component"
   >
     <Backdrop on:nnsClose={hideAlfred} />

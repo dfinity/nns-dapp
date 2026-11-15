@@ -56,6 +56,18 @@ describe("Alfred Component", () => {
     expect(await po.isPresent()).toBe(false);
   });
 
+  it("should expose the panel as a modal dialog", async () => {
+    const { container } = render(Alfred);
+    alfredVisibleStore.set(true);
+    await runResolvedPromises();
+
+    const panel = container.querySelector('[data-tid="alfred-component"]');
+    expect(panel.getAttribute("role")).toBe("dialog");
+    expect(panel.getAttribute("aria-modal")).toBe("true");
+    expect(panel.getAttribute("aria-label")).toBe("Quick search");
+    expect(panel.hasAttribute("aria-hidden")).toBe(false);
+  });
+
   it("should open it with the keyboard combination", async () => {
     const po = renderComponent();
     expect(await po.isPresent()).toBe(false);

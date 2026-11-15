@@ -142,6 +142,25 @@ describe("ImportSnsUtil", () => {
     ]);
   });
 
+  it("should clear the error of a failed import after a successful retry", async () => {
+    vi.spyOn(console, "error").mockReturnValue();
+    importSnsSpy().mockRejectedValueOnce(new Error("Failed to fetch"));
+    const po = renderComponent();
+    await checkRootCanisterId(po);
+
+    await po.clickImport();
+    await runResolvedPromises();
+    expect(await po.getErrorText()).toBe(
+      "The NNS dapp could not load this SNS. Failed to fetch"
+    );
+
+    await po.clickImport();
+    await runResolvedPromises();
+
+    expect(await po.isReviewPresent()).toBe(false);
+    expect(await po.isPresent("import-sns-error")).toBe(false);
+  });
+
   it("should go back to the form without an import", async () => {
     const po = renderComponent();
     await checkRootCanisterId(po);

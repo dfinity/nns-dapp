@@ -124,6 +124,7 @@
   const confirmImport = async () => {
     if (!nonNullish(snsToImport)) return;
 
+    clearError();
     busyMessage = $i18n.import_sns.importing;
     try {
       await importSns(
@@ -217,6 +218,9 @@
       {#if nonNullish(errorMessage)}
         <div class="error-message" data-tid="import-sns-error">
           {errorMessage}
+          {#if nonNullish(errorDetail)}
+            <span class="error-detail">{errorDetail}</span>
+          {/if}
         </div>
       {/if}
 

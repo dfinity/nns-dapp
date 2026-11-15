@@ -203,6 +203,7 @@ interface I18nAddress_book {
 }
 
 interface I18nAlfred {
+  dialog_label: string;
   no_results: string;
   home_title: string;
   home_description: string;

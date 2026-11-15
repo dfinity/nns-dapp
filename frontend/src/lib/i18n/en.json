@@ -195,6 +195,7 @@
     "select_address_placeholder": "Select an address"
   },
   "alfred": {
+    "dialog_label": "Quick search",
     "no_results": "No results found",
     "home_title": "Home",
     "home_description": "View your investment portfolio",
