@@ -86,12 +86,12 @@
     try {
       const newResults = await changeHotkeyOnNeurons({ change, neurons });
       // A retry only runs the failed neurons, so keep the other results.
+      const newResultsByKey = new Map(
+        newResults.map((result) => [toKey(result), result])
+      );
       results =
         results?.map(
-          (result) =>
-            newResults.find(
-              (newResult) => toKey(newResult) === toKey(result)
-            ) ?? result
+          (result) => newResultsByKey.get(toKey(result)) ?? result
         ) ?? newResults;
     } finally {
       stopBusy("change-hotkeys");
