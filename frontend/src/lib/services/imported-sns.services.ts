@@ -244,6 +244,13 @@ const hasActionableProposals = (rootCanisterId: RootCanisterIdText) =>
   nonNullish(get(actionableSnsProposalsStore)[rootCanisterId]) ||
   get(failedActionableSnsesStore).includes(rootCanisterId);
 
+// The actionable proposal loads that run, so that a reload does not start them again.
+const pendingActionableProposalLoads = new Set<RootCanisterIdText>();
+
+registerCleanupForTesting(() => {
+  pendingActionableProposalLoads.clear();
+});
+
 /**
  * Keeps the actionable proposals in line with the imported SNSes that the app shows.
  *
@@ -269,11 +276,17 @@ const updateActionableProposals = ({
   }
 
   for (const rootCanisterIdText of shownAfter) {
-    if (hasActionableProposals(rootCanisterIdText)) {
+    if (
+      hasActionableProposals(rootCanisterIdText) ||
+      pendingActionableProposalLoads.has(rootCanisterIdText)
+    ) {
       continue;
     }
 
-    loadActionableProposalsForSns(Principal.fromText(rootCanisterIdText));
+    pendingActionableProposalLoads.add(rootCanisterIdText);
+    loadActionableProposalsForSns(
+      Principal.fromText(rootCanisterIdText)
+    ).finally(() => pendingActionableProposalLoads.delete(rootCanisterIdText));
   }
 };
 

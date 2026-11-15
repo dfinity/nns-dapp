@@ -227,6 +227,48 @@ describe("ImportSnsUtil", () => {
     const isInputFocused = () =>
       document.activeElement?.getAttribute("data-tid") ===
       "import-sns-root-canister-id";
+    const isImportButtonFocused = () =>
+      document.activeElement?.getAttribute("data-tid") === "import-sns-confirm";
+
+    it("should focus the import button after the check", async () => {
+      const po = renderComponent();
+
+      await checkRootCanisterId(po);
+
+      expect(isImportButtonFocused()).toBe(true);
+    });
+
+    it("should focus the input after a failed check", async () => {
+      getSnsToImportSpy().mockRejectedValue(
+        new ImportedSnsError("governance-mode")
+      );
+      const po = renderComponent();
+      await po.enterRootCanisterId(rootCanisterId);
+      (
+        document.querySelector('[data-tid="import-sns-check"]') as HTMLElement
+      ).focus();
+
+      await po.clickCheck();
+      await runResolvedPromises();
+
+      expect(isInputFocused()).toBe(true);
+    });
+
+    it("should focus the import button after a failed import", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      importSnsSpy().mockRejectedValue(new Error("Failed to fetch"));
+      const po = renderComponent();
+      await checkRootCanisterId(po);
+      (
+        document.querySelector('[data-tid="import-sns-back"]') as HTMLElement
+      ).focus();
+
+      await po.clickImport();
+      await runResolvedPromises();
+
+      expect(await po.isReviewPresent()).toBe(true);
+      expect(isImportButtonFocused()).toBe(true);
+    });
 
     it("should focus the input after a removal", async () => {
       importedSnsesStore.add(rootCanisterId);

@@ -720,6 +720,20 @@ describe("imported-sns.services", () => {
       expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(root);
     });
 
+    it("should not load the actionable proposals of an SNS again while they load", async () => {
+      resetIdentity();
+      loadActionableProposalsSpy().mockImplementation(
+        () => new Promise(() => undefined)
+      );
+
+      await importSns(root);
+      await importSns(stranger);
+
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(2);
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(root);
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(stranger);
+    });
+
     it("should remove the actionable proposals of another SNS that fails to load again", async () => {
       resetIdentity();
       importedSnsesStore.add(stranger.toText());

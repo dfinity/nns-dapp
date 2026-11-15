@@ -38,6 +38,7 @@
   import { onMount, tick } from "svelte";
 
   let rootCanisterIdInputRef = $state<HTMLInputElement | undefined>();
+  let importButtonRef = $state<HTMLButtonElement | undefined>();
   let rootCanisterIdInput = $state("");
   let snsToImport = $state<CachedSnsDto | undefined>();
   let errorMessage = $state<string | undefined>();
@@ -107,12 +108,16 @@
     } finally {
       busyMessage = undefined;
     }
+    await focusStep();
   };
 
-  // The focused button leaves the page after an import, a back or a removal.
-  const focusInput = async () => {
+  // The focused element can leave the page or stay disabled while the tool is busy.
+  const focusStep = async () => {
     await tick();
-    rootCanisterIdInputRef?.focus();
+    (nonNullish(snsToImport)
+      ? importButtonRef
+      : rootCanisterIdInputRef
+    )?.focus();
   };
 
   const confirmImport = async () => {
@@ -130,13 +135,13 @@
     } finally {
       busyMessage = undefined;
     }
-    await focusInput();
+    await focusStep();
   };
 
   const back = async () => {
     snsToImport = undefined;
     clearError();
-    await focusInput();
+    await focusStep();
   };
 
   // A detail page needs an ID from the removed SNS, so it goes to its list page.
@@ -156,7 +161,7 @@
 
   const remove = async (rootCanisterId: RootCanisterIdText) => {
     removeImportedSns(Principal.fromText(rootCanisterId));
-    await focusInput();
+    await focusStep();
 
     // The page cannot show the universe of a removed SNS.
     if ($selectedUniverseIdStore.toText() === rootCanisterId) {
@@ -224,6 +229,7 @@
           type="button"
           data-tid="import-sns-confirm"
           disabled={nonNullish(busyMessage)}
+          bind:this={importButtonRef}
           onclick={confirmImport}>{$i18n.import_sns.import}</button
         >
       </div>
