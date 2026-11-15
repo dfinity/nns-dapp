@@ -14,6 +14,7 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import {
   SnsNeuronPermissionType,
@@ -192,6 +193,57 @@ describe("actionable-sns-proposals.services", () => {
         certified: false,
         params: expectedFilterParams,
       });
+    });
+
+    it("should not store the proposals of an SNS that is not committed anymore", async () => {
+      mockSnsProjectsCommittedStore([rootCanisterId1, rootCanisterId2]);
+      let resolveProposals: () => void;
+      spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
+        ({ rootCanisterId }) =>
+          new Promise((resolve) => {
+            const response = queryProposalsResponse(
+              rootCanisterId.toText() === rootCanisterId1.toText()
+                ? [votableProposal1]
+                : [votableProposal2]
+            );
+            if (rootCanisterId.toText() === rootCanisterId1.toText()) {
+              resolveProposals = () => resolve(response);
+            } else {
+              resolve(response);
+            }
+          })
+      );
+
+      const call = loadActionableSnsProposals();
+      await runResolvedPromises();
+      mockSnsProjectsCommittedStore([rootCanisterId2]);
+      resolveProposals();
+      await call;
+
+      expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
+        rootCanisterId2.toText(),
+      ]);
+    });
+
+    it("should not save the failure of an SNS that is not committed anymore", async () => {
+      mockSnsProjectsCommittedStore([rootCanisterId1]);
+      let rejectProposals: () => void;
+      spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
+        () =>
+          new Promise((_, reject) => {
+            rejectProposals = () => reject(new Error("sns query fail"));
+          })
+      );
+      spyConsoleError = silentConsoleErrors();
+
+      const call = loadActionableSnsProposals();
+      await runResolvedPromises();
+      mockSnsProjectsCommittedStore([]);
+      rejectProposals();
+      await call;
+
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(get(failedActionableSnsesStore)).toEqual([]);
     });
 
     it("should save failed canister IDs", async () => {

@@ -273,11 +273,7 @@ const updateActionableProposals = ({
       continue;
     }
 
-    const rootCanisterId = Principal.fromText(rootCanisterIdText);
-    // The user can remove the SNS while its proposals load.
-    loadActionableProposalsForSns(rootCanisterId).then(() =>
-      resetActionableProposalsIfNotListed(rootCanisterId)
-    );
+    loadActionableProposalsForSns(Principal.fromText(rootCanisterIdText));
   }
 };
 

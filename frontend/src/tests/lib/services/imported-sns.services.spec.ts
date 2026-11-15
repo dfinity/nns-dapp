@@ -1,5 +1,6 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as importedSnsApi from "$lib/api/imported-sns.api";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { MAX_IMPORTED_SNSES } from "$lib/constants/imported-snses.constants";
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import {
@@ -26,7 +27,7 @@ import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import {
@@ -669,22 +670,6 @@ describe("imported-sns.services", () => {
       ]);
     });
 
-    it("should remove the actionable proposals if the user removes the SNS while they load", async () => {
-      resetIdentity();
-      loadActionableProposalsSpy().mockImplementation(
-        async (rootCanisterId) => {
-          removeImportedSns(rootCanisterId);
-          actionableSnsProposalsStore.set({ rootCanisterId, proposals: [] });
-        }
-      );
-
-      await importSns(root);
-      await runResolvedPromises();
-
-      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(1);
-      expect(get(actionableSnsProposalsStore)).toEqual({});
-    });
-
     it("should load the actionable proposals of another SNS that loads again", async () => {
       resetIdentity();
       failingRoots.add(stranger.toText());
@@ -795,6 +780,59 @@ describe("imported-sns.services", () => {
       expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
         stranger.toText(),
       ]);
+      expect(get(failedActionableSnsesStore)).toEqual([]);
+    });
+  });
+
+  describe("removal during the startup load of actionable proposals", () => {
+    let settleProposals: (
+      result: SnsGovernanceDid.ListProposalsResponse | Error
+    ) => void;
+
+    beforeEach(() => {
+      vi.spyOn(console, "error").mockReturnValue();
+      resetIdentity();
+      setSnsProjects([]);
+      setImportedSnses([root]);
+
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([]);
+      vi.spyOn(snsGovernanceApi, "queryProposals").mockImplementation(
+        () =>
+          new Promise((resolve, reject) => {
+            settleProposals = (result) =>
+              result instanceof Error ? reject(result) : resolve(result);
+          })
+      );
+    });
+
+    const loadThenRemove = async (
+      result: SnsGovernanceDid.ListProposalsResponse | Error
+    ) => {
+      const startupLoad =
+        actionableSnsProposalsServices.loadActionableSnsProposals();
+      await runResolvedPromises();
+      expect(snsGovernanceApi.queryProposals).toHaveBeenCalledTimes(1);
+
+      removeImportedSns(root);
+      settleProposals(result);
+      await startupLoad;
+    };
+
+    it("should not restore the actionable proposals of the removed SNS", async () => {
+      await loadThenRemove({
+        proposals: [],
+        include_ballots_by_caller: [true],
+        include_topic_filtering: [],
+      });
+
+      expect(get(actionableSnsProposalsStore)).toEqual({});
+      expect(get(failedActionableSnsesStore)).toEqual([]);
+    });
+
+    it("should not mark the removed SNS as failed", async () => {
+      await loadThenRemove(new Error("Failed to fetch"));
+
+      expect(get(actionableSnsProposalsStore)).toEqual({});
       expect(get(failedActionableSnsesStore)).toEqual([]);
     });
   });
