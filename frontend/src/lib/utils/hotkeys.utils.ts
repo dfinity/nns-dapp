@@ -65,13 +65,17 @@ export const getHotkeys = ({
       if (principal === userPrincipal) {
         continue;
       }
-      const neuronsByUniverse =
-        hotkeyNeurons.get(principal) ?? new Map<string, HotkeyNeuron[]>();
-      neuronsByUniverse.set(universeId, [
-        ...(neuronsByUniverse.get(universeId) ?? []),
-        neuron,
-      ]);
-      hotkeyNeurons.set(principal, neuronsByUniverse);
+      let neuronsByUniverse = hotkeyNeurons.get(principal);
+      if (isNullish(neuronsByUniverse)) {
+        neuronsByUniverse = new Map<string, HotkeyNeuron[]>();
+        hotkeyNeurons.set(principal, neuronsByUniverse);
+      }
+      let neurons = neuronsByUniverse.get(universeId);
+      if (isNullish(neurons)) {
+        neurons = [];
+        neuronsByUniverse.set(universeId, neurons);
+      }
+      neurons.push(neuron);
     }
   };
 
