@@ -4,7 +4,6 @@
   import { analytics } from "$lib/services/analytics.services";
   import { alfredVisibleStore } from "$lib/stores/alfred.store";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_HOTKEYS_PAGE } from "$lib/stores/feature-flags.store";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
   import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
@@ -28,7 +27,6 @@
       theme: $themeStore,
       balancePrivacyOption: $balancePrivacyOptionStore,
       memoOption: $transactionMemoOptionStore,
-      isHotkeysPageEnabled: $ENABLE_HOTKEYS_PAGE,
     })
   );
 

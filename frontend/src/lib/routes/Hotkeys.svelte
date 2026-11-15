@@ -1,4 +1,5 @@
 <script lang="ts">
+  import HotkeyActionsCell from "$lib/components/hotkeys/HotkeyActionsCell.svelte";
   import HotkeyCell from "$lib/components/hotkeys/HotkeyCell.svelte";
   import HotkeyNeuronsCell from "$lib/components/hotkeys/HotkeyNeuronsCell.svelte";
   import HotkeyProjectsCell from "$lib/components/hotkeys/HotkeyProjectsCell.svelte";
@@ -8,6 +9,7 @@
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { hotkeysStore } from "$lib/derived/hotkeys.derived";
+  import ChangeHotkeyModal from "$lib/modals/hotkeys/ChangeHotkeyModal.svelte";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
@@ -16,10 +18,14 @@
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
-  import type { HotkeysTableRowData } from "$lib/types/hotkeys";
+  import type {
+    Hotkey,
+    HotkeyChange,
+    HotkeysTableRowData,
+  } from "$lib/types/hotkeys";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
   import { IconErrorOutline, IconKey } from "@dfinity/gix-components";
-  import { isNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { Principal } from "@icp-sdk/core/principal";
   import { onMount, untrack } from "svelte";
   import { get } from "svelte/store";
@@ -95,11 +101,19 @@
       $isLoadingSnsProjectsStore
   );
 
+  let changing = $state<
+    { hotkey: Hotkey; type: HotkeyChange["type"] } | undefined
+  >();
+
   const tableData = $derived(
     $hotkeysStore.map(
       (hotkey): HotkeysTableRowData => ({
         domKey: hotkey.principal,
         hotkey,
+        rowContext: {
+          onReplace: (hotkey) => (changing = { hotkey, type: "replace" }),
+          onRemove: (hotkey) => (changing = { hotkey, type: "remove" }),
+        },
       })
     )
   );
@@ -131,9 +145,9 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
-    // The table does not show a title for the last column.
     {
       title: "",
+      cellComponent: HotkeyActionsCell,
       alignment: "right",
       templateColumns: ["max-content"],
     },
@@ -175,6 +189,14 @@
     {/if}
   </div>
 </IslandWidthMain>
+
+{#if nonNullish(changing)}
+  <ChangeHotkeyModal
+    hotkey={changing.hotkey}
+    type={changing.type}
+    onClose={() => (changing = undefined)}
+  />
+{/if}
 
 <style lang="scss">
   .content {

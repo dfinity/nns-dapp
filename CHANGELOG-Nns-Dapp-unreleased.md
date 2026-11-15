@@ -14,7 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Add a Hotkeys page with the hotkeys of all your neurons, behind the `ENABLE_HOTKEYS_PAGE` feature flag.
+- Add a Hotkeys page to replace or remove a hotkey on all your NNS and SNS neurons at once.
 
 #### Changed
 

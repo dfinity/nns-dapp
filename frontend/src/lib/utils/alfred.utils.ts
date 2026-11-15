@@ -46,7 +46,6 @@ interface AlfredItemBase {
     theme: ThemeStoreData;
     balancePrivacyOption: BalancePrivacyOptionData;
     memoOption: TransactionMemoOption;
-    isHotkeysPageEnabled: boolean;
   }) => boolean;
 }
 
@@ -143,7 +142,6 @@ const getAlfredItems = (): AlfredItem[] => {
       description: alfred.hotkeys_description,
       path: AppPath.Hotkeys,
       icon: IconKey,
-      contextFilter: (context) => context.isHotkeysPageEnabled,
     },
     {
       id: "settings",
@@ -262,7 +260,6 @@ export const filterAlfredItems = (
     theme: ThemeStoreData;
     balancePrivacyOption: BalancePrivacyOptionData;
     memoOption: TransactionMemoOption;
-    isHotkeysPageEnabled: boolean;
   }
 ): AlfredItem[] => {
   const items = alfredItems.filter(

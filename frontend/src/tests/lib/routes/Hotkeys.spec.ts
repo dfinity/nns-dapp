@@ -6,6 +6,7 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { ChangeHotkeyModalPo } from "$tests/page-objects/ChangeHotkeyModal.page-object";
 import { HotkeysPo } from "$tests/page-objects/Hotkeys.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -149,6 +150,45 @@ describe("Hotkeys", () => {
     await runResolvedPromises();
 
     expect(await po.hasEmptyState()).toBe(true);
+  });
+
+  describe("actions", () => {
+    beforeEach(() => {
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
+        nnsNeuron(1n, [hotkeyA]),
+      ]);
+    });
+
+    it("should open the Replace modal for the hotkey", async () => {
+      const { container } = render(Hotkeys);
+      const po = HotkeysPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      await po.clickReplace(0);
+
+      const modalPo = ChangeHotkeyModalPo.under(
+        new JestPageObjectElement(container)
+      );
+      expect(await modalPo.getModalTitle()).toBe("Replace Hotkey");
+      expect(await modalPo.getCurrentHotkey()).toBe(hotkeyA.toText());
+    });
+
+    it("should open the Remove modal for the hotkey", async () => {
+      const { container } = render(Hotkeys);
+      const po = HotkeysPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      await po.clickRemove(0);
+
+      const modalPo = ChangeHotkeyModalPo.under(
+        new JestPageObjectElement(container)
+      );
+      expect(await modalPo.getModalTitle()).toBe("Remove Hotkey");
+      expect(await modalPo.getCurrentHotkey()).toBe(hotkeyA.toText());
+
+      await modalPo.closeModal();
+      await modalPo.waitForClosed();
+    });
   });
 
   describe("when a certified load fails", () => {

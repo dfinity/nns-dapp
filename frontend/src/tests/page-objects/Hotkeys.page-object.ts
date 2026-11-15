@@ -32,6 +32,16 @@ export class HotkeysPo extends BasePageObject {
     return this.click("retry-button");
   }
 
+  async clickReplace(rowIndex: number): Promise<void> {
+    const buttons = await this.root.allByTestId("replace-hotkey-button");
+    return buttons[rowIndex].click();
+  }
+
+  async clickRemove(rowIndex: number): Promise<void> {
+    const buttons = await this.root.allByTestId("remove-hotkey-button");
+    return buttons[rowIndex].click();
+  }
+
   async isLoading(): Promise<boolean> {
     return (await this.getResponsiveTablePo().getSkeletonRows()).length > 0;
   }

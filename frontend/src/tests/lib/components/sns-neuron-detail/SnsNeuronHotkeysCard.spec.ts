@@ -3,7 +3,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
@@ -97,16 +96,6 @@ describe("SnsNeuronHotkeysCard", () => {
 
       expect(await linkPo.isPresent()).toBe(true);
       expect(await linkPo.getHref()).toBe(AppPath.Hotkeys);
-    });
-
-    it("should not render the link if the feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_HOTKEYS_PAGE", false);
-
-      expect(
-        await renderCardPo(controlledNeuron)
-          .getManageAllHotkeysLinkPo()
-          .isPresent()
-      ).toBe(false);
     });
 
     it("should not render the link if the user cannot manage hotkeys", async () => {
