@@ -9,8 +9,10 @@ import {
 } from "$lib/api/imported-sns.api";
 import { MAX_IMPORTED_SNSES } from "$lib/constants/imported-snses.constants";
 import { authSignedInStore } from "$lib/derived/auth.derived";
-import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
+import {
+  isCommittedSns,
+  loadActionableProposalsForSns,
+} from "$lib/services/actionable-sns-proposals.services";
 import {
   actionableSnsProposalsStore,
   failedActionableSnsesStore,
@@ -228,16 +230,12 @@ const loadSnses = async (
 
 // The actionable proposal counts include each SNS in these stores.
 const resetActionableProposalsIfNotListed = (rootCanisterId: Principal) => {
-  const rootCanisterIdText = rootCanisterId.toText();
-  const isListed = get(snsProjectsCommittedStore).some(
-    (project) => project.rootCanisterId.toText() === rootCanisterIdText
-  );
-  if (isListed) {
+  if (isCommittedSns(rootCanisterId)) {
     return;
   }
 
   actionableSnsProposalsStore.resetForSns(rootCanisterId);
-  failedActionableSnsesStore.remove(rootCanisterIdText);
+  failedActionableSnsesStore.remove(rootCanisterId.toText());
 };
 
 const hasActionableProposals = (rootCanisterId: RootCanisterIdText) =>
@@ -250,6 +248,32 @@ const pendingActionableProposalLoads = new Set<RootCanisterIdText>();
 registerCleanupForTesting(() => {
   pendingActionableProposalLoads.clear();
 });
+
+const loadMissingActionableProposals = ({
+  rootCanisterIdText,
+  retry,
+}: {
+  rootCanisterIdText: RootCanisterIdText;
+  retry: boolean;
+}) => {
+  if (
+    hasActionableProposals(rootCanisterIdText) ||
+    pendingActionableProposalLoads.has(rootCanisterIdText)
+  ) {
+    return;
+  }
+
+  const rootCanisterId = Principal.fromText(rootCanisterIdText);
+  pendingActionableProposalLoads.add(rootCanisterIdText);
+  loadActionableProposalsForSns(rootCanisterId).finally(() => {
+    pendingActionableProposalLoads.delete(rootCanisterIdText);
+
+    // The load skips its result while the SNS is hidden, and a reload can show the SNS again before the load ends.
+    if (retry && isCommittedSns(rootCanisterId)) {
+      loadMissingActionableProposals({ rootCanisterIdText, retry: false });
+    }
+  });
+};
 
 /**
  * Keeps the actionable proposals in line with the imported SNSes that the app shows.
@@ -276,17 +300,7 @@ const updateActionableProposals = ({
   }
 
   for (const rootCanisterIdText of shownAfter) {
-    if (
-      hasActionableProposals(rootCanisterIdText) ||
-      pendingActionableProposalLoads.has(rootCanisterIdText)
-    ) {
-      continue;
-    }
-
-    pendingActionableProposalLoads.add(rootCanisterIdText);
-    loadActionableProposalsForSns(
-      Principal.fromText(rootCanisterIdText)
-    ).finally(() => pendingActionableProposalLoads.delete(rootCanisterIdText));
+    loadMissingActionableProposals({ rootCanisterIdText, retry: true });
   }
 };
 

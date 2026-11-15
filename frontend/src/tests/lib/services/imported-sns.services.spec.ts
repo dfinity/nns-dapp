@@ -581,7 +581,10 @@ describe("imported-sns.services", () => {
 
     beforeEach(() => {
       vi.spyOn(console, "error").mockReturnValue();
-      loadActionableProposalsSpy().mockResolvedValue();
+      // Like the real loader, it stores a result for a committed SNS.
+      loadActionableProposalsSpy().mockImplementation(async (rootCanisterId) =>
+        actionableSnsProposalsStore.set({ rootCanisterId, proposals: [] })
+      );
       snsAggregatorIncludingAbortedProjectsStore.setData([]);
       // The app loads the imported SNSes at start.
       loadedImportedSnsesStore.set({ rootCanisterIds: [], snses: [] });
@@ -720,6 +723,30 @@ describe("imported-sns.services", () => {
       expect(loadActionableProposalsSpy()).toHaveBeenCalledWith(root);
     });
 
+    it("should load the actionable proposals again if a load skips its result", async () => {
+      resetIdentity();
+      loadActionableProposalsSpy().mockResolvedValueOnce();
+
+      await importSns(root);
+      await runResolvedPromises();
+
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(2);
+      expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
+        root.toText(),
+      ]);
+    });
+
+    it("should load the actionable proposals again only once", async () => {
+      resetIdentity();
+      loadActionableProposalsSpy().mockResolvedValue();
+
+      await importSns(root);
+      await runResolvedPromises();
+
+      expect(loadActionableProposalsSpy()).toHaveBeenCalledTimes(2);
+      expect(get(actionableSnsProposalsStore)).toEqual({});
+    });
+
     it("should not load the actionable proposals of an SNS again while they load", async () => {
       resetIdentity();
       loadActionableProposalsSpy().mockImplementation(
@@ -747,7 +774,9 @@ describe("imported-sns.services", () => {
       failingRoots.add(stranger.toText());
       await importSns(root);
 
-      expect(get(actionableSnsProposalsStore)).toEqual({});
+      expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
+        root.toText(),
+      ]);
       expect(get(failedActionableSnsesStore)).toEqual([]);
     });
   });

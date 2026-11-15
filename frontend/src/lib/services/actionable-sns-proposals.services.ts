@@ -36,7 +36,7 @@ export const loadActionableSnsProposals = async () => {
 };
 
 // The user can remove an imported SNS while its proposals load.
-const isCommittedSns = (rootCanisterId: Principal): boolean =>
+export const isCommittedSns = (rootCanisterId: Principal): boolean =>
   get(snsProjectsCommittedStore).some(
     (project) => project.rootCanisterId.toText() === rootCanisterId.toText()
   );
