@@ -4,6 +4,8 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { MAX_IMPORTED_SNSES } from "$lib/constants/imported-snses.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import {
     getSnsToImport,
@@ -23,12 +25,17 @@
   import type { CachedSnsDto } from "$lib/types/sns-aggregator";
   import { errorToString } from "$lib/utils/error.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
+  import {
+    buildAccountsUrl,
+    buildNeuronsUrl,
+    buildProposalsUrl,
+    buildSwitchUniverseUrl,
+  } from "$lib/utils/navigation.utils";
   import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
   import { IconAdd, IconBin, Input, Spinner } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { Principal } from "@icp-sdk/core/principal";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   let rootCanisterIdInputRef = $state<HTMLInputElement | undefined>();
   let rootCanisterIdInput = $state("");
@@ -102,6 +109,12 @@
     }
   };
 
+  // The focused button leaves the page after an import, a back or a removal.
+  const focusInput = async () => {
+    await tick();
+    rootCanisterIdInputRef?.focus();
+  };
+
   const confirmImport = async () => {
     if (!nonNullish(snsToImport)) return;
 
@@ -117,19 +130,37 @@
     } finally {
       busyMessage = undefined;
     }
+    await focusInput();
   };
 
-  const back = () => {
+  const back = async () => {
     snsToImport = undefined;
     clearError();
+    await focusInput();
+  };
+
+  // A detail page needs an ID from the removed SNS, so it goes to its list page.
+  const nnsUniverseUrl = (): string => {
+    const universe = OWN_CANISTER_ID_TEXT;
+    switch ($pageStore.path) {
+      case AppPath.Wallet:
+        return buildAccountsUrl({ universe });
+      case AppPath.Neuron:
+        return buildNeuronsUrl({ universe });
+      case AppPath.Proposal:
+        return buildProposalsUrl({ universe });
+      default:
+        return buildSwitchUniverseUrl(universe);
+    }
   };
 
   const remove = async (rootCanisterId: RootCanisterIdText) => {
     removeImportedSns(Principal.fromText(rootCanisterId));
+    await focusInput();
 
     // The page cannot show the universe of a removed SNS.
     if ($selectedUniverseIdStore.toText() === rootCanisterId) {
-      await goto(buildSwitchUniverseUrl(OWN_CANISTER_ID_TEXT));
+      await goto(nnsUniverseUrl(), { keepFocus: true });
     }
   };
 

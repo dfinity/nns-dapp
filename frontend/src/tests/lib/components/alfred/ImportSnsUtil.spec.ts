@@ -200,6 +200,72 @@ describe("ImportSnsUtil", () => {
     expect(get(pageStore).universe).toBe(OWN_CANISTER_ID_TEXT);
   });
 
+  it.each([
+    [AppPath.Wallet, AppPath.Accounts],
+    [AppPath.Neuron, AppPath.Neurons],
+    [AppPath.Proposal, AppPath.Proposals],
+  ])(
+    "should go from %s to %s of the NNS universe if the page shows the removed SNS",
+    async (detailPath, listPath) => {
+      page.mock({
+        routeId: detailPath,
+        data: { universe: rootCanisterId },
+      });
+      importedSnsesStore.add(rootCanisterId);
+      const po = renderComponent();
+
+      const [item] = await po.getImportedSnsItemPos();
+      await item.clickRemove();
+      await runResolvedPromises();
+
+      expect(get(pageStore).path).toBe(listPath);
+      expect(get(pageStore).universe).toBe(OWN_CANISTER_ID_TEXT);
+    }
+  );
+
+  describe("focus", () => {
+    const isInputFocused = () =>
+      document.activeElement?.getAttribute("data-tid") ===
+      "import-sns-root-canister-id";
+
+    it("should focus the input after a removal", async () => {
+      importedSnsesStore.add(rootCanisterId);
+      const po = renderComponent();
+      const [item] = await po.getImportedSnsItemPos();
+      (
+        document.querySelector('[data-tid="import-sns-remove"]') as HTMLElement
+      ).focus();
+      expect(isInputFocused()).toBe(false);
+
+      await item.clickRemove();
+      await runResolvedPromises();
+
+      expect(isInputFocused()).toBe(true);
+    });
+
+    it("should focus the input after the back button", async () => {
+      const po = renderComponent();
+      await checkRootCanisterId(po);
+      expect(isInputFocused()).toBe(false);
+
+      await po.clickBack();
+      await runResolvedPromises();
+
+      expect(isInputFocused()).toBe(true);
+    });
+
+    it("should focus the input after an import", async () => {
+      const po = renderComponent();
+      await checkRootCanisterId(po);
+      expect(isInputFocused()).toBe(false);
+
+      await po.clickImport();
+      await runResolvedPromises();
+
+      expect(isInputFocused()).toBe(true);
+    });
+  });
+
   it("should keep the universe if the page shows another SNS", async () => {
     page.mock({
       routeId: AppPath.Neurons,
