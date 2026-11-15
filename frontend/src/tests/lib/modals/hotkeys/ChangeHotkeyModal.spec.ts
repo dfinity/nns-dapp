@@ -90,7 +90,7 @@ describe("ChangeHotkeyModal", () => {
     const [nnsCheckbox] = await po.getNeuronCheckboxPos();
     await nnsCheckbox.toggle();
     expect(await po.getConfirmButtonPo().getText()).toBe(
-      "Remove from 1 Neurons"
+      "Remove from 1 Neuron"
     );
 
     await po.clickConfirm();
@@ -100,7 +100,9 @@ describe("ChangeHotkeyModal", () => {
       change: { type: "remove", principal: oldHotkey },
       neurons: [snsRef],
     });
-    expect(await po.hasResultSuccess()).toBe(true);
+    expect(await po.getResultSuccessText()).toBe(
+      "The hotkey changed on the neuron."
+    );
     expect(onChange).toHaveBeenCalledWith([snsUniverseId]);
   });
 

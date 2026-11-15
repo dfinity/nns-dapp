@@ -61,6 +61,10 @@ export class ChangeHotkeyModalPo extends ModalPo {
     return this.isPresent("result-success");
   }
 
+  async getResultSuccessText(): Promise<string> {
+    return (await this.getText("result-success")).trim();
+  }
+
   hasResultPartial(): Promise<boolean> {
     return this.isPresent("result-partial");
   }

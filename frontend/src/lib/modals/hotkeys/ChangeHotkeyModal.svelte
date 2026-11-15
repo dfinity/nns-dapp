@@ -58,6 +58,20 @@
       (!isReplace || (nonNullish(newPrincipal) && !isSameHotkey))
   );
 
+  const confirmLabel = $derived.by(() => {
+    const isPlural = selectedNeurons.length !== 1;
+    const label = isReplace
+      ? isPlural
+        ? $i18n.hotkeys.replace_on_neurons_plural
+        : $i18n.hotkeys.replace_on_neurons
+      : isPlural
+        ? $i18n.hotkeys.remove_from_neurons_plural
+        : $i18n.hotkeys.remove_from_neurons;
+    return replacePlaceholders(label, {
+      $count: selectedNeurons.length.toString(),
+    });
+  });
+
   const toggle = (neuron: HotkeyNeuronRef) => {
     const key = toKey(neuron);
     if (deselected.has(key)) {
@@ -224,13 +238,7 @@
           type="submit"
           class={isReplace ? "primary" : "danger"}
           data-tid="confirm-button"
-          disabled={!canSubmit}
-          >{replacePlaceholders(
-            isReplace
-              ? $i18n.hotkeys.replace_on_neurons
-              : $i18n.hotkeys.remove_from_neurons,
-            { $count: selectedNeurons.length.toString() }
-          )}</button
+          disabled={!canSubmit}>{confirmLabel}</button
         >
       </div>
     </form>
@@ -238,9 +246,12 @@
     <div class="result" data-tid="change-hotkey-result">
       {#if failedNeurons.length === 0}
         <p data-tid="result-success">
-          {replacePlaceholders($i18n.hotkeys.result_success, {
-            $count: results.length.toString(),
-          })}
+          {replacePlaceholders(
+            results.length === 1
+              ? $i18n.hotkeys.result_success
+              : $i18n.hotkeys.result_success_plural,
+            { $count: results.length.toString() }
+          )}
         </p>
       {:else}
         <p data-tid="result-partial">

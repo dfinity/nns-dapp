@@ -220,11 +220,14 @@
     "neurons_to_change": "Neurons to change",
     "selected_neurons": "$selected of $total",
     "cannot_change": "You cannot change the hotkeys of this neuron here.",
-    "replace_on_neurons": "Replace on $count Neurons",
-    "remove_from_neurons": "Remove from $count Neurons",
+    "replace_on_neurons": "Replace on $count Neuron",
+    "replace_on_neurons_plural": "Replace on $count Neurons",
+    "remove_from_neurons": "Remove from $count Neuron",
+    "remove_from_neurons_plural": "Remove from $count Neurons",
     "changing": "Changing the hotkey on your neurons...",
-    "result_success": "The hotkey changed on all $count neurons.",
-    "result_partial": "The hotkey changed on $success of $total neurons. These neurons failed:"
+    "result_success": "The hotkey changed on the neuron.",
+    "result_success_plural": "The hotkey changed on all $count neurons.",
+    "result_partial": "The hotkey changed on $success of $total. It failed on:"
   },
   "alfred": {
     "no_results": "No results found",

@@ -229,9 +229,12 @@ interface I18nHotkeys {
   selected_neurons: string;
   cannot_change: string;
   replace_on_neurons: string;
+  replace_on_neurons_plural: string;
   remove_from_neurons: string;
+  remove_from_neurons_plural: string;
   changing: string;
   result_success: string;
+  result_success_plural: string;
   result_partial: string;
 }
 
