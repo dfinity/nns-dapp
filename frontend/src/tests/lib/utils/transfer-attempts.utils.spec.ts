@@ -3,6 +3,7 @@ import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
   clearTransferAttempt,
+  removeExpiredTransferAttempts,
   startTransferAttempt,
   toTransferKey,
 } from "$lib/utils/transfer-attempts.utils";
@@ -115,6 +116,41 @@ describe("transfer-attempts.utils", () => {
     });
   });
 
+  describe("removeExpiredTransferAttempts", () => {
+    const stored = () =>
+      localStorage.getItem(StoreLocalStorageKey.TransferAttempts);
+
+    it("should remove only the expired attempts", () => {
+      startTransferAttempt("expired");
+      vi.setSystemTime(Date.now() + windowMillis);
+      startTransferAttempt(key);
+      vi.setSystemTime(Date.now() + 1_000);
+
+      removeExpiredTransferAttempts();
+
+      expect(stored()).not.toContain("expired");
+      expect(startTransferAttempt(key).isRetry).toBe(true);
+    });
+
+    it("should remove the storage entry if all attempts expired", () => {
+      startTransferAttempt(key);
+      vi.setSystemTime(Date.now() + windowMillis);
+
+      removeExpiredTransferAttempts();
+
+      expect(stored()).toBeNull();
+    });
+
+    it("should not write if there are no attempts", () => {
+      const spy = vi.spyOn(Storage.prototype, "setItem");
+
+      removeExpiredTransferAttempts();
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(stored()).toBeNull();
+    });
+  });
+
   describe("clearTransferAttempt", () => {
     it("should clear only the attempt of the key", () => {
       const attempt = startTransferAttempt(key);
@@ -123,6 +159,14 @@ describe("transfer-attempts.utils", () => {
 
       expect(startTransferAttempt(key).isRetry).toBe(false);
       expect(startTransferAttempt("other").isRetry).toBe(true);
+    });
+
+    it("should remove the storage entry after the last attempt", () => {
+      clearTransferAttempt(startTransferAttempt(key));
+
+      expect(
+        localStorage.getItem(StoreLocalStorageKey.TransferAttempts)
+      ).toBeNull();
     });
 
     it("should keep a newer attempt with the same key", () => {

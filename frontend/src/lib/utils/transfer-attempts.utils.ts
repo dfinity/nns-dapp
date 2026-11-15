@@ -25,6 +25,10 @@ const readAttempts = (): TransferAttempts => {
 
 const writeAttempts = (attempts: TransferAttempts) => {
   try {
+    if (Object.keys(attempts).length === 0) {
+      localStorage.removeItem(StoreLocalStorageKey.TransferAttempts);
+      return;
+    }
     localStorage.setItem(
       StoreLocalStorageKey.TransferAttempts,
       JSON.stringify(attempts, jsonReplacer)
@@ -39,6 +43,13 @@ const filterAttempts = (
   predicate: (entry: [string, bigint]) => boolean
 ): TransferAttempts =>
   Object.fromEntries(Object.entries(attempts).filter(predicate));
+
+const filterValidAttempts = (attempts: TransferAttempts): TransferAttempts =>
+  filterAttempts(
+    attempts,
+    ([, createdAt]) =>
+      nowInBigIntNanoSeconds() - createdAt < LEDGER_DEDUPLICATION_WINDOW_NANOS
+  );
 
 /** Uses the fields that the ledger compares, except the timestamp, to detect a duplicate. */
 export const toTransferKey = ({
@@ -70,11 +81,7 @@ export const toTransferKey = ({
  * A retry reuses the timestamp, so the ledger rejects it if an earlier attempt executed.
  */
 export const startTransferAttempt = (key: string): TransferAttempt => {
-  const attempts = filterAttempts(
-    readAttempts(),
-    ([, createdAt]) =>
-      nowInBigIntNanoSeconds() - createdAt < LEDGER_DEDUPLICATION_WINDOW_NANOS
-  );
+  const attempts = filterValidAttempts(readAttempts());
   const savedCreatedAt = attempts[key];
   const createdAt = savedCreatedAt ?? nowInBigIntNanoSeconds();
 
@@ -92,3 +99,13 @@ export const clearTransferAttempt = ({ key, createdAt }: TransferAttempt) =>
         entryKey !== key || entryCreatedAt !== createdAt
     )
   );
+
+/** Removes the attempts that the ledger no longer deduplicates. */
+export const removeExpiredTransferAttempts = () => {
+  const attempts = readAttempts();
+  const validAttempts = filterValidAttempts(attempts);
+
+  if (Object.keys(validAttempts).length !== Object.keys(attempts).length) {
+    writeAttempts(validAttempts);
+  }
+};
