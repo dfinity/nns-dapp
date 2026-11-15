@@ -39,5 +39,7 @@ export interface HotkeysTableRowData extends ResponsiveTableRowData {
   rowContext: {
     onReplace: (hotkey: Hotkey) => void;
     onRemove: (hotkey: Hotkey) => void;
+    // A change waits for the loads, so an older response cannot overwrite it.
+    actionsDisabled: boolean;
   };
 }

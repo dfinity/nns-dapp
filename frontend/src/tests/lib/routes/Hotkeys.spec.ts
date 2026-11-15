@@ -240,6 +240,31 @@ describe("Hotkeys", () => {
       expect(await po.hasLoadError()).toBe(true);
     });
 
+    it("should disable the actions while the neurons load", async () => {
+      setSnsProjects([
+        { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+      ]);
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        snsNeuronOfUser,
+      ]);
+      let resolveNnsNeurons: (neurons: NeuronInfo[]) => void;
+      vi.spyOn(governanceApi, "queryNeurons").mockReturnValue(
+        new Promise((resolve) => {
+          resolveNnsNeurons = resolve;
+        })
+      );
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.areActionsDisabled(0)).toEqual([true, true]);
+
+      resolveNnsNeurons([]);
+      await runResolvedPromises();
+
+      expect(await po.areActionsDisabled(0)).toEqual([false, false]);
+    });
+
     it("should open the Replace modal for the hotkey", async () => {
       const { container } = render(Hotkeys);
       const po = HotkeysPo.under(new JestPageObjectElement(container));

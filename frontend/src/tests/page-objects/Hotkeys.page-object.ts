@@ -37,6 +37,15 @@ export class HotkeysPo extends BasePageObject {
     return buttons[rowIndex].click();
   }
 
+  async areActionsDisabled(rowIndex: number): Promise<boolean[]> {
+    return Promise.all(
+      [
+        (await this.root.allByTestId("replace-hotkey-button"))[rowIndex],
+        (await this.root.allByTestId("remove-hotkey-button"))[rowIndex],
+      ].map(async (button) => (await button.getAttribute("disabled")) !== null)
+    );
+  }
+
   async clickRemove(rowIndex: number): Promise<void> {
     const buttons = await this.root.allByTestId("remove-hotkey-button");
     return buttons[rowIndex].click();

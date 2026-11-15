@@ -14,6 +14,7 @@
   <button
     class="ghost"
     data-tid="replace-hotkey-button"
+    disabled={rowData.rowContext.actionsDisabled}
     aria-label={replacePlaceholders($i18n.hotkeys.replace_aria_label, {
       $principal: rowData.hotkey.principal,
     })}
@@ -23,6 +24,7 @@
   <button
     class="ghost remove"
     data-tid="remove-hotkey-button"
+    disabled={rowData.rowContext.actionsDisabled}
     aria-label={replacePlaceholders($i18n.hotkeys.remove_aria_label, {
       $principal: rowData.hotkey.principal,
     })}

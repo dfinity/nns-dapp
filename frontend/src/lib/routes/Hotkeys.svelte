@@ -113,6 +113,7 @@
         rowContext: {
           onReplace: (hotkey) => (changing = { hotkey, type: "replace" }),
           onRemove: (hotkey) => (changing = { hotkey, type: "remove" }),
+          actionsDisabled: isLoading,
         },
       })
     )
