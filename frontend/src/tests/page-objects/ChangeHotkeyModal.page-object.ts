@@ -78,6 +78,10 @@ export class ChangeHotkeyModalPo extends ModalPo {
     return this.click("retry-button");
   }
 
+  isRetryDisabled(): Promise<boolean> {
+    return this.getButton("retry-button").isDisabled();
+  }
+
   clickClose(): Promise<void> {
     return this.click("close-button");
   }

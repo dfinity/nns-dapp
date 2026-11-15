@@ -52,9 +52,12 @@ describe("ChangeHotkeyModal", () => {
       );
   });
 
-  const renderModal = (type: "replace" | "remove") => {
+  const renderModal = (
+    type: "replace" | "remove",
+    { isLoading = false }: { isLoading?: boolean } = {}
+  ) => {
     const { container } = render(ChangeHotkeyModal, {
-      props: { hotkey, type, onChange, onClose },
+      props: { hotkey, type, onChange, onClose, isLoading },
     });
     return ChangeHotkeyModalPo.under(new JestPageObjectElement(container));
   };
@@ -163,5 +166,18 @@ describe("ChangeHotkeyModal", () => {
 
     await po.clickClose();
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it("should not retry while the page loads neurons", async () => {
+    spyChange.mockImplementationOnce(async ({ neurons }) =>
+      neurons.map((neuron) => ({ ...neuron, success: false }))
+    );
+    const po = renderModal("remove", { isLoading: true });
+
+    await po.clickConfirm();
+    await runResolvedPromises();
+
+    expect(await po.hasResultPartial()).toBe(true);
+    expect(await po.isRetryDisabled()).toBe(true);
   });
 });

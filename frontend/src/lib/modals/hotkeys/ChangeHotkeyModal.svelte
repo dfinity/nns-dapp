@@ -24,9 +24,11 @@
     // Called after each run with the universes of the changed neurons.
     onChange: (universeIds: string[]) => void;
     onClose: () => void;
+    // The page loads neurons. A retry waits, so an older response cannot overwrite it.
+    isLoading: boolean;
   };
 
-  const { hotkey, type, onChange, onClose }: Props = $props();
+  const { hotkey, type, onChange, onClose, isLoading }: Props = $props();
 
   const toKey = ({ universeId, neuronId }: HotkeyNeuronRef) =>
     `${universeId}:${neuronId}`;
@@ -261,8 +263,11 @@
 
       <div class="toolbar">
         {#if failedNeurons.length > 0}
-          <button class="secondary" data-tid="retry-button" onclick={retry}
-            >{$i18n.hotkeys.retry}</button
+          <button
+            class="secondary"
+            data-tid="retry-button"
+            disabled={isLoading}
+            onclick={retry}>{$i18n.hotkeys.retry}</button
           >
         {/if}
         <button class="primary" data-tid="close-button" onclick={onClose}
