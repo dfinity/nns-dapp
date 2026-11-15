@@ -5,7 +5,7 @@ import { AlfredPo } from "$tests/page-objects/Alfred.page-object";
 import { ImportSnsUtilPo } from "$tests/page-objects/ImportSnsUtil.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { render } from "@testing-library/svelte";
+import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Alfred Component", () => {
@@ -66,6 +66,50 @@ describe("Alfred Component", () => {
     expect(panel.getAttribute("aria-modal")).toBe("true");
     expect(panel.getAttribute("aria-label")).toBe("Quick search");
     expect(panel.hasAttribute("aria-hidden")).toBe(false);
+  });
+
+  describe("focus trap", () => {
+    const renderOpen = async () => {
+      const { container } = render(Alfred);
+      alfredVisibleStore.set(true);
+      await runResolvedPromises();
+      const focusable = Array.from(
+        container.querySelectorAll<HTMLElement>(
+          '[data-tid="alfred-component"] .menu input, [data-tid="alfred-component"] .menu button'
+        )
+      );
+      return { first: focusable[0], last: focusable[focusable.length - 1] };
+    };
+
+    const pressTab = (shiftKey = false) =>
+      fireEvent.keyDown(window, { key: "Tab", shiftKey });
+
+    it("should move from the last control to the first one", async () => {
+      const { first, last } = await renderOpen();
+      last.focus();
+
+      await pressTab();
+
+      expect(document.activeElement).toBe(first);
+    });
+
+    it("should move from the first control to the last one with Shift", async () => {
+      const { first, last } = await renderOpen();
+      first.focus();
+
+      await pressTab(true);
+
+      expect(document.activeElement).toBe(last);
+    });
+
+    it("should move the focus into the panel if it is outside", async () => {
+      const { first } = await renderOpen();
+      (document.activeElement as HTMLElement | null)?.blur();
+
+      await pressTab();
+
+      expect(document.activeElement).toBe(first);
+    });
   });
 
   it("should open it with the keyboard combination", async () => {
