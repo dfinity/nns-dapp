@@ -144,7 +144,12 @@
     const focusable = Array.from(
       menuElement.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
     );
-    if (focusable.length === 0) return;
+    // A busy util disables all its controls.
+    if (focusable.length === 0) {
+      event.preventDefault();
+      menuElement.focus();
+      return;
+    }
 
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -196,7 +201,7 @@
     <Backdrop on:nnsClose={hideAlfred} />
 
     <div class="wrapper">
-      <div class="menu" bind:this={menuElement}>
+      <div class="menu" tabindex="-1" bind:this={menuElement}>
         {#if nonNullish(UtilComponent)}
           <UtilComponent />
         {:else}
@@ -285,6 +290,10 @@
       }
 
       .menu {
+        &:focus {
+          outline: none;
+        }
+
         width: 600px;
         // One gutter on each side on a phone.
         max-width: calc(100% - var(--padding-4x));

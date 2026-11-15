@@ -114,6 +114,28 @@ describe("ImportSnsUtil", () => {
     expect(await po.isReviewPresent()).toBe(false);
   });
 
+  it("should announce the error and the busy state to screen readers", async () => {
+    let resolveCheck: (dto: typeof sns) => void;
+    getSnsToImportSpy().mockImplementation(
+      () => new Promise((resolve) => (resolveCheck = resolve))
+    );
+    const po = renderComponent();
+    await po.enterRootCanisterId("not-a-principal");
+    await po.clickCheck();
+
+    expect(await po.getElement("import-sns-error").getAttribute("role")).toBe(
+      "alert"
+    );
+
+    await po.enterRootCanisterId(rootCanisterId);
+    await po.clickCheck();
+
+    expect(await po.getElement("import-sns-busy").getAttribute("role")).toBe(
+      "status"
+    );
+    resolveCheck(sns);
+  });
+
   it("should show the error detail if the SNS fails to load", async () => {
     getSnsToImportSpy().mockRejectedValue(new Error("Canister not found"));
     const po = renderComponent();

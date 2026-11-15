@@ -216,7 +216,7 @@
       </p>
 
       {#if nonNullish(errorMessage)}
-        <div class="error-message" data-tid="import-sns-error">
+        <div class="error-message" role="alert" data-tid="import-sns-error">
           {errorMessage}
           {#if nonNullish(errorDetail)}
             <span class="error-detail">{errorDetail}</span>
@@ -274,7 +274,7 @@
       </div>
 
       {#if nonNullish(errorMessage)}
-        <div class="error-message" data-tid="import-sns-error">
+        <div class="error-message" role="alert" data-tid="import-sns-error">
           {errorMessage}
           {#if nonNullish(errorDetail)}
             <span class="error-detail">{errorDetail}</span>
@@ -317,7 +317,7 @@
   {/if}
 
   {#if nonNullish(busyMessage)}
-    <div class="busy" data-tid="import-sns-busy">
+    <div class="busy" role="status" data-tid="import-sns-busy">
       <Spinner inline size="small" />
       <span class="description">{busyMessage}</span>
     </div>

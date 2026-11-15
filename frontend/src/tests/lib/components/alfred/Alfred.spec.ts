@@ -102,6 +102,24 @@ describe("Alfred Component", () => {
       expect(document.activeElement).toBe(last);
     });
 
+    it("should keep the focus in the panel if no control is focusable", async () => {
+      const { container } = render(Alfred);
+      alfredVisibleStore.set(true);
+      await runResolvedPromises();
+      container
+        .querySelectorAll<
+          HTMLInputElement | HTMLButtonElement
+        >("[data-tid='alfred-component'] .menu input, [data-tid='alfred-component'] .menu button")
+        .forEach((element) => (element.disabled = true));
+      (document.activeElement as HTMLElement | null)?.blur();
+
+      await pressTab();
+
+      expect(document.activeElement).toBe(
+        container.querySelector("[data-tid='alfred-component'] .menu")
+      );
+    });
+
     it("should move the focus into the panel if it is outside", async () => {
       const { first } = await renderOpen();
       (document.activeElement as HTMLElement | null)?.blur();
