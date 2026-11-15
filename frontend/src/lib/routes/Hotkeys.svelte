@@ -3,7 +3,10 @@
   import HotkeyNeuronsCell from "$lib/components/hotkeys/HotkeyNeuronsCell.svelte";
   import HotkeyProjectsCell from "$lib/components/hotkeys/HotkeyProjectsCell.svelte";
   import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
+  import Banner from "$lib/components/ui/Banner.svelte";
+  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { hotkeysStore } from "$lib/derived/hotkeys.derived";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { listNeurons } from "$lib/services/neurons.services";
@@ -11,12 +14,16 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import type { HotkeysTableRowData } from "$lib/types/hotkeys";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-  import { IconKey } from "@dfinity/gix-components";
+  import { IconErrorOutline, IconKey } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
+  import { Principal } from "@icp-sdk/core/principal";
   import { onMount, untrack } from "svelte";
+  import { get } from "svelte/store";
+  import { SvelteSet } from "svelte/reactivity";
 
   layoutTitleStore.set({
     title: $i18n.navigation.hotkeys,
@@ -25,18 +32,49 @@
   // The loads use update calls only, so they end with certified data.
   let pendingLoads = $state(0);
   const requestedSnsRootCanisterIds = new Set<string>();
+  const failedUniverseIds = new SvelteSet<string>();
 
-  const trackLoad = async (load: () => Promise<void>) => {
+  // Resolves to `true` if the certified neurons loaded.
+  const loadNnsNeurons = async (): Promise<boolean> => {
+    let certifiedLoaded = false;
+    await listNeurons({
+      strategy: "update",
+      callback: (certified) => {
+        certifiedLoaded ||= certified;
+      },
+    });
+    return certifiedLoaded;
+  };
+
+  // Resolves to `true` if the certified neurons loaded. A failed load removes the project from the store.
+  const loadSnsNeurons = async (
+    rootCanisterId: Principal
+  ): Promise<boolean> => {
+    await syncSnsNeurons(rootCanisterId, { strategy: "update" });
+    return get(snsNeuronsStore)[rootCanisterId.toText()]?.certified === true;
+  };
+
+  const trackLoad = async (universeId: string) => {
     pendingLoads += 1;
+    failedUniverseIds.delete(universeId);
     try {
-      await load();
+      const loaded = await (universeId === OWN_CANISTER_ID_TEXT
+        ? loadNnsNeurons()
+        : loadSnsNeurons(Principal.fromText(universeId)));
+      if (!loaded) {
+        failedUniverseIds.add(universeId);
+      }
+    } catch {
+      failedUniverseIds.add(universeId);
     } finally {
       pendingLoads -= 1;
     }
   };
 
+  const retryFailedLoads = () => [...failedUniverseIds].forEach(trackLoad);
+
   onMount(() => {
-    trackLoad(() => listNeurons({ strategy: "update" }));
+    trackLoad(OWN_CANISTER_ID_TEXT);
   });
 
   // The SNS projects can load after the page.
@@ -47,9 +85,7 @@
         continue;
       }
       requestedSnsRootCanisterIds.add(rootCanisterIdText);
-      untrack(() =>
-        trackLoad(() => syncSnsNeurons(rootCanisterId, { strategy: "update" }))
-      );
+      untrack(() => trackLoad(rootCanisterIdText));
     }
   });
 
@@ -68,7 +104,13 @@
     )
   );
 
-  const isEmpty = $derived(!isLoading && tableData.length === 0);
+  const hasFailedLoads = $derived(failedUniverseIds.size > 0);
+
+  const isEmpty = $derived(
+    !isLoading && !hasFailedLoads && tableData.length === 0
+  );
+
+  const showTable = $derived(isLoading || tableData.length > 0);
 
   const columns = [
     {
@@ -100,13 +142,30 @@
 
 <IslandWidthMain>
   <div class="content" data-tid="hotkeys-content">
+    {#if hasFailedLoads}
+      <Banner
+        testId="hotkeys-load-error"
+        title={$i18n.hotkeys.load_error_title}
+        text={$i18n.hotkeys.load_error_description}
+      >
+        <BannerIcon slot="icon" status="error">
+          <IconErrorOutline />
+        </BannerIcon>
+        <button
+          slot="actions"
+          class="secondary"
+          data-tid="retry-button"
+          onclick={retryFailedLoads}>{$i18n.hotkeys.retry}</button
+        >
+      </Banner>
+    {/if}
     {#if isEmpty}
       <div class="is-empty" data-tid="hotkeys-empty">
         <IconKey size="144" />
         <p class="title">{$i18n.hotkeys.empty_title}</p>
         <p class="description">{$i18n.hotkeys.empty_description}</p>
       </div>
-    {:else}
+    {:else if showTable}
       <p class="description">{$i18n.hotkeys.description}</p>
       <ResponsiveTable
         {tableData}

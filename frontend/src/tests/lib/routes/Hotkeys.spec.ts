@@ -151,6 +151,77 @@ describe("Hotkeys", () => {
     expect(await po.hasEmptyState()).toBe(true);
   });
 
+  describe("when a certified load fails", () => {
+    beforeEach(() => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should show an error instead of the empty state if the NNS neurons fail to load", async () => {
+      setSnsProjects([]);
+      vi.spyOn(governanceApi, "queryNeurons").mockRejectedValue(
+        new Error("NNS neurons failed")
+      );
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.hasLoadError()).toBe(true);
+      expect(await po.hasEmptyState()).toBe(false);
+    });
+
+    it("should keep the hotkeys that loaded if the neurons of an SNS fail to load", async () => {
+      setSnsProjects([
+        { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+      ]);
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
+        nnsNeuron(1n, [hotkeyB]),
+      ]);
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockRejectedValue(
+        new Error("SNS neurons failed")
+      );
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.hasLoadError()).toBe(true);
+      expect(
+        (await po.getRowsData()).map(({ principal }) => principal)
+      ).toEqual([hotkeyB.toText()]);
+    });
+
+    it("should load the failed neurons again on retry", async () => {
+      setSnsProjects([
+        { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+      ]);
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockRejectedValue(
+        new Error("SNS neurons failed")
+      );
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.hasLoadError()).toBe(true);
+      expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(1);
+
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        snsNeuron(1, [hotkeyA]),
+      ]);
+      await po.clickRetry();
+      await runResolvedPromises();
+
+      expect(await po.hasLoadError()).toBe(false);
+      expect(await po.getRowsData()).toEqual([
+        {
+          principal: hotkeyA.toText(),
+          projects: [`${snsTitle}: 1`],
+          neuronCount: "1",
+        },
+      ]);
+      // Only the failed source loads again.
+      expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it("should load the NNS neurons and the neurons of each SNS with certified data", async () => {
     setSnsProjects([
       { rootCanisterId: snsRootCanisterId, projectName: snsTitle },

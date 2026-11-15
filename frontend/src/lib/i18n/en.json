@@ -202,7 +202,10 @@
     "neurons": "Neurons",
     "empty_title": "No Hotkeys",
     "empty_description": "To vote with your neurons from another dapp, add the principal id that you have in the other dapp as a hotkey.",
-    "manage_on_all_neurons": "Manage hotkeys on all neurons"
+    "manage_on_all_neurons": "Manage hotkeys on all neurons",
+    "load_error_title": "Some Neurons Did Not Load",
+    "load_error_description": "The list of hotkeys can be incomplete. Try again to load the missing neurons.",
+    "retry": "Try Again"
   },
   "alfred": {
     "no_results": "No results found",

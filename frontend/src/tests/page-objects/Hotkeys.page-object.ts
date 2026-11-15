@@ -24,6 +24,14 @@ export class HotkeysPo extends BasePageObject {
     return this.isPresent("hotkeys-empty");
   }
 
+  hasLoadError(): Promise<boolean> {
+    return this.isPresent("hotkeys-load-error");
+  }
+
+  clickRetry(): Promise<void> {
+    return this.click("retry-button");
+  }
+
   async isLoading(): Promise<boolean> {
     return (await this.getResponsiveTablePo().getSkeletonRows()).length > 0;
   }

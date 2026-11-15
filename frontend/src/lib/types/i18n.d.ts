@@ -211,6 +211,9 @@ interface I18nHotkeys {
   empty_title: string;
   empty_description: string;
   manage_on_all_neurons: string;
+  load_error_title: string;
+  load_error_description: string;
+  retry: string;
 }
 
 interface I18nAlfred {
