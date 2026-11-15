@@ -41,6 +41,7 @@ describe("ChangeHotkeyModal", () => {
 
   let spyChange;
   const onClose = vi.fn();
+  const onChange = vi.fn();
 
   beforeEach(() => {
     resetIdentity();
@@ -53,7 +54,7 @@ describe("ChangeHotkeyModal", () => {
 
   const renderModal = (type: "replace" | "remove") => {
     const { container } = render(ChangeHotkeyModal, {
-      props: { hotkey, type, onClose },
+      props: { hotkey, type, onChange, onClose },
     });
     return ChangeHotkeyModalPo.under(new JestPageObjectElement(container));
   };
@@ -97,6 +98,7 @@ describe("ChangeHotkeyModal", () => {
       neurons: [snsRef],
     });
     expect(await po.hasResultSuccess()).toBe(true);
+    expect(onChange).toHaveBeenCalledWith([snsUniverseId]);
   });
 
   it("should ask for a valid new hotkey before a replace", async () => {

@@ -1,16 +1,13 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import {
   addNeuronPermissions,
+  querySnsNeurons,
   removeNeuronPermissions,
 } from "$lib/api/sns-governance.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { listNeurons } from "$lib/services/neurons.services";
-import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
-import { neuronsStore } from "$lib/stores/neurons.store";
-import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import type {
   HotkeyChange,
   HotkeyChangeResult,
@@ -24,6 +21,7 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import type {
   SnsGovernanceDid,
   SnsNeuronPermissionType,
@@ -61,18 +59,15 @@ const addAndRemove = async ({
 const changeNnsNeuronHotkey = async ({
   identity,
   change,
-  neuronId,
+  neuron,
 }: {
   identity: Identity;
   change: HotkeyChange;
-  neuronId: string;
+  neuron: NeuronInfo;
 }) => {
-  const neuron = get(neuronsStore).neurons?.find(
-    (neuron) => neuron.neuronId.toString() === neuronId
-  );
-  const hotKeys = neuron?.fullNeuron?.hotKeys;
-  if (isNullish(neuron) || isNullish(hotKeys)) {
-    throw new Error(`NNS neuron ${neuronId} not found`);
+  const hotKeys = neuron.fullNeuron?.hotKeys;
+  if (isNullish(hotKeys)) {
+    throw new Error(`NNS neuron ${neuron.neuronId} has no full neuron`);
   }
 
   const remove = async () => {
@@ -123,19 +118,13 @@ const changeSnsNeuronHotkey = async ({
   identity,
   change,
   universeId,
-  neuronId,
+  neuron,
 }: {
   identity: Identity;
   change: HotkeyChange;
   universeId: string;
-  neuronId: string;
+  neuron: SnsGovernanceDid.Neuron;
 }) => {
-  const neuron = get(snsNeuronsStore)[universeId]?.neurons.find(
-    (neuron) => getSnsNeuronIdAsHexString(neuron) === neuronId
-  );
-  if (isNullish(neuron)) {
-    throw new Error(`SNS neuron ${neuronId} not found`);
-  }
   const rootCanisterId = Principal.fromText(universeId);
   const snsNeuronId = fromDefinedNullable(neuron.id);
 
@@ -193,20 +182,43 @@ const changeSnsNeuronHotkey = async ({
   });
 };
 
-const reloadNeurons = (universeIds: string[]) =>
-  Promise.all(
-    [...new Set(universeIds)].map((universeId) =>
-      universeId === OWN_CANISTER_ID_TEXT
-        ? listNeurons({ strategy: "update" })
-        : syncSnsNeurons(Principal.fromText(universeId), { strategy: "update" })
-    )
-  );
+type LoadedNeurons =
+  | { universeId: string; nnsNeurons: NeuronInfo[] }
+  | { universeId: string; snsNeurons: SnsGovernanceDid.Neuron[] };
+
+const loadCertifiedNeurons = async ({
+  identity,
+  universeId,
+}: {
+  identity: Identity;
+  universeId: string;
+}): Promise<LoadedNeurons> =>
+  universeId === OWN_CANISTER_ID_TEXT
+    ? {
+        universeId,
+        nnsNeurons: await governanceApiService.queryNeurons({
+          identity,
+          certified: true,
+          includeEmptyNeurons: false,
+        }),
+      }
+    : {
+        universeId,
+        snsNeurons: await querySnsNeurons({
+          identity,
+          rootCanisterId: Principal.fromText(universeId),
+          certified: true,
+        }),
+      };
 
 /**
- * Replaces or removes a hotkey on the given neurons, then loads the certified neurons again.
+ * Replaces or removes a hotkey on the given neurons.
  *
- * Each neuron changes from its current state in the store, so a second run on a
- * neuron that failed half way only does the missing steps.
+ * It loads the certified neurons first, and each neuron changes from that
+ * state. A second run on a neuron that failed half way only does the missing
+ * steps. If the neurons of a universe do not load, its neurons fail.
+ *
+ * The caller loads the neurons into the stores again.
  */
 export const changeHotkeyOnNeurons = async ({
   change,
@@ -217,12 +229,52 @@ export const changeHotkeyOnNeurons = async ({
 }): Promise<HotkeyChangeResult[]> => {
   const identity = await getAuthenticatedIdentity();
 
+  const loads = await mapPool(
+    [...new Set(neurons.map(({ universeId }) => universeId))],
+    (universeId) => loadCertifiedNeurons({ identity, universeId }),
+    MAX_PARALLEL_NEURON_CHANGES
+  );
+  const nnsNeurons = new Map<string, NeuronInfo>();
+  const snsNeurons = new Map<string, SnsGovernanceDid.Neuron>();
+  for (const load of loads) {
+    if (load.status === "rejected") {
+      console.error(
+        `Failed to load the neurons of universe ${load.item}:`,
+        load.reason
+      );
+      continue;
+    }
+    const { value } = load;
+    if ("nnsNeurons" in value) {
+      for (const neuron of value.nnsNeurons) {
+        nnsNeurons.set(neuron.neuronId.toString(), neuron);
+      }
+    } else {
+      for (const neuron of value.snsNeurons) {
+        snsNeurons.set(
+          `${value.universeId}:${getSnsNeuronIdAsHexString(neuron)}`,
+          neuron
+        );
+      }
+    }
+  }
+
   const results = await mapPool(
     neurons,
-    ({ universeId, neuronId }) =>
-      universeId === OWN_CANISTER_ID_TEXT
-        ? changeNnsNeuronHotkey({ identity, change, neuronId })
-        : changeSnsNeuronHotkey({ identity, change, universeId, neuronId }),
+    async ({ universeId, neuronId }) => {
+      if (universeId === OWN_CANISTER_ID_TEXT) {
+        const neuron = nnsNeurons.get(neuronId);
+        if (isNullish(neuron)) {
+          throw new Error(`NNS neuron ${neuronId} not found`);
+        }
+        return changeNnsNeuronHotkey({ identity, change, neuron });
+      }
+      const neuron = snsNeurons.get(`${universeId}:${neuronId}`);
+      if (isNullish(neuron)) {
+        throw new Error(`SNS neuron ${neuronId} not found`);
+      }
+      return changeSnsNeuronHotkey({ identity, change, universeId, neuron });
+    },
     MAX_PARALLEL_NEURON_CHANGES
   );
 
@@ -234,8 +286,6 @@ export const changeHotkeyOnNeurons = async ({
       );
     }
   }
-
-  await reloadNeurons(neurons.map(({ universeId }) => universeId));
 
   return results.map(({ item, status }) => ({
     ...item,

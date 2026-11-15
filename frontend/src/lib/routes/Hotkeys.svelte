@@ -194,6 +194,7 @@
   <ChangeHotkeyModal
     hotkey={changing.hotkey}
     type={changing.type}
+    onChange={(universeIds) => universeIds.forEach(trackLoad)}
     onClose={() => (changing = undefined)}
   />
 {/if}

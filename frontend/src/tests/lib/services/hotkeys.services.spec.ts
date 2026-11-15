@@ -3,8 +3,6 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { changeHotkeyOnNeurons } from "$lib/services/hotkeys.services";
-import { neuronsStore } from "$lib/stores/neurons.store";
-import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -72,9 +70,9 @@ describe("hotkeys.services", () => {
   });
 
   const setNnsNeurons = (neurons: NeuronInfo[]) =>
-    neuronsStore.setNeurons({ neurons, certified: true });
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue(neurons);
   const setSnsNeurons = (neurons: SnsGovernanceDid.Neuron[]) =>
-    snsNeuronsStore.setNeurons({ rootCanisterId, neurons, certified: true });
+    vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue(neurons);
 
   let spyAddHotkey;
   let spyRemoveHotkey;
@@ -274,7 +272,7 @@ describe("hotkeys.services", () => {
     expect(console.error).toHaveBeenCalledTimes(1);
   });
 
-  it("should load the certified neurons of the changed universes again", async () => {
+  it("should load the certified neurons before it changes them", async () => {
     const neuron = snsNeuron(1, [
       { principal: oldHotkey, permissions: HOTKEY_PERMISSIONS },
     ]);
@@ -287,14 +285,39 @@ describe("hotkeys.services", () => {
     });
 
     expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(1);
-    expect(governanceApi.queryNeurons).toHaveBeenCalledWith(
-      expect.objectContaining({ certified: true })
-    );
+    expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      certified: true,
+      includeEmptyNeurons: false,
+    });
     expect(snsGovernanceApi.querySnsNeurons).toHaveBeenCalledTimes(1);
     expect(snsGovernanceApi.querySnsNeurons).toHaveBeenCalledWith({
       identity: mockIdentity,
       rootCanisterId,
       certified: true,
     });
+  });
+
+  it("should fail the neurons of a universe that does not load", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const neuron = snsNeuron(1, [
+      { principal: oldHotkey, permissions: HOTKEY_PERMISSIONS },
+    ]);
+    setNnsNeurons([nnsNeuron(1n, [oldHotkey])]);
+    vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockRejectedValue(
+      new Error("SNS neurons failed")
+    );
+
+    const results = await changeHotkeyOnNeurons({
+      change: remove,
+      neurons: [nnsRef(1n), snsRef(neuron)],
+    });
+
+    expect(results).toEqual([
+      { ...nnsRef(1n), success: true },
+      { ...snsRef(neuron), success: false },
+    ]);
+    expect(spyRemoveHotkey).toHaveBeenCalledTimes(1);
+    expect(spyRemovePermissions).not.toHaveBeenCalled();
   });
 });

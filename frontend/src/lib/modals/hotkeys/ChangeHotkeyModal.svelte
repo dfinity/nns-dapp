@@ -21,10 +21,12 @@
   type Props = {
     hotkey: Hotkey;
     type: HotkeyChange["type"];
+    // Called after each run with the universes of the changed neurons.
+    onChange: (universeIds: string[]) => void;
     onClose: () => void;
   };
 
-  const { hotkey, type, onClose }: Props = $props();
+  const { hotkey, type, onChange, onClose }: Props = $props();
 
   const toKey = ({ universeId, neuronId }: HotkeyNeuronRef) =>
     `${universeId}:${neuronId}`;
@@ -93,6 +95,7 @@
         ) ?? newResults;
     } finally {
       stopBusy("change-hotkeys");
+      onChange([...new Set(neurons.map(({ universeId }) => universeId))]);
     }
   };
 

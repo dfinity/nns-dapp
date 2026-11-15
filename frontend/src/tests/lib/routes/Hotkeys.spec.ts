@@ -2,6 +2,8 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import Hotkeys from "$lib/routes/Hotkeys.svelte";
+import * as hotkeysServices from "$lib/services/hotkeys.services";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -12,7 +14,10 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
-import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
+import {
+  SnsNeuronPermissionType,
+  type SnsGovernanceDid,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
@@ -153,10 +158,86 @@ describe("Hotkeys", () => {
   });
 
   describe("actions", () => {
+    const controlledNeuron: NeuronInfo = {
+      ...nnsNeuron(1n, [hotkeyA]),
+      fullNeuron: {
+        ...nnsNeuron(1n, [hotkeyA]).fullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    };
+
     beforeEach(() => {
       vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
-        nnsNeuron(1n, [hotkeyA]),
+        controlledNeuron,
       ]);
+      vi.spyOn(hotkeysServices, "changeHotkeyOnNeurons").mockImplementation(
+        async ({ neurons }) =>
+          neurons.map((neuron) => ({ ...neuron, success: true }))
+      );
+    });
+
+    // The SNS neuron query has no cache, so each load calls the API.
+    const snsNeuronOfUser = createMockSnsNeuron({
+      id: [1],
+      permissions: [
+        {
+          principal: [mockIdentity.getPrincipal()],
+          permission_type: Int32Array.from([
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+          ]),
+        },
+        {
+          principal: [hotkeyA],
+          permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+        },
+      ],
+    });
+
+    const removeSnsHotkeyA = async () => {
+      setSnsProjects([
+        { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+      ]);
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+      const { container } = render(Hotkeys);
+      const po = HotkeysPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      await po.clickRemove(0);
+      await ChangeHotkeyModalPo.under(
+        new JestPageObjectElement(container)
+      ).clickConfirm();
+      await runResolvedPromises();
+      return po;
+    };
+
+    it("should load the changed neurons again after a change", async () => {
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        snsNeuronOfUser,
+      ]);
+
+      await removeSnsHotkeyA();
+
+      expect(hotkeysServices.changeHotkeyOnNeurons).toHaveBeenCalledWith({
+        change: { type: "remove", principal: hotkeyA.toText() },
+        neurons: [
+          {
+            universeId: snsRootCanisterId.toText(),
+            neuronId: getSnsNeuronIdAsHexString(snsNeuronOfUser),
+          },
+        ],
+      });
+      expect(snsGovernanceApi.querySnsNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should show the load error if the neurons do not load after a change", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons")
+        .mockResolvedValueOnce([snsNeuronOfUser])
+        .mockRejectedValue(new Error("SNS neurons failed"));
+
+      const po = await removeSnsHotkeyA();
+
+      expect(await po.hasLoadError()).toBe(true);
     });
 
     it("should open the Replace modal for the hotkey", async () => {
