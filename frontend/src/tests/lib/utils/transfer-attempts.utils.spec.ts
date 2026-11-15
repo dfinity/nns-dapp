@@ -108,6 +108,17 @@ describe("transfer-attempts.utils", () => {
       ).not.toContain("expired");
     });
 
+    it.each([
+      ["null", "null"],
+      ["a number", "1"],
+      ["a number timestamp", '{"key":1}'],
+    ])("should ignore %s in local storage", (_, value) => {
+      localStorage.setItem(StoreLocalStorageKey.TransferAttempts, value);
+
+      expect(startTransferAttempt(key).isRetry).toBe(false);
+      expect(() => removeExpiredTransferAttempts()).not.toThrow();
+    });
+
     it("should work if local storage has invalid data", () => {
       vi.spyOn(console, "error").mockReturnValue();
       localStorage.setItem(StoreLocalStorageKey.TransferAttempts, "{");

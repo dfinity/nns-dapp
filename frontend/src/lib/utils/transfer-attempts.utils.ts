@@ -16,7 +16,20 @@ type TransferAttempts = Record<string, bigint>;
 const readAttempts = (): TransferAttempts => {
   try {
     const stored = localStorage.getItem(StoreLocalStorageKey.TransferAttempts);
-    return nonNullish(stored) ? JSON.parse(stored, jsonReviver) : {};
+    const parsed: unknown = nonNullish(stored)
+      ? JSON.parse(stored, jsonReviver)
+      : {};
+
+    if (typeof parsed !== "object" || parsed === null) {
+      return {};
+    }
+
+    // Local storage can hold any value, so keep only bigint timestamps.
+    return Object.fromEntries(
+      Object.entries(parsed).filter(
+        (entry): entry is [string, bigint] => typeof entry[1] === "bigint"
+      )
+    );
   } catch (err: unknown) {
     console.error(err);
     return {};
