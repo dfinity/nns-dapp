@@ -401,7 +401,15 @@ export const importSns = async (rootCanisterId: Principal): Promise<void> => {
   await loadImportedSnses();
 };
 
-export const removeImportedSns = (rootCanisterId: Principal): void => {
-  importedSnsesStore.remove(rootCanisterId.toText());
-  resetActionableProposalsIfNotListed(rootCanisterId);
+export const removeImportedSns = (rootCanisterId: RootCanisterIdText): void => {
+  importedSnsesStore.remove(rootCanisterId);
+
+  // The list in `localStorage` can hold an ID that is not valid.
+  let principal: Principal;
+  try {
+    principal = Principal.fromText(rootCanisterId);
+  } catch (_) {
+    return;
+  }
+  resetActionableProposalsIfNotListed(principal);
 };

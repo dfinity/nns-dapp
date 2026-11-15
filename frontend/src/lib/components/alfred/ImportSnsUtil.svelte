@@ -162,7 +162,7 @@
   };
 
   const remove = async (rootCanisterId: RootCanisterIdText) => {
-    removeImportedSns(Principal.fromText(rootCanisterId));
+    removeImportedSns(rootCanisterId);
     await focusStep();
 
     // The page cannot show the universe of a removed SNS, unless the aggregator lists it.

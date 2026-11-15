@@ -664,7 +664,7 @@ describe("imported-sns.services", () => {
       await loadImportedSnses();
       expect(get(loadedImportedSnsesStore).snses).toEqual([]);
 
-      removeImportedSns(root);
+      removeImportedSns(root.toText());
       failingRoots.clear();
       await importSns(root);
 
@@ -695,7 +695,7 @@ describe("imported-sns.services", () => {
       );
       await importSns(root);
       await runResolvedPromises();
-      removeImportedSns(root);
+      removeImportedSns(root.toText());
       expect(get(actionableSnsProposalsStore)).toEqual({});
 
       await importSns(root);
@@ -782,6 +782,15 @@ describe("imported-sns.services", () => {
   });
 
   describe("removeImportedSns", () => {
+    it("should remove an ID that is not valid", () => {
+      importedSnsesStore.add("not-a-principal");
+      importedSnsesStore.add(root.toText());
+
+      removeImportedSns("not-a-principal");
+
+      expect(get(importedSnsesStore)).toEqual([root.toText()]);
+    });
+
     it("should keep the actionable proposals if the aggregator lists the SNS", () => {
       setSnsProjects([{ rootCanisterId: root }]);
       importedSnsesStore.add(root.toText());
@@ -790,7 +799,7 @@ describe("imported-sns.services", () => {
         proposals: [],
       });
 
-      removeImportedSns(root);
+      removeImportedSns(root.toText());
 
       expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
         root.toText(),
@@ -801,7 +810,7 @@ describe("imported-sns.services", () => {
       importedSnsesStore.add(root.toText());
       importedSnsesStore.add(stranger.toText());
 
-      removeImportedSns(root);
+      removeImportedSns(root.toText());
 
       expect(get(importedSnsesStore)).toEqual([stranger.toText()]);
     });
@@ -818,7 +827,7 @@ describe("imported-sns.services", () => {
       });
       failedActionableSnsesStore.add(root.toText());
 
-      removeImportedSns(root);
+      removeImportedSns(root.toText());
 
       expect(Object.keys(get(actionableSnsProposalsStore))).toEqual([
         stranger.toText(),
@@ -856,7 +865,7 @@ describe("imported-sns.services", () => {
       await runResolvedPromises();
       expect(snsGovernanceApi.queryProposals).toHaveBeenCalledTimes(1);
 
-      removeImportedSns(root);
+      removeImportedSns(root.toText());
       settleProposals(result);
       await startupLoad;
     };

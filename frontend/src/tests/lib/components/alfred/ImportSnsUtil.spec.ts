@@ -227,6 +227,18 @@ describe("ImportSnsUtil", () => {
     expect(await po.getImportedSnsTexts()).toEqual([rootCanisterId]);
   });
 
+  it("should remove an imported ID that is not valid", async () => {
+    importedSnsesStore.add("not-a-principal");
+    const po = renderComponent();
+
+    const [item] = await po.getImportedSnsItemPos();
+    await item.clickRemove();
+    await runResolvedPromises();
+
+    expect(get(importedSnsesStore)).toEqual([]);
+    expect(await po.getImportedSnsTexts()).toEqual([]);
+  });
+
   it("should switch to the NNS universe if the page shows the removed SNS", async () => {
     page.mock({
       routeId: AppPath.Neurons,
