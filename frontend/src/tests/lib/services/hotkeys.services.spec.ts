@@ -1,3 +1,4 @@
+import { governanceApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -295,6 +296,24 @@ describe("hotkeys.services", () => {
       identity: mockIdentity,
       rootCanisterId,
       certified: true,
+    });
+  });
+
+  it("should not use the cached NNS neurons", async () => {
+    setNnsNeurons([nnsNeuron(1n, [oldHotkey, newHotkey])]);
+    await governanceApiService.queryNeurons({
+      identity: mockIdentity,
+      certified: true,
+      includeEmptyNeurons: false,
+    });
+    setNnsNeurons([nnsNeuron(1n, [oldHotkey])]);
+
+    await changeHotkeyOnNeurons({ change: replace, neurons: [nnsRef(1n)] });
+
+    expect(spyAddHotkey).toHaveBeenCalledWith({
+      neuronId: 1n,
+      identity: mockIdentity,
+      principal: newHotkey,
     });
   });
 

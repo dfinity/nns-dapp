@@ -1,4 +1,5 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
+import { queryNeurons } from "$lib/api/governance.api";
 import {
   addNeuronPermissions,
   querySnsNeurons,
@@ -196,7 +197,8 @@ const loadCertifiedNeurons = async ({
   universeId === OWN_CANISTER_ID_TEXT
     ? {
         universeId,
-        nnsNeurons: await governanceApiService.queryNeurons({
+        // Not `governanceApiService.queryNeurons`: it returns cached neurons, and a change needs the current state.
+        nnsNeurons: await queryNeurons({
           identity,
           certified: true,
           includeEmptyNeurons: false,
