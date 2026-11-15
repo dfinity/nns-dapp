@@ -230,7 +230,7 @@
       </div>
     </form>
   {:else}
-    <div data-tid="change-hotkey-result">
+    <div class="result" data-tid="change-hotkey-result">
       {#if failedNeurons.length === 0}
         <p data-tid="result-success">
           {replacePlaceholders($i18n.hotkeys.result_success, {
@@ -272,10 +272,15 @@
 
 <style lang="scss">
   form,
-  .field {
+  .field,
+  .result {
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+  }
+
+  .result {
+    gap: var(--padding-2x);
   }
 
   form {
@@ -330,6 +335,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-0_5x);
+    margin: 0;
     padding-left: var(--padding-2x);
   }
 </style>
