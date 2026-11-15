@@ -13,6 +13,7 @@ import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { ImportSnsUtilPo } from "$tests/page-objects/ImportSnsUtil.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -306,6 +307,23 @@ describe("ImportSnsUtil", () => {
 
       expect(isInputFocused()).toBe(true);
     });
+  });
+
+  it("should keep the universe if the aggregator lists the removed SNS", async () => {
+    setSnsProjects([{ rootCanisterId: Principal.fromText(rootCanisterId) }]);
+    page.mock({
+      routeId: AppPath.Neurons,
+      data: { universe: rootCanisterId },
+    });
+    importedSnsesStore.add(rootCanisterId);
+    const po = renderComponent();
+
+    const [item] = await po.getImportedSnsItemPos();
+    await item.clickRemove();
+    await runResolvedPromises();
+
+    expect(get(importedSnsesStore)).toEqual([]);
+    expect(get(pageStore).universe).toBe(rootCanisterId);
   });
 
   it("should keep the universe if the page shows another SNS", async () => {

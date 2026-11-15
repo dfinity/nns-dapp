@@ -7,6 +7,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { isCommittedSns } from "$lib/services/actionable-sns-proposals.services";
   import {
     getSnsToImport,
     importSns,
@@ -163,8 +164,11 @@
     removeImportedSns(Principal.fromText(rootCanisterId));
     await focusStep();
 
-    // The page cannot show the universe of a removed SNS.
-    if ($selectedUniverseIdStore.toText() === rootCanisterId) {
+    // The page cannot show the universe of a removed SNS, unless the aggregator lists it.
+    if (
+      $selectedUniverseIdStore.toText() === rootCanisterId &&
+      !isCommittedSns(Principal.fromText(rootCanisterId))
+    ) {
       await goto(nnsUniverseUrl(), { keepFocus: true });
     }
   };
