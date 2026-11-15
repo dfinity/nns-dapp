@@ -1,4 +1,7 @@
-import { governanceApiService } from "$lib/api-services/governance.api-service";
+import {
+  clearCache as clearGovernanceApiCache,
+  governanceApiService,
+} from "$lib/api-services/governance.api-service";
 import { queryNeurons } from "$lib/api/governance.api";
 import {
   addNeuronPermissions,
@@ -220,7 +223,8 @@ const loadCertifiedNeurons = async ({
  * state. A second run on a neuron that failed half way only does the missing
  * steps. If the neurons of a universe do not load, its neurons fail.
  *
- * The caller loads the neurons into the stores again.
+ * The caller loads the neurons into the stores again. A change without a call
+ * still clears the cached NNS neurons, so that load gets the current state.
  */
 export const changeHotkeyOnNeurons = async ({
   change,
@@ -279,6 +283,10 @@ export const changeHotkeyOnNeurons = async ({
     },
     MAX_PARALLEL_NEURON_CHANGES
   );
+
+  if (neurons.some(({ universeId }) => universeId === OWN_CANISTER_ID_TEXT)) {
+    clearGovernanceApiCache();
+  }
 
   for (const result of results) {
     if (result.status === "rejected") {

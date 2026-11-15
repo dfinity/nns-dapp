@@ -317,6 +317,100 @@ describe("hotkeys.services", () => {
     });
   });
 
+  it("should clear the cached NNS neurons after a change without a call", async () => {
+    setNnsNeurons([nnsNeuron(1n, [])]);
+    await governanceApiService.queryNeurons({
+      identity: mockIdentity,
+      certified: true,
+      includeEmptyNeurons: false,
+    });
+
+    await changeHotkeyOnNeurons({ change: remove, neurons: [nnsRef(1n)] });
+    await governanceApiService.queryNeurons({
+      identity: mockIdentity,
+      certified: true,
+      includeEmptyNeurons: false,
+    });
+
+    expect(spyRemoveHotkey).not.toHaveBeenCalled();
+    // The first load, the load before the change, and the load after it.
+    expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(3);
+  });
+
+  describe("retry after a change that failed half way", () => {
+    beforeEach(() => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should only add the new hotkey to a full NNS neuron that lost the old one", async () => {
+      const otherHotkeys = Array.from({ length: 9 }, (_, i) =>
+        principal(100 + i)
+      );
+      setNnsNeurons([nnsNeuron(1n, [oldHotkey, ...otherHotkeys])]);
+      spyAddHotkey.mockRejectedValueOnce(new Error("add failed"));
+
+      const [firstResult] = await changeHotkeyOnNeurons({
+        change: replace,
+        neurons: [nnsRef(1n)],
+      });
+
+      expect(firstResult.success).toBe(false);
+      expect(spyRemoveHotkey).toHaveBeenCalledTimes(1);
+
+      setNnsNeurons([nnsNeuron(1n, otherHotkeys)]);
+      const [retryResult] = await changeHotkeyOnNeurons({
+        change: replace,
+        neurons: [nnsRef(1n)],
+      });
+
+      expect(retryResult.success).toBe(true);
+      expect(spyRemoveHotkey).toHaveBeenCalledTimes(1);
+      expect(spyAddHotkey).toHaveBeenCalledTimes(2);
+      expect(spyAddHotkey).toHaveBeenLastCalledWith({
+        neuronId: 1n,
+        identity: mockIdentity,
+        principal: newHotkey,
+      });
+    });
+
+    it("should only remove the old hotkey from an SNS neuron that has the new one", async () => {
+      const neuron = snsNeuron(1, [
+        { principal: oldHotkey, permissions: HOTKEY_PERMISSIONS },
+      ]);
+      setSnsNeurons([neuron]);
+      spyRemovePermissions.mockRejectedValueOnce(new Error("remove failed"));
+
+      const [firstResult] = await changeHotkeyOnNeurons({
+        change: replace,
+        neurons: [snsRef(neuron)],
+      });
+
+      expect(firstResult.success).toBe(false);
+      expect(spyAddPermissions).toHaveBeenCalledTimes(1);
+
+      setSnsNeurons([
+        snsNeuron(1, [
+          { principal: oldHotkey, permissions: HOTKEY_PERMISSIONS },
+          { principal: newHotkey, permissions: HOTKEY_PERMISSIONS },
+        ]),
+      ]);
+      const [retryResult] = await changeHotkeyOnNeurons({
+        change: replace,
+        neurons: [snsRef(neuron)],
+      });
+
+      expect(retryResult.success).toBe(true);
+      expect(spyAddPermissions).toHaveBeenCalledTimes(1);
+      expect(spyRemovePermissions).toHaveBeenCalledTimes(2);
+      expect(spyRemovePermissions).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          permissions: HOTKEY_PERMISSIONS,
+          principal: oldHotkey,
+        })
+      );
+    });
+  });
+
   it("should fail the neurons of a universe that does not load", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const neuron = snsNeuron(1, [
