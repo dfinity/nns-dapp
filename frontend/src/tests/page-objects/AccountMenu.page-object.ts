@@ -77,6 +77,10 @@ export class AccountMenuPo extends BasePageObject {
     return this.getCanistersLinkPo().click();
   }
 
+  clickAddressBook(): Promise<void> {
+    return this.getLinkToAddressBookPo().click();
+  }
+
   getAccountDetailsPo(): AccountDetailsPo {
     return AccountDetailsPo.under(this.root);
   }
