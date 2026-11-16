@@ -30,7 +30,7 @@ test("Test address book functionality", async ({ page, context }) => {
       .getNnsAccountsPo()
       .getTokensTablePo()
       .getRowByName("Main")
-  ).waitFor();
+  ).waitForBalance();
 
   await appPo.goToAddressBook();
   await expect(page).toHaveTitle("Address Book | Network Nervous System");
