@@ -70,6 +70,39 @@ import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
+// For each project, go up with each neurons load, and with each load that makes
+// an update call. A load is out of date when a later load of the same project
+// makes an update call, so an older response cannot replace newer neurons. A
+// query-only load does not make an earlier load out of date.
+const snsNeuronsLoads = new Map<
+  string,
+  { count: number; latestUpdating: number }
+>();
+
+const startSnsNeuronsLoad = ({
+  rootCanisterId,
+  makesUpdateCall,
+}: {
+  rootCanisterId: Principal;
+  makesUpdateCall: boolean;
+}) => {
+  const key = rootCanisterId.toText();
+  const loads = snsNeuronsLoads.get(key) ?? { count: 0, latestUpdating: 0 };
+  loads.count += 1;
+  const load = loads.count;
+  if (makesUpdateCall) {
+    loads.latestUpdating = load;
+  }
+  snsNeuronsLoads.set(key, loads);
+
+  return {
+    isOutdated: () => loads.latestUpdating > load,
+    // Data of a query-only load does not replace certified neurons.
+    isQueryOverCertified: () =>
+      !makesUpdateCall && get(snsNeuronsStore)[key]?.certified === true,
+  };
+};
+
 /**
  * Loads sns neurons in store.
  * (Loads sns parameters when not already in the store)
@@ -83,8 +116,14 @@ export const syncSnsNeurons = async (
   rootCanisterId: Principal,
   { strategy }: { strategy?: QueryAndUpdateStrategy } = {}
 ): Promise<void> => {
+  const callStrategy = strategy ?? FORCE_CALL_STRATEGY;
+  const { isOutdated, isQueryOverCertified } = startSnsNeuronsLoad({
+    rootCanisterId,
+    makesUpdateCall: callStrategy !== "query",
+  });
+
   return queryAndUpdate<SnsGovernanceDid.Neuron[], unknown>({
-    strategy: strategy ?? FORCE_CALL_STRATEGY,
+    strategy: callStrategy,
     request: ({ certified, identity }) =>
       querySnsNeurons({
         rootCanisterId,
@@ -92,6 +131,9 @@ export const syncSnsNeurons = async (
         certified,
       }),
     onLoad: async ({ response: neurons, certified }) => {
+      if (isOutdated() || isQueryOverCertified()) {
+        return;
+      }
       snsNeuronsStore.setNeurons({
         rootCanisterId,
         neurons,
@@ -101,7 +143,11 @@ export const syncSnsNeurons = async (
     onError: ({ error: err, certified, strategy }) => {
       console.error(err);
 
-      if (!isLastCall({ strategy, certified })) {
+      if (
+        !isLastCall({ strategy, certified }) ||
+        isOutdated() ||
+        isQueryOverCertified()
+      ) {
         return;
       }
 
@@ -126,12 +172,19 @@ export const loadSnsNeurons = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<void> => {
+  const { isOutdated, isQueryOverCertified } = startSnsNeuronsLoad({
+    rootCanisterId,
+    makesUpdateCall: certified,
+  });
   const identity = await getAuthenticatedIdentity();
   const neurons = await querySnsNeurons({
     identity,
     rootCanisterId,
     certified,
   });
+  if (isOutdated() || isQueryOverCertified()) {
+    return;
+  }
   snsNeuronsStore.setNeurons({
     rootCanisterId,
     certified,

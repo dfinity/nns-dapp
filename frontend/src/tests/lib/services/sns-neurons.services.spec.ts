@@ -135,6 +135,70 @@ describe("sns-neurons-services", () => {
       });
     });
 
+    it("should not replace the neurons with the response of an older load", async () => {
+      const olderNeuron = { ...neuron, id: [{ id: Uint8Array.from([9, 9]) }] };
+      let resolveOlderLoad: (neurons: SnsGovernanceDid.Neuron[]) => void;
+      vi.spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              resolveOlderLoad = resolve;
+            })
+        )
+        .mockResolvedValue([neuron]);
+
+      const olderLoad = syncSnsNeurons(mockPrincipal, { strategy: "update" });
+      await syncSnsNeurons(mockPrincipal, { strategy: "update" });
+      resolveOlderLoad([olderNeuron as SnsGovernanceDid.Neuron]);
+      await olderLoad;
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [neuron],
+        certified: true,
+      });
+    });
+
+    it("should keep a pending certified load when a later query-only load ends", async () => {
+      const queryNeuron = { ...neuron, id: [{ id: Uint8Array.from([9, 9]) }] };
+      let resolveCertified: (neurons: SnsGovernanceDid.Neuron[]) => void;
+      vi.spyOn(governanceApi, "querySnsNeurons").mockImplementation(
+        ({ certified }) =>
+          certified
+            ? new Promise((resolve) => {
+                resolveCertified = resolve;
+              })
+            : Promise.resolve([queryNeuron as SnsGovernanceDid.Neuron])
+      );
+
+      const certifiedLoad = syncSnsNeurons(mockPrincipal, {
+        strategy: "update",
+      });
+      await loadSnsNeurons({ rootCanisterId: mockPrincipal, certified: false });
+      resolveCertified([neuron]);
+      await certifiedLoad;
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [neuron],
+        certified: true,
+      });
+    });
+
+    it("should not replace certified neurons with a query-only load", async () => {
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: mockPrincipal,
+        neurons: [neuron],
+        certified: true,
+      });
+      vi.spyOn(governanceApi, "querySnsNeurons").mockResolvedValue([]);
+
+      await loadSnsNeurons({ rootCanisterId: mockPrincipal, certified: false });
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [neuron],
+        certified: true,
+      });
+    });
+
     it("should empty store if update call fails", async () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
 
