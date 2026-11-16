@@ -48,16 +48,8 @@ jobs:
         uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
         with:
           dfx-version: ${{ env.DFX_VERSION }}
-      - name: Get SNS scripts
-        uses: ./.github/actions/checkout_snsdemo
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up SNS scripts
-        run: |
-          : Install more
-          sudo apt-get update -yy && sudo apt-get install -yy moreutils
-          : Add scripts to the path
-          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install tools
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils
       # Import the deploy key as late as possible.
       # The key is plaintext on disk from here on.
       - name: Set credentials
@@ -76,7 +68,7 @@ jobs:
           CANISTER_NAME="nns-dapp"
           export DFX_NETWORK CANISTER_NAME
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
-          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$NNS_DAPP_APP_SUBNET_CANISTER_ID"
+          scripts/dfx-canister-set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$NNS_DAPP_APP_SUBNET_CANISTER_ID"
       - name: Set sns_aggregator canister ID
         run: |
           set -x
@@ -84,7 +76,7 @@ jobs:
           export DFX_NETWORK CANISTER_NAME
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
-          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
+          scripts/dfx-canister-set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
       - name: Build wasms and config
         uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
         with:
@@ -128,7 +120,7 @@ jobs:
             for canister in nns-dapp sns_aggregator ; do
               printf "## %s\n\n" "$canister"
               printf "URL:    "
-              dfx-canister-url --network "$DFX_NETWORK" "$canister"
+              scripts/dfx-canister-url --network "$DFX_NETWORK" "$canister"
               printf "Commit: "
               dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id || printf "NONE"
               echo

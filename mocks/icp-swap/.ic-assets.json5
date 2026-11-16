@@ -1,0 +1,9 @@
+// The nns-dapp fetches the tickers from another origin.
+[
+  {
+    "match": "**/*",
+    "headers": {
+      "Access-Control-Allow-Origin": "*"
+    }
+  }
+]

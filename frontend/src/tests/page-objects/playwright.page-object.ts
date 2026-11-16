@@ -149,8 +149,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     await this.locator.selectOption(text);
   }
 
-  async isVisible(): Promise<boolean> {
-    throw new Error("Not implemented");
+  isVisible(): Promise<boolean> {
+    return this.locator.isVisible();
   }
 
   async blur(): Promise<void> {

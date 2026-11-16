@@ -19,33 +19,6 @@ export const step = async (description: string) => {
   });
 };
 
-// This is useful during debugging to speed up the tests.
-export const signInWithAnchor = async ({
-  page,
-  context,
-  anchor,
-}: {
-  page: Page;
-  context: BrowserContext;
-  anchor: number;
-}) => {
-  step(`Sign in to existing anchor ${anchor}`);
-  const iiPagePromise = context.waitForEvent("page");
-
-  await page.locator("[data-tid=login-button]").click();
-
-  const iiPage = await iiPagePromise;
-  await expect(iiPage).toHaveTitle("Internet Identity");
-
-  await iiPage.getByRole("button", { name: "Use Existing" }).click();
-  await iiPage.getByPlaceholder("Enter anchor").fill(anchor.toString());
-  await iiPage.getByRole("button", { name: "Continue" }).click();
-
-  await iiPage.waitForEvent("close");
-  await expect(iiPage.isClosed()).toBe(true);
-  await step("Running the main test");
-};
-
 export const signInWithNewUser = async ({
   page,
   context,
@@ -59,21 +32,26 @@ export const signInWithNewUser = async ({
   await page.locator("[data-tid=login-button]").click();
 
   const iiPage = await iiPagePromise;
-  await expect(iiPage).toHaveTitle("Internet Identity");
+  await expect(iiPage).toHaveTitle(/Internet Identity/);
 
   await iiPage.waitForLoadState("networkidle");
 
-  await iiPage
-    .getByRole("button", { name: "Create Internet Identity" })
-    .click();
-  await iiPage.getByRole("button", { name: "Create Passkey" }).click();
+  // The local Internet Identity uses dummy auth. Instead of a passkey, it
+  // prompts for a seed. A random seed gives each test its own identity.
+  const seed = Math.floor(Math.random() * 1_000_000_000);
+  iiPage.on("dialog", (dialog) => dialog.accept(String(seed)));
+
+  await iiPage.getByRole("button", { name: "Create", exact: true }).click();
+  await iiPage.getByRole("button", { name: "Create with passkey" }).click();
+  await iiPage.getByRole("textbox", { name: "Identity name" }).fill("E2E Test");
+  await iiPage.getByRole("button", { name: "Create identity" }).click();
   step("Sign in > creating identity");
 
-  await iiPage.locator("input#captchaInput").fill("a");
-  await iiPage.getByRole("button", { name: "Next" }).click();
-  step("Sign in > verifying captcha");
-
-  await iiPage.getByRole("button", { name: "Continue" }).click();
+  const continueButton = iiPage
+    .getByRole("button", { name: "continue" })
+    .first();
+  await continueButton.waitFor({ state: "visible", timeout: 30000 });
+  await continueButton.click();
 
   step("Sign in > finalizing authentication");
   await iiPage.waitForEvent("close");
@@ -122,14 +100,18 @@ export const replaceContent = async ({
   expect(replacementCount).toBeGreaterThan(0);
 };
 
-export const dfxCanisterId = async (canisterName: string) => {
+// Resolves a canister name on the local icp-cli network.
+export const localCanisterId = async (canisterName: string) => {
   return new Promise<string>((resolve, reject) => {
-    exec(`dfx canister id ${canisterName}`, (error, stdout, _stderr) => {
-      if (error) {
-        reject(error);
+    exec(
+      `icp canister status ${canisterName} --environment local --id-only`,
+      (error, stdout, _stderr) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(stdout.trim());
       }
-      resolve(stdout.trim());
-    });
+    );
   });
 };
 

@@ -164,6 +164,27 @@ describe("neuron-utils", () => {
     ).toBe(0);
   });
 
+  it("Loads when there is no SNS project and no SNS neuron", () => {
+    params.snsProjects.data = [];
+    params.snsNeurons = {};
+    const reward = getStakingRewardData(
+      params as unknown as StakingRewardCalcParams,
+      referenceDate
+    );
+    expect(reward.loading).toBe(false);
+    expect("error" in reward).toBe(false);
+  });
+
+  it("Waits for the SNS neurons when there is an SNS project", () => {
+    params.snsProjects.data.push(getTestSns());
+    params.snsNeurons = {};
+    const reward = getStakingRewardData(
+      params as unknown as StakingRewardCalcParams,
+      referenceDate
+    );
+    expect(reward.loading).toBe(true);
+  });
+
   it("Errors when some conditions are not met", () => {
     // FX provider fails
     params.fxRates = "error";

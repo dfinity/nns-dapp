@@ -6,13 +6,30 @@
 use std::{cell::RefCell, collections::BTreeMap};
 
 use candid::{Nat, Principal};
+use pretty_assertions::assert_eq;
 
 use crate::{
-    assets::Assets,
+    assets::{insert_asset, Asset, Assets},
     types::upstream::{SnsCache, UpstreamData},
 };
 
-use super::{Config, StableState}; // Is this the EU?
+use super::{Config, StableState, State, STATE}; // Is this the EU?
+
+/// The path of the list of the latest SNSs in the API version 1.
+const LATEST_PATH_V1: &str = "/v1/sns/list/latest/slow.json";
+
+/// Returns the body of the asset at the given path, if the asset exists.
+fn asset_bytes(path: &str) -> Option<Vec<u8>> {
+    STATE.with(|state| {
+        state
+            .stable
+            .borrow()
+            .assets
+            .borrow()
+            .get(path)
+            .map(|asset| asset.bytes.clone())
+    })
+}
 
 struct StateSerdeTestVector {
     name: &'static str,
@@ -64,6 +81,27 @@ fn serializing_and_deserializing_returns_original() {
             assert_eq!(fun(state), fun(&deserialized));
         }
     }
+}
+
+#[test]
+fn setup_creates_an_empty_latest_list_without_sns() {
+    // Each test runs in its own thread, so the state starts empty.
+    assert_eq!(asset_bytes(LATEST_PATH_V1), None);
+
+    State::setup();
+
+    assert_eq!(asset_bytes(LATEST_PATH_V1), Some(b"[]".to_vec()));
+}
+
+#[test]
+fn setup_keeps_an_existing_latest_list() {
+    let latest = include_str!("sample_latest.json").as_bytes().to_vec();
+    insert_asset(LATEST_PATH_V1, Asset::new(latest.clone()));
+
+    // `setup` runs again on every upgrade.
+    State::setup();
+
+    assert_eq!(asset_bytes(LATEST_PATH_V1), Some(latest));
 }
 
 #[test]
