@@ -478,6 +478,27 @@ describe("neurons-services", () => {
       expect(newNeuronsList).toEqual(neurons);
     });
 
+    it("should not replace the neurons with the response of an older call", async () => {
+      const olderNeurons = [{ ...neurons[0], neuronId: 999n }];
+      const olderResponses: Array<(neurons: NeuronInfo[]) => void> = [];
+      spyQueryNeurons
+        .mockImplementationOnce(
+          () => new Promise((resolve) => olderResponses.push(resolve))
+        )
+        .mockImplementationOnce(
+          () => new Promise((resolve) => olderResponses.push(resolve))
+        );
+
+      const olderCall = listNeurons();
+      await listNeurons();
+      expect(get(definedNeuronsStore)).toEqual(neurons);
+
+      olderResponses.forEach((resolve) => resolve(olderNeurons));
+      await olderCall;
+
+      expect(get(definedNeuronsStore)).toEqual(neurons);
+    });
+
     it("should reset store and show toast on error", async () => {
       spyConsoleError.mockReturnValue();
       const errorMessage = "Test error";

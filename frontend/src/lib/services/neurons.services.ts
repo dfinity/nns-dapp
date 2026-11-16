@@ -285,6 +285,10 @@ export const stakeNeuron = async ({
  * @param {Object} params
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
+// Goes up with each `listNeurons` call. Only the responses of the newest call
+// write the store, so an older response cannot replace newer neurons.
+let listNeuronsCallCount = 0;
+
 export const listNeurons = async ({
   callback,
   strategy,
@@ -292,6 +296,10 @@ export const listNeurons = async ({
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
+  listNeuronsCallCount += 1;
+  const callCount = listNeuronsCallCount;
+  const isNewestCall = () => callCount === listNeuronsCallCount;
+
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy: strategy ?? FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
@@ -301,12 +309,14 @@ export const listNeurons = async ({
         includeEmptyNeurons: false,
       }),
     onLoad: async ({ response: neurons, certified }) => {
-      neuronsStore.setNeurons({ neurons, certified });
+      if (isNewestCall()) {
+        neuronsStore.setNeurons({ neurons, certified });
+      }
 
       callback?.(certified);
     },
     onError: ({ error, certified, strategy }) => {
-      if (!isLastCall({ strategy, certified })) {
+      if (!isLastCall({ strategy, certified }) || !isNewestCall()) {
         return;
       }
 

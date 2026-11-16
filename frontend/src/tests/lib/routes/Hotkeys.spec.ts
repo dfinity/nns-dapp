@@ -3,6 +3,7 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import Hotkeys from "$lib/routes/Hotkeys.svelte";
 import * as hotkeysServices from "$lib/services/hotkeys.services";
+import { listNeurons } from "$lib/services/neurons.services";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -295,6 +296,56 @@ describe("Hotkeys", () => {
       await modalPo.closeModal();
       await modalPo.waitForClosed();
     });
+  });
+
+  it("should not show a removed hotkey again when an older neuron load ends after the change", async () => {
+    setSnsProjects([]);
+    vi.spyOn(governanceApi, "removeHotkey").mockResolvedValue();
+    const neuronWithHotkey: NeuronInfo = {
+      ...nnsNeuron(1n, [hotkeyA]),
+      fullNeuron: {
+        ...nnsNeuron(1n, [hotkeyA]).fullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    };
+    const neuronWithoutHotkey: NeuronInfo = {
+      ...neuronWithHotkey,
+      fullNeuron: { ...neuronWithHotkey.fullNeuron, hotKeys: [] },
+    };
+    // Calls 1 and 2: the query and update calls of a load that a previous
+    // page started. Calls 3 and 4: the page load and the load before the
+    // change. Then the load after the change.
+    const olderResponses: Array<(neurons: NeuronInfo[]) => void> = [];
+    let calls = 0;
+    vi.spyOn(governanceApi, "queryNeurons").mockImplementation(() => {
+      calls += 1;
+      if (calls <= 2) {
+        return new Promise((resolve) => olderResponses.push(resolve));
+      }
+      return Promise.resolve(
+        calls <= 4 ? [neuronWithHotkey] : [neuronWithoutHotkey]
+      );
+    });
+
+    listNeurons();
+    const { container } = render(Hotkeys);
+    const po = HotkeysPo.under(new JestPageObjectElement(container));
+    await runResolvedPromises();
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
+
+    await po.clickRemove(0);
+    await ChangeHotkeyModalPo.under(
+      new JestPageObjectElement(container)
+    ).clickConfirm();
+    await runResolvedPromises();
+    expect(await po.hasEmptyState()).toBe(true);
+
+    olderResponses.forEach((resolve) => resolve([neuronWithHotkey]));
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(true);
   });
 
   describe("when a certified load fails", () => {
