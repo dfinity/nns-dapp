@@ -348,6 +348,35 @@ describe("Hotkeys", () => {
     expect(await po.hasEmptyState()).toBe(true);
   });
 
+  it("should keep its certified neurons when a query-only load ends during the page load", async () => {
+    setSnsProjects([]);
+    let resolveCertified: (neurons: NeuronInfo[]) => void;
+    vi.spyOn(governanceApi, "queryNeurons").mockImplementation(
+      ({ certified }) =>
+        certified
+          ? new Promise((resolve) => {
+              resolveCertified = resolve;
+            })
+          : Promise.resolve([nnsNeuron(1n, [hotkeyB])])
+    );
+
+    const po = renderComponent();
+    await runResolvedPromises();
+    // The query-only fallback of the actionable proposals.
+    await listNeurons({ strategy: "query" });
+    resolveCertified([nnsNeuron(1n, [hotkeyA])]);
+    await runResolvedPromises();
+
+    expect(await po.isLoading()).toBe(false);
+    expect(await po.hasLoadError()).toBe(false);
+    // The row of the query-only data leaves with a transition.
+    await vi.waitFor(async () =>
+      expect(
+        (await po.getRowsData()).map(({ principal }) => principal)
+      ).toEqual([hotkeyA.toText()])
+    );
+  });
+
   describe("when a certified load fails", () => {
     beforeEach(() => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);

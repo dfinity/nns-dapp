@@ -499,6 +499,60 @@ describe("neurons-services", () => {
       expect(get(definedNeuronsStore)).toEqual(neurons);
     });
 
+    it("should keep a pending certified response when a later query-only call ends", async () => {
+      const queryNeurons = [{ ...neurons[0], neuronId: 999n }];
+      let resolveCertified: (neurons: NeuronInfo[]) => void;
+      spyQueryNeurons.mockImplementation(({ certified }) =>
+        certified
+          ? new Promise((resolve) => {
+              resolveCertified = resolve;
+            })
+          : Promise.resolve(queryNeurons)
+      );
+      const callback = vi.fn();
+
+      const certifiedCall = listNeurons({ strategy: "update", callback });
+      await listNeurons({ strategy: "query" });
+      expect(get(definedNeuronsStore)).toEqual(queryNeurons);
+
+      resolveCertified(neurons);
+      await certifiedCall;
+
+      expect(get(neuronsStore)).toEqual({ neurons, certified: true });
+      expect(callback).toHaveBeenCalledWith(true);
+    });
+
+    it("should not replace certified neurons with a query-only response", async () => {
+      neuronsStore.setNeurons({ neurons, certified: true });
+      spyQueryNeurons.mockResolvedValue([{ ...neurons[0], neuronId: 999n }]);
+
+      await listNeurons({ strategy: "query" });
+
+      expect(get(neuronsStore)).toEqual({ neurons, certified: true });
+    });
+
+    it("should not call the callback of an out-of-date call", async () => {
+      let resolveOlderCall: (neurons: NeuronInfo[]) => void;
+      spyQueryNeurons.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveOlderCall = resolve;
+          })
+      );
+      const olderCallback = vi.fn();
+
+      const olderCall = listNeurons({
+        strategy: "update",
+        callback: olderCallback,
+      });
+      await listNeurons({ strategy: "update" });
+      resolveOlderCall([{ ...neurons[0], neuronId: 999n }]);
+      await olderCall;
+
+      expect(get(definedNeuronsStore)).toEqual(neurons);
+      expect(olderCallback).not.toHaveBeenCalled();
+    });
+
     it("should reset store and show toast on error", async () => {
       spyConsoleError.mockReturnValue();
       const errorMessage = "Test error";

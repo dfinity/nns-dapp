@@ -279,16 +279,19 @@ export const stakeNeuron = async ({
   }
 };
 
+// Go up with each `listNeurons` call, and with each call that makes an update
+// call. A call is out of date when a later call makes an update call, so an
+// older response cannot replace newer neurons. A query-only call does not make
+// an earlier call out of date.
+let listNeuronsCallCount = 0;
+let latestUpdatingListNeuronsCall = 0;
+
 /**
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
  * @param {Object} params
- * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
+ * @param {callback} params.callback an optional callback that is called when a response writes the store (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
-// Goes up with each `listNeurons` call. Only the responses of the newest call
-// write the store, so an older response cannot replace newer neurons.
-let listNeuronsCallCount = 0;
-
 export const listNeurons = async ({
   callback,
   strategy,
@@ -296,12 +299,20 @@ export const listNeurons = async ({
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
+  const callStrategy = strategy ?? FORCE_CALL_STRATEGY;
+  const makesUpdateCall = callStrategy !== "query";
   listNeuronsCallCount += 1;
-  const callCount = listNeuronsCallCount;
-  const isNewestCall = () => callCount === listNeuronsCallCount;
+  const call = listNeuronsCallCount;
+  if (makesUpdateCall) {
+    latestUpdatingListNeuronsCall = call;
+  }
+  const isOutdated = () => latestUpdatingListNeuronsCall > call;
+  // Data of a query-only call does not replace certified neurons.
+  const isQueryOverCertified = () =>
+    !makesUpdateCall && get(neuronsStore).certified === true;
 
   return queryAndUpdate<NeuronInfo[], unknown>({
-    strategy: strategy ?? FORCE_CALL_STRATEGY,
+    strategy: callStrategy,
     request: ({ certified, identity }) =>
       governanceApiService.queryNeurons({
         certified,
@@ -309,14 +320,20 @@ export const listNeurons = async ({
         includeEmptyNeurons: false,
       }),
     onLoad: async ({ response: neurons, certified }) => {
-      if (isNewestCall()) {
-        neuronsStore.setNeurons({ neurons, certified });
+      if (isOutdated() || isQueryOverCertified()) {
+        return;
       }
+
+      neuronsStore.setNeurons({ neurons, certified });
 
       callback?.(certified);
     },
     onError: ({ error, certified, strategy }) => {
-      if (!isLastCall({ strategy, certified }) || !isNewestCall()) {
+      if (
+        !isLastCall({ strategy, certified }) ||
+        isOutdated() ||
+        isQueryOverCertified()
+      ) {
         return;
       }
 
