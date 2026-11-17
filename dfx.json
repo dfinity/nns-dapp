@@ -37,7 +37,7 @@
           "app": "qhbym-qaaaa-aaaaa-aaafq-cai",
           "beta": "qhbym-qaaaa-aaaaa-aaafq-cai",
           "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
-          "local": "q3fc5-haaaa-aaaaa-aaahq-cai"
+          "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
         }
       }
     },
@@ -66,7 +66,8 @@
           "app": "xnjld-hqaaa-aaaal-qb56q-cai",
           "beta": "qsnoo-jiaaa-aaaal-amsea-cai",
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
-          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
+          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "local": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
     },
@@ -82,7 +83,7 @@
       },
       "remote": {
         "id": {
-          "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
+          "local": "uqzsh-gqaaa-aaaaq-qaada-cai"
         }
       }
     },
@@ -159,7 +160,8 @@
         "id": {
           "app": "otgyv-wyaaa-aaaak-qcgba-cai",
           "beta": "3r4gx-wqaaa-aaaaq-aaaia-cai",
-          "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
+          "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai",
+          "local": "3r4gx-wqaaa-aaaaq-aaaia-cai"
         }
       }
     },

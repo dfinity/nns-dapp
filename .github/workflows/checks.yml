@@ -25,9 +25,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install shfmt
-        run: sudo snap install --classic shfmt
+        uses: ./.github/actions/install_shfmt
       - name: Install yq
-        run: sudo snap install yq
+        uses: ./.github/actions/install_yq
       - name: Install cargo dependency sorter
         run: cargo install cargo-sort@${{ env.CARGO_SORT_VERSION }}
       - name: Format
@@ -183,8 +183,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Install dfx
-        uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install tools
@@ -210,7 +208,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install yq
-        run: sudo snap install yq
+        uses: ./.github/actions/install_yq
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Get node version
@@ -315,6 +313,10 @@ jobs:
         run: scripts/unused-i18n
       - name: Test the ID conversion script
         run: scripts/convert-id.test
+      - name: Test the transaction search script
+        run: scripts/find-transaction-from-timestamp.test
+      - name: Test the transaction listing script
+        run: scripts/get-transactions.test
       - name: Getting network config works
         run: scripts/network-config.test
       - name: Get SNS tool

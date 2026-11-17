@@ -45,7 +45,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792028198
+              "timestamp_seconds": 1793242274
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -63,14 +63,14 @@
               },
               "ledger_canister_id": "emww2-4yaaa-aaaaq-aacbq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792028198
+              "timestamp_seconds": 1793242274
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 67782296239902727,
-            "timestamp_seconds": 1792028198
+            "governance_total_potential_voting_power": 67864679305735442,
+            "timestamp_seconds": 1793242274
           },
-          "last_ledger_block_timestamp": 1792024575,
+          "last_ledger_block_timestamp": 1793238439,
           "num_recently_executed_proposals": 1,
           "num_recently_submitted_proposals": 1,
           "genesis_timestamp_seconds": 1702635311
@@ -79,11 +79,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791972921,
-      "end_timestamp_seconds": 1791972911,
-      "total_available_e8s_equivalent": 258302039904604,
+      "actual_timestamp_seconds": 1793182514,
+      "end_timestamp_seconds": 1793182511,
+      "total_available_e8s_equivalent": 358838423929492,
       "distributed_e8s_equivalent": 0,
-      "round": 1034,
+      "round": 1048,
       "settled_proposals": []
     },
     "parameters": {
@@ -1629,7 +1629,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104916458730678622,
+    "icrc1_total_supply": 104917229083454763,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3180,14 +3180,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 22452512222436,
-              "amount_e8s": 463721744,
+              "amount_e8s": 687933426,
               "account": {
                 "owner": "eqsml-lyaaa-aaaaq-aacdq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792028118
+              "timestamp_seconds": 1793242231
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -3205,27 +3205,27 @@
               },
               "ledger_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792028118
+              "timestamp_seconds": 1793242231
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 55677060906377,
-            "timestamp_seconds": 1792028118
+            "governance_total_potential_voting_power": 55708902932117,
+            "timestamp_seconds": 1793242231
           },
-          "last_ledger_block_timestamp": 1792029475,
-          "num_recently_executed_proposals": 19,
-          "num_recently_submitted_proposals": 19,
+          "last_ledger_block_timestamp": 1793243358,
+          "num_recently_executed_proposals": 16,
+          "num_recently_submitted_proposals": 16,
           "genesis_timestamp_seconds": 1702903688
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791982089,
-      "end_timestamp_seconds": 1791982088,
-      "total_available_e8s_equivalent": 27630616176,
+      "actual_timestamp_seconds": 1793191690,
+      "end_timestamp_seconds": 1793191688,
+      "total_available_e8s_equivalent": 104997151986,
       "distributed_e8s_equivalent": 0,
-      "round": 1031,
+      "round": 1045,
       "settled_proposals": []
     },
     "parameters": {
@@ -3975,7 +3975,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100920554651405,
+    "icrc1_total_supply": 100921826200132,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4720,7 +4720,15 @@
         "lvc4n-7aaaa-aaaam-adm6a-cai",
         "sfamc-kyaaa-aaaau-adnpq-cai",
         "7hbdm-xqaaa-aaaap-quxia-cai",
-        "524ne-eyaaa-aaaap-quxhq-cai"
+        "524ne-eyaaa-aaaap-quxhq-cai",
+        "ejz7n-lyaaa-aaaad-qmkzq-cai",
+        "e46oa-kqaaa-aaaad-qmk2a-cai",
+        "e37iu-hiaaa-aaaad-qmk2q-cai",
+        "es4di-raaaa-aaaad-qmk3a-cai",
+        "ev5f4-4yaaa-aaaad-qmk3q-cai",
+        "fytbs-tqaaa-aaaad-qmk4a-cai",
+        "vuy7a-iaaaa-aaaay-aaduq-cai",
+        "pxtkg-giaaa-aaaal-ajjzq-cai"
       ],
       "archives": ["h4f44-ayaaa-aaaaq-aacjq-cai"]
     },
@@ -4737,19 +4745,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 3000000000000,
-              "amount_e8s": 744618755934,
+              "amount_e8s": 735720809487,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792028040
+              "timestamp_seconds": 1793242214
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 165069467331,
+              "amount_e8s": 165168536245,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": {
@@ -4762,16 +4770,16 @@
               },
               "ledger_canister_id": "hvgxa-wqaaa-aaaaq-aacia-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792028040
+              "timestamp_seconds": 1793242214
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 826821677271,
-            "timestamp_seconds": 1792028040
+            "governance_total_potential_voting_power": 801198072284,
+            "timestamp_seconds": 1793242214
           },
-          "last_ledger_block_timestamp": 1792030657,
-          "num_recently_executed_proposals": 21,
-          "num_recently_submitted_proposals": 22,
+          "last_ledger_block_timestamp": 1793243386,
+          "num_recently_executed_proposals": 101,
+          "num_recently_submitted_proposals": 102,
           "genesis_timestamp_seconds": 1705799268
         }
       }
@@ -5497,6 +5505,34 @@
               "target_method_name": "snsDeregister"
             }
           }
+        },
+        {
+          "id": 5000,
+          "name": "Mr Sneed: set personality",
+          "description": "Sets Mr Sneed's personality (his character; the rules stay in the frame in code). Canister ucthl-5qaaa-aaaay-aadrq-cai.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+              "target_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+              "validator_method_name": "validate_set_personality",
+              "target_method_name": "set_personality"
+            }
+          }
+        },
+        {
+          "id": 7000,
+          "name": "Sneed Hub frontend: commit proposed batch",
+          "description": "Publishes a frontend release: commits the asset batch that a Prepare principal proposed on the Sneed Hub frontend asset canister, after the validator checks that batch id and evidence match the proposed batch. Canister pxtkg-giaaa-aaaal-ajjzq-cai.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
+              "validator_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+              "target_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
         }
       ]
     },
@@ -5652,7 +5688,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 993103058074,
+    "icrc1_total_supply": 992993002308,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5816,7 +5852,22 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 7000,
+              "name": "Sneed Hub frontend: commit proposed batch",
+              "description": "Publishes a frontend release: commits the asset batch that a Prepare principal proposed on the Sneed Hub frontend asset canister, after the validator checks that batch id and evidence match the proposed batch. Canister pxtkg-giaaa-aaaal-ajjzq-cai.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+                  "target_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "extension_operations": [],
@@ -6019,6 +6070,20 @@
                   "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
                   "validator_method_name": "snsDeregisterValidate",
                   "target_method_name": "snsDeregister"
+                }
+              }
+            },
+            {
+              "id": 5000,
+              "name": "Mr Sneed: set personality",
+              "description": "Sets Mr Sneed's personality (his character; the rules stay in the frame in code). Canister ucthl-5qaaa-aaaay-aadrq-cai.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+                  "target_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+                  "validator_method_name": "validate_set_personality",
+                  "target_method_name": "set_personality"
                 }
               }
             }
@@ -6360,7 +6425,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792027405
+              "timestamp_seconds": 1793241707
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -6378,14 +6443,14 @@
               },
               "ledger_canister_id": "hhaaz-2aaaa-aaaaq-aacla-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792027405
+              "timestamp_seconds": 1793241707
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 12022027189107156,
-            "timestamp_seconds": 1792027405
+            "governance_total_potential_voting_power": 12014445195597075,
+            "timestamp_seconds": 1793241707
           },
-          "last_ledger_block_timestamp": 1792029177,
+          "last_ledger_block_timestamp": 1793193533,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1708958305
@@ -6394,11 +6459,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791988715,
-      "end_timestamp_seconds": 1791988705,
-      "total_available_e8s_equivalent": 25867155793581,
+      "actual_timestamp_seconds": 1793198308,
+      "end_timestamp_seconds": 1793198305,
+      "total_available_e8s_equivalent": 31180766754946,
       "distributed_e8s_equivalent": 0,
-      "round": 961,
+      "round": 975,
       "settled_proposals": []
     },
     "parameters": {
@@ -9420,7 +9485,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 18317666597234658,
+    "icrc1_total_supply": 18317732067283486,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12450,7 +12515,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792028898
+              "timestamp_seconds": 1793242979
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -12468,14 +12533,14 @@
               },
               "ledger_canister_id": "gemj7-oyaaa-aaaaq-aacnq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792028898
+              "timestamp_seconds": 1793242979
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 59677859956282138,
-            "timestamp_seconds": 1792028898
+            "governance_total_potential_voting_power": 59782235127050944,
+            "timestamp_seconds": 1793242979
           },
-          "last_ledger_block_timestamp": 1792022034,
+          "last_ledger_block_timestamp": 1793238439,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1709209147
@@ -12484,11 +12549,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791980348,
-      "end_timestamp_seconds": 1791980347,
-      "total_available_e8s_equivalent": 209875650746982,
+      "actual_timestamp_seconds": 1793189949,
+      "end_timestamp_seconds": 1793189947,
+      "total_available_e8s_equivalent": 233079097719182,
       "distributed_e8s_equivalent": 0,
-      "round": 958,
+      "round": 972,
       "settled_proposals": []
     },
     "parameters": {
@@ -13159,7 +13224,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 26274573458341394,
+    "icrc1_total_supply": 26274651446707109,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13829,7 +13894,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792029518
+              "timestamp_seconds": 1793240062
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -13847,14 +13912,14 @@
               },
               "ledger_canister_id": "ddsp7-7iaaa-aaaaq-aacqq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792029518
+              "timestamp_seconds": 1793240062
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 8591750996592855,
-            "timestamp_seconds": 1792029518
+            "governance_total_potential_voting_power": 8593881469173163,
+            "timestamp_seconds": 1793240062
           },
-          "last_ledger_block_timestamp": 1792022386,
+          "last_ledger_block_timestamp": 1793231208,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1710522988
@@ -13863,11 +13928,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791998198,
-      "end_timestamp_seconds": 1791998188,
-      "total_available_e8s_equivalent": 95026630197803,
+      "actual_timestamp_seconds": 1793207792,
+      "end_timestamp_seconds": 1793207788,
+      "total_available_e8s_equivalent": 98894336237947,
       "distributed_e8s_equivalent": 0,
-      "round": 943,
+      "round": 957,
       "settled_proposals": []
     },
     "parameters": {
@@ -14888,7 +14953,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10090568799228928,
+    "icrc1_total_supply": 10090568789128928,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15912,7 +15977,7 @@
     "meta": {
       "url": "https://panda.fans",
       "name": "ICPanda",
-      "description": "An on-chain Builder DAO for digital sovereignty. Minds: https://anda.ai | Markets: https://tokenlist.ing | Personal control: https://dmsg.net",
+      "description": "An on-chain Builder DAO for digital sovereignty. Minds: https://anda.ai | Markets: https://tokenlist.ing | Private Collaboration: https://dmsg.net",
       "logo": "/v1/sns/root/d7wvo-iiaaa-aaaaq-aacsq-cai/logo.png"
     },
     "metrics": {
@@ -15929,7 +15994,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792030158
+              "timestamp_seconds": 1793240651
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -15947,28 +16012,32 @@
               },
               "ledger_canister_id": "druyg-tyaaa-aaaaq-aactq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792030158
+              "timestamp_seconds": 1793240651
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 120008743940710111,
-            "timestamp_seconds": 1792030158
+            "governance_total_potential_voting_power": 118820715765514332,
+            "timestamp_seconds": 1793240651
           },
-          "last_ledger_block_timestamp": 1792024463,
-          "num_recently_executed_proposals": 41,
-          "num_recently_submitted_proposals": 59,
+          "last_ledger_block_timestamp": 1793240595,
+          "num_recently_executed_proposals": 77,
+          "num_recently_submitted_proposals": 77,
           "genesis_timestamp_seconds": 1710783210
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791999218,
-      "end_timestamp_seconds": 1791999210,
-      "total_available_e8s_equivalent": 166240128923235,
-      "distributed_e8s_equivalent": 0,
-      "round": 940,
-      "settled_proposals": []
+      "actual_timestamp_seconds": 1793208811,
+      "end_timestamp_seconds": 1793208810,
+      "total_available_e8s_equivalent": 11938925148338,
+      "distributed_e8s_equivalent": 11938925148171,
+      "round": 954,
+      "settled_proposals": [
+        {
+          "id": 567
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [1001, 1002, 1003, 1004],
@@ -16438,6 +16507,244 @@
               "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
               "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1119,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel",
+          "description": "Records the baseline review on the legacy ic_message_channel canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1120,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_02",
+          "description": "Records the baseline review on the legacy ic_message_channel_02 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1121,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_03",
+          "description": "Records the baseline review on the legacy ic_message_channel_03 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1122,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_profile",
+          "description": "Records the baseline review on the legacy ic_message_profile canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1123,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_name_identity",
+          "description": "Records the baseline review on the legacy ic_name_identity canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1124,
+          "name": "`admin_legacy_drain` on ic_message",
+          "description": "Stops new business writes on the legacy ic_message canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1125,
+          "name": "`admin_legacy_drain` on ic_message_channel",
+          "description": "Stops new business writes on the legacy ic_message_channel canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1126,
+          "name": "`admin_legacy_drain` on ic_message_channel_02",
+          "description": "Stops new business writes on the legacy ic_message_channel_02 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1127,
+          "name": "`admin_legacy_drain` on ic_message_channel_03",
+          "description": "Stops new business writes on the legacy ic_message_channel_03 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1128,
+          "name": "`admin_legacy_drain` on ic_message_profile",
+          "description": "Stops new business writes on the legacy ic_message_profile canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1129,
+          "name": "`admin_legacy_drain` on ic_name_identity",
+          "description": "Stops new business writes on the legacy ic_name_identity canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1130,
+          "name": "`admin_legacy_seal` on ic_message",
+          "description": "Makes the legacy ic_message canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1131,
+          "name": "`admin_legacy_seal` on ic_message_channel",
+          "description": "Makes the legacy ic_message_channel canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1132,
+          "name": "`admin_legacy_seal` on ic_message_channel_02",
+          "description": "Makes the legacy ic_message_channel_02 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1133,
+          "name": "`admin_legacy_seal` on ic_message_channel_03",
+          "description": "Makes the legacy ic_message_channel_03 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1134,
+          "name": "`admin_legacy_seal` on ic_message_profile",
+          "description": "Makes the legacy ic_message_profile canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1135,
+          "name": "`admin_legacy_seal` on ic_name_identity",
+          "description": "Makes the legacy ic_name_identity canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
             }
           }
         },
@@ -17043,7 +17350,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 108438022276538450,
+    "icrc1_total_supply": 109017390053148797,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -18076,6 +18383,244 @@
                   "target_method_name": "admin_legacy_acknowledge_baseline"
                 }
               }
+            },
+            {
+              "id": 1119,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel",
+              "description": "Records the baseline review on the legacy ic_message_channel canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1120,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_02",
+              "description": "Records the baseline review on the legacy ic_message_channel_02 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1121,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_03",
+              "description": "Records the baseline review on the legacy ic_message_channel_03 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1122,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_profile",
+              "description": "Records the baseline review on the legacy ic_message_profile canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1123,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_name_identity",
+              "description": "Records the baseline review on the legacy ic_name_identity canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1124,
+              "name": "`admin_legacy_drain` on ic_message",
+              "description": "Stops new business writes on the legacy ic_message canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1125,
+              "name": "`admin_legacy_drain` on ic_message_channel",
+              "description": "Stops new business writes on the legacy ic_message_channel canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1126,
+              "name": "`admin_legacy_drain` on ic_message_channel_02",
+              "description": "Stops new business writes on the legacy ic_message_channel_02 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1127,
+              "name": "`admin_legacy_drain` on ic_message_channel_03",
+              "description": "Stops new business writes on the legacy ic_message_channel_03 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1128,
+              "name": "`admin_legacy_drain` on ic_message_profile",
+              "description": "Stops new business writes on the legacy ic_message_profile canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1129,
+              "name": "`admin_legacy_drain` on ic_name_identity",
+              "description": "Stops new business writes on the legacy ic_name_identity canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1130,
+              "name": "`admin_legacy_seal` on ic_message",
+              "description": "Makes the legacy ic_message canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1131,
+              "name": "`admin_legacy_seal` on ic_message_channel",
+              "description": "Makes the legacy ic_message_channel canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1132,
+              "name": "`admin_legacy_seal` on ic_message_channel_02",
+              "description": "Makes the legacy ic_message_channel_02 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1133,
+              "name": "`admin_legacy_seal` on ic_message_channel_03",
+              "description": "Makes the legacy ic_message_channel_03 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1134,
+              "name": "`admin_legacy_seal` on ic_message_profile",
+              "description": "Makes the legacy ic_message_profile canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1135,
+              "name": "`admin_legacy_seal` on ic_name_identity",
+              "description": "Makes the legacy ic_name_identity canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
             }
           ]
         }
@@ -18131,7 +18676,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792029748
+              "timestamp_seconds": 1793240271
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -18149,27 +18694,27 @@
               },
               "ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792029748
+              "timestamp_seconds": 1793240271
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 55674913171003270,
-            "timestamp_seconds": 1792029748
+            "governance_total_potential_voting_power": 56238901554242944,
+            "timestamp_seconds": 1793240271
           },
-          "last_ledger_block_timestamp": 1792029705,
-          "num_recently_executed_proposals": 13,
-          "num_recently_submitted_proposals": 16,
+          "last_ledger_block_timestamp": 1793243259,
+          "num_recently_executed_proposals": 18,
+          "num_recently_submitted_proposals": 18,
           "genesis_timestamp_seconds": 1711034480
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791991288,
-      "end_timestamp_seconds": 1791991280,
-      "total_available_e8s_equivalent": 7889132039499,
+      "actual_timestamp_seconds": 1793200881,
+      "end_timestamp_seconds": 1793200880,
+      "total_available_e8s_equivalent": 7874384851259,
       "distributed_e8s_equivalent": 0,
-      "round": 937,
+      "round": 951,
       "settled_proposals": []
     },
     "parameters": {
@@ -19274,7 +19819,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 96050215793040295,
+    "icrc1_total_supply": 95876909810558481,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20391,7 +20936,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792027598
+              "timestamp_seconds": 1793241709
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -20409,14 +20954,14 @@
               },
               "ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792027598
+              "timestamp_seconds": 1793241709
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 35121353149836870,
-            "timestamp_seconds": 1792027598
+            "governance_total_potential_voting_power": 35160563736509644,
+            "timestamp_seconds": 1793241709
           },
-          "last_ledger_block_timestamp": 1792013415,
+          "last_ledger_block_timestamp": 1793183944,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1711451121
@@ -20425,11 +20970,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791975928,
-      "end_timestamp_seconds": 1791975921,
-      "total_available_e8s_equivalent": 115779454827794,
+      "actual_timestamp_seconds": 1793185530,
+      "end_timestamp_seconds": 1793185521,
+      "total_available_e8s_equivalent": 119406861624643,
       "distributed_e8s_equivalent": 0,
-      "round": 932,
+      "round": 946,
       "settled_proposals": []
     },
     "parameters": {
@@ -21145,7 +21690,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 94636452342751475,
+    "icrc1_total_supply": 94636452306751475,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -21870,7 +22415,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1792028738
+              "timestamp_seconds": 1793242859
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -21888,14 +22433,14 @@
               },
               "ledger_canister_id": "bliq2-niaaa-aaaaq-aac4q-cai",
               "treasury": 2,
-              "timestamp_seconds": 1792028738
+              "timestamp_seconds": 1793242859
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 84470174369193776,
-            "timestamp_seconds": 1792028738
+            "governance_total_potential_voting_power": 84496896714549425,
+            "timestamp_seconds": 1793242859
           },
-          "last_ledger_block_timestamp": 1792022034,
+          "last_ledger_block_timestamp": 1793238439,
           "num_recently_executed_proposals": 2,
           "num_recently_submitted_proposals": 3,
           "genesis_timestamp_seconds": 1712478412
@@ -21904,11 +22449,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1791966418,
-      "end_timestamp_seconds": 1791966412,
-      "total_available_e8s_equivalent": 265629195877365,
+      "actual_timestamp_seconds": 1793176019,
+      "end_timestamp_seconds": 1793176012,
+      "total_available_e8s_equivalent": 385825428415526,
       "distributed_e8s_equivalent": 0,
-      "round": 920,
+      "round": 934,
       "settled_proposals": []
     },
     "parameters": {
@@ -22644,7 +23189,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104525813811788913,
+    "icrc1_total_supply": 104528589722324057,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

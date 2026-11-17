@@ -1,5 +1,6 @@
 import Alfred from "$lib/components/alfred/Alfred.svelte";
 import { alfredVisibleStore } from "$lib/stores/alfred.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { AlfredPo } from "$tests/page-objects/Alfred.page-object";
 import { ImportSnsUtilPo } from "$tests/page-objects/ImportSnsUtil.page-object";
@@ -18,6 +19,7 @@ describe("Alfred Component", () => {
     "Address Book",
     "Reporting",
     "Canisters",
+    "Hotkeys",
     "Settings",
     "Encode ICRC-1 Account",
     "Import SNS",
@@ -33,6 +35,7 @@ describe("Alfred Component", () => {
     "Address Book",
     "Reporting",
     "Canisters",
+    "Hotkeys",
     "Settings",
     "Copy principal ID",
     "Hide Balance",
@@ -177,6 +180,16 @@ describe("Alfred Component", () => {
 
     const titles = await po.getResultsTitle();
     expect(titles).toEqual(signedInOptions);
+  });
+
+  it("should not show the Hotkeys page if the feature flag is disabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_HOTKEYS_PAGE", false);
+
+    const po = renderComponent();
+    await po.open("mac");
+
+    const titles = await po.getResultsTitle();
+    expect(titles).toEqual(signedOffOptions.filter((t) => t !== "Hotkeys"));
   });
 
   it("should open when another component sets the store", async () => {

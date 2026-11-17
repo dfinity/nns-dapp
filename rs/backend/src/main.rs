@@ -423,6 +423,20 @@ pub fn get_tvl() -> TvlResponse {
     tvl::get_tvl()
 }
 
+/// A markdown guide to the API, for the facts that the Candid types do not give.
+const API_DOC: &str = include_str!("api_doc.md");
+
+/// Returns a markdown guide to the API of this canister.
+///
+/// The guide gives the authentication rules, the limits, and the methods that
+/// replace a full list.  An agent finds this method in the `candid:service`
+/// metadata.  See <https://docs.internetcomputer.org/guides/frontends/service-discoverability/>
+#[must_use]
+#[ic_cdk::query]
+pub fn get_api_doc() -> String {
+    API_DOC.to_string()
+}
+
 #[derive(CandidType)]
 pub enum GetAccountResponse {
     Ok(AccountDetails),

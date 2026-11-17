@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Tests scripts/get-transactions against a stub ledger canister.
+#
+# The script reads numbers from a ledger canister response, and it takes two
+# index arguments that a caller reads from the same canister. Bash evaluates
+# array subscripts in every arithmetic context, so text such as
+# 'PATH[$(command)]' would run a command. The script must reject the value, and
+# it must not run the command.
+#
+# The test replaces dfx and idl2json with stubs. It makes no network call and no
+# canister call.
+
+SCRIPT_UNDER_TEST="$SOURCE_DIR/get-transactions"
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+# The canary file. The injected command creates it.
+export CANARY="$tmp_dir/canary"
+
+# Stub dfx. It prints a Candid response that the stub idl2json ignores.
+cat >"$tmp_dir/dfx" <<'EOF'
+#!/usr/bin/env bash
+echo '(record {})'
+EOF
+
+# Stub idl2json. The script calls it with --bytes-as hex for the transaction
+# query, and with no argument for the archives query.
+cat >"$tmp_dir/idl2json" <<'EOF'
+#!/usr/bin/env bash
+cat >/dev/null
+if [[ "$*" == *--bytes-as* ]]; then
+  echo "$IDL2JSON_TRANSACTIONS"
+else
+  echo "$IDL2JSON_ARCHIVES"
+fi
+EOF
+
+chmod +x "$tmp_dir/dfx" "$tmp_dir/idl2json"
+export PATH="$tmp_dir:$PATH"
+
+fail() {
+  echo "FAILED: $1" >&2
+  exit 1
+}
+
+# Runs the script under test with the given index arguments. Puts the output in
+# the variable "output", the error output in the variable "errout", and the exit
+# status in the variable "status".
+output=""
+errout=""
+status=0
+run_script() {
+  local start_index="$1" end_index="$2"
+  set +e
+  output="$("$SCRIPT_UNDER_TEST" --ledger_canister_id aaaaa-aa --start_index "$start_index" --end_index "$end_index" 2>"$tmp_dir/stderr")"
+  status="$?"
+  set -e
+  errout="$(cat "$tmp_dir/stderr")"
+}
+
+# Asserts that the last run_script call rejected the named value. The script
+# must exit non-zero, it must name the value in the error, and it must not have
+# run the injected command.
+expect_rejected() {
+  local name="$1"
+  if [[ "$status" == "0" ]]; then
+    fail "The script accepted a non-numeric $name. Output: $errout"
+  fi
+  if ! grep -q "$name is not a number" <<<"$errout"; then
+    fail "The script printed no error for a non-numeric $name. Output: $errout"
+  fi
+  if [[ -e "$CANARY" ]]; then
+    fail "The $name value ran a command. The canary file $CANARY exists."
+  fi
+}
+
+# The command substitution in the payload must stay unexpanded here. The script
+# under test must not run it.
+# shellcheck disable=SC2016
+payload='PATH[$(touch $CANARY)]'
+
+# Responses that the script accepts. The ledger has no archive canister, and it
+# holds one transaction.
+good_archives='[]'
+good_transactions='{"transactions":[{"timestamp":"1000"}]}'
+
+export IDL2JSON_ARCHIVES="$good_archives"
+export IDL2JSON_TRANSACTIONS="$good_transactions"
+
+# Case 1: the caller passes the payload as the --start_index argument.
+run_script "$payload" 1
+expect_rejected START_INDEX
+
+# Case 2: the caller passes the payload as the --end_index argument. This is the
+# argument that scripts/sns/find-failed-neurons reads from the ledger canister.
+run_script 0 "$payload"
+expect_rejected END_INDEX
+
+# Case 3: a malicious canister returns the payload as block_range_start.
+export IDL2JSON_ARCHIVES="[{\"canister_id\":\"aaaaa-aa\",\"block_range_start\":\"$payload\",\"block_range_end\":\"0\"}]"
+run_script 0 1
+expect_rejected block_range_start
+
+# Case 4: a malicious canister returns the payload as block_range_end.
+export IDL2JSON_ARCHIVES="[{\"canister_id\":\"aaaaa-aa\",\"block_range_start\":\"0\",\"block_range_end\":\"$payload\"}]"
+run_script 0 1
+expect_rejected block_range_end
+
+# Case 5: a well behaved canister returns numbers, and the script prints the
+# transaction.
+export IDL2JSON_ARCHIVES="$good_archives"
+run_script 0 1
+
+if [[ "$status" != "0" ]]; then
+  fail "The script rejected a valid response. Output: $errout"
+fi
+
+if [[ "$(jq -r .timestamp <<<"$output")" != "1000" ]]; then
+  fail "Expected one transaction with timestamp 1000 but got: $output"
+fi
+
+# Case 6: the canister separates the digits of the archive range, as Candid
+# does. The script removes the separator before it checks the value.
+export IDL2JSON_ARCHIVES='[{"canister_id":"aaaaa-aa","block_range_start":"0","block_range_end":"1_0"}]'
+run_script 0 1
+
+if [[ "$status" != "0" ]]; then
+  fail "The script rejected a separated number. Output: $errout"
+fi
+
+echo "PASSED"

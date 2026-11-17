@@ -589,7 +589,9 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const areTokensReady =
     !!tokens && !tokens.some((t) => t.balance === "loading");
   const areSnsProjectsReady = Boolean(snsProjects?.data);
-  const areSnsNeuronsReady = Boolean(Object.keys(snsNeurons).length);
+  // A network without SNS projects has no SNS neurons to load.
+  const areSnsNeuronsReady =
+    snsProjects?.data?.length === 0 || Boolean(Object.keys(snsNeurons).length);
   const areNnsNeuronsReady = Boolean(nnsNeurons?.neurons);
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
