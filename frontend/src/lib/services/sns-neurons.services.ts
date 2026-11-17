@@ -79,6 +79,24 @@ const snsNeuronsLoads = new Map<
   { count: number; latestWrittenUpdating: number }
 >();
 
+const getSnsNeuronsLoads = (key: string) => {
+  const loads = snsNeuronsLoads.get(key) ?? {
+    count: 0,
+    latestWrittenUpdating: 0,
+  };
+  snsNeuronsLoads.set(key, loads);
+  return loads;
+};
+
+// Returns a check that is true when a load of the project that makes an update
+// call, and starts after this point, wrote or reset the store. Then the store
+// has newer neurons than a single neuron that is loaded from this point.
+export const startSnsSingleNeuronLoad = (rootCanisterId: Principal) => {
+  const loads = getSnsNeuronsLoads(rootCanisterId.toText());
+  const loadsAtStart = loads.count;
+  return () => loads.latestWrittenUpdating > loadsAtStart;
+};
+
 const startSnsNeuronsLoad = ({
   rootCanisterId,
   makesUpdateCall,
@@ -87,13 +105,9 @@ const startSnsNeuronsLoad = ({
   makesUpdateCall: boolean;
 }) => {
   const key = rootCanisterId.toText();
-  const loads = snsNeuronsLoads.get(key) ?? {
-    count: 0,
-    latestWrittenUpdating: 0,
-  };
+  const loads = getSnsNeuronsLoads(key);
   loads.count += 1;
   const load = loads.count;
-  snsNeuronsLoads.set(key, loads);
 
   return {
     isOutdated: () => loads.latestWrittenUpdating > load,
