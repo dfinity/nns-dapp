@@ -13,9 +13,10 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
   import type { Universe } from "$lib/types/universe";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
-  import { Card } from "@dfinity/gix-components";
+  import { Card, Tag } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
@@ -84,7 +85,14 @@
             {/if}
           {/if}
         {:else}
-          <TestIdWrapper testId="universe-name">{universe.title}</TestIdWrapper>
+          <span class="title">
+            <TestIdWrapper testId="universe-name"
+              >{universe.title}</TestIdWrapper
+            >
+            {#if $importedSnsRootCanisterIdsStore.has(universe.canisterId)}
+              <Tag testId="imported-sns-tag">{$i18n.import_sns.imported}</Tag>
+            {/if}
+          </span>
           {#if $actionableProposalIndicationVisibleStore}
             {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0 && mounted}
               <ActionableProposalCountBadge
@@ -149,6 +157,13 @@
 
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: var(--padding);
+  }
+
+  .title {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--padding);
   }

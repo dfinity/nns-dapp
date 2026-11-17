@@ -19,11 +19,10 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
-import { isDefined, keyOf, keyOfOptional } from "$lib/utils/utils";
+import { isDefined, keyOf } from "$lib/utils/utils";
 import { isNullish } from "@dfinity/utils";
 import type {
   Ballot,
-  ExecuteNnsFunction,
   NeuronId,
   NeuronInfo,
   NnsGovernanceDid,
@@ -33,7 +32,6 @@ import type {
   Tally,
 } from "@icp-sdk/canisters/nns";
 import {
-  NnsFunction,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
@@ -47,39 +45,6 @@ export const lastProposalId = (
 ): ProposalId | undefined => {
   const { length, [length - 1]: last } = proposalInfos;
   return last?.id;
-};
-
-export const proposalFirstActionKey = (
-  proposal: Proposal | undefined
-): string | undefined => Object.keys(proposal?.action ?? {})[0];
-
-export const proposalActionData = (proposal: Proposal): unknown | undefined => {
-  const key = proposalFirstActionKey(proposal);
-  if (key === undefined) {
-    return {};
-  }
-
-  return (proposal.action as { [key: string]: unknown })?.[key];
-};
-
-export const getNnsFunctionKey = (
-  proposal: Proposal | undefined
-): string | undefined => {
-  const action = proposalFirstActionKey(proposal);
-
-  if (action !== "ExecuteNnsFunction") {
-    return undefined;
-  }
-
-  // 0 equals Unspecified
-  const { nnsFunctionId }: ExecuteNnsFunction = keyOfOptional({
-    obj: proposal?.action,
-    key: action,
-  }) ?? {
-    nnsFunctionId: 0,
-  };
-
-  return NnsFunction[nnsFunctionId];
 };
 
 /**

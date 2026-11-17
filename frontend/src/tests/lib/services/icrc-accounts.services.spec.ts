@@ -36,6 +36,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   AgentError,
+  AnonymousIdentity,
   ErrorKindEnum,
   ReplicaRejectCode,
   requestIdOf,
@@ -821,11 +822,26 @@ describe("icrc-accounts-services", () => {
       });
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
-        identity: mockIdentity,
+        identity: expect.any(AnonymousIdentity),
         certified: false,
         canisterId: ledgerCanisterId,
       });
       expect(result).toEqual(mockToken);
+    });
+
+    it("does not send the user principal to the ledger canister", async () => {
+      // The ledger canister ID is unverified user input, so the call must not
+      // carry the user principal.
+      await getIcrcTokenMetaData({
+        ledgerCanisterId,
+      });
+
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+      const { identity } = vi.mocked(ledgerApi.queryIcrcToken).mock.calls[0][0];
+      expect(identity.getPrincipal().isAnonymous()).toEqual(true);
+      expect(identity.getPrincipal().toText()).not.toEqual(
+        mockIdentity.getPrincipal().toText()
+      );
     });
 
     it("throws an error", async () => {
@@ -842,7 +858,7 @@ describe("icrc-accounts-services", () => {
       await expect(call).rejects.toThrow(testError);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
-        identity: mockIdentity,
+        identity: expect.any(AnonymousIdentity),
         certified: false,
         canisterId: ledgerCanisterId,
       });

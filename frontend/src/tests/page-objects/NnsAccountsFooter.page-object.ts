@@ -16,8 +16,4 @@ export class NnsAccountsFooterPo extends BasePageObject {
   async clickSend() {
     return this.getSendButtonPo().click();
   }
-
-  async clickBuyICP() {
-    return this.click("buy-icp-button");
-  }
 }

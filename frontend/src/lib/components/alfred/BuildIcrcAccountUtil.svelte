@@ -160,7 +160,7 @@
         color: var(--primary);
         flex-shrink: 0;
         border-radius: var(--padding);
-        background: var(--background-secondary, rgba(0, 0, 0, 0.05));
+        background: var(--card-background-tint);
       }
 
       .util-title {
@@ -204,7 +204,7 @@
         .hex-value {
           flex: 1;
           padding: var(--padding-2x);
-          background: var(--background-secondary, rgba(0, 0, 0, 0.05));
+          background: var(--card-background-tint);
           border-radius: var(--border-radius);
           font-family: monospace;
           word-break: break-all;
@@ -215,7 +215,7 @@
 
         .error-message {
           padding: var(--padding) var(--padding-2x);
-          background: var(--background-secondary, rgba(0, 0, 0, 0.05));
+          background: var(--card-background-tint);
           border-radius: var(--border-radius);
           color: var(--negative-emphasis);
           @include fonts.small();

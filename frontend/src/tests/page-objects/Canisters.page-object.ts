@@ -1,8 +1,8 @@
-import { CanisterCardPo } from "$tests/page-objects/CanisterCard.page-object";
+import { CanistersTablePo } from "$tests/page-objects/CanistersTable.page-object";
+import type { CanistersTableRowPo } from "$tests/page-objects/CanistersTableRow.page-object";
 import { CreateCanisterModalPo } from "$tests/page-objects/CreateCanisterModal.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import { LinkCanisterModalPo } from "$tests/page-objects/LinkCanisterModal.page-object";
-import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -13,13 +13,12 @@ export class CanistersPo extends BasePageObject {
     return new CanistersPo(element.byTestId(CanistersPo.TID));
   }
 
-  getSkeletonCardPo(): SkeletonCardPo {
-    // There are multiple but we only need one.
-    return SkeletonCardPo.under(this.root);
+  getCanistersTablePo(): CanistersTablePo {
+    return CanistersTablePo.under(this.root);
   }
 
-  getCanisterCardPos(): Promise<CanisterCardPo[]> {
-    return CanisterCardPo.allUnder(this.root);
+  getCanisterRowPos(): Promise<CanistersTableRowPo[]> {
+    return this.getCanistersTablePo().getRows();
   }
 
   getCreateCanisterModalPo(): CreateCanisterModalPo {
@@ -73,8 +72,19 @@ export class CanistersPo extends BasePageObject {
     await modal.waitForClosed();
   }
 
+  getNoCanistersMessagePo(): PageObjectElement {
+    return this.getElement("no-canisters-message");
+  }
+
   async waitForContentLoaded(): Promise<void> {
     await this.waitFor();
-    await this.getSkeletonCardPo().waitForAbsent();
+    // The page shows the table or the empty state, so wait for either one.
+    await Promise.any([
+      (async () => {
+        await this.getCanistersTablePo().waitFor();
+        await this.waitForAbsent("skeleton-table-row");
+      })(),
+      this.getNoCanistersMessagePo().waitFor(),
+    ]);
   }
 }

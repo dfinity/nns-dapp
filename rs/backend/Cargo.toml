@@ -5,11 +5,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0.22.1"
+base64 = "0.23.0"
 candid = "0.10.29"
 flate2 = "1.1.5"
 hex = "0.4.3"
-itertools = "0.14.0"
+itertools = "0.15.0"
 lazy_static = "1.5.0"
 lzma-rs = "0.3.0"
 regex = "1.12.2"
@@ -41,7 +41,7 @@ on_wire = { workspace = true }
 
 [dev-dependencies]
 anyhow = "1.0.95"
-candid_parser = "0.3.0"
+candid_parser = "0.4.0"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
 pretty_assertions = "1.4.0"

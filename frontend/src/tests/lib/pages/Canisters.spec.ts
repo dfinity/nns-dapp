@@ -9,6 +9,8 @@ import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
+import { CanistersPo } from "$tests/page-objects/Canisters.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -35,6 +37,9 @@ vi.mock("$lib/services/worker-cycles.services", () => ({
         // Do nothing
       },
       stopCyclesTimer: () => {
+        // Do nothing
+      },
+      terminate: () => {
         // Do nothing
       },
     })
@@ -88,10 +93,56 @@ describe("Canisters", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render canister cards for canisters", () => {
+  it("should render a table row for each canister", () => {
     const { queryAllByTestId } = render(Canisters);
 
-    expect(queryAllByTestId("canister-card").length).toBe(2);
+    expect(queryAllByTestId("responsive-table-row-component").length).toBe(2);
+  });
+
+  it("should render a table skeleton while canisters load", async () => {
+    canistersStore.setCanisters({
+      canisters: undefined,
+      certified: undefined,
+    });
+
+    const { container } = render(Canisters);
+    const root = new JestPageObjectElement(container);
+    const po = CanistersPo.under(root);
+    const tablePo = po.getCanistersTablePo();
+
+    expect(await tablePo.isPresent()).toBe(true);
+    expect(await tablePo.getDesktopColumnHeaders()).toEqual([
+      "Canister Name",
+      "",
+    ]);
+    expect(await tablePo.getSkeletonRows()).toHaveLength(3);
+    expect(await SkeletonCardPo.under(root).isPresent()).toBe(false);
+
+    canistersStore.setCanisters({
+      canisters: mockCanisters,
+      certified: true,
+    });
+    await runResolvedPromises();
+
+    expect(await tablePo.getSkeletonRows()).toHaveLength(0);
+    expect(await po.getCanisterRowPos()).toHaveLength(2);
+  });
+
+  it("should finish the content wait with no canister", async () => {
+    canistersStore.setCanisters({
+      canisters: [],
+      certified: true,
+    });
+
+    const { container } = render(Canisters);
+    const po = CanistersPo.under(new JestPageObjectElement(container));
+
+    await po.waitForContentLoaded();
+
+    expect(await po.getNoCanistersMessagePo().getText()).toBe(
+      en.canisters.text
+    );
+    expect(await po.getCanistersTablePo().isPresent()).toBe(false);
   });
 
   it("should open the LinkCanisterModal on click to Link Canister", async () => {
@@ -120,7 +171,7 @@ describe("Canisters", () => {
     );
   });
 
-  it("should not recreate cards when store is repopulated with same canisters", async () => {
+  it("should not recreate rows when store is repopulated with same canisters", async () => {
     const mockCanisterCopy = {
       ...mockCanister,
       // Make sure we have a different instance of the same Principal.

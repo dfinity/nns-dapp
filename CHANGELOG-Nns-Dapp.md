@@ -11,6 +11,145 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 144655
+
+### Application
+
+#### Added
+
+- Make the NNS dapp discoverable by AI agents, also through ICP MCP.
+
+#### Changed
+
+* Connect to the Ledger device through the Ledger Device Management Kit.
+
+### Operations
+
+## Proposal 144564
+
+### Application
+
+#### Fixed
+
+- The proposal detail page no longer parses the text fields of a payload as
+  JSON, so a text that nests JSON thousands of levels deep no longer breaks
+  the page.
+
+#### Security
+
+- The "Hide Balance" option now also masks the balances in the accessible names
+  on the Portfolio page. Before, the cards kept the exact amounts in their
+  `aria-label` attributes, so a screen reader announced them.
+- Impose a Candid decoding quota on every exported method that takes an argument. The quota limits the DoS surface from decoding bombs.
+- The sign-out message in the URL is now limited to known messages. Before, a
+  crafted link could show any text as an official toast.
+- Check and escape the canister install arguments that the canister puts in the
+  `Content-Security-Policy` of every page. A value that is not a web address
+  could previously end the `content` attribute and add live `HTML` to the page.
+  The install or the upgrade now fails if a value is not a web address. The
+  check also limits the `ROBOTS` argument to the `robots` `meta` tag.
+- The import token validation no longer sends the user principal to the entered
+  canisters. The ledger and index canister IDs come from the form or from the
+  URL, so the two validation calls now use the anonymous identity.
+
+### Operations
+
+## Proposal 144116
+
+### Application
+
+#### Fixed
+
+- The canisters page shows a table skeleton while the canister list loads.
+- Description overflow in the upcoming project card on the launchpad page.
+
+### Operations
+
+## Proposal 143823
+
+### Application
+
+#### Added
+
+- A search button in the header opens the quick search panel. Before, only the
+  Ctrl+K (Cmd+K) shortcut opened it, so a touch screen could not reach it.
+
+#### Changed
+
+- Increase the maximum canister name length from 24 to 64 characters.
+- Show the canisters on the Canisters page in a table instead of a card grid.
+
+#### Removed
+
+- Remove the "Buy ICP" button and its modal from the accounts footer. Banxa no
+  longer offers ICP, so the button did not work.
+
+#### Fixed
+
+- The quick search panel now fits a phone screen, and its selected row, icon
+  tiles and result boxes now have a visible background color.
+- On a narrow screen the header buttons no longer shrink while the app loads
+  data.
+
+### Operations
+
+## Proposal 143733
+
+### Application
+
+#### Added
+
+- A banner in the swap participation modal states that the participant is responsible for their own legal compliance.
+
+### Operations
+
+## Proposal 143661
+
+### Application
+
+### Operations
+
+## Proposal 142801
+
+### Application
+
+#### Fixed
+
+- Terminate the per-canister cycles Web Workers when leaving the canisters
+  page, fixing a memory leak that could crash the tab ("Aw, Snap!") after
+  repeatedly navigating in and out of the canisters list with a large fleet.
+
+### Operations
+
+#### Fixed
+
+- The `release-sop` script now derives its default test network and domain from
+  `DEVENV_USER` (falling back to `$USER`), so developers whose local username
+  differs from their devenv name can set it without overriding the system
+  `USER` variable.
+
+## Proposal 142604
+
+### Application
+
+#### Changed
+
+- Per-neuron APY is now annualized over the days the neuron is eligible to vote, so dissolving neurons no longer display a near-zero rate. Locked-neuron APYs are unchanged.
+
+#### Security
+
+- Impose a Candid decoding quota on the public `http_request` query to limit the DoS surface from large or maliciously encoded payloads.
+
+### Operations
+
+#### Added
+
+- Add `sns.internetcomputer.org` to the list of supported domains.
+
+#### Removed
+
+- Remove `wallet.internetcomputer.org` and `wallet.ic0.app` from the list of supported domains.
+
 ## Proposal 141778
 
 ### Application

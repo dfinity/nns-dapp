@@ -38,14 +38,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 31473381681860,
-              "amount_e8s": 891738378249,
+              "amount_e8s": 151738418249,
               "account": {
                 "owner": "elxqo-raaaa-aaaaq-aacba-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781146493
+              "timestamp_seconds": 1794448842
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -63,27 +63,27 @@
               },
               "ledger_canister_id": "emww2-4yaaa-aaaaq-aacbq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781146493
+              "timestamp_seconds": 1794448842
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 64989085049963360,
-            "timestamp_seconds": 1781146493
+            "governance_total_potential_voting_power": 68072531214555102,
+            "timestamp_seconds": 1794448842
           },
-          "last_ledger_block_timestamp": 1781110093,
-          "num_recently_executed_proposals": 0,
-          "num_recently_submitted_proposals": 2,
+          "last_ledger_block_timestamp": 1794443190,
+          "num_recently_executed_proposals": 1,
+          "num_recently_submitted_proposals": 1,
           "genesis_timestamp_seconds": 1702635311
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781086513,
-      "end_timestamp_seconds": 1781086511,
-      "total_available_e8s_equivalent": 42757314858454,
+      "actual_timestamp_seconds": 1794392112,
+      "end_timestamp_seconds": 1794392111,
+      "total_available_e8s_equivalent": 7181277413564,
       "distributed_e8s_equivalent": 0,
-      "round": 908,
+      "round": 1062,
       "settled_proposals": []
     },
     "parameters": {
@@ -1629,7 +1629,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104114430437131760,
+    "icrc1_total_supply": 104918463012080756,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3168,9 +3168,9 @@
       "archives": ["fbysu-tqaaa-aaaaq-aacga-cai"]
     },
     "meta": {
-      "url": "https://icpcoins.com",
+      "url": "https://neutrinite.io",
       "name": "Neutrinite",
-      "description": "Neutrinite SNS DAO for ICPCoins. This platform is dedicated to securely sourcing data from DEXes, DAOs, and other DeFi applications.\n",
+      "description": "Neutrinite DAO governs open protocols for an autonomous digital future.",
       "logo": "/v1/sns/root/extk7-gaaaa-aaaaq-aacda-cai/logo.png"
     },
     "metrics": {
@@ -3180,14 +3180,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 22452512222436,
-              "amount_e8s": 1253577223366,
+              "amount_e8s": 874801356,
               "account": {
                 "owner": "eqsml-lyaaa-aaaaq-aacdq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781146033
+              "timestamp_seconds": 1794448842
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -3205,31 +3205,33 @@
               },
               "ledger_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781146033
+              "timestamp_seconds": 1794448842
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 54720832620424,
-            "timestamp_seconds": 1781146033
+            "governance_total_potential_voting_power": 55715261670805,
+            "timestamp_seconds": 1794448842
           },
-          "last_ledger_block_timestamp": 1781148861,
-          "num_recently_executed_proposals": 4,
-          "num_recently_submitted_proposals": 4,
+          "last_ledger_block_timestamp": 1794443385,
+          "num_recently_executed_proposals": 14,
+          "num_recently_submitted_proposals": 14,
           "genesis_timestamp_seconds": 1702903688
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781095693,
-      "end_timestamp_seconds": 1781095688,
-      "total_available_e8s_equivalent": 104999274843,
+      "actual_timestamp_seconds": 1794401292,
+      "end_timestamp_seconds": 1794401288,
+      "total_available_e8s_equivalent": 182363054019,
       "distributed_e8s_equivalent": 0,
-      "round": 905,
+      "round": 1059,
       "settled_proposals": []
     },
     "parameters": {
-      "reserved_ids": [88003],
+      "reserved_ids": [
+        6000, 6010, 6011, 6012, 6110, 6111, 6210, 6211, 6311, 88003, 88004
+      ],
       "functions": [
         {
           "id": 0,
@@ -3406,118 +3408,6 @@
           }
         },
         {
-          "id": 6000,
-          "name": "DeVeFi Add Vector Pair",
-          "description": "Add vector pair canister to DeFi Vectors",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "target_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "validator_method_name": "validate_add_pair",
-              "target_method_name": "add_pair"
-            }
-          }
-        },
-        {
-          "id": 6010,
-          "name": "DeVeFi:ICP/ckBTC:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6011,
-          "name": "DeVeFi:ICP/ckBTC:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6012,
-          "name": "DeVeFi:ICP/ckBTC:Withdraw Vector",
-          "description": "Withdraws tokens from a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_withdraw_vector",
-              "target_method_name": "withdraw_vector"
-            }
-          }
-        },
-        {
-          "id": 6110,
-          "name": "DeVeFi:ICP/DKP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6111,
-          "name": "DeVeFi:ICP/DKP:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6210,
-          "name": "DeVeFi:ICP/nICP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "target_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6211,
-          "name": "transfer ICS",
-          "description": "transfer ICS from Neutrinite",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
-              "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
-              "validator_method_name": "validate_icrc_transfer",
-              "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
           "id": 6212,
           "name": "manage WTN neuron",
           "description": "Manage NTN neuron owned by Neutrinite",
@@ -3542,20 +3432,6 @@
               "target_canister_id": "oypg6-faaaa-aaaaq-aadza-cai",
               "validator_method_name": "validate_manage_neuron",
               "target_method_name": "manage_neuron"
-            }
-          }
-        },
-        {
-          "id": 6311,
-          "name": "DeVeFi:ICP/ckUSDT:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "target_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
             }
           }
         },
@@ -3612,20 +3488,6 @@
               "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
               "validator_method_name": "validate_icrc1_transfer",
               "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
-          "id": 88004,
-          "name": "Transfer position on ICP Swap",
-          "description": null,
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": "Governance",
-              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
-              "target_canister_id": "kv5pw-kyaaa-aaaag-qcyya-cai",
-              "validator_method_name": "validate_icpswap_transfer_position",
-              "target_method_name": "transferPosition"
             }
           }
         },
@@ -4113,7 +3975,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100923425238894,
+    "icrc1_total_supply": 100920182181864,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4501,118 +4363,6 @@
     "topics": {
       "uncategorized_functions": [
         {
-          "id": 6000,
-          "name": "DeVeFi Add Vector Pair",
-          "description": "Add vector pair canister to DeFi Vectors",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "target_canister_id": "wxer6-3yaaa-aaaal-qjnua-cai",
-              "validator_method_name": "validate_add_pair",
-              "target_method_name": "add_pair"
-            }
-          }
-        },
-        {
-          "id": 6010,
-          "name": "DeVeFi:ICP/ckBTC:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6011,
-          "name": "DeVeFi:ICP/ckBTC:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6012,
-          "name": "DeVeFi:ICP/ckBTC:Withdraw Vector",
-          "description": "Withdraws tokens from a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "target_canister_id": "wqfxk-waaaa-aaaal-qjnuq-cai",
-              "validator_method_name": "validate_withdraw_vector",
-              "target_method_name": "withdraw_vector"
-            }
-          }
-        },
-        {
-          "id": 6110,
-          "name": "DeVeFi:ICP/DKP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6111,
-          "name": "DeVeFi:ICP/DKP:Modify Vector",
-          "description": "Modifies a vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "target_canister_id": "hospv-uaaaa-aaaal-qkkda-cai",
-              "validator_method_name": "validate_modify_vector",
-              "target_method_name": "modify_vector"
-            }
-          }
-        },
-        {
-          "id": 6210,
-          "name": "DeVeFi:ICP/nICP:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "target_canister_id": "ol6b4-pqaaa-aaaal-qjqia-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
-            }
-          }
-        },
-        {
-          "id": 6211,
-          "name": "transfer ICS",
-          "description": "transfer ICS from Neutrinite",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
-              "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
-              "validator_method_name": "validate_icrc_transfer",
-              "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
           "id": 6212,
           "name": "manage WTN neuron",
           "description": "Manage NTN neuron owned by Neutrinite",
@@ -4623,20 +4373,6 @@
               "target_canister_id": "jfnic-kaaaa-aaaaq-aadla-cai",
               "validator_method_name": "validate_manage_neuron",
               "target_method_name": "manage_neuron"
-            }
-          }
-        },
-        {
-          "id": 6311,
-          "name": "DeVeFi:ICP/ckUSDT:Create Vector",
-          "description": "Creates a new vector",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "target_canister_id": "vxjx3-pqaaa-aaaal-qr7ua-cai",
-              "validator_method_name": "validate_create_vector",
-              "target_method_name": "create_vector"
             }
           }
         }
@@ -4790,22 +4526,7 @@
           "is_critical": false,
           "name": "Governance",
           "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
-          "custom_functions": [
-            {
-              "id": 88004,
-              "name": "Transfer position on ICP Swap",
-              "description": null,
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "Governance",
-                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
-                  "target_canister_id": "kv5pw-kyaaa-aaaag-qcyya-cai",
-                  "validator_method_name": "validate_icpswap_transfer_position",
-                  "target_method_name": "transferPosition"
-                }
-              }
-            }
-          ]
+          "custom_functions": []
         },
         {
           "extension_operations": [],
@@ -4997,7 +4718,18 @@
         "7gump-4aaaa-aaaal-qtyka-cai",
         "7bvk3-ryaaa-aaaal-qtykq-cai",
         "lvc4n-7aaaa-aaaam-adm6a-cai",
-        "sfamc-kyaaa-aaaau-adnpq-cai"
+        "sfamc-kyaaa-aaaau-adnpq-cai",
+        "7hbdm-xqaaa-aaaap-quxia-cai",
+        "524ne-eyaaa-aaaap-quxhq-cai",
+        "ejz7n-lyaaa-aaaad-qmkzq-cai",
+        "e46oa-kqaaa-aaaad-qmk2a-cai",
+        "e37iu-hiaaa-aaaad-qmk2q-cai",
+        "es4di-raaaa-aaaad-qmk3a-cai",
+        "ev5f4-4yaaa-aaaad-qmk3q-cai",
+        "fytbs-tqaaa-aaaad-qmk4a-cai",
+        "vuy7a-iaaaa-aaaay-aaduq-cai",
+        "pxtkg-giaaa-aaaal-ajjzq-cai",
+        "v7b6c-niaaa-aaaac-bgiiq-cai"
       ],
       "archives": ["h4f44-ayaaa-aaaaq-aacjq-cai"]
     },
@@ -5014,19 +4746,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 3000000000000,
-              "amount_e8s": 736453744415,
+              "amount_e8s": 731798288770,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781146223
+              "timestamp_seconds": 1794448722
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 164098145431,
+              "amount_e8s": 165211619601,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": {
@@ -5039,16 +4771,16 @@
               },
               "ledger_canister_id": "hvgxa-wqaaa-aaaaq-aacia-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781146223
+              "timestamp_seconds": 1794448722
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 849879090216,
-            "timestamp_seconds": 1781146223
+            "governance_total_potential_voting_power": 790095747610,
+            "timestamp_seconds": 1794448722
           },
-          "last_ledger_block_timestamp": 1781146059,
-          "num_recently_executed_proposals": 3,
-          "num_recently_submitted_proposals": 3,
+          "last_ledger_block_timestamp": 1794449654,
+          "num_recently_executed_proposals": 109,
+          "num_recently_submitted_proposals": 111,
           "genesis_timestamp_seconds": 1705799268
         }
       }
@@ -5482,6 +5214,20 @@
           }
         },
         {
+          "id": 2006,
+          "name": "transfer_icpswap_lp_from_governance",
+          "description": "Transfers a governance controlled LP position",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "osyzs-xiaaa-aaaag-qc76q-cai",
+              "validator_method_name": "validate_transfer_icpswap_pool_position",
+              "target_method_name": "transferPosition"
+            }
+          }
+        },
+        {
           "id": 3000,
           "name": "Neuron Pylon: ICRC55 Command",
           "description": "Manage vectors in the neuron pylon.",
@@ -5548,6 +5294,258 @@
               "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
               "validator_method_name": "validate_withdraw_sonic_lp",
               "target_method_name": "withdraw"
+            }
+          }
+        },
+        {
+          "id": 3005,
+          "name": "transfer_sonic_lp_position",
+          "description": "Transfers a Sonic LP position from one principal to another.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
+              "validator_method_name": "validate_transfer_sonic_lp_position",
+              "target_method_name": "transferPosition"
+            }
+          }
+        },
+        {
+          "id": 4000,
+          "name": "Unicycle: Setup",
+          "description": "Bootstrap that registers all Unicycle custom functions on this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetupValidate",
+              "target_method_name": "snsSetup"
+            }
+          }
+        },
+        {
+          "id": 4001,
+          "name": "Unicycle: Withdraw",
+          "description": "Withdraw ICP/tcycles from the SNS's Unicycle subaccount.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsWithdrawValidate",
+              "target_method_name": "snsWithdraw"
+            }
+          }
+        },
+        {
+          "id": 4002,
+          "name": "Unicycle: Track Canister",
+          "description": "Register or update a tracked canister's top-up config.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsUpsertCanisterValidate",
+              "target_method_name": "snsUpsertCanister"
+            }
+          }
+        },
+        {
+          "id": 4003,
+          "name": "Unicycle: Set Canister Suspended",
+          "description": "Suspend or resume automatic top-ups for a tracked canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetCanisterSuspendedValidate",
+              "target_method_name": "snsSetCanisterSuspended"
+            }
+          }
+        },
+        {
+          "id": 4004,
+          "name": "Unicycle: Remove Canister",
+          "description": "Stop tracking a canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsRemoveCanisterValidate",
+              "target_method_name": "snsRemoveCanister"
+            }
+          }
+        },
+        {
+          "id": 4005,
+          "name": "Unicycle: Record Cycles Now",
+          "description": "Record a cycle reading now for a tracked canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsRecordCyclesNowValidate",
+              "target_method_name": "snsRecordCyclesNow"
+            }
+          }
+        },
+        {
+          "id": 4006,
+          "name": "Unicycle: Set Proposal Neuron",
+          "description": "Set the neuron Unicycle uses to submit proposals for this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetProposalNeuronValidate",
+              "target_method_name": "snsSetProposalNeuron"
+            }
+          }
+        },
+        {
+          "id": 4007,
+          "name": "Unicycle: Set Deposit Auto-Top-Up",
+          "description": "Configure automatic SNS treasury → Unicycle ICP deposits (min balance, deposit amount, report toggle).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetDepositConfigValidate",
+              "target_method_name": "snsSetDepositConfig"
+            }
+          }
+        },
+        {
+          "id": 4008,
+          "name": "Unicycle: Set Cycle Report Cadence",
+          "description": "Configure recurring cycle-usage report proposals (cadence in days; 0 disables).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetReportConfigValidate",
+              "target_method_name": "snsSetReportConfig"
+            }
+          }
+        },
+        {
+          "id": 4009,
+          "name": "Unicycle: Set Cycle Drain Alerts",
+          "description": "Configure cycle-drain alert proposals (per-window % thresholds; 0 disables a check; cooldown in days).",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetDrainAlertConfigValidate",
+              "target_method_name": "snsSetDrainAlertConfig"
+            }
+          }
+        },
+        {
+          "id": 4010,
+          "name": "Unicycle: Grant Admin",
+          "description": "Grant a principal admin access to manage this SNS's Unicycle fleet from the frontend.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsGrantAdminValidate",
+              "target_method_name": "snsGrantAdmin"
+            }
+          }
+        },
+        {
+          "id": 4011,
+          "name": "Unicycle: Revoke Admin",
+          "description": "Revoke a principal's Unicycle admin access for this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsRevokeAdminValidate",
+              "target_method_name": "snsRevokeAdmin"
+            }
+          }
+        },
+        {
+          "id": 4012,
+          "name": "Unicycle: Set Withdraw Destination",
+          "description": "Set the destination account for non-ICP (ICRC) token withdrawals; ICP always returns to the SNS treasury.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsSetWithdrawDestinationValidate",
+              "target_method_name": "snsSetWithdrawDestination"
+            }
+          }
+        },
+        {
+          "id": 4013,
+          "name": "Unicycle: Deregister",
+          "description": "Offboard this SNS from Unicycle: withdraw all Unicycle-held funds to the SNS, remove every Unicycle custom function, and erase all Unicycle configuration for this SNS.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+              "validator_method_name": "snsDeregisterValidate",
+              "target_method_name": "snsDeregister"
+            }
+          }
+        },
+        {
+          "id": 5000,
+          "name": "Mr Sneed: set personality",
+          "description": "Sets Mr Sneed's personality (his character; the rules stay in the frame in code). Canister ucthl-5qaaa-aaaay-aadrq-cai.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+              "target_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+              "validator_method_name": "validate_set_personality",
+              "target_method_name": "set_personality"
+            }
+          }
+        },
+        {
+          "id": 6151,
+          "name": "Sneed Lock: DAO admin",
+          "description": "Runs a Sneed Lock admin action (settings, fees, fee recipient, admin list, support payouts to recorded owners, ICRC-3 log maintenance) by proposal. validate_dao_admin renders exactly what will happen. Canister pqsms-lqaaa-aaaal-ajjza-cai.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+              "target_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+              "validator_method_name": "validate_dao_admin",
+              "target_method_name": "dao_admin"
+            }
+          }
+        },
+        {
+          "id": 7000,
+          "name": "Sneed Hub frontend: commit proposed batch",
+          "description": "Publishes a frontend release: commits the asset batch that a Prepare principal proposed on the Sneed Hub frontend asset canister, after the validator checks that batch id and evidence match the proposed batch. Canister pxtkg-giaaa-aaaal-ajjzq-cai.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
+              "validator_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+              "target_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
             }
           }
         }
@@ -5705,7 +5703,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 994152467045,
+    "icrc1_total_supply": 992942380408,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5869,7 +5867,22 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 7000,
+              "name": "Sneed Hub frontend: commit proposed batch",
+              "description": "Publishes a frontend release: commits the asset batch that a Prepare principal proposed on the Sneed Hub frontend asset canister, after the validator checks that batch id and evidence match the proposed batch. Canister pxtkg-giaaa-aaaal-ajjzq-cai.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+                  "target_canister_id": "pxtkg-giaaa-aaaal-ajjzq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "extension_operations": [],
@@ -5878,7 +5891,218 @@
           "is_critical": false,
           "name": "Application Business Logic",
           "description": "Proposals that are custom to what the governed dapp requires.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 4000,
+              "name": "Unicycle: Setup",
+              "description": "Bootstrap that registers all Unicycle custom functions on this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetupValidate",
+                  "target_method_name": "snsSetup"
+                }
+              }
+            },
+            {
+              "id": 4001,
+              "name": "Unicycle: Withdraw",
+              "description": "Withdraw ICP/tcycles from the SNS's Unicycle subaccount.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsWithdrawValidate",
+                  "target_method_name": "snsWithdraw"
+                }
+              }
+            },
+            {
+              "id": 4002,
+              "name": "Unicycle: Track Canister",
+              "description": "Register or update a tracked canister's top-up config.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsUpsertCanisterValidate",
+                  "target_method_name": "snsUpsertCanister"
+                }
+              }
+            },
+            {
+              "id": 4003,
+              "name": "Unicycle: Set Canister Suspended",
+              "description": "Suspend or resume automatic top-ups for a tracked canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetCanisterSuspendedValidate",
+                  "target_method_name": "snsSetCanisterSuspended"
+                }
+              }
+            },
+            {
+              "id": 4004,
+              "name": "Unicycle: Remove Canister",
+              "description": "Stop tracking a canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsRemoveCanisterValidate",
+                  "target_method_name": "snsRemoveCanister"
+                }
+              }
+            },
+            {
+              "id": 4005,
+              "name": "Unicycle: Record Cycles Now",
+              "description": "Record a cycle reading now for a tracked canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsRecordCyclesNowValidate",
+                  "target_method_name": "snsRecordCyclesNow"
+                }
+              }
+            },
+            {
+              "id": 4006,
+              "name": "Unicycle: Set Proposal Neuron",
+              "description": "Set the neuron Unicycle uses to submit proposals for this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetProposalNeuronValidate",
+                  "target_method_name": "snsSetProposalNeuron"
+                }
+              }
+            },
+            {
+              "id": 4007,
+              "name": "Unicycle: Set Deposit Auto-Top-Up",
+              "description": "Configure automatic SNS treasury → Unicycle ICP deposits (min balance, deposit amount, report toggle).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetDepositConfigValidate",
+                  "target_method_name": "snsSetDepositConfig"
+                }
+              }
+            },
+            {
+              "id": 4008,
+              "name": "Unicycle: Set Cycle Report Cadence",
+              "description": "Configure recurring cycle-usage report proposals (cadence in days; 0 disables).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetReportConfigValidate",
+                  "target_method_name": "snsSetReportConfig"
+                }
+              }
+            },
+            {
+              "id": 4009,
+              "name": "Unicycle: Set Cycle Drain Alerts",
+              "description": "Configure cycle-drain alert proposals (per-window % thresholds; 0 disables a check; cooldown in days).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetDrainAlertConfigValidate",
+                  "target_method_name": "snsSetDrainAlertConfig"
+                }
+              }
+            },
+            {
+              "id": 4010,
+              "name": "Unicycle: Grant Admin",
+              "description": "Grant a principal admin access to manage this SNS's Unicycle fleet from the frontend.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsGrantAdminValidate",
+                  "target_method_name": "snsGrantAdmin"
+                }
+              }
+            },
+            {
+              "id": 4011,
+              "name": "Unicycle: Revoke Admin",
+              "description": "Revoke a principal's Unicycle admin access for this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsRevokeAdminValidate",
+                  "target_method_name": "snsRevokeAdmin"
+                }
+              }
+            },
+            {
+              "id": 4012,
+              "name": "Unicycle: Set Withdraw Destination",
+              "description": "Set the destination account for non-ICP (ICRC) token withdrawals; ICP always returns to the SNS treasury.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsSetWithdrawDestinationValidate",
+                  "target_method_name": "snsSetWithdrawDestination"
+                }
+              }
+            },
+            {
+              "id": 4013,
+              "name": "Unicycle: Deregister",
+              "description": "Offboard this SNS from Unicycle: withdraw all Unicycle-held funds to the SNS, remove every Unicycle custom function, and erase all Unicycle configuration for this SNS.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "target_canister_id": "2ccdl-vaaaa-aaaan-q6h5a-cai",
+                  "validator_method_name": "snsDeregisterValidate",
+                  "target_method_name": "snsDeregister"
+                }
+              }
+            },
+            {
+              "id": 5000,
+              "name": "Mr Sneed: set personality",
+              "description": "Sets Mr Sneed's personality (his character; the rules stay in the frame in code). Canister ucthl-5qaaa-aaaay-aadrq-cai.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+                  "target_canister_id": "ucthl-5qaaa-aaaay-aadrq-cai",
+                  "validator_method_name": "validate_set_personality",
+                  "target_method_name": "set_personality"
+                }
+              }
+            }
+          ]
         },
         {
           "extension_operations": [],
@@ -5994,6 +6218,20 @@
               }
             },
             {
+              "id": 2006,
+              "name": "transfer_icpswap_lp_from_governance",
+              "description": "Transfers a governance controlled LP position",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+                  "target_canister_id": "osyzs-xiaaa-aaaag-qc76q-cai",
+                  "validator_method_name": "validate_transfer_icpswap_pool_position",
+                  "target_method_name": "transferPosition"
+                }
+              }
+            },
+            {
               "id": 3000,
               "name": "Neuron Pylon: ICRC55 Command",
               "description": "Manage vectors in the neuron pylon.",
@@ -6060,6 +6298,20 @@
                   "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
                   "validator_method_name": "validate_withdraw_sonic_lp",
                   "target_method_name": "withdraw"
+                }
+              }
+            },
+            {
+              "id": 3005,
+              "name": "transfer_sonic_lp_position",
+              "description": "Transfers a Sonic LP position from one principal to another.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+                  "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
+                  "validator_method_name": "validate_transfer_sonic_lp_position",
+                  "target_method_name": "transferPosition"
                 }
               }
             }
@@ -6135,6 +6387,20 @@
                   "target_method_name": "set_canister_ids"
                 }
               }
+            },
+            {
+              "id": 6151,
+              "name": "Sneed Lock: DAO admin",
+              "description": "Runs a Sneed Lock admin action (settings, fees, fee recipient, admin list, support payouts to recorded owners, ICRC-3 log maintenance) by proposal. validate_dao_admin renders exactly what will happen. Canister pqsms-lqaaa-aaaal-ajjza-cai.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+                  "target_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+                  "validator_method_name": "validate_dao_admin",
+                  "target_method_name": "dao_admin"
+                }
+              }
             }
           ]
         }
@@ -6181,14 +6447,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 44070419644239,
-              "amount_e8s": 12222781224234,
+              "amount_e8s": 11222781244234,
               "account": {
                 "owner": "hodlf-miaaa-aaaaq-aackq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781145395
+              "timestamp_seconds": 1794448262
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -6206,14 +6472,14 @@
               },
               "ledger_canister_id": "hhaaz-2aaaa-aaaaq-aacla-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781145395
+              "timestamp_seconds": 1794448262
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 12194810599550575,
-            "timestamp_seconds": 1781145395
+            "governance_total_potential_voting_power": 12005604621408060,
+            "timestamp_seconds": 1794448262
           },
-          "last_ledger_block_timestamp": 1781067164,
+          "last_ledger_block_timestamp": 1794416717,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1708958305
@@ -6222,11 +6488,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781102314,
-      "end_timestamp_seconds": 1781102305,
-      "total_available_e8s_equivalent": 63238026711082,
+      "actual_timestamp_seconds": 1794407912,
+      "end_timestamp_seconds": 1794407905,
+      "total_available_e8s_equivalent": 36373438981865,
       "distributed_e8s_equivalent": 0,
-      "round": 835,
+      "round": 989,
       "settled_proposals": []
     },
     "parameters": {
@@ -9248,7 +9514,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 18299873376111862,
+    "icrc1_total_supply": 18317818454092375,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12278,7 +12544,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781147643
+              "timestamp_seconds": 1794449532
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -12296,32 +12562,28 @@
               },
               "ledger_canister_id": "gemj7-oyaaa-aaaaq-aacnq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781147643
+              "timestamp_seconds": 1794449532
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 59145881506573804,
-            "timestamp_seconds": 1781147643
+            "governance_total_potential_voting_power": 59804987925369117,
+            "timestamp_seconds": 1794449532
           },
-          "last_ledger_block_timestamp": 1781140657,
-          "num_recently_executed_proposals": 1,
-          "num_recently_submitted_proposals": 1,
+          "last_ledger_block_timestamp": 1794416717,
+          "num_recently_executed_proposals": 0,
+          "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1709209147
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781093953,
-      "end_timestamp_seconds": 1781093947,
-      "total_available_e8s_equivalent": 121714324765250,
-      "distributed_e8s_equivalent": 121714324765010,
-      "round": 832,
-      "settled_proposals": [
-        {
-          "id": 150
-        }
-      ]
+      "actual_timestamp_seconds": 1794399552,
+      "end_timestamp_seconds": 1794399547,
+      "total_available_e8s_equivalent": 256257571463756,
+      "distributed_e8s_equivalent": 0,
+      "round": 986,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -12991,7 +13253,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 26096643997319628,
+    "icrc1_total_supply": 26274661382798659,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13661,7 +13923,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781145043
+              "timestamp_seconds": 1794446842
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -13679,14 +13941,14 @@
               },
               "ledger_canister_id": "ddsp7-7iaaa-aaaaq-aacqq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781145043
+              "timestamp_seconds": 1794446842
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 8713353213268580,
-            "timestamp_seconds": 1781145043
+            "governance_total_potential_voting_power": 8069592108734167,
+            "timestamp_seconds": 1794446842
           },
-          "last_ledger_block_timestamp": 1781111141,
+          "last_ledger_block_timestamp": 1794416717,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1710522988
@@ -13695,11 +13957,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781111793,
-      "end_timestamp_seconds": 1781111788,
-      "total_available_e8s_equivalent": 60218118090889,
+      "actual_timestamp_seconds": 1794417392,
+      "end_timestamp_seconds": 1794417388,
+      "total_available_e8s_equivalent": 102762050089989,
       "distributed_e8s_equivalent": 0,
-      "round": 817,
+      "round": 971,
       "settled_proposals": []
     },
     "parameters": {
@@ -14720,7 +14982,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10089963955529639,
+    "icrc1_total_supply": 10090609010664280,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15737,14 +15999,24 @@
         "lxeb6-dyaaa-aaaap-an2ga-cai",
         "ejwdq-iyaaa-aaaap-an47q-cai",
         "dpjyw-raaaa-aaaar-qbxlq-cai",
-        "ny3i7-miaaa-aaaap-an5mq-cai"
+        "ny3i7-miaaa-aaaap-an5mq-cai",
+        "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+        "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+        "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+        "wlv43-byaaa-aaaaj-qsjxa-cai",
+        "wmu2p-maaaa-aaaaj-qsjxq-cai",
+        "urjuh-7iaaa-aaaaj-qsjya-cai",
+        "uwist-sqaaa-aaaaj-qsjyq-cai",
+        "acjs3-cyaaa-aaaas-qg7da-cai",
+        "ghcje-dyaaa-aaaas-qg7va-cai",
+        "mpld4-maaaa-aaaas-qhepa-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
     "meta": {
       "url": "https://panda.fans",
       "name": "ICPanda",
-      "description": "Breathing life into sovereign AI. We are building the open-source stack for agents to remember, transact, and evolve as first-class citizens in Web3. https://Anda.AI | https://dMsg.net",
+      "description": "An on-chain Builder DAO for digital sovereignty. Minds: https://anda.ai | Markets: https://tokenlist.ing | Private Collaboration: https://dmsg.net",
       "logo": "/v1/sns/root/d7wvo-iiaaa-aaaaq-aacsq-cai/logo.png"
     },
     "metrics": {
@@ -15754,14 +16026,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 1328107981470,
-              "amount_e8s": 26395691469,
+              "amount_e8s": 395681469,
               "account": {
                 "owner": "dwv6s-6aaaa-aaaaq-aacta-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781145424
+              "timestamp_seconds": 1794447322
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -15779,28 +16051,38 @@
               },
               "ledger_canister_id": "druyg-tyaaa-aaaaq-aactq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781145424
+              "timestamp_seconds": 1794447322
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 116522338875534449,
-            "timestamp_seconds": 1781145424
+            "governance_total_potential_voting_power": 120876670764990811,
+            "timestamp_seconds": 1794447322
           },
-          "last_ledger_block_timestamp": 1781140657,
-          "num_recently_executed_proposals": 1,
-          "num_recently_submitted_proposals": 1,
+          "last_ledger_block_timestamp": 1794449279,
+          "num_recently_executed_proposals": 132,
+          "num_recently_submitted_proposals": 132,
           "genesis_timestamp_seconds": 1710783210
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781112814,
-      "end_timestamp_seconds": 1781112810,
-      "total_available_e8s_equivalent": 585802408321594,
-      "distributed_e8s_equivalent": 0,
-      "round": 814,
-      "settled_proposals": []
+      "actual_timestamp_seconds": 1794418412,
+      "end_timestamp_seconds": 1794418410,
+      "total_available_e8s_equivalent": 11959860970128,
+      "distributed_e8s_equivalent": 11959860969958,
+      "round": 968,
+      "settled_proposals": [
+        {
+          "id": 620
+        },
+        {
+          "id": 624
+        },
+        {
+          "id": 626
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [1001, 1002, 1003, 1004],
@@ -16260,6 +16542,258 @@
           }
         },
         {
+          "id": 1118,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message",
+          "description": "Records the baseline review on the legacy ic_message canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1119,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel",
+          "description": "Records the baseline review on the legacy ic_message_channel canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1120,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_02",
+          "description": "Records the baseline review on the legacy ic_message_channel_02 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1121,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_03",
+          "description": "Records the baseline review on the legacy ic_message_channel_03 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1122,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_message_profile",
+          "description": "Records the baseline review on the legacy ic_message_profile canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1123,
+          "name": "`admin_legacy_acknowledge_baseline` on ic_name_identity",
+          "description": "Records the baseline review on the legacy ic_name_identity canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+              "target_method_name": "admin_legacy_acknowledge_baseline"
+            }
+          }
+        },
+        {
+          "id": 1124,
+          "name": "`admin_legacy_drain` on ic_message",
+          "description": "Stops new business writes on the legacy ic_message canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1125,
+          "name": "`admin_legacy_drain` on ic_message_channel",
+          "description": "Stops new business writes on the legacy ic_message_channel canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1126,
+          "name": "`admin_legacy_drain` on ic_message_channel_02",
+          "description": "Stops new business writes on the legacy ic_message_channel_02 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1127,
+          "name": "`admin_legacy_drain` on ic_message_channel_03",
+          "description": "Stops new business writes on the legacy ic_message_channel_03 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1128,
+          "name": "`admin_legacy_drain` on ic_message_profile",
+          "description": "Stops new business writes on the legacy ic_message_profile canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1129,
+          "name": "`admin_legacy_drain` on ic_name_identity",
+          "description": "Stops new business writes on the legacy ic_name_identity canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "validator_method_name": "validate_admin_legacy_drain",
+              "target_method_name": "admin_legacy_drain"
+            }
+          }
+        },
+        {
+          "id": 1130,
+          "name": "`admin_legacy_seal` on ic_message",
+          "description": "Makes the legacy ic_message canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1131,
+          "name": "`admin_legacy_seal` on ic_message_channel",
+          "description": "Makes the legacy ic_message_channel canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1132,
+          "name": "`admin_legacy_seal` on ic_message_channel_02",
+          "description": "Makes the legacy ic_message_channel_02 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1133,
+          "name": "`admin_legacy_seal` on ic_message_channel_03",
+          "description": "Makes the legacy ic_message_channel_03 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1134,
+          "name": "`admin_legacy_seal` on ic_message_profile",
+          "description": "Makes the legacy ic_message_profile canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
+          "id": 1135,
+          "name": "`admin_legacy_seal` on ic_name_identity",
+          "description": "Makes the legacy ic_name_identity canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+              "validator_method_name": "validate_admin_legacy_seal",
+              "target_method_name": "admin_legacy_seal"
+            }
+          }
+        },
+        {
           "id": 1200,
           "name": "Commit proposed assets for upgrading the anda_cloud_website canister",
           "description": "Commit proposed assets for upgrading the anda_cloud_website canister.",
@@ -16372,6 +16906,160 @@
           }
         },
         {
+          "id": 1307,
+          "name": "Collect bridge fees on the one_bridge_canister canister",
+          "description": "Collect bridge fees on the one_bridge_canister canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_collect_fees",
+              "target_method_name": "admin_collect_fees"
+            }
+          }
+        },
+        {
+          "id": 1308,
+          "name": "Restart bridging on the one_bridge_canister canister",
+          "description": "Restart bridging on the one_bridge_canister canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_restart_bridging",
+              "target_method_name": "admin_restart_bridging"
+            }
+          }
+        },
+        {
+          "id": 1309,
+          "name": "Retry a stuck bridging task on the one_bridge_canister canister",
+          "description": "Retry a stuck bridging task on the one_bridge_canister canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_retry_bridging_task",
+              "target_method_name": "admin_retry_bridging_task"
+            }
+          }
+        },
+        {
+          "id": 1310,
+          "name": "Close a stuck bridging task on the one_bridge_canister canister",
+          "description": "Close a stuck bridging task on the one_bridge_canister canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_close_bridging_task",
+              "target_method_name": "admin_close_bridging_task"
+            }
+          }
+        },
+        {
+          "id": 1311,
+          "name": "Initialize bridge public keys and metadata",
+          "description": "Fetch missing threshold public keys and retry bridge metadata verification.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_init_public_keys",
+              "target_method_name": "admin_init_public_keys"
+            }
+          }
+        },
+        {
+          "id": 1312,
+          "name": "Set bridge request and cycle limits",
+          "description": "Configure bounded public request quotas, pending capacity and the cycle reserve.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_set_resource_limits",
+              "target_method_name": "admin_set_resource_limits"
+            }
+          }
+        },
+        {
+          "id": 1313,
+          "name": "Set bridge EVM gas fee limits",
+          "description": "Configure per-chain gas price, priority fee, transaction cost and hourly cost limits.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_set_evm_fee_limits",
+              "target_method_name": "admin_set_evm_fee_limits"
+            }
+          }
+        },
+        {
+          "id": 1314,
+          "name": "Reconcile a bridge payment operation",
+          "description": "Reconcile a durable payment operation using its exact revision and external evidence.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_resolve_operation",
+              "target_method_name": "admin_resolve_operation"
+            }
+          }
+        },
+        {
+          "id": 1315,
+          "name": "Reconcile a legacy bridge payout",
+          "description": "Record an externally verified outcome for a legacy payout without a complete payment journal.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_resolve_legacy_payout",
+              "target_method_name": "admin_resolve_legacy_payout"
+            }
+          }
+        },
+        {
+          "id": 1317,
+          "name": "Recheck a pending bridge task",
+          "description": "Resume status checks for a pending task while preserving its recorded payment intent.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_recheck_task",
+              "target_method_name": "admin_recheck_task"
+            }
+          }
+        },
+        {
+          "id": 1318,
+          "name": "Set public browser RPC endpoints for the bridge",
+          "description": "Publish anonymous browser RPC endpoints separately from the internal financial-evidence providers.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+              "validator_method_name": "validate_admin_set_public_providers",
+              "target_method_name": "admin_set_public_providers"
+            }
+          }
+        },
+        {
           "id": 2000,
           "name": "`transferPosition` function",
           "description": "It is used to transfer position in ICPSwap.",
@@ -16382,6 +17070,636 @@
               "target_canister_id": "5fq4w-lyaaa-aaaag-qjqta-cai",
               "validator_method_name": "validate_transfer_position",
               "target_method_name": "transferPosition"
+            }
+          }
+        },
+        {
+          "id": 3000,
+          "name": "commit_proposed_batch on dmsg_connect",
+          "description": "Commit a proposed asset batch whose evidence hash was approved, publishing the reviewed dMsg Connect files and response headers.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 3001,
+          "name": "grant_permission on dmsg_connect",
+          "description": "Grant Prepare, Commit or ManagePermissions to a principal. Keep routine publishers on Prepare; SNS governance needs Commit and ManagePermissions for governed publication and permission changes.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 3002,
+          "name": "revoke_permission on dmsg_connect",
+          "description": "Revoke a principal from Prepare, Commit or ManagePermissions, including removing direct asset publication rights from former deployers.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "validator_method_name": "validate_revoke_permission",
+              "target_method_name": "revoke_permission"
+            }
+          }
+        },
+        {
+          "id": 3003,
+          "name": "admin_add_user_home on dmsg_handle",
+          "description": "Append a user home to handle ownership and authorization routing. The home must share the deployment environment and issuer namespace and name this handle canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3004,
+          "name": "admin_set_registration_homes on dmsg_handle",
+          "description": "Replace the advertised user homes accepting new accounts with a subset of the registered homes. An empty list removes all registration homes from discovery.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_admin_set_registration_homes",
+              "target_method_name": "admin_set_registration_homes"
+            }
+          }
+        },
+        {
+          "id": 3005,
+          "name": "admin_set_revenue on dmsg_handle",
+          "description": "Set the ICRC account receiving new handle registration fees. Operations already started retain their original payee.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_admin_set_revenue",
+              "target_method_name": "admin_set_revenue"
+            }
+          }
+        },
+        {
+          "id": 3006,
+          "name": "update_ledger_fee on dmsg_handle",
+          "description": "Update the PANDA ledger fee used for new handle registration charges. Existing charge operations retain their recorded transfer parameters.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_update_ledger_fee",
+              "target_method_name": "update_ledger_fee"
+            }
+          }
+        },
+        {
+          "id": 3007,
+          "name": "admin_set_account_limits on dmsg_user",
+          "description": "Set the account capacity and daily new-account quota while retaining existing accounts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "validator_method_name": "validate_admin_set_account_limits",
+              "target_method_name": "admin_set_account_limits"
+            }
+          }
+        },
+        {
+          "id": 3008,
+          "name": "admin_set_admission_key on dmsg_user",
+          "description": "Set or clear the Ed25519 public key that verifies new-account admission tickets. Clearing the key permits authenticated callers to register within the account quotas.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "validator_method_name": "validate_admin_set_admission_key",
+              "target_method_name": "admin_set_admission_key"
+            }
+          }
+        },
+        {
+          "id": 3009,
+          "name": "admin_add_user_home on dmsg_cose",
+          "description": "Append a user home allowed to authorize content-root recovery derivations, using the configured environment and issuer namespace.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3010,
+          "name": "admin_set_daily_budget on dmsg_cose",
+          "description": "Set the global daily limits on recovery derivations and their cycles budget. Usage already recorded for the current day is retained.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "validator_method_name": "validate_admin_set_daily_budget",
+              "target_method_name": "admin_set_daily_budget"
+            }
+          }
+        },
+        {
+          "id": 3011,
+          "name": "initialize_keys on dmsg_cose",
+          "description": "Initialize the content-root vetKD public key and verify its configured fingerprint. The deployment key name, derivation domain and expected fingerprint remain fixed.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "validator_method_name": "validate_initialize_keys",
+              "target_method_name": "initialize_keys"
+            }
+          }
+        },
+        {
+          "id": 3012,
+          "name": "admin_add_user_home on dmsg_directory",
+          "description": "Append a user home allowed to publish certified PrincipalDocuments for accounts allocated by that home.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3013,
+          "name": "admin_set_custom_domains on dmsg_directory",
+          "description": "Replace the custom domains advertised by the directory while retaining the host of the fixed principal origin.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "validator_method_name": "validate_admin_set_custom_domains",
+              "target_method_name": "admin_set_custom_domains"
+            }
+          }
+        },
+        {
+          "id": 3014,
+          "name": "admin_add_user_home on dmsg_payment",
+          "description": "Append a user home allowed to authorize paid-message escrow operations for its accounts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3015,
+          "name": "admin_set_limits on dmsg_payment",
+          "description": "Replace the paid-message admission, escrow capacity and ledger-call limits. Existing escrows and recovery operations remain available.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_admin_set_limits",
+              "target_method_name": "admin_set_limits"
+            }
+          }
+        },
+        {
+          "id": 3016,
+          "name": "admin_set_revenue on dmsg_payment",
+          "description": "Set the platform fee account used by new paid-message orders. Existing escrows and prepared transfers retain their original destination.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_admin_set_revenue",
+              "target_method_name": "admin_set_revenue"
+            }
+          }
+        },
+        {
+          "id": 3017,
+          "name": "rotate_receipt_signer on dmsg_payment",
+          "description": "Register a new receipt-signing epoch with its Ed25519 public key and validity interval for paid-message delivery receipts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_rotate_receipt_signer",
+              "target_method_name": "rotate_receipt_signer"
+            }
+          }
+        },
+        {
+          "id": 3018,
+          "name": "revoke_receipt_signer on dmsg_payment",
+          "description": "Revoke a receipt-signing epoch and disable new paid-message orders. The revoked key cannot authorize new receipt finalizations; reopening orders requires a separate action.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_revoke_receipt_signer",
+              "target_method_name": "revoke_receipt_signer"
+            }
+          }
+        },
+        {
+          "id": 3019,
+          "name": "set_orders_enabled on dmsg_payment",
+          "description": "Enable or disable new paid-message orders. Existing escrow settlement, reconciliation and refunds remain available.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_set_orders_enabled",
+              "target_method_name": "set_orders_enabled"
+            }
+          }
+        },
+        {
+          "id": 3020,
+          "name": "set_ledger_fee on dmsg_payment",
+          "description": "Update the network fee for new paid-message transfer parameters within the configured maximum fee.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_set_ledger_fee",
+              "target_method_name": "set_ledger_fee"
+            }
+          }
+        },
+        {
+          "id": 3021,
+          "name": "schedule_fee_policy on dmsg_payment",
+          "description": "Schedule a versioned platform fee policy with its rate, minimum fee and effective time. Existing orders retain their quoted fee policy.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_schedule_fee_policy",
+              "target_method_name": "schedule_fee_policy"
+            }
+          }
+        },
+        {
+          "id": 3022,
+          "name": "configure_panda_service on membership",
+          "description": "Configure the user-home to commerce routes, claim capacity and PANDA application, qualification, authorization and product-call quotas.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "validator_method_name": "validate_configure_panda_service",
+              "target_method_name": "configure_panda_service"
+            }
+          }
+        },
+        {
+          "id": 3023,
+          "name": "schedule_panda_rate on membership",
+          "description": "Announce a versioned PANDA-per-USD conversion rate for the specified products. After the first rate, the effective time must satisfy the 15-day notice period at execution.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "validator_method_name": "validate_schedule_panda_rate",
+              "target_method_name": "schedule_panda_rate"
+            }
+          }
+        },
+        {
+          "id": 3024,
+          "name": "set_admission_pause on membership",
+          "description": "Pause or resume new PANDA membership applications while existing claims continue qualification refresh and reconciliation.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "validator_method_name": "validate_set_admission_pause",
+              "target_method_name": "set_admission_pause"
+            }
+          }
+        },
+        {
+          "id": 3025,
+          "name": "admin_add_user_home on dmsg_commerce",
+          "description": "Append a user home served by commerce. The home must name this commerce canister; product beneficiary-authority registrations are maintained separately.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3026,
+          "name": "admin_set_limits on dmsg_commerce",
+          "description": "Replace commerce admission, subject and order capacity, authorization, refresh and external-call limits.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_admin_set_limits",
+              "target_method_name": "admin_set_limits"
+            }
+          }
+        },
+        {
+          "id": 3027,
+          "name": "register_integration_app on dmsg_commerce",
+          "description": "Register or update an application with its allowed origins, products, capabilities and action schema, preserving immutable identity and authority fields.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_register_integration_app",
+              "target_method_name": "register_integration_app"
+            }
+          }
+        },
+        {
+          "id": 3028,
+          "name": "register_integration_product on dmsg_commerce",
+          "description": "Register or update a product with its quote and beneficiary authorities, adapter, merchant account, settlement ledgers, terms and pause state, subject to version and immutability checks.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_register_integration_product",
+              "target_method_name": "register_integration_product"
+            }
+          }
+        },
+        {
+          "id": 3029,
+          "name": "register_settlement_asset on dmsg_commerce",
+          "description": "Register a supported settlement asset or update its network fee, fee ceiling and enabled state. Existing assets retain the latest separately published price.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_register_settlement_asset",
+              "target_method_name": "register_settlement_asset"
+            }
+          }
+        },
+        {
+          "id": 3030,
+          "name": "verify_settlement_asset on dmsg_commerce",
+          "description": "Verify a settlement ledger against its live decimals, fee, supported standards and a sample transfer block before allowing it to fund cash checkouts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_verify_settlement_asset",
+              "target_method_name": "verify_settlement_asset"
+            }
+          }
+        },
+        {
+          "id": 3031,
+          "name": "publish_settlement_price on dmsg_commerce",
+          "description": "Publish a settlement asset reference price and validity window. Cash checkouts require a current price within the permitted stablecoin price range.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_publish_settlement_price",
+              "target_method_name": "publish_settlement_price"
+            }
+          }
+        },
+        {
+          "id": 3032,
+          "name": "set_settlement_price_authority on dmsg_commerce",
+          "description": "Assign the principal allowed to publish settlement reference prices in addition to canister administrators.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_set_settlement_price_authority",
+              "target_method_name": "set_settlement_price_authority"
+            }
+          }
+        },
+        {
+          "id": 3033,
+          "name": "schedule_policy on dmsg_commerce",
+          "description": "Schedule a versioned subscription catalog with plan prices, resource limits, execution weights and storage products. Limits-only increases may take effect immediately under the existing policy checks.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_schedule_policy",
+              "target_method_name": "schedule_policy"
+            }
+          }
+        },
+        {
+          "id": 3034,
+          "name": "set_admission_pause on dmsg_commerce",
+          "description": "Pause or resume new cash checkouts. Reconciliation, refunds, existing entitlement maintenance and PANDA membership continue.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_set_admission_pause",
+              "target_method_name": "set_admission_pause"
+            }
+          }
+        },
+        {
+          "id": 3035,
+          "name": "set_app_store_config on dmsg_commerce",
+          "description": "Configure the App Store application identity, environment, trusted verifier principals and product-to-plan or storage mappings.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_set_app_store_config",
+              "target_method_name": "set_app_store_config"
+            }
+          }
+        },
+        {
+          "id": 3036,
+          "name": "admin_add_user_home on dmsg_wallet_hub",
+          "description": "Append a user home whose accounts may authorize multisig wallet activation and creation.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3037,
+          "name": "admin_register_version on dmsg_wallet_hub",
+          "description": "Register the staged wallet Wasm by its hash and release notes as the next version for new wallets. Existing wallets upgrade only after their members accept that exact version and hash.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_register_version",
+              "target_method_name": "admin_register_version"
+            }
+          }
+        },
+        {
+          "id": 3038,
+          "name": "admin_retire_version on dmsg_wallet_hub",
+          "description": "Retire a registered wallet version from selection for new wallets. Existing wallets may still accept an upgrade to a retained retired version.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_retire_version",
+              "target_method_name": "admin_retire_version"
+            }
+          }
+        },
+        {
+          "id": 3039,
+          "name": "admin_remove_version on dmsg_wallet_hub",
+          "description": "Remove a retired wallet version and its module bytes only when no unexpired quote or unfinished activation still references it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_remove_version",
+              "target_method_name": "admin_remove_version"
+            }
+          }
+        },
+        {
+          "id": 3040,
+          "name": "admin_set_pricing on dmsg_wallet_hub",
+          "description": "Set wallet activation pricing, cycles allocation, per-plan wallet quotas and the new-activation pause switch.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_set_pricing",
+              "target_method_name": "admin_set_pricing"
+            }
+          }
+        },
+        {
+          "id": 3041,
+          "name": "admin_set_revenue on dmsg_wallet_hub",
+          "description": "Set the account receiving wallet activation revenue, subject to the hub revenue-account checks.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_set_revenue",
+              "target_method_name": "admin_set_revenue"
+            }
+          }
+        },
+        {
+          "id": 3042,
+          "name": "admin_set_uploader on dmsg_wallet_hub",
+          "description": "Set or clear the additional principal allowed to stage wallet Wasm chunks. Registering a staged module as an approved version remains a governance operation.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_set_uploader",
+              "target_method_name": "admin_set_uploader"
+            }
+          }
+        },
+        {
+          "id": 3043,
+          "name": "admin_set_limits on dmsg_auth",
+          "description": "Set the maximum identity count, daily registration budget, per-minute interactive request and renewal budgets, and pending-challenge capacity. All budgets must be positive and pending challenges must be between 1 and 100,000. Existing identities and sessions are retained.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "validator_method_name": "validate_admin_set_limits",
+              "target_method_name": "admin_set_limits"
+            }
+          }
+        },
+        {
+          "id": 3044,
+          "name": "admin_set_admission_key on dmsg_auth",
+          "description": "Set or clear the Ed25519 public key used to verify registration admission tickets. Setting a key requires new registrations to present a valid ticket bound to this canister and caller; clearing it disables that ticket requirement while retaining service budgets. This does not grant account or device authority.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "validator_method_name": "validate_admin_set_admission_key",
+              "target_method_name": "admin_set_admission_key"
             }
           }
         }
@@ -16707,7 +18025,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 107089436050575327,
+    "icrc1_total_supply": 109211015939013428,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -17457,6 +18775,160 @@
               }
             },
             {
+              "id": 1307,
+              "name": "Collect bridge fees on the one_bridge_canister canister",
+              "description": "Collect bridge fees on the one_bridge_canister canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_collect_fees",
+                  "target_method_name": "admin_collect_fees"
+                }
+              }
+            },
+            {
+              "id": 1308,
+              "name": "Restart bridging on the one_bridge_canister canister",
+              "description": "Restart bridging on the one_bridge_canister canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_restart_bridging",
+                  "target_method_name": "admin_restart_bridging"
+                }
+              }
+            },
+            {
+              "id": 1309,
+              "name": "Retry a stuck bridging task on the one_bridge_canister canister",
+              "description": "Retry a stuck bridging task on the one_bridge_canister canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_retry_bridging_task",
+                  "target_method_name": "admin_retry_bridging_task"
+                }
+              }
+            },
+            {
+              "id": 1310,
+              "name": "Close a stuck bridging task on the one_bridge_canister canister",
+              "description": "Close a stuck bridging task on the one_bridge_canister canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_close_bridging_task",
+                  "target_method_name": "admin_close_bridging_task"
+                }
+              }
+            },
+            {
+              "id": 1311,
+              "name": "Initialize bridge public keys and metadata",
+              "description": "Fetch missing threshold public keys and retry bridge metadata verification.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_init_public_keys",
+                  "target_method_name": "admin_init_public_keys"
+                }
+              }
+            },
+            {
+              "id": 1312,
+              "name": "Set bridge request and cycle limits",
+              "description": "Configure bounded public request quotas, pending capacity and the cycle reserve.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_set_resource_limits",
+                  "target_method_name": "admin_set_resource_limits"
+                }
+              }
+            },
+            {
+              "id": 1313,
+              "name": "Set bridge EVM gas fee limits",
+              "description": "Configure per-chain gas price, priority fee, transaction cost and hourly cost limits.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_set_evm_fee_limits",
+                  "target_method_name": "admin_set_evm_fee_limits"
+                }
+              }
+            },
+            {
+              "id": 1314,
+              "name": "Reconcile a bridge payment operation",
+              "description": "Reconcile a durable payment operation using its exact revision and external evidence.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_resolve_operation",
+                  "target_method_name": "admin_resolve_operation"
+                }
+              }
+            },
+            {
+              "id": 1315,
+              "name": "Reconcile a legacy bridge payout",
+              "description": "Record an externally verified outcome for a legacy payout without a complete payment journal.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_resolve_legacy_payout",
+                  "target_method_name": "admin_resolve_legacy_payout"
+                }
+              }
+            },
+            {
+              "id": 1317,
+              "name": "Recheck a pending bridge task",
+              "description": "Resume status checks for a pending task while preserving its recorded payment intent.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_recheck_task",
+                  "target_method_name": "admin_recheck_task"
+                }
+              }
+            },
+            {
+              "id": 1318,
+              "name": "Set public browser RPC endpoints for the bridge",
+              "description": "Publish anonymous browser RPC endpoints separately from the internal financial-evidence providers.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "target_canister_id": "dpjyw-raaaa-aaaar-qbxlq-cai",
+                  "validator_method_name": "validate_admin_set_public_providers",
+                  "target_method_name": "admin_set_public_providers"
+                }
+              }
+            },
+            {
               "id": 2000,
               "name": "`transferPosition` function",
               "description": "It is used to transfer position in ICPSwap.",
@@ -17467,6 +18939,272 @@
                   "target_canister_id": "5fq4w-lyaaa-aaaag-qjqta-cai",
                   "validator_method_name": "validate_transfer_position",
                   "target_method_name": "transferPosition"
+                }
+              }
+            },
+            {
+              "id": 3000,
+              "name": "commit_proposed_batch on dmsg_connect",
+              "description": "Commit a proposed asset batch whose evidence hash was approved, publishing the reviewed dMsg Connect files and response headers.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            },
+            {
+              "id": 3004,
+              "name": "admin_set_registration_homes on dmsg_handle",
+              "description": "Replace the advertised user homes accepting new accounts with a subset of the registered homes. An empty list removes all registration homes from discovery.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_admin_set_registration_homes",
+                  "target_method_name": "admin_set_registration_homes"
+                }
+              }
+            },
+            {
+              "id": 3006,
+              "name": "update_ledger_fee on dmsg_handle",
+              "description": "Update the PANDA ledger fee used for new handle registration charges. Existing charge operations retain their recorded transfer parameters.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_update_ledger_fee",
+                  "target_method_name": "update_ledger_fee"
+                }
+              }
+            },
+            {
+              "id": 3007,
+              "name": "admin_set_account_limits on dmsg_user",
+              "description": "Set the account capacity and daily new-account quota while retaining existing accounts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "validator_method_name": "validate_admin_set_account_limits",
+                  "target_method_name": "admin_set_account_limits"
+                }
+              }
+            },
+            {
+              "id": 3010,
+              "name": "admin_set_daily_budget on dmsg_cose",
+              "description": "Set the global daily limits on recovery derivations and their cycles budget. Usage already recorded for the current day is retained.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "validator_method_name": "validate_admin_set_daily_budget",
+                  "target_method_name": "admin_set_daily_budget"
+                }
+              }
+            },
+            {
+              "id": 3015,
+              "name": "admin_set_limits on dmsg_payment",
+              "description": "Replace the paid-message admission, escrow capacity and ledger-call limits. Existing escrows and recovery operations remain available.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_admin_set_limits",
+                  "target_method_name": "admin_set_limits"
+                }
+              }
+            },
+            {
+              "id": 3018,
+              "name": "revoke_receipt_signer on dmsg_payment",
+              "description": "Revoke a receipt-signing epoch and disable new paid-message orders. The revoked key cannot authorize new receipt finalizations; reopening orders requires a separate action.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_revoke_receipt_signer",
+                  "target_method_name": "revoke_receipt_signer"
+                }
+              }
+            },
+            {
+              "id": 3019,
+              "name": "set_orders_enabled on dmsg_payment",
+              "description": "Enable or disable new paid-message orders. Existing escrow settlement, reconciliation and refunds remain available.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_set_orders_enabled",
+                  "target_method_name": "set_orders_enabled"
+                }
+              }
+            },
+            {
+              "id": 3020,
+              "name": "set_ledger_fee on dmsg_payment",
+              "description": "Update the network fee for new paid-message transfer parameters within the configured maximum fee.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_set_ledger_fee",
+                  "target_method_name": "set_ledger_fee"
+                }
+              }
+            },
+            {
+              "id": 3021,
+              "name": "schedule_fee_policy on dmsg_payment",
+              "description": "Schedule a versioned platform fee policy with its rate, minimum fee and effective time. Existing orders retain their quoted fee policy.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_schedule_fee_policy",
+                  "target_method_name": "schedule_fee_policy"
+                }
+              }
+            },
+            {
+              "id": 3023,
+              "name": "schedule_panda_rate on membership",
+              "description": "Announce a versioned PANDA-per-USD conversion rate for the specified products. After the first rate, the effective time must satisfy the 15-day notice period at execution.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "validator_method_name": "validate_schedule_panda_rate",
+                  "target_method_name": "schedule_panda_rate"
+                }
+              }
+            },
+            {
+              "id": 3024,
+              "name": "set_admission_pause on membership",
+              "description": "Pause or resume new PANDA membership applications while existing claims continue qualification refresh and reconciliation.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "validator_method_name": "validate_set_admission_pause",
+                  "target_method_name": "set_admission_pause"
+                }
+              }
+            },
+            {
+              "id": 3026,
+              "name": "admin_set_limits on dmsg_commerce",
+              "description": "Replace commerce admission, subject and order capacity, authorization, refresh and external-call limits.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_admin_set_limits",
+                  "target_method_name": "admin_set_limits"
+                }
+              }
+            },
+            {
+              "id": 3030,
+              "name": "verify_settlement_asset on dmsg_commerce",
+              "description": "Verify a settlement ledger against its live decimals, fee, supported standards and a sample transfer block before allowing it to fund cash checkouts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_verify_settlement_asset",
+                  "target_method_name": "verify_settlement_asset"
+                }
+              }
+            },
+            {
+              "id": 3031,
+              "name": "publish_settlement_price on dmsg_commerce",
+              "description": "Publish a settlement asset reference price and validity window. Cash checkouts require a current price within the permitted stablecoin price range.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_publish_settlement_price",
+                  "target_method_name": "publish_settlement_price"
+                }
+              }
+            },
+            {
+              "id": 3033,
+              "name": "schedule_policy on dmsg_commerce",
+              "description": "Schedule a versioned subscription catalog with plan prices, resource limits, execution weights and storage products. Limits-only increases may take effect immediately under the existing policy checks.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_schedule_policy",
+                  "target_method_name": "schedule_policy"
+                }
+              }
+            },
+            {
+              "id": 3034,
+              "name": "set_admission_pause on dmsg_commerce",
+              "description": "Pause or resume new cash checkouts. Reconciliation, refunds, existing entitlement maintenance and PANDA membership continue.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_set_admission_pause",
+                  "target_method_name": "set_admission_pause"
+                }
+              }
+            },
+            {
+              "id": 3040,
+              "name": "admin_set_pricing on dmsg_wallet_hub",
+              "description": "Set wallet activation pricing, cycles allocation, per-plan wallet quotas and the new-activation pause switch.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_set_pricing",
+                  "target_method_name": "admin_set_pricing"
+                }
+              }
+            },
+            {
+              "id": 3043,
+              "name": "admin_set_limits on dmsg_auth",
+              "description": "Set the maximum identity count, daily registration budget, per-minute interactive request and renewal budgets, and pending-challenge capacity. All budgets must be positive and pending challenges must be between 1 and 100,000. Existing identities and sessions are retained.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "validator_method_name": "validate_admin_set_limits",
+                  "target_method_name": "admin_set_limits"
                 }
               }
             }
@@ -17572,7 +19310,624 @@
           "is_critical": true,
           "name": "Critical Dapp Operations",
           "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1118,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message",
+              "description": "Records the baseline review on the legacy ic_message canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1119,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel",
+              "description": "Records the baseline review on the legacy ic_message_channel canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1120,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_02",
+              "description": "Records the baseline review on the legacy ic_message_channel_02 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1121,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_channel_03",
+              "description": "Records the baseline review on the legacy ic_message_channel_03 canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1122,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_message_profile",
+              "description": "Records the baseline review on the legacy ic_message_profile canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1123,
+              "name": "`admin_legacy_acknowledge_baseline` on ic_name_identity",
+              "description": "Records the baseline review on the legacy ic_name_identity canister: its upgrade to the freeze release stopped the canister first, so no write the old module started is still in flight. The payload is the 32-byte review digest; admin_legacy_seal requires it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "validator_method_name": "validate_admin_legacy_acknowledge_baseline",
+                  "target_method_name": "admin_legacy_acknowledge_baseline"
+                }
+              }
+            },
+            {
+              "id": 1124,
+              "name": "`admin_legacy_drain` on ic_message",
+              "description": "Stops new business writes on the legacy ic_message canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1125,
+              "name": "`admin_legacy_drain` on ic_message_channel",
+              "description": "Stops new business writes on the legacy ic_message_channel canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1126,
+              "name": "`admin_legacy_drain` on ic_message_channel_02",
+              "description": "Stops new business writes on the legacy ic_message_channel_02 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1127,
+              "name": "`admin_legacy_drain` on ic_message_channel_03",
+              "description": "Stops new business writes on the legacy ic_message_channel_03 canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1128,
+              "name": "`admin_legacy_drain` on ic_message_profile",
+              "description": "Stops new business writes on the legacy ic_message_profile canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1129,
+              "name": "`admin_legacy_drain` on ic_name_identity",
+              "description": "Stops new business writes on the legacy ic_name_identity canister for the dMsg cutover; writes already in flight finish first and reads stay open. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "validator_method_name": "validate_admin_legacy_drain",
+                  "target_method_name": "admin_legacy_drain"
+                }
+              }
+            },
+            {
+              "id": 1130,
+              "name": "`admin_legacy_seal` on ic_message",
+              "description": "Makes the legacy ic_message canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1131,
+              "name": "`admin_legacy_seal` on ic_message_channel",
+              "description": "Makes the legacy ic_message_channel canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1132,
+              "name": "`admin_legacy_seal` on ic_message_channel_02",
+              "description": "Makes the legacy ic_message_channel_02 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1133,
+              "name": "`admin_legacy_seal` on ic_message_channel_03",
+              "description": "Makes the legacy ic_message_channel_03 canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1134,
+              "name": "`admin_legacy_seal` on ic_message_profile",
+              "description": "Makes the legacy ic_message_profile canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 1135,
+              "name": "`admin_legacy_seal` on ic_name_identity",
+              "description": "Makes the legacy ic_name_identity canister read-only for the dMsg cutover once no write is in flight and the baseline review is recorded. Business writes never reopen. The payload is the 32-byte cutover ID.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "target_canister_id": "2rgax-kyaaa-aaaap-anvba-cai",
+                  "validator_method_name": "validate_admin_legacy_seal",
+                  "target_method_name": "admin_legacy_seal"
+                }
+              }
+            },
+            {
+              "id": 3001,
+              "name": "grant_permission on dmsg_connect",
+              "description": "Grant Prepare, Commit or ManagePermissions to a principal. Keep routine publishers on Prepare; SNS governance needs Commit and ManagePermissions for governed publication and permission changes.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 3002,
+              "name": "revoke_permission on dmsg_connect",
+              "description": "Revoke a principal from Prepare, Commit or ManagePermissions, including removing direct asset publication rights from former deployers.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "validator_method_name": "validate_revoke_permission",
+                  "target_method_name": "revoke_permission"
+                }
+              }
+            },
+            {
+              "id": 3003,
+              "name": "admin_add_user_home on dmsg_handle",
+              "description": "Append a user home to handle ownership and authorization routing. The home must share the deployment environment and issuer namespace and name this handle canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3005,
+              "name": "admin_set_revenue on dmsg_handle",
+              "description": "Set the ICRC account receiving new handle registration fees. Operations already started retain their original payee.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_admin_set_revenue",
+                  "target_method_name": "admin_set_revenue"
+                }
+              }
+            },
+            {
+              "id": 3008,
+              "name": "admin_set_admission_key on dmsg_user",
+              "description": "Set or clear the Ed25519 public key that verifies new-account admission tickets. Clearing the key permits authenticated callers to register within the account quotas.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "validator_method_name": "validate_admin_set_admission_key",
+                  "target_method_name": "admin_set_admission_key"
+                }
+              }
+            },
+            {
+              "id": 3009,
+              "name": "admin_add_user_home on dmsg_cose",
+              "description": "Append a user home allowed to authorize content-root recovery derivations, using the configured environment and issuer namespace.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3011,
+              "name": "initialize_keys on dmsg_cose",
+              "description": "Initialize the content-root vetKD public key and verify its configured fingerprint. The deployment key name, derivation domain and expected fingerprint remain fixed.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "validator_method_name": "validate_initialize_keys",
+                  "target_method_name": "initialize_keys"
+                }
+              }
+            },
+            {
+              "id": 3012,
+              "name": "admin_add_user_home on dmsg_directory",
+              "description": "Append a user home allowed to publish certified PrincipalDocuments for accounts allocated by that home.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3013,
+              "name": "admin_set_custom_domains on dmsg_directory",
+              "description": "Replace the custom domains advertised by the directory while retaining the host of the fixed principal origin.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "validator_method_name": "validate_admin_set_custom_domains",
+                  "target_method_name": "admin_set_custom_domains"
+                }
+              }
+            },
+            {
+              "id": 3014,
+              "name": "admin_add_user_home on dmsg_payment",
+              "description": "Append a user home allowed to authorize paid-message escrow operations for its accounts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3016,
+              "name": "admin_set_revenue on dmsg_payment",
+              "description": "Set the platform fee account used by new paid-message orders. Existing escrows and prepared transfers retain their original destination.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_admin_set_revenue",
+                  "target_method_name": "admin_set_revenue"
+                }
+              }
+            },
+            {
+              "id": 3017,
+              "name": "rotate_receipt_signer on dmsg_payment",
+              "description": "Register a new receipt-signing epoch with its Ed25519 public key and validity interval for paid-message delivery receipts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_rotate_receipt_signer",
+                  "target_method_name": "rotate_receipt_signer"
+                }
+              }
+            },
+            {
+              "id": 3022,
+              "name": "configure_panda_service on membership",
+              "description": "Configure the user-home to commerce routes, claim capacity and PANDA application, qualification, authorization and product-call quotas.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "validator_method_name": "validate_configure_panda_service",
+                  "target_method_name": "configure_panda_service"
+                }
+              }
+            },
+            {
+              "id": 3025,
+              "name": "admin_add_user_home on dmsg_commerce",
+              "description": "Append a user home served by commerce. The home must name this commerce canister; product beneficiary-authority registrations are maintained separately.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3027,
+              "name": "register_integration_app on dmsg_commerce",
+              "description": "Register or update an application with its allowed origins, products, capabilities and action schema, preserving immutable identity and authority fields.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_register_integration_app",
+                  "target_method_name": "register_integration_app"
+                }
+              }
+            },
+            {
+              "id": 3028,
+              "name": "register_integration_product on dmsg_commerce",
+              "description": "Register or update a product with its quote and beneficiary authorities, adapter, merchant account, settlement ledgers, terms and pause state, subject to version and immutability checks.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_register_integration_product",
+                  "target_method_name": "register_integration_product"
+                }
+              }
+            },
+            {
+              "id": 3029,
+              "name": "register_settlement_asset on dmsg_commerce",
+              "description": "Register a supported settlement asset or update its network fee, fee ceiling and enabled state. Existing assets retain the latest separately published price.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_register_settlement_asset",
+                  "target_method_name": "register_settlement_asset"
+                }
+              }
+            },
+            {
+              "id": 3032,
+              "name": "set_settlement_price_authority on dmsg_commerce",
+              "description": "Assign the principal allowed to publish settlement reference prices in addition to canister administrators.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_set_settlement_price_authority",
+                  "target_method_name": "set_settlement_price_authority"
+                }
+              }
+            },
+            {
+              "id": 3035,
+              "name": "set_app_store_config on dmsg_commerce",
+              "description": "Configure the App Store application identity, environment, trusted verifier principals and product-to-plan or storage mappings.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_set_app_store_config",
+                  "target_method_name": "set_app_store_config"
+                }
+              }
+            },
+            {
+              "id": 3036,
+              "name": "admin_add_user_home on dmsg_wallet_hub",
+              "description": "Append a user home whose accounts may authorize multisig wallet activation and creation.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3037,
+              "name": "admin_register_version on dmsg_wallet_hub",
+              "description": "Register the staged wallet Wasm by its hash and release notes as the next version for new wallets. Existing wallets upgrade only after their members accept that exact version and hash.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_register_version",
+                  "target_method_name": "admin_register_version"
+                }
+              }
+            },
+            {
+              "id": 3038,
+              "name": "admin_retire_version on dmsg_wallet_hub",
+              "description": "Retire a registered wallet version from selection for new wallets. Existing wallets may still accept an upgrade to a retained retired version.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_retire_version",
+                  "target_method_name": "admin_retire_version"
+                }
+              }
+            },
+            {
+              "id": 3039,
+              "name": "admin_remove_version on dmsg_wallet_hub",
+              "description": "Remove a retired wallet version and its module bytes only when no unexpired quote or unfinished activation still references it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_remove_version",
+                  "target_method_name": "admin_remove_version"
+                }
+              }
+            },
+            {
+              "id": 3041,
+              "name": "admin_set_revenue on dmsg_wallet_hub",
+              "description": "Set the account receiving wallet activation revenue, subject to the hub revenue-account checks.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_set_revenue",
+                  "target_method_name": "admin_set_revenue"
+                }
+              }
+            },
+            {
+              "id": 3042,
+              "name": "admin_set_uploader on dmsg_wallet_hub",
+              "description": "Set or clear the additional principal allowed to stage wallet Wasm chunks. Registering a staged module as an approved version remains a governance operation.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_set_uploader",
+                  "target_method_name": "admin_set_uploader"
+                }
+              }
+            },
+            {
+              "id": 3044,
+              "name": "admin_set_admission_key on dmsg_auth",
+              "description": "Set or clear the Ed25519 public key used to verify registration admission tickets. Setting a key requires new registrations to present a valid ticket bound to this canister and caller; clearing it disables that ticket requirement while retaining service budgets. This does not grant account or device authority.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "validator_method_name": "validate_admin_set_admission_key",
+                  "target_method_name": "admin_set_admission_key"
+                }
+              }
+            }
+          ]
         }
       ]
     }
@@ -17596,13 +19951,13 @@
       "dapps": [
         "4mmnk-kiaaa-aaaag-qbllq-cai",
         "cglrh-lyaaa-aaaag-qcs4q-cai",
-        "7eikv-2iaaa-aaaag-qdgwa-cai",
+        "uvevg-iyaaa-aaaak-ac27q-cai",
         "c5jrt-yaaaa-aaaag-qb5ra-cai",
         "bh4xn-xiaaa-aaaag-qjzcq-cai",
         "3oics-6iaaa-aaaag-qkaoq-cai",
         "34ovl-syaaa-aaaag-qkanq-cai",
         "aeloy-wyaaa-aaaar-qanbq-cai",
-        "uvevg-iyaaa-aaaak-ac27q-cai"
+        "7eikv-2iaaa-aaaag-qdgwa-cai"
       ],
       "archives": ["agguu-caaaa-aaaaq-aac3a-cai"]
     },
@@ -17619,14 +19974,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 39564075409460,
-              "amount_e8s": 1055259420457,
+              "amount_e8s": 555259420457,
               "account": {
                 "owner": "cvzxu-kyaaa-aaaaq-aacvq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781148163
+              "timestamp_seconds": 1794446763
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -17644,15 +19999,15 @@
               },
               "ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781148163
+              "timestamp_seconds": 1794446763
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 54901103475331644,
-            "timestamp_seconds": 1781148163
+            "governance_total_potential_voting_power": 56688698285523827,
+            "timestamp_seconds": 1794446763
           },
-          "last_ledger_block_timestamp": 1781148365,
-          "num_recently_executed_proposals": 32,
+          "last_ledger_block_timestamp": 1794449301,
+          "num_recently_executed_proposals": 27,
           "num_recently_submitted_proposals": 31,
           "genesis_timestamp_seconds": 1711034480
         }
@@ -17660,38 +20015,29 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781104883,
-      "end_timestamp_seconds": 1781104880,
-      "total_available_e8s_equivalent": 20073040227235,
-      "distributed_e8s_equivalent": 20073040226590,
-      "round": 811,
+      "actual_timestamp_seconds": 1794410482,
+      "end_timestamp_seconds": 1794410480,
+      "total_available_e8s_equivalent": 7877463208614,
+      "distributed_e8s_equivalent": 7877463208048,
+      "round": 965,
       "settled_proposals": [
         {
-          "id": 904
+          "id": 947
         },
         {
-          "id": 905
+          "id": 948
         },
         {
-          "id": 906
+          "id": 949
         },
         {
-          "id": 907
+          "id": 950
         },
         {
-          "id": 908
+          "id": 951
         },
         {
-          "id": 909
-        },
-        {
-          "id": 910
-        },
-        {
-          "id": 911
-        },
-        {
-          "id": 912
+          "id": 952
         }
       ]
     },
@@ -18797,7 +21143,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 97500982357346197,
+    "icrc1_total_supply": 95908841509534474,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -19914,7 +22260,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781146033
+              "timestamp_seconds": 1794448262
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -19932,14 +22278,14 @@
               },
               "ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781146033
+              "timestamp_seconds": 1794448262
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 34549475974147129,
-            "timestamp_seconds": 1781146033
+            "governance_total_potential_voting_power": 35193976597526068,
+            "timestamp_seconds": 1794448262
           },
-          "last_ledger_block_timestamp": 1780988073,
+          "last_ledger_block_timestamp": 1794443190,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1711451121
@@ -19948,11 +22294,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781089523,
-      "end_timestamp_seconds": 1781089521,
-      "total_available_e8s_equivalent": 82998647807147,
+      "actual_timestamp_seconds": 1794395122,
+      "end_timestamp_seconds": 1794395121,
+      "total_available_e8s_equivalent": 123034268420499,
       "distributed_e8s_equivalent": 0,
-      "round": 806,
+      "round": 960,
       "settled_proposals": []
     },
     "parameters": {
@@ -20668,7 +23014,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 95336347873176926,
+    "icrc1_total_supply": 94636452287751475,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -21386,14 +23732,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 13508027072751,
-              "amount_e8s": 7477921122750,
+              "amount_e8s": 121142750,
               "account": {
                 "owner": "bmjwo-aqaaa-aaaaq-aac4a-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1781147446
+              "timestamp_seconds": 1794449254
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -21411,14 +23757,14 @@
               },
               "ledger_canister_id": "bliq2-niaaa-aaaaq-aac4q-cai",
               "treasury": 2,
-              "timestamp_seconds": 1781147446
+              "timestamp_seconds": 1794449254
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 72904962322589457,
-            "timestamp_seconds": 1781147446
+            "governance_total_potential_voting_power": 84536361148304797,
+            "timestamp_seconds": 1794449254
           },
-          "last_ledger_block_timestamp": 1781139648,
+          "last_ledger_block_timestamp": 1794443190,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1712478412
@@ -21427,11 +23773,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1781080013,
-      "end_timestamp_seconds": 1781080012,
-      "total_available_e8s_equivalent": 765911149510395,
+      "actual_timestamp_seconds": 1794385622,
+      "end_timestamp_seconds": 1794385612,
+      "total_available_e8s_equivalent": 506022612570145,
       "distributed_e8s_equivalent": 0,
-      "round": 794,
+      "round": 948,
       "settled_proposals": []
     },
     "parameters": {
@@ -22167,7 +24513,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101401764423127731,
+    "icrc1_total_supply": 104528660024074084,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

@@ -14,6 +14,10 @@ export class ProjectTitleCellPo extends BasePageObject {
     return this.getText("project-title");
   }
 
+  hasImportedSnsTag(): Promise<boolean> {
+    return this.isPresent("imported-sns-tag");
+  }
+
   getNnsNeuronsMissingRewardsBadgePo(): NnsNeuronsMissingRewardsBadgePo {
     return NnsNeuronsMissingRewardsBadgePo.under(this.root);
   }

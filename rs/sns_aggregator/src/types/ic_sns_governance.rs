@@ -10,7 +10,7 @@
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
+use ic_cdk::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
@@ -1067,90 +1067,183 @@ pub struct SetModeRet {}
 pub struct Service(pub Principal);
 impl Service {
     pub async fn claim_swap_neurons(&self, arg0: ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {
-        ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "claim_swap_neurons")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn fail_stuck_upgrade_in_progress(
         &self,
         arg0: FailStuckUpgradeInProgressArg,
     ) -> CallResult<(FailStuckUpgradeInProgressRet,)> {
-        ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "fail_stuck_upgrade_in_progress")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
-        ic_cdk::call(self.0, "get_build_metadata", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_build_metadata")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_latest_reward_event(&self) -> CallResult<(RewardEvent,)> {
-        ic_cdk::call(self.0, "get_latest_reward_event", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_latest_reward_event")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_maturity_modulation(
         &self,
         arg0: GetMaturityModulationArg,
     ) -> CallResult<(GetMaturityModulationResponse,)> {
-        ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_maturity_modulation")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_metadata(&self, arg0: GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
-        ic_cdk::call(self.0, "get_metadata", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_metadata")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_metrics(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
-        ic_cdk::call(self.0, "get_metrics", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_metrics")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_metrics_replicated(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
-        ic_cdk::call(self.0, "get_metrics_replicated", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_metrics_replicated")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
-        ic_cdk::call(self.0, "get_mode", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_mode")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<(NervousSystemParameters,)> {
-        ic_cdk::call(self.0, "get_nervous_system_parameters", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_nervous_system_parameters")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_neuron(&self, arg0: GetNeuron) -> CallResult<(GetNeuronResponse,)> {
-        ic_cdk::call(self.0, "get_neuron", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_neuron")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_proposal(&self, arg0: GetProposal) -> CallResult<(GetProposalResponse,)> {
-        ic_cdk::call(self.0, "get_proposal", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_proposal")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_root_canister_status(&self, arg0: ()) -> CallResult<(CanisterStatusResultV2,)> {
-        ic_cdk::call(self.0, "get_root_canister_status", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_root_canister_status")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_running_sns_version(
         &self,
         arg0: GetRunningSnsVersionArg,
     ) -> CallResult<(GetRunningSnsVersionResponse,)> {
-        ic_cdk::call(self.0, "get_running_sns_version", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_running_sns_version")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_sns_initialization_parameters(
         &self,
         arg0: GetSnsInitializationParametersArg,
     ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
-        ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_sns_initialization_parameters")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_timers(&self, arg0: GetTimersArg) -> CallResult<(GetTimersResponse,)> {
-        ic_cdk::call(self.0, "get_timers", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_timers")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_upgrade_journal(
         &self,
         arg0: GetUpgradeJournalRequest,
     ) -> CallResult<(GetUpgradeJournalResponse,)> {
-        ic_cdk::call(self.0, "get_upgrade_journal", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_upgrade_journal")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_nervous_system_functions(&self) -> CallResult<(ListNervousSystemFunctionsResponse,)> {
-        ic_cdk::call(self.0, "list_nervous_system_functions", ()).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_nervous_system_functions")
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_neurons(&self, arg0: ListNeurons) -> CallResult<(ListNeuronsResponse,)> {
-        ic_cdk::call(self.0, "list_neurons", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_neurons")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_proposals(&self, arg0: ListProposals) -> CallResult<(ListProposalsResponse,)> {
-        ic_cdk::call(self.0, "list_proposals", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_proposals")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_topics(&self, arg0: ListTopicsRequest) -> CallResult<(ListTopicsResponse,)> {
-        ic_cdk::call(self.0, "list_topics", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_topics")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
-        ic_cdk::call(self.0, "manage_neuron", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "manage_neuron")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
-        ic_cdk::call(self.0, "reset_timers", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "reset_timers")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(SetModeRet,)> {
-        ic_cdk::call(self.0, "set_mode", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "set_mode")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
 }

@@ -130,6 +130,12 @@ cd "$GIT_ROOT"
 	    # In the service, return CallResult instead of Result.
 	    /impl Service/,${s/-> Result/-> CallResult/g};
 
+	    # In the service, migrate the deprecated `ic_cdk::call()` function (removed in
+	    # ic-cdk 0.20) to the `ic_cdk::call::Call` builder API.  Two shapes are emitted
+	    # by didc: calls with a single argument `(arg0,)` and nullary calls `()`.
+	    /impl Service/,${s@ic_cdk::call\(self\.0, ("[a-z0-9_]+"), \(arg0,\)\)\.await@ic_cdk::call::Call::unbounded_wait(self.0, \1).with_arg(arg0).await.map_err(ic_cdk::call::Error::from).and_then(|resp| resp.candid_tuple().map_err(Into::into))@g};
+	    /impl Service/,${s@ic_cdk::call\(self\.0, ("[a-z0-9_]+"), \(\)\)\.await@ic_cdk::call::Call::unbounded_wait(self.0, \1).await.map_err(ic_cdk::call::Error::from).and_then(|resp| resp.candid_tuple().map_err(Into::into))@g};
+
 	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
 	    ' |

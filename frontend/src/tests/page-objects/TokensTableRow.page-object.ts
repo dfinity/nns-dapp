@@ -159,4 +159,8 @@ export class TokensTableRowPo extends ResponsiveTableRowPo {
   hasImportedTokenTag(): Promise<boolean> {
     return this.root.byTestId("imported-token-tag").isPresent();
   }
+
+  hasImportedSnsTag(): Promise<boolean> {
+    return this.root.byTestId("imported-sns-tag").isPresent();
+  }
 }

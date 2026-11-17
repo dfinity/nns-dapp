@@ -15,36 +15,32 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
-clap.define short=i long=install desc="Install nns-dapp in an empty dfx server" variable=INSTALL nargs=0
+clap.define short=i long=install desc="Start a local network and install nns-dapp" variable=INSTALL nargs=0
 clap.define short=d long=dir desc="A directory containing nns-dapp-arg-local.did and nns-dapp_test.wasm.gz" variable=BUILD_DIR default="."
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-# On request, we can install a blank nns-dapp on a blank dfx server.
+# On request, we can install a blank nns-dapp on a local network.
 test -z "${INSTALL:-}" || {
-  dfx stop || true
-  dfx start --clean --background
-
-  dfx canister create nns-dapp
-  dfx canister install nns-dapp --wasm "./$BUILD_DIR/nns-dapp_test.wasm.gz" --argument "$(cat "$BUILD_DIR/nns-dapp-arg-local.did")" --yes
+  "$SOURCE_DIR/../icp-network-start" --nns_dapp_wasm "./$BUILD_DIR/nns-dapp_test.wasm.gz" --nns_dapp_arg "$BUILD_DIR/nns-dapp-arg-local.did"
 }
 # However the network was created, the number of pre-existing test accounts must be zero.  We will enforce
 # the stronger constraint that the number of accounts is zero.
-dfx canister call nns-dapp get_stats | idl2json | jq -e '.accounts_count == "0"' >/dev/null || {
+icp canister call nns-dapp get_stats '()' --environment local | idl2json | jq -e '.accounts_count == "0"' >/dev/null || {
   echo "ERROR: The nns-dapp must be empty; it has existing accounts."
   exit 1
 } >&2
 
 # Create some toy accounts
 NUM_TOY_ACCOUNTS=4
-dfx canister call nns-dapp create_toy_accounts "($NUM_TOY_ACCOUNTS: nat)"
+icp canister call nns-dapp create_toy_accounts "($NUM_TOY_ACCOUNTS: nat)" --environment local
 
 # Get the toy accounts
 actual_output_file="$(mktemp get-toy-canister-output.XXXXXX)"
 {
   for ((index = 0; index < NUM_TOY_ACCOUNTS; index++)); do
     printf "\n===== Account %d =====\n" "$index"
-    dfx canister call nns-dapp get_toy_account "($index)"
+    icp canister call nns-dapp get_toy_account "($index)" --environment local
   done
 } >"$actual_output_file"
 
@@ -71,5 +67,5 @@ actual_output="$(cat "$actual_output_file")"
 } >&2
 
 rm "$actual_output_file"
-test -z "${INSTALL:-}" || dfx stop || true
+test -z "${INSTALL:-}" || icp network stop || true
 echo "Tests in $0 passed."

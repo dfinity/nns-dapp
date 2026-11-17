@@ -11,6 +11,8 @@
   export let isCritical = false;
 
   export let title: string | undefined = undefined;
+  /** Heading level of `title`. Use `h3` inside a modal, whose own title is an `h2`. */
+  export let titleTag: "h2" | "h3" = "h2";
   export let text: string | undefined = undefined;
   export let htmlText: string | undefined = undefined;
 
@@ -35,7 +37,9 @@
   {/if}
   <div class="content-wrapper">
     {#if title}
-      <h2 class="title" data-tid="title">{title}</h2>
+      <svelte:element this={titleTag} class="title" data-tid="title"
+        >{title}</svelte:element
+      >
     {/if}
     {#if text}
       <p class="text" data-tid="text">{text}</p>

@@ -1,0 +1,16 @@
+name: 'Installs yq'
+description: |
+  Installs a pinned `yq` release binary from GitHub
+runs:
+  using: "composite"
+  steps:
+    - name: Install yq
+      shell: bash
+      env:
+        YQ_VERSION: "4.49.2"
+        YQ_SHA256: "be2c0ddcf426b6a231648610ec5d1666ae50e9f6473e82f6486f9f4cb6e3e2f7"
+      run: |
+        curl -L --proto '=https' --tlsv1.2 -sSf --retry 5 -o "$RUNNER_TEMP/yq" "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64"
+        echo "$YQ_SHA256  $RUNNER_TEMP/yq" | sha256sum -c -
+        sudo install -m 755 "$RUNNER_TEMP/yq" /usr/local/bin/yq
+        yq --version

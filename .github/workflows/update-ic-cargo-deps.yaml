@@ -1,5 +1,7 @@
 # A GitHub Actions workflow that regularly checks for new `ic` releases and updates the Cargo.toml dependencies.
 name: Update IC Cargo Dependencies
+permissions:
+  contents: read
 on:
   schedule:
     # Check for new IC releases every Sunday at 7:30am UTC.
@@ -10,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         id: app-token
         with:
           app-id: ${{ vars.PR_AUTOMATION_BOT_PUBLIC_APP_ID }}
           private-key: ${{ secrets.PR_AUTOMATION_BOT_PUBLIC_PRIVATE_KEY }}
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Find latest IC release
         id: latest
         run: |
@@ -29,7 +31,7 @@ jobs:
         run: if git diff --quiet --exit-code; then echo "updated=0" >> "$GITHUB_OUTPUT"; else echo "updated=1" >> "$GITHUB_OUTPUT"; fi
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           token: ${{ steps.app-token.outputs.token }}
           base: main

@@ -5,7 +5,6 @@ export type AccountsModalType =
   | "nns-receive"
   | "nns-send"
   | "icrc-receive"
-  | "buy-icp"
   | "add-icp-account";
 
 export interface AccountsModalData {

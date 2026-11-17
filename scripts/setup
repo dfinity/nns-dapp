@@ -27,7 +27,8 @@ bash) DEFAULT_USER_PROFILE="$HOME/.bashrc" ;;
 zsh) DEFAULT_USER_PROFILE="$HOME/.zshrc" ;;
 ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
 *) # dash, ash, tsh, tcsh
-  DEFAULT_USER_PROFILE="$HOME/.profile" ;;
+  DEFAULT_USER_PROFILE="$HOME/.profile"
+  ;;
 esac
 USER_PROFILE=""
 
@@ -82,6 +83,22 @@ have_correct_dfx() {
 }
 install_dfx() {
   DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+}
+
+have_correct_icp() {
+  command -v icp >/dev/null && {
+    expected="$(jq -r .defaults.build.config.ICP_CLI_VERSION config.json)"
+    actual="$(icp --version | awk '{print $2}')"
+    [[ "$expected" == "$actual" ]]
+  }
+}
+install_icp() {
+  scripts/install-icp-cli
+  # icp is installed in $USER_BIN, which is not on the path by default on Mac.
+  case ":$PATH:" in
+  *":$USER_BIN:"*) ;;
+  *) append_to_profile "export PATH=\"$USER_BIN:\$PATH\"" ;;
+  esac
 }
 
 install_rosetta_maybe() {
@@ -302,7 +319,9 @@ check_ic_wasm 2>/dev/null || { install_ic_wasm && check_ic_wasm; }
 check_cargo_sort 2>/dev/null || { install_cargo_sort && check_cargo_sort; }
 command -v xz || "install_xz_$OS"
 . <(./build-config.sh)
+# dfx is only needed for the release scripts. icp-cli runs the local network.
 have_correct_dfx || install_dfx
+have_correct_icp || install_icp
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
 command -v idl2json || install_idl2json

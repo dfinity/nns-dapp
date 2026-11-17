@@ -1,5 +1,6 @@
 import { AdditionalInfoFormPo } from "$tests/page-objects/AdditionalInfoForm.page-object";
 import { AdditionalInfoReviewPo } from "$tests/page-objects/AdditionalInfoReview.page-object";
+import { BannerPo } from "$tests/page-objects/Banner.page-object";
 import { InProgressPo } from "$tests/page-objects/InProgress.page-object";
 import { TransactionModalBasePo } from "$tests/page-objects/TransactionModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -19,6 +20,10 @@ export class ParticipateSwapModalPo extends TransactionModalBasePo {
 
   getAdditionalInfoReviewPo(): AdditionalInfoReviewPo {
     return AdditionalInfoReviewPo.under(this.root);
+  }
+
+  getLegalBannerPo(): BannerPo {
+    return new BannerPo(this.root.byTestId("swap-legal-banner"));
   }
 
   getInProgressPo(): InProgressPo {

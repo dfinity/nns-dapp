@@ -43,6 +43,8 @@
     // Needed if the canister id is very long for mobile and uses multiple lines.
     text-align: center;
     margin: 0;
+    // A canister name can be one long word without spaces.
+    overflow-wrap: anywhere;
   }
 
   .skeleton {

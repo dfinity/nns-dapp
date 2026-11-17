@@ -7,6 +7,7 @@
 pub mod assets;
 mod conversion;
 mod state;
+mod time;
 mod types;
 mod upstream;
 
@@ -80,13 +81,23 @@ struct CanisterStatusResultV2 {
     module_hash: Option<serde_bytes::ByteBuf>,
 }
 
+/// Argument for the management canister `canister_status` method.
+///
+/// Previously `ic_cdk::management_canister::CanisterIdRecord`, which moved to the
+/// separate `ic-cdk-management-canister` crate in ic-cdk 0.20.  We only need this
+/// one trivial record, so we mirror it locally as with the types above.
+#[derive(CandidType, Deserialize)]
+struct CanisterIdRecord {
+    canister_id: Principal,
+}
+
 /// API method to get cycle balance and burn rate.
 #[candid_method(update)]
 #[ic_cdk::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> CanisterStatusResultV2 {
     let own_canister_id = ic_cdk::api::canister_self();
-    let canister_id_record = ic_cdk::management_canister::CanisterIdRecord {
+    let canister_id_record = CanisterIdRecord {
         canister_id: own_canister_id,
     };
 
@@ -241,7 +252,7 @@ fn setup(config: Option<Config>) {
     ));
     // Set configuration, if provided
     if let Some(config) = config {
-        crate::state::log(format!("Setting config to: {:?}", &config));
+        crate::state::log(format!("Setting config to: {config:?}"));
         STATE.with(|state| {
             *state.stable.borrow().config.borrow_mut() = config;
         });
@@ -262,7 +273,7 @@ fn setup(config: Option<Config>) {
     //
     // Note: Timers are lost on upgrade, so a fresh timer needs to be started after upgrade.
     let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
-    crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
+    crate::state::log(format!("Set interval to {}", timer_interval.as_millis()));
     STATE.with(|state| {
         let timer_id = set_timer_interval(timer_interval, crate::upstream::update_cache);
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));

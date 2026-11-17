@@ -14,15 +14,27 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
+- The quick search panel has an "Import SNS" tool. It adds an SNS that the NNS
+  dapp does not list, with its root canister ID. The SNS then shows in the
+  tokens, staking, neuron and proposal pages with an "Imported" tag. The list
+  stays in the browser.
+- Add a Hotkeys page with the hotkeys of all your neurons, behind the `ENABLE_HOTKEYS_PAGE` feature flag.
 
-- Per-neuron APY is now annualized over the days the neuron is eligible to vote, so dissolving neurons no longer display a near-zero rate. Locked-neuron APYs are unchanged.
+#### Changed
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+- In a tool of the quick search panel, the Enter key no longer opens the first
+  search result.
+- Screen readers can now read and use the quick search panel.
+- No error toast when the SNS aggregator has no project.
+- The staking rewards and the APY load when there is no SNS project.
+- The canister page tells a user that they are not a controller also when the
+  Internet Computer answers with the newer error code IC0542.
 
 #### Security
 
@@ -32,15 +44,23 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Add `sns.internetcomputer.org` to the list of supported domains.
-
 #### Changed
+
+- The local test network, for development and CI, runs on icp-cli instead of
+  dfx and the snsdemo snapshot. The network has no SNS project, no ckBTC and no
+  test token, so the end-to-end tests that need them are skipped.
+- The local test network has a mock of the ICP Swap price feed, so the app
+  shows token prices and the staking rewards.
+- The local test network has a ckRED test token, so the import token
+  end-to-end tests run again.
+- The local test network has four SNS projects, created through NNS proposals,
+  so the SNS end-to-end tests run again.
+- The local test network has a mock exchange rate canister, so the total value
+  locked works and its test runs again.
 
 #### Deprecated
 
 #### Removed
-
-- Remove `wallet.internetcomputer.org` and `wallet.ic0.app` from the list of supported domains.
 
 #### Fixed
 

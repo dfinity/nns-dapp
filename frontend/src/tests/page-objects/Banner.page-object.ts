@@ -22,6 +22,10 @@ export class BannerPo extends BasePageObject {
     return this.getButton("close-button");
   }
 
+  hasTitle(): Promise<boolean> {
+    return this.root.byTestId("title").isPresent();
+  }
+
   async getTitle(): Promise<string> {
     return this.root.byTestId("title").getText();
   }

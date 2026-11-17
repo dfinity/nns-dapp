@@ -163,7 +163,9 @@
     "privacy_mode_hide": "Hide Balance",
     "privacy_mode_show": "Show Balance",
     "project_page": "Project Page",
-    "address_book": "Address Book"
+    "address_book": "Address Book",
+    "hotkeys": "Hotkeys",
+    "search": "Search"
   },
   "address_book": {
     "add_address": "Add New Address",
@@ -193,7 +195,20 @@
     "check_address_book_link": "Check out the address book!",
     "select_address_placeholder": "Select an address"
   },
+  "hotkeys": {
+    "description": "See the hotkeys of all your NNS and SNS neurons in one place.",
+    "hotkey": "Hotkey",
+    "projects": "Projects",
+    "neurons": "Neurons",
+    "empty_title": "No Hotkeys",
+    "empty_description": "To vote with your neurons from another dapp, add the principal id that you have in the other dapp as a hotkey.",
+    "manage_on_all_neurons": "Manage hotkeys on all neurons",
+    "load_error_title": "Some Neurons Did Not Load",
+    "load_error_description": "The list of hotkeys can be incomplete. Try again to load the missing neurons.",
+    "retry": "Try Again"
+  },
   "alfred": {
+    "dialog_label": "Quick search",
     "no_results": "No results found",
     "home_title": "Home",
     "home_description": "View your investment portfolio",
@@ -211,6 +226,8 @@
     "address_book_description": "Manage your saved wallet addresses",
     "canisters_title": "Canisters",
     "canisters_description": "Manage your canisters",
+    "hotkeys_title": "Hotkeys",
+    "hotkeys_description": "Manage the hotkeys on all your neurons",
     "settings_title": "Settings",
     "settings_description": "Adjust your preferences",
     "principalId_title": "Copy principal ID",
@@ -238,7 +255,9 @@
     "build_icrc_account_principal_placeholder": "Enter principal",
     "build_icrc_account_subaccount_label": "Subaccount",
     "build_icrc_account_subaccount_placeholder": "Number, hex (0x...), or 64-char hex",
-    "build_icrc_account_subaccount_error": "Invalid subaccount. Use a number, a 0x-prefixed hex, or a 64-char hex string."
+    "build_icrc_account_subaccount_error": "Invalid subaccount. Use a number, a 0x-prefixed hex, or a 64-char hex string.",
+    "import_sns_title": "Import SNS",
+    "import_sns_description": "Add an SNS that the NNS dapp does not list, with its root canister ID."
   },
   "header": {
     "menu": "Open menu to access navigation options",
@@ -310,13 +329,6 @@
     "main": "Main",
     "balance": "Balance",
     "send": "Send",
-    "buy_icp": "Buy ICP",
-    "buy_icp_banxa": "Buy ICP with Banxa",
-    "receiving_icp_address": "Receiving ICP Address",
-    "icp_token_utility": "ICP Token Utility",
-    "buy_icp_description": "<a href=\"https://internetcomputer.org/icp-tokens\" rel=\"noopener noreferrer\" aria-label=\"more info ICP token\" target=\"_blank\">ICP</a> is the native utility token of the Internet Computer Protocol. You can lock ICP into neurons to participate in the governance of the Internet Computer, swap it in SNS decentralization swaps or convert it into 'cycles' that are used to pay for resources of canister smart contracts.",
-    "buy_icp_note": "<strong>Disclaimer:</strong> Clicking the button below will take you to a third party website to complete your ICP transaction at your own risk.",
-    "banxa_logo_alt": "Banxa logo",
     "icp_transaction_description": "ICP Transaction",
     "icp_transaction_memo_label": "Transaction Memo (Optional)",
     "icp_transaction_memo_hint": "* This is an advanced feature. Do not provide a value if you don't need it.",
@@ -627,7 +639,6 @@
     "text": "Check back later!"
   },
   "canisters": {
-    "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
     "create_canister": "Create Canister",
     "link_canister": "Link Canister",
@@ -1031,6 +1042,8 @@
     "status_unspecified": "Unspecified",
     "status_finalizing": "Finalizing",
     "participate_swap_description": "Participate in decentralization swap",
+    "legal_banner_title": "You are responsible for your own compliance",
+    "legal_banner_text": "By participating, you represent that you independently determined that this swap is lawful for you. You accept sole responsibility for that determination.",
     "understand_agree": "I understand that I cannot withdraw or edit my commitment after I select \"Send Now,\" and that my commitment may be returned to my main ICP account if the swap is unsuccessful for any reason.",
     "participate_success": "Your participation has been successfully committed.",
     "participate": "Participate",
@@ -1126,7 +1139,7 @@
   "error__canister": {
     "already_attached": "Canister ($canisterId) is already linked",
     "name_taken": "The name $name is already in use. Names must be unique.",
-    "name_too_long": "The name $name is too long (max. 24 characters). Please, choose a shorter name.",
+    "name_too_long": "The name $name is too long (max. $max characters). Please, choose a shorter name.",
     "limit_exceeded": "The limit of canisters that can be linked has been exceeded.",
     "unlink_not_found": "Error unlinking, canister ($canisterId) not found.",
     "unknown_link": "Error linking canister.",
@@ -1158,6 +1171,9 @@
     "name_too_short": "Address name is too short. Minimum length is $minLength characters (after trimming spaces).",
     "name_too_long": "Address name is too long. Maximum length is $maxLength characters.",
     "duplicate_name": "An address with the name \"$name\" already exists."
+  },
+  "error__imported_sns": {
+    "load": "The imported SNS $rootCanisterId failed to load."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
@@ -1391,11 +1407,35 @@
     "doc_link_label": "How to find ICRC token ledger",
     "remove_imported": "Remove from imported"
   },
+  "import_sns": {
+    "description": "Use this to test an SNS that the NNS dapp does not list. The list of imported SNSes stays in this browser.",
+    "root_canister_id_label": "Root canister ID",
+    "root_canister_id_placeholder": "Enter the root canister ID",
+    "check": "Check",
+    "checking": "Checking the SNS...",
+    "import": "Import",
+    "importing": "Importing the SNS...",
+    "back": "Back",
+    "warning": "The NNS dapp does not verify imported SNSes. Import only an SNS that you trust.",
+    "imported_list_title": "Imported SNSes",
+    "remove": "Remove $name",
+    "imported": "Imported",
+    "error_invalid_id": "Enter a valid canister ID.",
+    "error_already_imported": "You already imported this SNS.",
+    "error_already_listed": "The NNS dapp already lists this SNS.",
+    "error_limit": "You can import up to $max SNSes. Remove an SNS first.",
+    "error_missing_canisters": "This canister is not an SNS root canister. It does not list the governance, ledger, index and swap canisters.",
+    "error_controllers": "The SNS canisters do not have the controllers of an SNS.",
+    "error_minting_account": "The minting account of the ledger is not the governance canister.",
+    "error_governance_mode": "The governance canister is not in Normal mode.",
+    "error_load": "The NNS dapp could not load this SNS."
+  },
   "portfolio": {
     "login_title": "Session expired",
     "login_description": "Sign in and start staking to earn voting rewards and participate in the Internet Computer’s onchain governance.",
     "no_tokens_card_description": "Store your ICP, ckTokens, and SNS governance tokens safely in the NNS wallet, hosted 100% on the Internet Computer blockchain – sign in to see tokens.",
     "no_neurons_card_description": "Stake your ICP and SNS tokens in neurons to participate in governance and gain voting rewards – sign in to stake your neurons.",
+    "hidden_balance_label": "hidden",
     "held_icp_card_title": "ICP Balance",
     "held_tokens_card_title": "Tokens Balance",
     "held_icp_card_link": "View accounts",

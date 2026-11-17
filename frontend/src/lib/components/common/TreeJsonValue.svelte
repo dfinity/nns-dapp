@@ -42,9 +42,6 @@
 
   let value: string | undefined;
   $: value = formatData(data);
-
-  let title: string | undefined;
-  $: title = valueType === "hash" ? (data as number[]).join() : undefined;
 </script>
 
 {#if valueType === "base64Encoding"}
@@ -53,25 +50,25 @@
     text={`<img class="value ${valueType}" alt="${key}" src="${value}" loading="lazy" />`}
   />
 {:else if valueType === "seconds"}
-  <span class="value {valueType}" {title}
+  <span class="value {valueType}"
     >{value}
     <span class="unit">{$i18n.proposal_detail.json_unit_seconds}</span>
   </span>
 {:else if valueType === "e8s"}
-  <span class="value {valueType}" {title}>
+  <span class="value {valueType}">
     {#each formatE8s(data) as chunk}
       <span>{chunk}</span>
     {/each}
     <span class="unit">{$i18n.proposal_detail.json_unit_e8s}</span>
   </span>
 {:else if valueType === "basisPoints"}
-  <span class="value {valueType}" {title}
+  <span class="value {valueType}"
     >{value}
     <span class="unit">{$i18n.proposal_detail.json_unit_basis_points}</span
     ></span
   >
 {:else}
-  <span class="value {valueType}" {title}>{value}</span>
+  <span class="value {valueType}">{value}</span>
 {/if}
 
 <style lang="scss">

@@ -10,7 +10,7 @@
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use candid::Principal;
-use ic_cdk::api::call::CallResult;
+use ic_cdk::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
@@ -523,78 +523,158 @@ pub struct ResetTimersRet {}
 pub struct Service(pub Principal);
 impl Service {
     pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> CallResult<(ErrorRefundIcpResponse,)> {
-        ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "error_refund_icp")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn finalize_swap(&self, arg0: FinalizeSwapArg) -> CallResult<(FinalizeSwapResponse,)> {
-        ic_cdk::call(self.0, "finalize_swap", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "finalize_swap")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_auto_finalization_status(
         &self,
         arg0: GetAutoFinalizationStatusArg,
     ) -> CallResult<(GetAutoFinalizationStatusResponse,)> {
-        ic_cdk::call(self.0, "get_auto_finalization_status", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_auto_finalization_status")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> CallResult<(GetBuyerStateResponse,)> {
-        ic_cdk::call(self.0, "get_buyer_state", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_buyer_state")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_buyers_total(&self, arg0: GetBuyersTotalArg) -> CallResult<(GetBuyersTotalResponse,)> {
-        ic_cdk::call(self.0, "get_buyers_total", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_buyers_total")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_canister_status(&self, arg0: GetCanisterStatusArg) -> CallResult<(CanisterStatusResultV2,)> {
-        ic_cdk::call(self.0, "get_canister_status", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_canister_status")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_derived_state(&self, arg0: GetDerivedStateArg) -> CallResult<(GetDerivedStateResponse,)> {
-        ic_cdk::call(self.0, "get_derived_state", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_derived_state")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_init(&self, arg0: GetInitArg) -> CallResult<(GetInitResponse,)> {
-        ic_cdk::call(self.0, "get_init", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_init")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_lifecycle(&self, arg0: GetLifecycleArg) -> CallResult<(GetLifecycleResponse,)> {
-        ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_lifecycle")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
-        ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_open_ticket")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_sale_parameters(&self, arg0: GetSaleParametersArg) -> CallResult<(GetSaleParametersResponse,)> {
-        ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_sale_parameters")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {
-        ic_cdk::call(self.0, "get_state", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_state")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn get_timers(&self, arg0: GetTimersArg) -> CallResult<(GetTimersResponse,)> {
-        ic_cdk::call(self.0, "get_timers", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "get_timers")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_community_fund_participants(
         &self,
         arg0: ListCommunityFundParticipantsRequest,
     ) -> CallResult<(ListCommunityFundParticipantsResponse,)> {
-        ic_cdk::call(self.0, "list_community_fund_participants", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_community_fund_participants")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_direct_participants(
         &self,
         arg0: ListDirectParticipantsRequest,
     ) -> CallResult<(ListDirectParticipantsResponse,)> {
-        ic_cdk::call(self.0, "list_direct_participants", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_direct_participants")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn list_sns_neuron_recipes(
         &self,
         arg0: ListSnsNeuronRecipesRequest,
     ) -> CallResult<(ListSnsNeuronRecipesResponse,)> {
-        ic_cdk::call(self.0, "list_sns_neuron_recipes", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "list_sns_neuron_recipes")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<(NewSaleTicketResponse,)> {
-        ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "new_sale_ticket")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok2,)> {
-        ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "notify_payment_failure")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn refresh_buyer_tokens(
         &self,
         arg0: RefreshBuyerTokensRequest,
     ) -> CallResult<(RefreshBuyerTokensResponse,)> {
-        ic_cdk::call(self.0, "refresh_buyer_tokens", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "refresh_buyer_tokens")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
     pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
-        ic_cdk::call(self.0, "reset_timers", (arg0,)).await
+        ic_cdk::call::Call::unbounded_wait(self.0, "reset_timers")
+            .with_arg(arg0)
+            .await
+            .map_err(ic_cdk::call::Error::from)
+            .and_then(|resp| resp.candid_tuple().map_err(Into::into))
     }
 }

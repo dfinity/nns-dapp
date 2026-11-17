@@ -38,6 +38,7 @@ import type {
   RenameSubAccountResponse,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { toNullable } from "@dfinity/utils";
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import { Actor } from "@icp-sdk/core/agent";
@@ -255,6 +256,7 @@ export class NNSDappCanister {
     if ("NameTooLong" in response) {
       throw new CanisterNameTooLongError("error__canister.name_too_long", {
         $name: name,
+        $max: String(MAX_CANISTER_NAME_LENGTH),
       });
     }
     if ("CanisterLimitExceeded" in response) {
@@ -286,6 +288,7 @@ export class NNSDappCanister {
     if ("NameTooLong" in response) {
       throw new CanisterNameTooLongError("error__canister.name_too_long", {
         $name: name,
+        $max: String(MAX_CANISTER_NAME_LENGTH),
       });
     }
     if ("CanisterNotFound" in response) {

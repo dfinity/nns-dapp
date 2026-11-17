@@ -289,6 +289,7 @@ service: (opt Config) -> {
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
     get_tvl : () -> (TvlResponse) query;
+    get_api_doc: () -> (text) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();

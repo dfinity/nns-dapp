@@ -6,6 +6,7 @@ import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import * as actionableProposalsServices from "$lib/services/actionable-proposals.services";
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import { initAppPrivateData } from "$lib/services/app.services";
+import * as importedSnsServices from "$lib/services/imported-sns.services";
 import * as importedTokensServices from "$lib/services/imported-tokens.services";
 import * as nnsTotalVotingPowerService from "$lib/services/nns-total-voting-power.service";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
@@ -128,6 +129,35 @@ describe("app-services", () => {
     expect(spyLoadActionableProposals).toHaveBeenCalledTimes(1);
     expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
     expect(spyLoadNnsTotalVotingPower).toHaveBeenCalledTimes(1);
+  });
+
+  it("should call loadActionableSnsProposals after the imported SNSes are loaded", async () => {
+    const spyLoadActionableSnsProposals = vi
+      .spyOn(actionableSnsProposalsServices, "loadActionableSnsProposals")
+      .mockResolvedValue();
+    vi.spyOn(aggregatorApi, "querySnsProjects").mockResolvedValue([
+      aggregatorSnsMockDto,
+    ]);
+    let resolveImportedSnses: () => void;
+    const spyLoadImportedSnses = vi
+      .spyOn(importedSnsServices, "loadImportedSnses")
+      .mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveImportedSnses = resolve;
+          })
+      );
+
+    initAppPrivateData();
+    await runResolvedPromises();
+
+    expect(spyLoadImportedSnses).toHaveBeenCalledTimes(1);
+    expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
+
+    resolveImportedSnses();
+    await runResolvedPromises();
+
+    expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
   });
 
   it("should call loadImportedTokens", async () => {

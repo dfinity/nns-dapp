@@ -1,0 +1,271 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Starts the local icp-cli network from icp.yaml and prepares it for nns-dapp.
+
+	The network launcher installs the NNS, the SNS, Internet Identity, the
+	SNS aggregator and an nns-dapp release. This script then:
+	- links the nns-dapp and sns_aggregator names to those canisters,
+	- adds the current icp identity as a controller of both canisters,
+	- stakes a large NNS neuron, so that test neurons cannot decide proposals,
+	- deploys the mock ICP Swap price feed,
+	- deploys the ckRED test token,
+	- deploys a mock exchange rate canister with the mainnet canister ID,
+	- installs the given wasms, if any,
+	- creates the SNS projects of the end-to-end tests, see mocks/sns/README.md.
+
+	If the network runs already, the script keeps it and only does the steps
+	above. A stopped network loses its state. Stop the network with:
+	  icp network stop
+
+	The nns-dapp reads the ICP price one second after its installation, and
+	then every six hours. On a fresh network without --nns_dapp_wasm, the
+	nns-dapp of the launcher reads it before the mock exists, so the total
+	value locked stays zero for six hours.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The icp network" variable=NETWORK default="local"
+clap.define long=nns_dapp_wasm desc="The nns-dapp wasm to install" variable=NNS_DAPP_WASM default=""
+clap.define long=nns_dapp_install_mode desc="Passed as --mode to icp canister install" variable=NNS_DAPP_INSTALL_MODE default="reinstall"
+DEFAULT_NNS_DAPP_ARG="nns-dapp-arg-local.did"
+clap.define long=nns_dapp_arg desc="The nns-dapp install argument file. The default is created with config.sh after the mocks are deployed." variable=NNS_DAPP_ARG default="$DEFAULT_NNS_DAPP_ARG"
+clap.define long=sns_aggregator_wasm desc="The sns_aggregator wasm to install" variable=SNS_AGGREGATOR_WASM default=""
+clap.define long=sns_aggregator_install_mode desc="Passed as --mode to icp canister install" variable=SNS_AGGREGATOR_INSTALL_MODE default="reinstall"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+cd "$SOURCE_DIR/.."
+
+command -v icp >/dev/null || {
+  echo "ERROR: icp is not installed. Run: scripts/install-icp-cli"
+  exit 1
+} >&2
+
+# The network and the environment have the same name, see icp.yaml.
+ENVIRONMENT="$NETWORK"
+
+# A fresh icp-cli home has only the anonymous identity, which the nns-dapp
+# rejects on some methods. Use a local identity, stored in plaintext.
+if [[ "$(icp identity principal)" == "2vxsx-fae" ]]; then
+  if ! icp identity list --quiet | grep -qx nns-dapp-local; then
+    echo "Creating the icp identity 'nns-dapp-local'..."
+    icp identity new nns-dapp-local --storage plaintext --quiet >/dev/null
+  fi
+  icp identity default nns-dapp-local
+fi
+
+if icp network status "$NETWORK" >/dev/null 2>&1; then
+  echo "The '$NETWORK' network is running already."
+  started_network="false"
+else
+  echo "Starting the '$NETWORK' network..."
+  # The canister IDs of an earlier network are not valid on the new one.
+  rm -f ".icp/cache/mappings/$ENVIRONMENT.ids.json"
+  icp network start "$NETWORK" --background
+  started_network="true"
+fi
+icp network ping "$NETWORK" --wait-healthy >/dev/null
+
+# icp-cli gives cycles to the identities that exist when the network starts.
+# An identity created later has none, so it cannot create canisters. The
+# anonymous identity has almost unlimited cycles on the local network.
+fund_identity() {
+  local principal balance
+  principal="$(icp identity principal)"
+  [[ "$principal" != "2vxsx-fae" ]] || return 0
+  balance="$(icp cycles balance --network "$NETWORK" --quiet | tr -d '_' | awk '{print $1}')"
+  if ((balance < 100000000000000)); then
+    echo "Funding the identity $principal with cycles..."
+    icp cycles transfer 1000t "$principal" --network "$NETWORK" --identity anonymous >/dev/null
+  fi
+}
+fund_identity
+
+# Installs a wasm. Retries, because a call can time out while the network warms up.
+install_canister() {
+  local canister="$1"
+  shift
+  for ((try = 0; try < 5; try++)); do
+    if icp canister install "$canister" --environment "$ENVIRONMENT" --yes "$@"; then
+      return 0
+    fi
+    sleep 5
+  done
+  echo "ERROR: Could not install the $canister canister." >&2
+  exit 1
+}
+
+# Records the ID of a canister in the icp-cli mappings of the environment.
+# --force replaces an existing entry, but fails when the mappings file does not exist yet.
+link_canister() {
+  local canister canister_id mappings
+  canister="$1"
+  canister_id="$2"
+  mappings=".icp/cache/mappings/$ENVIRONMENT.ids.json"
+  if test -f "$mappings" && jq -e --arg c "$canister" '.[$c]' "$mappings" >/dev/null; then
+    icp canister link "$canister" "$canister_id" --environment "$ENVIRONMENT" --force
+  else
+    icp canister link "$canister" "$canister_id" --environment "$ENVIRONMENT"
+  fi
+}
+
+for canister in nns-dapp sns_aggregator; do
+  canister_id="$(canister-id --network "$NETWORK" "$canister")"
+  link_canister "$canister" "$canister_id"
+  icp-canister-add-controller --network "$NETWORK" --canister "$canister_id"
+done
+
+# Stakes a large NNS neuron for the anonymous principal, if it does not exist.
+#
+# The network starts with one NNS neuron of 1 ICP. A test neuron would then
+# have the majority and decide every proposal at once. The large neuron does
+# not vote, so proposals stay open. The ledger funds the anonymous account.
+#
+# Each step is skipped when an earlier run did it, so an interrupted run can
+# be completed by the next run.
+stake_large_neuron() {
+  local governance ledger nonce subaccount balance neuron_id dissolve_delay
+  governance="$(canister-id --network "$NETWORK" nns-governance)"
+  ledger="$(canister-id --network "$NETWORK" nns-ledger)"
+  nonce=1
+  # The neuron subaccount: sha256(0x0c, "neuron-stake", controller bytes, nonce as big-endian u64).
+  # The anonymous principal is the single byte 0x04.
+  subaccount="$(echo -n "0c$(printf 'neuron-stake' | xxd -p)04$(printf '%016x' "$nonce")" | xxd -r -p | sha256sum | awk '{print $1}' | sed -e 's/../\\&/g')"
+  balance="$(icp canister call "$ledger" icrc1_balance_of "(record { owner = principal \"$governance\"; subaccount = opt blob \"$subaccount\" })" --network "$NETWORK" --query | tr -d '() :nat_')"
+  if ((balance == 0)); then
+    echo "Staking a large NNS neuron..."
+    icp canister call "$ledger" icrc1_transfer "(record { to = record { owner = principal \"$governance\"; subaccount = opt blob \"$subaccount\" }; amount = 1_000_000_000_000_000 : nat; fee = null; memo = null; from_subaccount = null; created_at_time = null })" --network "$NETWORK" --identity anonymous >/dev/null
+  fi
+  # Claims the neuron, or refreshes its stake if it exists.
+  neuron_id="$(icp canister call "$governance" manage_neuron "(record { id = null; command = opt variant { ClaimOrRefresh = record { by = opt variant { MemoAndController = record { controller = opt principal \"2vxsx-fae\"; memo = $nonce : nat64 } } } }; neuron_id_or_subaccount = null })" --network "$NETWORK" --identity anonymous | idl2json | jq -r '.command[0].ClaimOrRefresh.refreshed_neuron_id[0].id')"
+  # A neuron needs a dissolve delay of six months to vote. Set the maximum, eight years.
+  dissolve_delay="$(icp canister call "$governance" list_neurons "(record { neuron_ids = vec { $neuron_id : nat64 }; include_neurons_readable_by_caller = false; include_empty_neurons_readable_by_caller = null; include_public_neurons_in_full_neurons = null; page_number = null; page_size = null; neuron_subaccounts = null })" --network "$NETWORK" --identity anonymous --query | idl2json | jq -r '.full_neurons[0].dissolve_state[0].DissolveDelaySeconds // 0')"
+  if ((dissolve_delay < 15778800)); then
+    icp canister call "$governance" manage_neuron "(record { id = opt record { id = $neuron_id : nat64 }; command = opt variant { Configure = record { operation = opt variant { IncreaseDissolveDelay = record { additional_dissolve_delay_seconds = 252_460_800 : nat32 } } } }; neuron_id_or_subaccount = null })" --network "$NETWORK" --identity anonymous >/dev/null
+  fi
+  echo "NNS neuron $neuron_id has 10,000,000 ICP."
+}
+stake_large_neuron
+
+# Creates a canister of icp.yaml on an application subnet, if it does not exist.
+# Returns 1 if the canister exists already.
+#
+# icp-cli creates a new canister on the subnet of the existing canisters, which
+# is the NNS subnet here. The NNS subnet refuses that, so the canister is
+# created on an application subnet explicitly.
+create_on_application_subnet() {
+  local canister cmc subnet
+  canister="$1"
+  if jq -e --arg c "$canister" '.[$c]' ".icp/cache/mappings/$ENVIRONMENT.ids.json" >/dev/null 2>&1; then
+    return 1
+  fi
+  cmc="$(canister-id --network "$NETWORK" nns-cycles-minting)"
+  subnet="$(icp canister call "$cmc" get_default_subnets '()' --network "$NETWORK" --query | idl2json | jq -r '.[0]')"
+  icp canister create "$canister" --environment "$ENVIRONMENT" --subnet "$subnet"
+}
+
+# Whether a canister of the environment has code. A failed status request stops
+# the script, also when the caller runs the function in an `||` chain.
+is_installed() {
+  local status module_hash
+  status="$(icp canister status "$1" --environment "$ENVIRONMENT" --json)" || {
+    echo "ERROR: Could not get the status of the $1 canister." >&2
+    exit 1
+  }
+  module_hash="$(jq -r .module_hash <<<"$status")"
+  [[ "$module_hash" != "null" ]]
+}
+
+# The mock ICP Swap price feed, an asset canister that serves mocks/icp-swap/tickers.
+create_on_application_subnet icp-swap || true
+icp deploy icp-swap --environment "$ENVIRONMENT" --yes
+
+# The ckRED test token, see mocks/ckred/README.md. The test account of the
+# "Get tokens" menu holds the initial supply. The anonymous principal mints.
+# An installed ledger keeps its state; an upgrade would need Upgrade arguments.
+deploy_ckred() {
+  local logo ledger_id
+  logo="$(base64 <"mocks/ckred/ckRED-logo.svg" | tr -d '\n')"
+  create_on_application_subnet ckred_ledger || true
+  is_installed ckred_ledger || icp deploy ckred_ledger --environment "$ENVIRONMENT" --yes --args "(variant { Init = record {
+    token_symbol = \"ckRED\";
+    token_name = \"ckRED\";
+    minting_account = record { owner = principal \"2vxsx-fae\" };
+    transfer_fee = 4_000 : nat;
+    max_memo_length = opt (64 : nat16);
+    decimals = opt (7 : nat8);
+    metadata = vec { record { \"icrc1:logo\"; variant { Text = \"data:image/svg+xml;base64,$logo\" } } };
+    initial_balances = vec { record { record { owner = principal \"jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe\" }; 100_000_000_000_000 : nat } };
+    archive_options = record {
+      num_blocks_to_archive = 10_000 : nat64;
+      trigger_threshold = 20_000 : nat64;
+      controller_id = principal \"2vxsx-fae\";
+      cycles_for_archive_creation = opt (4_000_000_000_000 : nat64);
+    };
+    feature_flags = opt record { icrc2 = true };
+  } })"
+  ledger_id="$(canister-id --network "$NETWORK" ckred_ledger)"
+  create_on_application_subnet ckred_index || true
+  is_installed ckred_index || icp deploy ckred_index --environment "$ENVIRONMENT" --yes --args "(opt variant { Init = record { ledger_id = principal \"$ledger_id\" } })"
+}
+deploy_ckred
+
+# Deploys the mock exchange rate canister with the mainnet canister ID, which
+# the nns-dapp backend calls. The ICP price is 9 USD, like the price feed mock.
+deploy_xrc() {
+  local xrc_id="uf6dk-hyaaa-aaaaq-qaaaq-cai"
+  icp-canister-create-with-id --network "$NETWORK" --canister "$xrc_id"
+  icp canister link xrc "$xrc_id" --environment "$ENVIRONMENT" --force
+  # The mock starts with 9 USD per ICP, with the default assets and metadata.
+  # An installed mock keeps the rate that a test set with set_exchange_rate.
+  is_installed xrc || icp deploy xrc --environment "$ENVIRONMENT" --yes --args '(record { response = variant { ExchangeRate = record { base_asset = null; quote_asset = null; metadata = null; rate = 900_000_000 : nat64 } } })'
+}
+deploy_xrc
+
+if test -z "${NNS_DAPP_WASM:-}" && [[ "$started_network" == "true" ]]; then
+  echo "NOTE: The nns-dapp of the launcher read the ICP price before the mock exchange rate canister existed." >&2
+  echo "      The total value locked stays zero for six hours. Pass --nns_dapp_wasm to install an nns-dapp after the mocks." >&2
+fi
+
+if test -n "${NNS_DAPP_WASM:-}"; then
+  # The default arguments hold the URLs of the mocks, so they are created after the mocks.
+  [[ "$NNS_DAPP_ARG" != "$DEFAULT_NNS_DAPP_ARG" ]] || DFX_NETWORK="$NETWORK" ./config.sh >/dev/null
+  install_canister nns-dapp --wasm "$NNS_DAPP_WASM" --mode "$NNS_DAPP_INSTALL_MODE" --args-file "$NNS_DAPP_ARG"
+  icp canister call nns-dapp get_stats '()' --environment "$ENVIRONMENT" --query >/dev/null
+fi
+
+if test -n "${SNS_AGGREGATOR_WASM:-}"; then
+  install_canister sns_aggregator --wasm "$SNS_AGGREGATOR_WASM" --mode "$SNS_AGGREGATOR_INSTALL_MODE" --args '(null)'
+fi
+
+# Creates the SNS projects of the end-to-end tests, see mocks/sns/README.md.
+#
+# A bought swap needs up to two minutes to commit and finalize, so the two
+# committed projects are bought first and completed last. The open swaps are
+# created in between. The launchpad lists them in the order of their opening.
+# The participation test accepts the confirmation text of an open swap.
+create_sns_projects() {
+  icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --buy
+  icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --buy
+  icp-sns-create --network "$NETWORK" --name "Bravo" --symbol BRV --logo mocks/sns/bravo.png --confirmation_text "I confirm that I take part in the Bravo swap at my own risk."
+  icp-sns-create --network "$NETWORK" --name "Charlie" --symbol CHR --logo mocks/sns/charlie.png --confirmation_text "I confirm that I take part in the Charlie swap at my own risk."
+  icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --commit
+  icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --commit
+  icp-sns-aggregator-wait --network "$NETWORK"
+}
+create_sns_projects
+
+echo
+echo "The '$NETWORK' network is ready:"
+for canister in nns-dapp sns_aggregator internet_identity icp-swap ckred_ledger ckred_index xrc; do
+  printf "  %-18s %s\n" "$canister" "$(dfx-canister-url --network "$NETWORK" "$canister")"
+done

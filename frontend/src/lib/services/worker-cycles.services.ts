@@ -14,6 +14,7 @@ export interface CyclesWorker {
     } & Pick<PostMessageDataRequestCycles, "canisterId">
   ) => void;
   stopCyclesTimer: () => void;
+  terminate: () => void;
 }
 
 export const initCyclesWorker = async (): Promise<CyclesWorker> => {
@@ -53,6 +54,9 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
       cyclesWorker.postMessage({
         msg: "nnsStopCyclesTimer",
       });
+    },
+    terminate: () => {
+      cyclesWorker.terminate();
     },
   };
 };

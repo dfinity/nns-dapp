@@ -1,5 +1,4 @@
 import { AddAccountModalPo } from "$tests/page-objects/AddAccountModal.page-object";
-import { BuyICPModalPo } from "$tests/page-objects/BuyICPModal.page-object";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { NnsAccountsFooterPo } from "$tests/page-objects/NnsAccountsFooter.page-object";
@@ -22,10 +21,6 @@ export class AccountsPo extends BasePageObject {
     return NnsAccountsFooterPo.under(this.root);
   }
 
-  getBuyICPModalPo() {
-    return BuyICPModalPo.under(this.root);
-  }
-
   getAddAccountModalPo() {
     return AddAccountModalPo.under(this.root);
   }
@@ -40,10 +35,6 @@ export class AccountsPo extends BasePageObject {
 
   clickSend(): Promise<void> {
     return this.getNnsAccountsFooterPo().clickSend();
-  }
-
-  clickBuyICP(): Promise<void> {
-    return this.getNnsAccountsFooterPo().clickBuyICP();
   }
 
   async getAccountAddress(accountName: string): Promise<string> {

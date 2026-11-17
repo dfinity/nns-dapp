@@ -63,6 +63,10 @@ export class ResponsiveTablePo extends BasePageObject {
     return ResponsiveTableRowPo.allUnder(this.root);
   }
 
+  getSkeletonRows(): Promise<PageObjectElement[]> {
+    return this.root.allByTestId("skeleton-table-row");
+  }
+
   getTableStyle(): Promise<string> {
     return this.root.querySelector('[role="table"]').getAttribute("style");
   }

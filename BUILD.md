@@ -26,7 +26,7 @@ environment. The following steps _should_ build the official Wasm image.
   ```
 - [Docker](https://www.docker.com/) is a container environment. It lets you build the nns-dapp code in a sandbox, fairly reliably, and without you having to install a lot of custom tools that you may not trust. Please use [one of the official installers](https://docs.docker.com/get-docker/).
 - [Docker `buildx`](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in the standard docker installer for Mac desktops. If you have installed docker for an os-x server, please follow [the official guide](https://docs.docker.com/build/install-buildx/).
-- [Rosetta]() allows Mac M1 and M2 processors to run programs that use the AMD64 instruction set. If you have an M1 or M2 CPU, please:
+- [Rosetta](<>) allows Mac M1 and M2 processors to run programs that use the AMD64 instruction set. If you have an M1 or M2 CPU, please:
   - Install Rosetta:
     ```sh
     softwareupdate --install-rosetta
@@ -111,16 +111,15 @@ TODO: Document how to create accounts in the nns-dapp.
 
 ## Development
 
-Development relies on the presence of an environment that is setup with the II, governance, ledger, and cycle minting canisters. This is provided by [`dfx nns install`](https://internetcomputer.org/docs/current/references/cli-reference/dfx-nns), both in automated testing and for local development. Please note, however, that it takes some work to configure the NNS canisters. If you would like a test environment with all the NNS canisters configured suitably for use with the nns-dapp, please consider using the [snsdemo tools.](https://github.com/dfinity/snsdemo):
+Development relies on the presence of an environment that is setup with the II, governance, ledger, and cycle minting canisters. The [icp-cli](https://github.com/dfinity/icp-cli) network launcher provides it, both in automated testing and for local development. See [`icp.yaml`](./icp.yaml) and the [Local](./HACKING.md#local) section of HACKING.md.
 
-- Make sure that you have a version of `dfx` that matches the `snsdemo`.
-- Create a state snapshot (about 20 minutes): `snsdapp$ dfx-snapshot-stock-make --snapshot ~/stock-snsdemo-snapshot.tar.xz`
-- Start the snapshot: `nns-dapp$ ./scripts/dfx-snapshot-start --snapshot ~/stock-snsdemo-snapshot.tar.xz`
+- Start the network: `nns-dapp$ scripts/icp-network-start`
+- Install your build: `nns-dapp$ scripts/icp-network-start --nns_dapp_wasm nns-dapp.wasm.gz`
 
 You can now access the frontend using Chrome or Firefox (sorry, Safari doesn't support subdomains of `localhost`):
 
 ```sh
-open "http://$(dfx canister id nns-dapp).localhost:8080"
+open "$(scripts/dfx-canister-url --network local nns-dapp)"
 ```
 
 To work on the UI locally, either use your IDE, or run the following:
