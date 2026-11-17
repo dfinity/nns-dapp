@@ -11,6 +11,7 @@ import {
   queryAndUpdate,
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
+import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -32,13 +33,19 @@ import { get } from "svelte/store";
  */
 export const loadSnsSwapCommitments = async (): Promise<void> => {
   const aggregatorData = await getLoadedSnsAggregatorData();
+  // Imported SNSes have no swap that the app shows.
+  const importedRootCanisterIds = get(importedSnsRootCanisterIdsStore);
   await Promise.allSettled(
-    aggregatorData.map(
-      ({ canister_ids: { root_canister_id: rootCanisterId } }) =>
+    aggregatorData
+      .filter(
+        ({ canister_ids: { root_canister_id } }) =>
+          !importedRootCanisterIds.has(root_canister_id)
+      )
+      .map(({ canister_ids: { root_canister_id: rootCanisterId } }) =>
         loadSnsSwapCommitment({
           rootCanisterId,
         })
-    )
+      )
   );
 };
 
