@@ -171,6 +171,7 @@ interface I18nNavigation {
   privacy_mode_show: string;
   project_page: string;
   address_book: string;
+  hotkeys: string;
   search: string;
 }
 
@@ -203,7 +204,21 @@ interface I18nAddress_book {
   select_address_placeholder: string;
 }
 
+interface I18nHotkeys {
+  description: string;
+  hotkey: string;
+  projects: string;
+  neurons: string;
+  empty_title: string;
+  empty_description: string;
+  manage_on_all_neurons: string;
+  load_error_title: string;
+  load_error_description: string;
+  retry: string;
+}
+
 interface I18nAlfred {
+  dialog_label: string;
   no_results: string;
   home_title: string;
   home_description: string;
@@ -221,6 +236,8 @@ interface I18nAlfred {
   address_book_description: string;
   canisters_title: string;
   canisters_description: string;
+  hotkeys_title: string;
+  hotkeys_description: string;
   settings_title: string;
   settings_description: string;
   principalId_title: string;
@@ -249,6 +266,8 @@ interface I18nAlfred {
   build_icrc_account_subaccount_label: string;
   build_icrc_account_subaccount_placeholder: string;
   build_icrc_account_subaccount_error: string;
+  import_sns_title: string;
+  import_sns_description: string;
 }
 
 interface I18nHeader {
@@ -1207,6 +1226,10 @@ interface I18nError__address_book {
   duplicate_name: string;
 }
 
+interface I18nError__imported_sns {
+  load: string;
+}
+
 interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
@@ -1461,6 +1484,30 @@ interface I18nImport_token {
   remove_imported: string;
 }
 
+interface I18nImport_sns {
+  description: string;
+  root_canister_id_label: string;
+  root_canister_id_placeholder: string;
+  check: string;
+  checking: string;
+  import: string;
+  importing: string;
+  back: string;
+  warning: string;
+  imported_list_title: string;
+  remove: string;
+  imported: string;
+  error_invalid_id: string;
+  error_already_imported: string;
+  error_already_listed: string;
+  error_limit: string;
+  error_missing_canisters: string;
+  error_controllers: string;
+  error_minting_account: string;
+  error_governance_mode: string;
+  error_load: string;
+}
+
 interface I18nPortfolio {
   login_title: string;
   login_description: string;
@@ -1633,6 +1680,7 @@ interface I18n {
   warning: I18nWarning;
   navigation: I18nNavigation;
   address_book: I18nAddress_book;
+  hotkeys: I18nHotkeys;
   alfred: I18nAlfred;
   header: I18nHeader;
   reporting: I18nReporting;
@@ -1676,6 +1724,7 @@ interface I18n {
   error__imported_tokens: I18nError__imported_tokens;
   error__fav_projects: I18nError__fav_projects;
   error__address_book: I18nError__address_book;
+  error__imported_sns: I18nError__imported_sns;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_report: I18nAuth_report;
@@ -1698,6 +1747,7 @@ interface I18n {
   sync: I18nSync;
   tokens: I18nTokens;
   import_token: I18nImport_token;
+  import_sns: I18nImport_sns;
   portfolio: I18nPortfolio;
   highlight: I18nHighlight;
   neuron_state: I18nNeuron_state;

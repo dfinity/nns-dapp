@@ -7,6 +7,7 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
+import { loadImportedSnses } from "$lib/services/imported-sns.services";
 import { initAppPublicData } from "$lib/services/public/app.services";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
@@ -23,6 +24,12 @@ vi.mock("$lib/services/public/sns.services", () => {
   };
 });
 
+vi.mock("$lib/services/imported-sns.services", () => {
+  return {
+    loadImportedSnses: vi.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("public/app-services", () => {
   beforeEach(() => {
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
@@ -33,6 +40,12 @@ describe("public/app-services", () => {
     await initAppPublicData();
 
     await expect(loadSnsProjects).toHaveBeenCalledTimes(1);
+  });
+
+  it("should load the imported SNSes", async () => {
+    await initAppPublicData();
+
+    expect(loadImportedSnses).toHaveBeenCalledTimes(1);
   });
 
   it("should load ckETH canisters in store", async () => {

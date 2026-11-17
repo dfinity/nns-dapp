@@ -3,6 +3,7 @@
   import AccountDetails from "$lib/components/header/AccountDetails.svelte";
   import LinkToAddressBook from "$lib/components/header/LinkToAddressBook.svelte";
   import LinkToCanisters from "$lib/components/header/LinkToCanisters.svelte";
+  import LinkToHotkeys from "$lib/components/header/LinkToHotkeys.svelte";
   import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
   import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
   import Logout from "$lib/components/header/Logout.svelte";
@@ -10,7 +11,10 @@
   import ToggleBalancePrivacyOption from "$lib/components/header/ToggleBalancePrivacyOption.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { login } from "$lib/services/auth.services";
-  import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
+  import {
+    ENABLE_ADDRESS_BOOK,
+    ENABLE_HOTKEYS_PAGE,
+  } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutAuthReady } from "$lib/stores/layout.store";
   import { IconLogin, IconUser, Popover } from "@dfinity/gix-components";
@@ -49,6 +53,10 @@
         {/if}
 
         <LinkToCanisters on:nnsLink={closeMenu} />
+
+        {#if $ENABLE_HOTKEYS_PAGE}
+          <LinkToHotkeys on:nnsLink={closeMenu} />
+        {/if}
 
         <LinkToReporting on:nnsLink={closeMenu} />
 

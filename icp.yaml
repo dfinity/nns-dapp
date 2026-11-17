@@ -36,10 +36,32 @@ canisters:
       configuration:
         version: "0.32.0"
         dir: mocks/icp-swap
+  # A test ICRC token for the import token tests, see mocks/ckred. The wasms
+  # come from the IC commit in config.json, IC_COMMIT_FOR_SNS_AGGREGATOR.
+  - name: ckred_ledger
+    build:
+      steps:
+        - type: pre-built
+          url: https://download.dfinity.systems/ic/f54e1f82c3cf8ae0b4be6b0fc3a940cdcd70dd97/canisters/ic-icrc1-ledger-u256.wasm.gz
+          sha256: 7905265687205b49eb625a242cf7dbac0ff7dc0f0b42d3d4c26b40bc4d566b1c
+  - name: ckred_index
+    build:
+      steps:
+        - type: pre-built
+          url: https://download.dfinity.systems/ic/f54e1f82c3cf8ae0b4be6b0fc3a940cdcd70dd97/canisters/ic-icrc1-index-ng-u256.wasm.gz
+          sha256: 8a0e1189339009dbd5c70fc4310ed4f2a07bac9730aa25f036724e1611fecd5b
+  # A mock of the exchange rate canister, with the mainnet canister ID. The
+  # nns-dapp reads the ICP price from it for the total value locked.
+  - name: xrc
+    build:
+      steps:
+        - type: pre-built
+          url: https://github.com/dfinity/exchange-rate-canister/releases/download/2024.09.05/xrc_mock.wasm.gz
+          sha256: 520744bf7f60665722f597c172abebf53be300d66ed0cb87744663567949a1b1
 environments:
   - name: local
     network: local
-    canisters: [nns-dapp, sns_aggregator, icp-swap]
+    canisters: [nns-dapp, sns_aggregator, icp-swap, ckred_ledger, ckred_index, xrc]
   # Mainnet, for read-only queries. The canister IDs are in .icp/data/mappings/ic.ids.json.
   - name: ic
     network: ic

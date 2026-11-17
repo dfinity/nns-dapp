@@ -48,6 +48,10 @@ export class ProjectsTableRowPo extends ResponsiveTableRowPo {
     return this.getProjectTitleCellPo().getProjectTitle();
   }
 
+  hasImportedSnsTag(): Promise<boolean> {
+    return this.getProjectTitleCellPo().hasImportedSnsTag();
+  }
+
   getStake(): Promise<string> {
     return this.getProjectStakeCellPo().getStake();
   }
