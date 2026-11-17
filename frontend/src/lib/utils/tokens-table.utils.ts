@@ -2,7 +2,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDT_LEDGER_CANISTER_ID_TEXT } from "$lib/constants/ck-canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
-import { CKSOL_UNIVERSE_CANISTER_ID } from "$lib/constants/cksol-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -38,10 +37,6 @@ export const compareTokensCKUSDCFirst = createDescendingComparator(
 export const compareTokensCKETHFirst = createDescendingComparator(
   (token: UserToken) =>
     token.universeId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()
-);
-export const compareTokensCKSOLFirst = createDescendingComparator(
-  (token: UserToken) =>
-    token.universeId.toText() === CKSOL_UNIVERSE_CANISTER_ID.toText()
 );
 
 export const compareFailedTokensLast = createAscendingComparator(
@@ -121,7 +116,6 @@ export const compareCkTokensByDefault = mergeComparators([
   compareTokensCKUSDTFirst,
   compareTokensCKUSDCFirst,
   compareTokensCKETHFirst,
-  compareTokensCKSOLFirst,
   compareTokensAlphabetically,
 ]);
 
@@ -145,7 +139,6 @@ export const compareTokensByBalance = ({
     compareTokensCKUSDTFirst,
     compareTokensCKUSDCFirst,
     compareTokensCKETHFirst,
-    compareTokensCKSOLFirst,
     compareTokensIsImported({ importedTokenIds }),
     compareFailedTokensLast,
     compareTokensByUniverseOrder(universeOrder),

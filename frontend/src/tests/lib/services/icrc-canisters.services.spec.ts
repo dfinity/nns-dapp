@@ -7,11 +7,6 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import {
-  CKSOL_INDEX_CANISTER_ID,
-  CKSOL_LEDGER_CANISTER_ID,
-  CKSOL_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/cksol-canister-ids.constants";
-import {
   CKUSDC_INDEX_CANISTER_ID,
   CKUSDC_LEDGER_CANISTER_ID,
   CKUSDC_UNIVERSE_CANISTER_ID,
@@ -32,7 +27,7 @@ describe("icrc-canisters.services", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
-      it("should load cketh, ckusdc and cksol canisters", async () => {
+      it("should load cketh and ckusdc canisters", async () => {
         expect(get(defaultIcrcCanistersStore)).toEqual({});
         await loadIcrcCanisters();
 
@@ -48,10 +43,6 @@ describe("icrc-canisters.services", () => {
           [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: {
             ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
             indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
-          },
-          [CKSOL_UNIVERSE_CANISTER_ID.toText()]: {
-            ledgerCanisterId: CKSOL_LEDGER_CANISTER_ID,
-            indexCanisterId: CKSOL_INDEX_CANISTER_ID,
           },
           ...allCkTokens.reduce(
             (acc, { ledgerCanisterId, indexCanisterId }) => {
@@ -80,7 +71,7 @@ describe("icrc-canisters.services", () => {
     });
 
     describe("if ckethtest is disabled", () => {
-      it("should load cketh, ckusdc and cksol canisters", async () => {
+      it("should load cketh and ckusdc canisters", async () => {
         expect(get(defaultIcrcCanistersStore)).toEqual({});
         await loadIcrcCanisters();
 
@@ -92,10 +83,6 @@ describe("icrc-canisters.services", () => {
           [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: {
             ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
             indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
-          },
-          [CKSOL_UNIVERSE_CANISTER_ID.toText()]: {
-            ledgerCanisterId: CKSOL_LEDGER_CANISTER_ID,
-            indexCanisterId: CKSOL_INDEX_CANISTER_ID,
           },
           ...allCkTokens.reduce(
             (acc, { ledgerCanisterId, indexCanisterId }) => {

@@ -1,10 +1,10 @@
 import {
   CKOCT_LEDGER_CANISTER_ID_TEXT,
   CKPEPE_LEDGER_CANISTER_ID_TEXT,
+  CKSOL_LEDGER_CANISTER_ID_TEXT,
 } from "$lib/constants/ck-canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
-import { CKSOL_UNIVERSE_CANISTER_ID } from "$lib/constants/cksol-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
@@ -43,7 +43,7 @@ describe("tokens-table.utils", () => {
     universeId: CKUSDC_UNIVERSE_CANISTER_ID,
   });
   const ckSOLToken = createUserToken({
-    universeId: CKSOL_UNIVERSE_CANISTER_ID,
+    universeId: Principal.fromText(CKSOL_LEDGER_CANISTER_ID_TEXT),
     title: "ckSOL",
   });
   const ckPepeToken = createUserToken({
@@ -104,8 +104,8 @@ describe("tokens-table.utils", () => {
       const expectedOrder = [
         ckBTCToken,
         ckETHTToken,
-        ckSOLToken,
         ckUSDCToken,
+        ckSOLToken,
         token0,
       ];
       expect(
@@ -132,9 +132,9 @@ describe("tokens-table.utils", () => {
         ckBTCToken,
         ckUSDCToken,
         ckETHTToken,
-        ckSOLToken,
         ckOctToken,
         ckPepeToken,
+        ckSOLToken,
       ];
       expect(
         [
@@ -513,8 +513,8 @@ describe("tokens-table.utils", () => {
       icpToken,
       ckBTCToken,
       ckETHTToken,
-      ckSOLToken,
       ckUSDCToken,
+      ckSOLToken,
       snsToken1,
       snsToken2,
       importedToken1,
@@ -531,8 +531,8 @@ describe("tokens-table.utils", () => {
       expect(result).toEqual([
         ckBTCToken,
         ckETHTToken,
-        ckSOLToken,
         ckUSDCToken,
+        ckSOLToken,
       ]);
     });
 
