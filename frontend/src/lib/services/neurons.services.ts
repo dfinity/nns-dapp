@@ -279,11 +279,27 @@ export const stakeNeuron = async ({
   }
 };
 
+// Goes up with each `listNeurons` call. A response is out of date when a later
+// call wrote certified neurons to the store, or reset the store after a failed
+// load. So an older response cannot replace newer certified neurons.
+let listNeuronsCallCount = 0;
+let latestCertifiedListNeuronsCall = 0;
+// False when that latest write is the reset after a failed load.
+let latestCertifiedHasNeurons = false;
+
+// Returns a check that is true when a `listNeurons` call that starts after this
+// point wrote certified neurons or reset the store. Then the store has newer
+// neurons than a single neuron that is loaded from this point.
+const startSingleNeuronLoad = () => {
+  const callsAtStart = listNeuronsCallCount;
+  return () => latestCertifiedListNeuronsCall > callsAtStart;
+};
+
 /**
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
  * @param {Object} params
- * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
+ * @param {callback} params.callback an optional callback that is called when a response writes the store (certified or not), or with `true` when a later call already wrote certified neurons. Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
   callback,
@@ -292,8 +308,24 @@ export const listNeurons = async ({
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
+  const callStrategy = strategy ?? FORCE_CALL_STRATEGY;
+  const makesUpdateCall = callStrategy !== "query";
+  listNeuronsCallCount += 1;
+  const call = listNeuronsCallCount;
+  const isOutdated = () => latestCertifiedListNeuronsCall > call;
+  // Data of a query-only call does not replace certified neurons.
+  const isQueryOverCertified = () =>
+    !makesUpdateCall && get(neuronsStore).certified === true;
+  // The certified neurons of a later call are also the certified neurons of
+  // this call.
+  const reportLaterCertifiedNeurons = (certified: boolean) => {
+    if (certified && latestCertifiedHasNeurons) {
+      callback?.(true);
+    }
+  };
+
   return queryAndUpdate<NeuronInfo[], unknown>({
-    strategy: strategy ?? FORCE_CALL_STRATEGY,
+    strategy: callStrategy,
     request: ({ certified, identity }) =>
       governanceApiService.queryNeurons({
         certified,
@@ -301,17 +333,37 @@ export const listNeurons = async ({
         includeEmptyNeurons: false,
       }),
     onLoad: async ({ response: neurons, certified }) => {
+      if (isQueryOverCertified()) {
+        return;
+      }
+      if (isOutdated()) {
+        reportLaterCertifiedNeurons(certified);
+        return;
+      }
+
       neuronsStore.setNeurons({ neurons, certified });
+      if (certified) {
+        latestCertifiedListNeuronsCall = call;
+        latestCertifiedHasNeurons = true;
+      }
 
       callback?.(certified);
     },
     onError: ({ error, certified, strategy }) => {
-      if (!isLastCall({ strategy, certified })) {
+      if (!isLastCall({ strategy, certified }) || isQueryOverCertified()) {
+        return;
+      }
+      if (isOutdated()) {
+        reportLaterCertifiedNeurons(certified);
         return;
       }
 
       // Explicitly handle only UPDATE errors
       neuronsStore.setNeurons({ neurons: [], certified });
+      if (makesUpdateCall) {
+        latestCertifiedListNeuronsCall = call;
+        latestCertifiedHasNeurons = false;
+      }
 
       toastsError({
         labelKey: "error.get_neurons",
@@ -325,6 +377,7 @@ export const listNeurons = async ({
 // We always want to call this with the user identity
 export const getAndLoadNeuron = async (neuronId: NeuronId) => {
   const identity = await getAuthenticatedIdentity();
+  const isOutdated = startSingleNeuronLoad();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
     identity,
@@ -338,6 +391,9 @@ export const getAndLoadNeuron = async (neuronId: NeuronId) => {
     throw new NotAuthorizedNeuronError(
       `User not authorized to access neuron ${neuronId}`
     );
+  }
+  if (isOutdated()) {
+    return;
   }
   neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
 };
@@ -1145,12 +1201,17 @@ const claimOrRefreshAndLoadNeuron = async (
   }
 
   try {
+    const isOutdated = startSingleNeuronLoad();
     await loadNeuron({
       neuronId,
       forceFetch: true,
       strategy: "update",
-      setNeuron: ({ neuron, certified }) =>
-        neuronsStore.pushNeurons({ neurons: [neuron], certified }),
+      setNeuron: ({ neuron, certified }) => {
+        if (isOutdated()) {
+          return;
+        }
+        neuronsStore.pushNeurons({ neurons: [neuron], certified });
+      },
     });
   } catch (err) {
     console.error(err);
@@ -1310,11 +1371,15 @@ const claimNeuron = async ({
       "claimOrRefreshNeuronByMemo should either throw or return a neuronId."
     );
   }
+  const isOutdated = startSingleNeuronLoad();
   await loadNeuron({
     neuronId,
     forceFetch: true,
     strategy: "update",
     setNeuron: ({ neuron, certified }) => {
+      if (isOutdated()) {
+        return;
+      }
       neuronsStore.pushNeurons({ neurons: [neuron], certified });
     },
     handleError: () => {},

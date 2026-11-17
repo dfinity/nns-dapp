@@ -4,6 +4,7 @@ import {
   neuronNeedsRefresh,
   refreshNeuronIfNeeded,
 } from "$lib/services/sns-neurons-check-balances.services";
+import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -16,6 +17,7 @@ import {
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
@@ -191,6 +193,41 @@ describe("sns-neurons-check-balances-services", () => {
 
       expect(spyNeuronBalance).toBeCalledTimes(1);
       expect(spyRefreshNeuron).not.toBeCalled();
+    });
+
+    it("should not replace the neurons of a neurons load that starts later", async () => {
+      const olderNeuron = { ...userNeuron, cached_neuron_stake_e8s: 1n };
+      let resolveOlderNeuron: (neuron: SnsGovernanceDid.Neuron) => void;
+      const spyGetSnsNeuron = vi
+        .spyOn(governanceApi, "getSnsNeuron")
+        .mockImplementation(
+          () =>
+            new Promise((resolve) => {
+              resolveOlderNeuron = resolve;
+            })
+        );
+      vi.spyOn(governanceApi, "getNeuronBalance").mockResolvedValue(
+        userNeuron.cached_neuron_stake_e8s + 100_000_000n
+      );
+      vi.spyOn(governanceApi, "querySnsNeurons").mockResolvedValue([
+        userNeuron,
+      ]);
+
+      const refresh = refreshNeuronIfNeeded({
+        rootCanisterId: mockPrincipal,
+        neuron: userNeuron,
+      });
+      await runResolvedPromises();
+      expect(spyGetSnsNeuron).toBeCalledTimes(1);
+
+      await syncSnsNeurons(mockPrincipal, { strategy: "update" });
+      resolveOlderNeuron(olderNeuron);
+      await refresh;
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [userNeuron],
+        certified: true,
+      });
     });
   });
 

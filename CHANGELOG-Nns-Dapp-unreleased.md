@@ -15,11 +15,9 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - ckSOL is listed as a default token.
-- The quick search panel has an "Import SNS" tool. It adds an SNS that the NNS
-  dapp does not list, with its root canister ID. The SNS then shows in the
-  tokens, staking, neuron and proposal pages with an "Imported" tag. The list
-  stays in the browser.
-- Add a Hotkeys page with the hotkeys of all your neurons, behind the `ENABLE_HOTKEYS_PAGE` feature flag.
+- Add an "Import SNS" tool to the quick search panel to add an SNS that the
+  NNS dapp does not list.
+- Add a Hotkeys page to replace or remove a hotkey on all your NNS and SNS neurons at once.
 
 #### Changed
 

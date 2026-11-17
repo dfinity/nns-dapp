@@ -6,6 +6,7 @@ import {
 } from "$lib/api/sns-governance.api";
 import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { startSnsSingleNeuronLoad } from "$lib/services/sns-neurons.services";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
@@ -32,12 +33,16 @@ const loadNeuron = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<void> => {
+  const isOutdated = startSnsSingleNeuronLoad(rootCanisterId);
   const neuron = await getSnsNeuron({
     identity,
     rootCanisterId,
     neuronId,
     certified,
   });
+  if (isOutdated()) {
+    return;
+  }
   if (userHasNoPermissions({ neuron, controller: identity.getPrincipal() })) {
     // This neuron does not belong to the user.
     // It's possible for an SNS neuron to be transferred to another user

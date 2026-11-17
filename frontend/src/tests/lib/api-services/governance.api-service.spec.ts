@@ -1,4 +1,7 @@
-import { governanceApiService } from "$lib/api-services/governance.api-service";
+import {
+  clearCache,
+  governanceApiService,
+} from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import {
   createMockIdentity,
@@ -12,7 +15,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { NnsGovernanceDid } from "@icp-sdk/canisters/nns";
+import type { NeuronInfo, NnsGovernanceDid } from "@icp-sdk/canisters/nns";
 import { NeuronVisibility, Topic, Vote } from "@icp-sdk/canisters/nns";
 import type { Mock } from "vitest";
 
@@ -263,6 +266,50 @@ describe("neurons api-service", () => {
       expect(promise1).not.toBe(promise2);
       expect(await promise1).toEqual([neuron1]);
       expect(await promise2).toEqual([neuron1]);
+      expect(api.queryNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should not cache the response of an older certified call", async () => {
+      const params = { identity: identity1, certified: true };
+      let resolveOlderCall: (neurons: NeuronInfo[]) => void;
+      vi.spyOn(api, "queryNeurons").mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveOlderCall = resolve;
+          })
+      );
+
+      const olderCall = governanceApiService.queryNeurons(params);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
+      resolveOlderCall([neuron2]);
+      expect(await olderCall).toEqual([neuron2]);
+
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
+      expect(api.queryNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should not cache a response that ends after the cache is cleared", async () => {
+      const params = { identity: identity1, certified: true };
+      let resolveCall: (neurons: NeuronInfo[]) => void;
+      vi.spyOn(api, "queryNeurons").mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveCall = resolve;
+          })
+      );
+
+      const call = governanceApiService.queryNeurons(params);
+      clearCache();
+      resolveCall([neuron2]);
+      await call;
+
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(2);
     });
 

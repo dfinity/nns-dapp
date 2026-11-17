@@ -7,7 +7,9 @@ import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
 import { CanistersPo } from "$tests/page-objects/Canisters.page-object";
+import { ChangeHotkeyModalPo } from "$tests/page-objects/ChangeHotkeyModal.page-object";
 import { ConfirmationModalPo } from "$tests/page-objects/ConfirmationModal.page-object";
+import { HotkeysPo } from "$tests/page-objects/Hotkeys.page-object";
 import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
@@ -102,6 +104,14 @@ export class AppPo extends BasePageObject {
 
   getRemoveAddressModalPo(): ConfirmationModalPo {
     return ConfirmationModalPo.under(this.root);
+  }
+
+  getHotkeysPo(): HotkeysPo {
+    return HotkeysPo.under(this.root);
+  }
+
+  getChangeHotkeyModalPo(): ChangeHotkeyModalPo {
+    return ChangeHotkeyModalPo.under(this.root);
   }
 
   getMenuItemsPo(): MenuItemsPo {
@@ -225,6 +235,14 @@ export class AppPo extends BasePageObject {
     await this.getMenuItemsPo().clickLaunchpad();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
+  }
+
+  async goToHotkeys(): Promise<void> {
+    await this.getAccountMenuPo().openMenu();
+    await this.getAccountMenuPo().getLinkToHotkeysPo().click();
+    // Menu closes automatically.
+    await this.getBackdropPo().waitForAbsent();
+    await this.getHotkeysPo().waitFor();
   }
 
   async goToCanisters(): Promise<void> {
