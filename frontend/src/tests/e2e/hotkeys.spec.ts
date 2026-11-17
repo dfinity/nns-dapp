@@ -60,20 +60,21 @@ test("Test hotkeys", async ({ page, context }) => {
   step("See the hotkey of both neurons");
   await appPo.goToHotkeys();
   const hotkeysPo = appPo.getHotkeysPo();
-  await expect
-    .poll(() => hotkeysPo.getRowsData())
-    .toEqual([
-      {
-        principal: oldHotkey,
-        projects: ["Internet Computer: 1", `${snsProjectName}: 1`],
-        neuronCount: "2",
-      },
-    ]);
+  // A row that leaves with a transition has no tooltip, so a read can fail
+  // until the transition ends.
+  const getRowsData = () => hotkeysPo.getRowsData().catch(() => undefined);
+  const areActionsDisabled = () =>
+    hotkeysPo.areActionsDisabled(0).catch(() => undefined);
+  await expect.poll(getRowsData).toEqual([
+    {
+      principal: oldHotkey,
+      projects: ["Internet Computer: 1", `${snsProjectName}: 1`],
+      neuronCount: "2",
+    },
+  ]);
 
   step("Replace the hotkey on both neurons");
-  await expect
-    .poll(() => hotkeysPo.areActionsDisabled(0))
-    .toEqual([false, false]);
+  await expect.poll(areActionsDisabled).toEqual([false, false]);
   await hotkeysPo.clickReplace(0);
   const modalPo = appPo.getChangeHotkeyModalPo();
   await modalPo.typeNewHotkey(newHotkey);
@@ -83,15 +84,11 @@ test("Test hotkeys", async ({ page, context }) => {
   );
   await modalPo.clickClose();
   await expect
-    .poll(async () =>
-      (await hotkeysPo.getRowsData()).map(({ principal }) => principal)
-    )
+    .poll(async () => (await getRowsData())?.map(({ principal }) => principal))
     .toEqual([newHotkey]);
 
   step("Remove the hotkey from both neurons");
-  await expect
-    .poll(() => hotkeysPo.areActionsDisabled(0))
-    .toEqual([false, false]);
+  await expect.poll(areActionsDisabled).toEqual([false, false]);
   await hotkeysPo.clickRemove(0);
   await modalPo.clickConfirm();
   expect(await modalPo.getResultSuccessText()).toBe(
