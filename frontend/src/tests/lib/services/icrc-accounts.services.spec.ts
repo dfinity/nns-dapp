@@ -950,7 +950,35 @@ describe("icrc-accounts-services", () => {
       });
     });
 
-    it("should report a duplicate of a new transfer as a failure", async () => {
+    it("should keep the timestamp after a rejected first attempt", async () => {
+      vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(ledgerApi, "icrcTransfer")
+        .mockResolvedValue(1n)
+        .mockRejectedValueOnce(
+          new IcrcTransferError({
+            errorType: { TemporarilyUnavailable: null },
+            msg: "test",
+          })
+        );
+      const params = {
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        fee,
+        ledgerCanisterId,
+      };
+
+      await transferTokens(params);
+      vi.setSystemTime(Date.now() + 1_000);
+      await transferTokens(params);
+      vi.useRealTimers();
+
+      const [[first], [second]] = vi.mocked(ledgerApi.icrcTransfer).mock.calls;
+      expect(second.createdAt).toEqual(first.createdAt);
+    });
+
+    it("should report a duplicate of a first attempt as already sent", async () => {
       vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(ledgerApi, "icrcTransfer").mockRejectedValue(duplicateError);
 
@@ -962,13 +990,8 @@ describe("icrc-accounts-services", () => {
         ledgerCanisterId,
       });
 
-      expect(result).toEqual({ blockIndex: undefined, unknownOutcome: false });
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: en.error__sns.ledger_duplicate,
-        },
-      ]);
+      expect(result).toEqual({ blockIndex: 10n, alreadySent: true });
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should not reload accounts after a definite failure", async () => {

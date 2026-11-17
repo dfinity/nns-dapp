@@ -325,8 +325,9 @@ export const transferTokens = async ({
 
     return { blockIndex };
   } catch (err) {
+    // Only a call with the same timestamp, from this tab or another tab, can be the duplicate.
     if (
-      attempt?.isRetry === true &&
+      nonNullish(attempt) &&
       err instanceof IcrcTransferError &&
       "Duplicate" in err.errorType
     ) {
@@ -340,13 +341,12 @@ export const transferTokens = async ({
     }
 
     const unknownOutcome = isUnknownOutcomeError(err);
-    const tooOld =
-      err instanceof IcrcTransferError && "TooOld" in err.errorType;
 
-    // After a rejected retry, an earlier attempt can still execute.
+    // After other errors, a call with the same timestamp, for example in another tab, can still execute.
     if (
       nonNullish(attempt) &&
-      (tooOld || (!attempt.isRetry && !unknownOutcome))
+      err instanceof IcrcTransferError &&
+      "TooOld" in err.errorType
     ) {
       clearTransferAttempt(attempt);
     }

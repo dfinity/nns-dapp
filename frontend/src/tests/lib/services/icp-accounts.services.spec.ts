@@ -970,7 +970,7 @@ describe("icp-accounts.services", () => {
       expect(saved).toContain(transferICPParams.destinationAddress);
     });
 
-    it("should use a new timestamp after a rejected first attempt", async () => {
+    it("should keep the timestamp after a rejected first attempt", async () => {
       vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
       spySendICP.mockRejectedValueOnce(new Error("test"));
       await transferICP(transferICPParams);
@@ -979,18 +979,16 @@ describe("icp-accounts.services", () => {
       vi.useRealTimers();
 
       const [[first], [second]] = spySendICP.mock.calls;
-      expect(second.createdAt).not.toEqual(first.createdAt);
+      expect(second.createdAt).toEqual(first.createdAt);
     });
 
-    it("should report a duplicate of a new transfer as a failure", async () => {
+    it("should report a duplicate of a first attempt as already sent", async () => {
       spySendICP.mockRejectedValue(new TxDuplicateError(10n));
 
       const result = await transferICP(transferICPParams);
 
-      expect(result).toEqual({
-        success: false,
-        err: "error.transaction_error",
-      });
+      expect(result).toEqual({ success: true, alreadySent: true });
+      expect(get(toastsStore)).toEqual([]);
     });
 
     it("should show toast on TxTooOldError", async () => {

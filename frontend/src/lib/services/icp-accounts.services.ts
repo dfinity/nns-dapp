@@ -387,7 +387,8 @@ export const transferICP = async ({
   } catch (err) {
     const { identifier } = sourceAccount;
 
-    if (attempt?.isRetry === true && err instanceof TxDuplicateError) {
+    // Only a call with the same timestamp, from this tab or another tab, can be the duplicate.
+    if (nonNullish(attempt) && err instanceof TxDuplicateError) {
       clearTransferAttempt(attempt);
       await loadTransferBalances({ identifier, to });
 
@@ -396,11 +397,8 @@ export const transferICP = async ({
 
     const unknownOutcome = isUnknownOutcomeError(err);
 
-    // After a rejected retry, an earlier attempt can still execute.
-    if (
-      nonNullish(attempt) &&
-      (err instanceof TxTooOldError || (!attempt.isRetry && !unknownOutcome))
-    ) {
+    // After other errors, a call with the same timestamp, for example in another tab, can still execute.
+    if (nonNullish(attempt) && err instanceof TxTooOldError) {
       clearTransferAttempt(attempt);
     }
 
