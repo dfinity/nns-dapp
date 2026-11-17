@@ -292,14 +292,15 @@ jobs:
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
       - name: Download NNS-dapp CI wasm
+        # Tests the newest main commit with a successful build. The newest main
+        # commit may still be building, for example right after a merge, and
+        # then has nothing to download.
         run: |
-          git fetch --depth=1 origin main
-          MAIN_COMMIT="$(git rev-parse origin/main)"
-          LAST_COMMIT_TIMESTAMP="$(git log -1 --format=%ct "$MAIN_COMMIT")"
-          AGE_OF_LAST_COMMIT="$(( $(date +%s) - LAST_COMMIT_TIMESTAMP ))"
-          if [[ "$AGE_OF_LAST_COMMIT" -gt "$((3 * 24 * 60 * 60))" ]]; then
-            echo "The last commit to the main branch is over 3 days old so the build artifact may have expired, which means we can't download it."
-            echo "We'll test again after the next commit."
+          read -r MAIN_COMMIT RUN_CREATED_AT < <(gh run list --repo "$GITHUB_REPOSITORY" --workflow "Build and test" --branch main --event push --status success --limit 1 --json headSha,createdAt --jq '.[0] | "\(.headSha) \(.createdAt)"')
+          AGE_OF_BUILD="$(( $(date +%s) - $(jq -rn --arg t "$RUN_CREATED_AT" '$t | fromdate') ))"
+          if [[ "$AGE_OF_BUILD" -gt "$((3 * 24 * 60 * 60))" ]]; then
+            echo "The last successful build of the main branch is over 3 days old so the build artifact may have expired, which means we can't download it."
+            echo "We'll test again after the next build."
           else
             scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
           fi
