@@ -454,7 +454,6 @@ interface I18nNeuron_types {
 interface I18nStaking {
   title: string;
   text: string;
-  nervous_systems: string;
   nervous_systems_nns: string;
   nervous_systems_nns_subtitle: string;
   nervous_systems_sns: string;
@@ -1453,7 +1452,6 @@ interface I18nSync {
 
 interface I18nTokens {
   token_name: string;
-  projects_header: string;
   projects_header_icp: string;
   projects_header_icp_subtitle: string;
   projects_header_ck: string;
