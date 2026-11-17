@@ -15,7 +15,6 @@
     isDesktopViewportStore,
     isMobileViewportStore,
   } from "$lib/derived/viewport.derived";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
@@ -64,7 +63,7 @@
     })
   );
   // TODO: Do we still want to have the maturity as a fallback for the APY?
-  const showApy = $derived($ENABLE_APY_PORTFOLIO && !hasApyCalculationErrored);
+  const showApy = $derived(!hasApyCalculationErrored);
   const showLinkRow = $derived(numberOfTopStakedTokens >= 3);
 </script>
 

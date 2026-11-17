@@ -12,7 +12,6 @@ import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.
 import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -338,7 +337,6 @@ describe("Portfolio route", () => {
 
         const po = await renderPage();
         const portfolioPagePo = po.getPortfolioPagePo();
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
 
         // 1BTC -> $100_000
         // 1BTCTest -> $100_000
@@ -360,7 +358,7 @@ describe("Portfolio route", () => {
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
         ).toBe("20’345.10 ICP");
         expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
-          false
+          true
         );
 
         const heldTokensCardPo = portfolioPagePo.getHeldRestTokensCardPo();
@@ -390,8 +388,6 @@ describe("Portfolio route", () => {
         const stakedTokensCardPo = portfolioPagePo.getStakedRestTokensCardPo();
         const stakedTokensTitles =
           await stakedTokensCardPo.getStakedTokensTitle();
-        const stakedTokensMaturities =
-          await stakedTokensCardPo.getStakedTokensMaturity();
         const stakedTokensStakeInUsd =
           await stakedTokensCardPo.getStakedTokensStakeInUsd();
         const stakedTokensStakeInNativeCurrency =
@@ -403,9 +399,6 @@ describe("Portfolio route", () => {
 
         expect(stakedTokensTitles.length).toBe(2);
         expect(stakedTokensTitles).toEqual(["Doom", "Tetris"]);
-
-        expect(stakedTokensMaturities.length).toBe(2);
-        expect(stakedTokensMaturities).toEqual(["2.00", "2.00"]);
 
         expect(stakedTokensStakeInUsd.length).toBe(2);
         expect(stakedTokensStakeInUsd).toEqual(["$200.00", "$200.00"]);
