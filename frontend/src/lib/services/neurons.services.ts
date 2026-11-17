@@ -347,6 +347,9 @@ export const listNeurons = async ({
 
       // Explicitly handle only UPDATE errors
       neuronsStore.setNeurons({ neurons: [], certified });
+      if (makesUpdateCall) {
+        latestWrittenUpdatingListNeuronsCall = call;
+      }
 
       toastsError({
         labelKey: "error.get_neurons",

@@ -71,9 +71,9 @@ import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 // For each project, goes up with each neurons load. A response is out of date
-// when a later load of the same project that makes an update call wrote the
-// store, so an older response cannot replace newer neurons. A query-only load
-// does not make an earlier load out of date.
+// when a later load of the same project that makes an update call wrote or
+// reset the store, so an older response cannot replace newer neurons. A
+// query-only load does not make an earlier load out of date.
 const snsNeuronsLoads = new Map<
   string,
   { count: number; latestWrittenUpdating: number }
@@ -97,7 +97,7 @@ const startSnsNeuronsLoad = ({
 
   return {
     isOutdated: () => loads.latestWrittenUpdating > load,
-    // Call after the load wrote the store.
+    // Call after the load wrote or reset the store.
     markWritten: () => {
       if (makesUpdateCall) {
         loads.latestWrittenUpdating = load;
@@ -162,6 +162,7 @@ export const syncSnsNeurons = async (
 
       // hide unproven data
       snsNeuronsStore.resetProject(rootCanisterId);
+      markWritten();
 
       toastsError(
         toToastError({

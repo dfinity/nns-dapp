@@ -555,6 +555,28 @@ describe("neurons-services", () => {
       expect(get(neuronsStore)).toEqual({ neurons, certified: true });
     });
 
+    it("should not replace the neurons of a later call that failed", async () => {
+      spyConsoleError.mockReturnValue();
+      let resolveOlderCall: (neurons: NeuronInfo[]) => void;
+      spyQueryNeurons
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              resolveOlderCall = resolve;
+            })
+        )
+        .mockRejectedValueOnce(new Error("Test error"));
+
+      const olderCall = listNeurons({ strategy: "update" });
+      await listNeurons({ strategy: "update" });
+      expect(get(neuronsStore)).toEqual({ neurons: [], certified: true });
+
+      resolveOlderCall([{ ...neurons[0], neuronId: 999n }]);
+      await olderCall;
+
+      expect(get(neuronsStore)).toEqual({ neurons: [], certified: true });
+    });
+
     it("should not replace certified neurons with a query-only response", async () => {
       neuronsStore.setNeurons({ neurons, certified: true });
       spyQueryNeurons.mockResolvedValue([{ ...neurons[0], neuronId: 999n }]);

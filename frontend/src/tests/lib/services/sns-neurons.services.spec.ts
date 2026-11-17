@@ -159,6 +159,29 @@ describe("sns-neurons-services", () => {
       });
     });
 
+    it("should not replace the neurons of a later load that failed", async () => {
+      vi.spyOn(console, "error").mockReturnValue(undefined);
+      const olderNeuron = { ...neuron, id: [{ id: Uint8Array.from([9, 9]) }] };
+      let resolveOlderLoad: (neurons: SnsGovernanceDid.Neuron[]) => void;
+      vi.spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              resolveOlderLoad = resolve;
+            })
+        )
+        .mockRejectedValueOnce(new Error("Test error"));
+
+      const olderLoad = syncSnsNeurons(mockPrincipal, { strategy: "update" });
+      await syncSnsNeurons(mockPrincipal, { strategy: "update" });
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toBeUndefined();
+
+      resolveOlderLoad([olderNeuron as SnsGovernanceDid.Neuron]);
+      await olderLoad;
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toBeUndefined();
+    });
+
     it("should keep a pending certified load when a later query-only load ends", async () => {
       const queryNeuron = { ...neuron, id: [{ id: Uint8Array.from([9, 9]) }] };
       let resolveCertified: (neurons: SnsGovernanceDid.Neuron[]) => void;
