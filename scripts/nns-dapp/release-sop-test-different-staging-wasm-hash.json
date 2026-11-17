@@ -1,6 +1,7 @@
 {
   "args": [
     "--new",
+    "--devenv",
     "--test_network",
     "devenv_user",
     "--test_domain",
@@ -140,12 +141,13 @@
     "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: \u001b[32mDone\u001b[0m",
     "CI NNS-dapp WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
     "Local WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
+    "dfx identity: \u001b[32mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
+    "Deploy RC to DevEnv: \u001b[32mtrue\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
     "scripts/canister_ids --remove --network devenv_user --canister nns-dapp",
     "",
     "scripts/canister_ids --remove --network devenv_user --canister nns-dapp: \u001b[32mDone\u001b[0m",
-    "dfx identity: \u001b[32mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
     "dfx canister create nns-dapp --network devenv_user --no-wallet",

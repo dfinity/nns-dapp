@@ -56,6 +56,8 @@ proposal is successful, the changes it released will be moved from this file to
   so the SNS end-to-end tests run again.
 - The local test network has a mock exchange rate canister, so the total value
   locked works and its test runs again.
+- The release script deploys the release candidate to the devenv only with
+  `--devenv`, and the Slack links are optional.
 
 #### Deprecated
 
