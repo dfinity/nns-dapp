@@ -198,7 +198,9 @@
             <span slot="label">{$i18n.hotkeys.new_hotkey}</span>
           </PrincipalInput>
           {#if nonNullish(newHotkeyError)}
-            <p class="error" data-tid="new-hotkey-error">{newHotkeyError}</p>
+            <p class="error" role="alert" data-tid="new-hotkey-error">
+              {newHotkeyError}
+            </p>
           {/if}
           <CalloutWarning htmlText={$i18n.hotkeys.new_hotkey_warning} />
         </div>

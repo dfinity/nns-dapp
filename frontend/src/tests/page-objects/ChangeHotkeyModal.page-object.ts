@@ -33,6 +33,10 @@ export class ChangeHotkeyModalPo extends ModalPo {
       : null;
   }
 
+  getNewHotkeyErrorRole(): Promise<string | null> {
+    return this.root.byTestId("new-hotkey-error").getAttribute("role");
+  }
+
   hasWarning(): Promise<boolean> {
     return this.isPresent("callout-warning-component");
   }

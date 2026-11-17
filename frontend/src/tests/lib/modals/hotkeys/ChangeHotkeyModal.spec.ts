@@ -117,6 +117,7 @@ describe("ChangeHotkeyModal", () => {
     expect(await po.getNewHotkeyError()).toBe(
       "The new hotkey must be different from the current hotkey."
     );
+    expect(await po.getNewHotkeyErrorRole()).toBe("alert");
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
 
     await po.typeNewHotkey(Principal.anonymous().toText());
