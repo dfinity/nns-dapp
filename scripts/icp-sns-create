@@ -263,10 +263,15 @@ transfer() {
   } >&2
 }
 
-# Buys the whole swap as the anonymous principal.
+# Buys the whole swap as the anonymous principal, unless the swap has the
+# participation already. The swap rejects a refresh once its target is reached.
 buy_swap() {
-  local max_e8s principal_hex subaccount balance
+  local max_e8s participation_e8s principal_hex subaccount balance
   max_e8s="$(call "$SWAP_CANISTER_ID" get_init '(record {})' --query | idl2json | jq -r '.init[0].max_participant_icp_e8s[0]')"
+  participation_e8s="$(call "$SWAP_CANISTER_ID" get_buyer_state "(record { principal_id = opt principal \"$ANONYMOUS_PRINCIPAL\" })" --query | idl2json | jq -r '.buyer_state[0].icp[0].amount_e8s // "0"')"
+  if ((participation_e8s >= max_e8s)); then
+    return
+  fi
   # The swap keeps the ICP of a buyer in a subaccount: the length of the
   # principal, the principal bytes, then zeros.
   principal_hex="$(convert-id --input text --output hex "$ANONYMOUS_PRINCIPAL")"
