@@ -426,6 +426,8 @@ echo Checklist file: "$CHECKLIST_FILE"
 
 # Pre-release
 record "Start time" date +"%Y-%m-%d %H:%M:%S"
+# The choice is recorded, so that --continue follows the choice of --new.
+record "Deploy RC to DevEnv" echo "$DEPLOY_TO_DEVENV"
 confirm_cmd git fetch --tags --force
 record "Release SOP script is newest version" is_release_sop_script_newest_version
 confirm_cmd git checkout -b "$BRANCH_NAME" --no-track origin/main
@@ -442,8 +444,6 @@ confirm_cmd "$SOURCE_DIR/download-ci-wasm" --commit tags/release-candidate --dir
 record "CI NNS-dapp WASM hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate
 verify "CI NNS-dapp WASM hash" "Local WASM hash" sha256 "$TOP_DIR/release/ci/nns-dapp.wasm.gz"
 record "dfx identity" get_dfx_identity
-# The choice is recorded, so that --continue follows the choice of --new.
-record "Deploy RC to DevEnv" echo "$DEPLOY_TO_DEVENV"
 if [ "$(checklist_must_get "Deploy RC to DevEnv")" = "true" ]; then
   confirm_cmd scripts/canister_ids --remove --network "$TEST_NETWORK" --canister nns-dapp
   confirm_cmd dfx canister create nns-dapp --network "$TEST_NETWORK" --no-wallet

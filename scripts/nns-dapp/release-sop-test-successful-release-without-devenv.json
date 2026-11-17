@@ -127,6 +127,7 @@
   "expectedOutput": [
     "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
     "Start time: \u001b[32m2001-02-29 14:15:16\u001b[0m",
+    "Deploy RC to DevEnv: \u001b[32mfalse\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
     "git fetch --tags --force",
@@ -167,7 +168,6 @@
     "CI NNS-dapp WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
     "Local WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
     "dfx identity: \u001b[32mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
-    "Deploy RC to DevEnv: \u001b[32mfalse\u001b[0m",
     "Build hashes: \u001b[32m41ed48445882e6cff25f14c10ca1fb5c34b2df04c4c2b4d77a6244a0baa0e5ca  assets.tar.xz",
     "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4  nns-dapp.wasm.gz",
     "bf2a1d0abe03272358245d5fa25f5b24ba32aa8eb7fd0367e3e68e975a2771ff  sns_aggregator.wasm.gz",
