@@ -314,7 +314,11 @@ export const transferTokens = async ({
     );
 
     if (unknownOutcome) {
-      await loadAccounts({ ledgerCanisterId });
+      // The modals copy the balance after this call, so wait for the certified response.
+      await loadAccounts({
+        ledgerCanisterId,
+        strategy: FORCE_CALL_STRATEGY ?? "update",
+      });
     }
 
     return { blockIndex: undefined, unknownOutcome };
