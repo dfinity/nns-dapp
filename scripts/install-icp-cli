@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Installs the icp-cli release pinned in config.json into \$HOME/.local/bin.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=v long=version desc="The icp-cli version to install" variable=VERSION default="pinned"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+if [[ "${VERSION:-}" == "pinned" ]]; then
+  VERSION="$(jq -r '.defaults.build.config.ICP_CLI_VERSION' "$SOURCE_DIR/../config.json")"
+fi
+
+case "$(uname -s)-$(uname -m)" in
+Darwin-arm64) TARGET="aarch64-apple-darwin" ;;
+Darwin-x86_64) TARGET="x86_64-apple-darwin" ;;
+Linux-aarch64) TARGET="aarch64-unknown-linux-gnu" ;;
+Linux-x86_64) TARGET="x86_64-unknown-linux-gnu" ;;
+*)
+  echo "ERROR: Unsupported platform: $(uname -s)-$(uname -m)" >&2
+  exit 1
+  ;;
+esac
+
+echo "Installing icp-cli $VERSION for $TARGET"
+
+URL="https://github.com/dfinity/icp-cli/releases/download/v${VERSION}/icp-cli-${TARGET}.tar.xz"
+USER_BIN="$HOME/.local/bin"
+mkdir -p "$USER_BIN"
+tmpdir="$(mktemp -d)"
+curl -Lf "$URL" | tar -xJ -C "$tmpdir" --strip-components 1
+install -m 755 "$tmpdir/icp" "$USER_BIN/icp"
+rm -rf "$tmpdir"
+
+echo "Installed $("$USER_BIN/icp" --version)"

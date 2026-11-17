@@ -33,7 +33,7 @@ test("Test canisters", async ({ page, context }) => {
   await appPo.getToastsPo().closeAll();
 
   step("Link a non-controlled canister");
-  const linkedCanisterId = "qsgjb-riaaa-aaaaa-aaaga-cai";
+  const linkedCanisterId = "qoctq-giaaa-aaaaa-aaaea-cai";
   const linkedCanisterName = "NNS dapp";
   await canistersPo.linkCanister({
     canisterId: linkedCanisterId,

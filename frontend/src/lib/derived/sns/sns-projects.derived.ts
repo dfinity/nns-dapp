@@ -6,6 +6,7 @@ import {
   snsMetricsStore,
   type SnsMetricsStoreData,
 } from "$lib/derived/sns-metrics.derived";
+import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
 import {
   snsSummariesStore,
   snsSwapCommitmentsStore,
@@ -99,6 +100,19 @@ export const snsProjectsActivePadStore = derived<
   SnsFullProject[]
 >(snsProjectsStore, (projects: SnsFullProject[]) =>
   filterActiveProjects(projects)
+);
+
+// Imported SNSes did not launch through the NNS, so the Launchpad does not show them.
+export const snsProjectsLaunchpadStore = derived<
+  [Readable<SnsFullProject[]>, Readable<Set<RootCanisterIdText>>],
+  SnsFullProject[]
+>(
+  [snsProjectsActivePadStore, importedSnsRootCanisterIdsStore],
+  ([projects, importedRootCanisterIds]) =>
+    projects.filter(
+      ({ rootCanisterId }) =>
+        !importedRootCanisterIds.has(rootCanisterId.toText())
+    )
 );
 
 export const snsProjectsCommittedStore = derived<

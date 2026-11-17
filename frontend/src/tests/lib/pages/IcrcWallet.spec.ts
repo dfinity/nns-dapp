@@ -36,6 +36,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -804,9 +805,11 @@ describe("IcrcWallet", () => {
         ]);
         expect(get(busyStore)).toEqual([]);
         expect(spyOnGetLedgerId).toBeCalledTimes(1);
+        // The index canister ID is unverified user input, so the call must not
+        // carry the user principal.
         expect(spyOnGetLedgerId).toBeCalledWith({
           certified: true,
-          identity: mockIdentity,
+          identity: expect.any(AnonymousIdentity),
           indexCanisterId,
         });
         expect(spyOnSetImportedTokens).toBeCalledTimes(0);

@@ -2,6 +2,7 @@
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
 use crate::fast_scheduler::FastScheduler;
+use crate::time::time;
 use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
@@ -13,7 +14,6 @@ use crate::{
 };
 use anyhow::anyhow;
 use candid::Principal as CanisterId;
-use ic_cdk::api::time;
 use ic_cdk_timers::TimerId;
 use std::cell::RefCell;
 use std::collections::VecDeque;
@@ -285,10 +285,23 @@ impl State {
         }
     }
 
+    /// If the list of the latest SNSs does not exist, create an empty list.
+    ///
+    /// The list is otherwise created when the first SNS is inserted. Without
+    /// this, a network with no SNS has no list and clients get a 404.
+    fn ensure_latest_list_exists_v1(state: &State) {
+        let path = format!("{}/sns/list/latest/slow.json", Self::PREFIX_V1);
+        if state.stable.borrow().assets.borrow().get(&path).is_none() {
+            insert_asset(path, Self::slow_data_asset_v1(&[]));
+        }
+    }
+
     /// Commands to call on `init` or `post_upgrade`.
     pub fn setup() {
         // Establish the invariant that the last page exists and is not full.
         STATE.with(Self::ensure_last_page_exists_and_is_not_full_v1);
+        // Establish the invariant that the list of the latest SNSs exists.
+        STATE.with(Self::ensure_latest_list_exists_v1);
     }
 }
 

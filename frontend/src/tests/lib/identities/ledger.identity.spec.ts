@@ -1,5 +1,6 @@
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { getRequestId } from "$lib/utils/ledger.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
@@ -16,14 +17,46 @@ import {
   type ReadRequest,
   type ReadRequestType,
 } from "@icp-sdk/core/agent";
-import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
+import {
+  DeviceNotRecognizedError,
+  NoAccessibleDeviceError,
+  OpeningConnectionError,
+  UnknownDeviceError,
+  type DiscoveredDevice,
+} from "@ledgerhq/device-management-kit";
 import type InternetComputerApp from "@zondax/ledger-icp";
 import { LedgerError } from "@zondax/ledger-js";
+import { NEVER, of, throwError } from "rxjs";
 import { mock } from "vitest-mock-extended";
+
+const mockDmk = vi.hoisted(() => ({
+  isEnvironmentSupported: vi.fn(),
+  listenToAvailableDevices: vi.fn(),
+  startDiscovering: vi.fn(),
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  listConnectedDevices: vi.fn(),
+}));
+
+// Keep the real error classes. The tests raise them the way the DMK does.
+vi.mock("@ledgerhq/device-management-kit", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@ledgerhq/device-management-kit")>()),
+  DeviceManagementKitBuilder: class {
+    addTransport() {
+      return this;
+    }
+    build() {
+      return mockDmk;
+    }
+  },
+}));
+
+vi.mock("@ledgerhq/device-transport-kit-web-hid", () => ({
+  webHidTransportFactory: vi.fn(),
+}));
 
 describe("LedgerIdentity", () => {
   const mockLedgerApp = mock<InternetComputerApp>();
-  const mockTransport = mock<TransportWebHID>();
 
   const publicKey = Secp256k1PublicKey.fromRaw(fromHexString(rawPublicKeyHex));
   const callBody1 = {
@@ -67,7 +100,7 @@ describe("LedgerIdentity", () => {
     });
     vi.spyOn(LedgerIdentity, "connect").mockResolvedValue({
       app: mockLedgerApp,
-      transport: mockTransport,
+      release: vi.fn(),
     });
     vi.spyOn(LedgerIdentity, "fetchPublicKeyFromDevice").mockResolvedValue(
       publicKey
@@ -279,6 +312,242 @@ describe("LedgerIdentity", () => {
         renderAsHtml: true,
       });
       expect(mockLedgerApp.sign).not.toBeCalled();
+    });
+  });
+});
+
+describe("LedgerIdentity.connect", () => {
+  const device = { id: "device-id" } as DiscoveredDevice;
+  // The session lives in module state, so each test uses a new session id.
+  let sessionCount = 0;
+  let sessionId: string;
+
+  beforeEach(() => {
+    sessionCount += 1;
+    sessionId = `session-${sessionCount}`;
+
+    mockDmk.isEnvironmentSupported.mockReturnValue(true);
+    // The DMK emits the devices it knows at once, and the devices that the browser lists after it asks the browser.
+    mockDmk.listenToAvailableDevices.mockReturnValue(of([], [device]));
+    mockDmk.startDiscovering.mockReturnValue(of(device));
+    mockDmk.connect.mockResolvedValue(sessionId);
+    mockDmk.disconnect.mockResolvedValue(undefined);
+    mockDmk.listConnectedDevices.mockImplementation(() => [{ sessionId }]);
+  });
+
+  it("should connect to a device that the user already allowed", async () => {
+    await LedgerIdentity.connect();
+
+    expect(mockDmk.startDiscovering).not.toBeCalled();
+    expect(mockDmk.connect).toBeCalledTimes(1);
+    expect(mockDmk.connect).toBeCalledWith({
+      device,
+      sessionRefresherOptions: { isRefresherDisabled: true },
+    });
+  });
+
+  it("should not wait for the known devices if the DMK lists them late", async () => {
+    vi.useFakeTimers();
+    // The DMK already knows the device from an earlier call. The browser confirms it later.
+    mockDmk.listenToAvailableDevices.mockReturnValue(of([device], [device]));
+
+    await LedgerIdentity.connect();
+
+    expect(mockDmk.startDiscovering).not.toBeCalled();
+    expect(mockDmk.connect).toBeCalledTimes(1);
+  });
+
+  it("should ask the browser for a device if the user allowed no device", async () => {
+    mockDmk.listenToAvailableDevices.mockReturnValue(of([], []));
+
+    await LedgerIdentity.connect();
+
+    expect(mockDmk.startDiscovering).toBeCalledTimes(1);
+    expect(mockDmk.connect).toBeCalledWith({
+      device,
+      sessionRefresherOptions: { isRefresherDisabled: true },
+    });
+  });
+
+  it("should ask the browser for a device if the DMK lists no devices in time", async () => {
+    vi.useFakeTimers();
+    mockDmk.listenToAvailableDevices.mockReturnValue(NEVER);
+
+    const result = LedgerIdentity.connect();
+    await vi.advanceTimersByTimeAsync(4_999);
+    expect(mockDmk.startDiscovering).not.toBeCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    await result;
+
+    expect(mockDmk.startDiscovering).toBeCalledTimes(1);
+  });
+
+  it("should share one session between concurrent operations", async () => {
+    vi.useFakeTimers();
+
+    const [first, second] = await Promise.all([
+      LedgerIdentity.connect(),
+      LedgerIdentity.connect(),
+    ]);
+    expect(mockDmk.connect).toBeCalledTimes(1);
+
+    first.release();
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).not.toBeCalled();
+
+    second.release();
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).toBeCalledTimes(1);
+    expect(mockDmk.disconnect).toBeCalledWith({ sessionId });
+  });
+
+  it("should reuse the session for operations that follow each other", async () => {
+    vi.useFakeTimers();
+
+    const first = await LedgerIdentity.connect();
+    first.release();
+    const second = await LedgerIdentity.connect();
+    second.release();
+
+    expect(mockDmk.connect).toBeCalledTimes(1);
+    expect(mockDmk.disconnect).not.toBeCalled();
+  });
+
+  it("should disconnect when the session is idle", async () => {
+    vi.useFakeTimers();
+
+    const { release } = await LedgerIdentity.connect();
+    release();
+
+    await vi.advanceTimersByTimeAsync(4_999);
+    expect(mockDmk.disconnect).not.toBeCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(mockDmk.disconnect).toBeCalledTimes(1);
+    expect(mockDmk.disconnect).toBeCalledWith({ sessionId });
+  });
+
+  it("should not disconnect while an operation uses the session", async () => {
+    vi.useFakeTimers();
+
+    const first = await LedgerIdentity.connect();
+    const second = await LedgerIdentity.connect();
+    first.release();
+
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).not.toBeCalled();
+
+    second.release();
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).toBeCalledTimes(1);
+  });
+
+  it("should connect again if the device disconnected", async () => {
+    vi.useFakeTimers();
+
+    const first = await LedgerIdentity.connect();
+    first.release();
+    mockDmk.listConnectedDevices.mockReturnValue([]);
+    await LedgerIdentity.connect();
+
+    expect(mockDmk.connect).toBeCalledTimes(2);
+  });
+
+  it("should not count the release of a closed session against the new session", async () => {
+    vi.useFakeTimers();
+    const closedSessionId = sessionId;
+    const newSessionId = `${sessionId}-new`;
+
+    const first = await LedgerIdentity.connect();
+    // The device disconnects while the first operation runs.
+    mockDmk.listConnectedDevices.mockReturnValue([]);
+    mockDmk.connect.mockResolvedValue(newSessionId);
+    const second = await LedgerIdentity.connect();
+    expect(mockDmk.connect).toBeCalledTimes(2);
+
+    first.release();
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).not.toBeCalled();
+
+    second.release();
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(mockDmk.disconnect).toBeCalledTimes(1);
+    expect(mockDmk.disconnect).toBeCalledWith({ sessionId: newSessionId });
+    expect(mockDmk.disconnect).not.toBeCalledWith({
+      sessionId: closedSessionId,
+    });
+  });
+
+  it("should connect again after a failed connect", async () => {
+    mockDmk.connect.mockRejectedValueOnce(new UnknownDeviceError("gone"));
+
+    await expect(LedgerIdentity.connect()).rejects.toBeInstanceOf(
+      LedgerErrorKey
+    );
+    await LedgerIdentity.connect();
+
+    expect(mockDmk.connect).toBeCalledTimes(2);
+  });
+
+  it("should raise an error if the browser does not support WebHID", async () => {
+    mockDmk.isEnvironmentSupported.mockReturnValue(false);
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: "error__ledger.browser_not_supported",
+    });
+    expect(mockDmk.connect).not.toBeCalled();
+  });
+
+  it("should raise an error if the user denies access to the device", async () => {
+    mockDmk.listenToAvailableDevices.mockReturnValue(of([], []));
+    mockDmk.startDiscovering.mockReturnValue(
+      throwError(() => new NoAccessibleDeviceError("No selected device"))
+    );
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: "error__ledger.access_denied",
+    });
+  });
+
+  it("should raise an error if another application uses the device", async () => {
+    mockDmk.connect.mockRejectedValue(
+      new OpeningConnectionError(new Error("Failed to open the device"))
+    );
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: "error__ledger.connect_many_apps",
+    });
+  });
+
+  it("should raise an error if the device is gone", async () => {
+    mockDmk.connect.mockRejectedValue(
+      new UnknownDeviceError("Unknown device device-id")
+    );
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: "error__ledger.connect_no_device",
+    });
+  });
+
+  it("should raise an error with the DMK error text for other DMK errors", async () => {
+    mockDmk.connect.mockRejectedValue(
+      new DeviceNotRecognizedError("Device not recognized: 0x1234")
+    );
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: expect.stringContaining("Device not recognized: 0x1234"),
+    });
+    await expect(LedgerIdentity.connect()).rejects.not.toMatchObject({
+      message: expect.stringContaining("[object Object]"),
+    });
+  });
+
+  it("should raise an error with the error text for other errors", async () => {
+    mockDmk.connect.mockRejectedValue(new Error("Boom"));
+
+    await expect(LedgerIdentity.connect()).rejects.toMatchObject({
+      message: expect.stringContaining("Error: Boom"),
     });
   });
 });

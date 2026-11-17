@@ -26,6 +26,10 @@
   import { loadUserCountry } from "$lib/services/user-country.services";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
+  import {
+    importedSnsRootCanisterIdsStore,
+    importedSnsesReadyStore,
+  } from "$lib/stores/sns-aggregator.store";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
     snsSummariesStore,
@@ -106,13 +110,23 @@
   $: ($snsSummariesStore,
     $snsSwapCommitmentsStore,
     $snsTotalSupplyTokenAmountStore,
+    $importedSnsRootCanisterIdsStore,
+    $importedSnsesReadyStore,
     (async () => {
-      if (isNullish(rootCanisterId)) {
+      // An imported SNS has no swap data to show.
+      if (
+        isNullish(rootCanisterId) ||
+        $importedSnsRootCanisterIdsStore.has(rootCanisterId)
+      ) {
         await goBack();
         return;
       }
       // Check project summaries are loaded in store
       if ($snsSummariesStore.length === 0) {
+        return;
+      }
+      // Wait for the imported SNSes, so that the page does not report an imported root as not found.
+      if (!$importedSnsesReadyStore) {
         return;
       }
       // Check valid rootCanisterId
@@ -154,7 +168,11 @@
   let swapCanisterId: Principal | undefined;
   $: swapCanisterId = $projectDetailStore.summary?.swapCanisterId;
 
-  $: if (nonNullish(rootCanisterId) && $authSignedInStore) {
+  // An imported SNS never gets a summary here, so its swap is not queried.
+  let hasSummary = false;
+  $: hasSummary = nonNullish($projectDetailStore.summary);
+
+  $: if (nonNullish(rootCanisterId) && hasSummary && $authSignedInStore) {
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {

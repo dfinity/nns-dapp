@@ -36,14 +36,10 @@ export const stringifyJson = (
             return asText === "[object Object]" ? value : asText;
           }
 
-          // For proposal rendering, historically we display {principal: "1234"}, but in stringified JSON, principals are now encoded as {"__principal__": "1234"}.
+          // JSON.stringify calls Principal.toJSON before this replacer runs, so a
+          // Principal arrives here as {"__principal__": "1234"}.
           if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
             return value[JSON_KEY_PRINCIPAL];
-          }
-
-          // optimistic hash stringifying
-          if (Array.isArray(value) && isHash(value)) {
-            return bytesToHexString(value);
           }
 
           if (value instanceof Promise) {
@@ -92,13 +88,6 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
 // https://stackoverflow.com/questions/43010737/way-to-tell-typescript-compiler-array-prototype-filter-removes-certain-types-fro#answer-54318054
 export const isDefined = <T>(argument: T | undefined): argument is T =>
   argument !== undefined;
-
-// e.g. payloads.did/state_hash (32 bytes) or SEV-SNP measurements (48 bytes)
-export const isHash = (bytes: number[]): boolean =>
-  [32, 48].includes(bytes.length) &&
-  bytes.find(
-    (value) => !Number.isInteger(value) || value < 0 || value > 255
-  ) === undefined;
 
 // Convert a byte array to a hex string
 export const bytesToHexString = (bytes: number[]): string =>
@@ -350,69 +339,38 @@ export const isPngAsset = (
   (asset.startsWith("data:image/png;base64,") || asset.endsWith(".png"));
 
 /**
- * Takes an object and tries to parse inner string as JSON.
- * If it fails, it returns the original string value.
+ * Counts the nesting levels of an object or an array.
  *
- * For example: {b: '{"c":"d"}'} becomes {b: {c: 'd'}}
+ * A primitive, `null`, an empty object and an empty array count 0. A non-empty
+ * object or array counts 1 plus the deepest of its values.
  *
- * @param obj
- * @returns parsed object
+ * The walk uses an explicit stack, so the call stack does not grow with the
+ * nesting of `obj`.
  */
-export const expandObject = (value: unknown): unknown => {
-  if (value === null || value === undefined) {
-    return value;
-  }
-  if (typeof value === "string") {
-    try {
-      return JSON.parse(value);
-    } catch (_) {
-      return value;
-    }
-  }
-  if (Array.isArray(value)) {
-    return value.map(expandObject);
-  }
-  if (typeof value === "object") {
-    if (isPrincipal(value)) {
-      // Do not expand Principal to keep the prototype methods
-      return value;
-    }
-
-    // to avoid mutating original object
-    const result = { ...value };
-    Object.keys(result).forEach(
-      (key) =>
-        ((result as Record<string, unknown>)[key] = expandObject(
-          (result as Record<string, unknown>)[key]
-        ))
-    );
-    return result;
-  }
-  return value;
-};
-
 export const getObjMaxDepth = (obj: unknown): number => {
-  if (typeof obj !== "object" || obj === null) {
-    return 0; // If it's not an object, return 0.
-  }
+  let maxDepth = 0;
+  const stack: { value: unknown; level: number }[] = [{ value: obj, level: 0 }];
 
-  const keyCount = Object.keys(obj).length;
-  if (keyCount === 0) {
-    return 0; // If it's an empty object, return 0.
-  }
-  // or calculate children depth
-  let childrenMaxDepth = 0;
-  for (const key in obj) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (obj.hasOwnProperty(key)) {
-      const depth = getObjMaxDepth((obj as Record<string, unknown>)[key]);
-      if (depth > childrenMaxDepth) {
-        childrenMaxDepth = depth;
-      }
+  while (stack.length > 0) {
+    const { value, level } = stack.pop()!;
+    if (typeof value !== "object" || value === null) {
+      continue;
+    }
+    // If value is an array, keys are its indexes: ["0", "1", ...].
+    const keys = Object.keys(value);
+    if (keys.length === 0) {
+      continue;
+    }
+    maxDepth = Math.max(maxDepth, level + 1);
+    for (const key of keys) {
+      stack.push({
+        value: (value as Record<string, unknown>)[key],
+        level: level + 1,
+      });
     }
   }
 
-  return 1 + childrenMaxDepth; // Add 1 for the current level.
+  return maxDepth;
 };
 
 export const typeOfLikeANumber = (value: unknown): boolean =>

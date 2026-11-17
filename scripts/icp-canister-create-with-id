@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Creates a canister with a given ID on a local icp-cli network.
+
+	icp canister create cannot choose the ID. This script calls the
+	provisional_create_canister_with_cycles method of the management canister
+	through the PocketIC REST API, which accepts any canister ID in the range
+	of a subnet of the network. The current icp identity becomes the controller.
+
+	The network must run in the background, so that
+	.icp/cache/networks/<network>/descriptor.json exists.
+	EOF
+}
+
+CYCLES=100_000_000_000_000
+MAX_ATTEMPTS=120
+RETRY_DELAY_SECONDS=0.5
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The icp network" variable=NETWORK default="local"
+clap.define short=c long=canister desc="The canister ID to create" variable=CANISTER_ID
+clap.define short=p long=principal desc="The controller of the new canister" variable=CONTROLLER default="$(icp identity principal)"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+test -n "${CANISTER_ID:-}" || {
+  echo "ERROR: Please specify the canister ID with --canister."
+  exit 1
+} >&2
+
+if icp canister status "$CANISTER_ID" --network "$NETWORK" >/dev/null 2>&1; then
+  echo "Canister $CANISTER_ID exists already."
+  exit 0
+fi
+
+DESCRIPTOR="$SOURCE_DIR/../.icp/cache/networks/$NETWORK/descriptor.json"
+test -f "$DESCRIPTOR" || {
+  echo "ERROR: The '$NETWORK' network is not running in the background."
+  echo "       Expected the network descriptor at: $DESCRIPTOR"
+  exit 1
+} >&2
+POCKETIC_URL="http://127.0.0.1:$(jq -r '.["pocketic-config-port"]' "$DESCRIPTOR")"
+INSTANCE_URL="$POCKETIC_URL/instances/$(jq -r '.["pocketic-instance-id"]' "$DESCRIPTOR")"
+
+# Converts a textual principal to the base64 of its raw bytes, as the PocketIC REST API expects.
+principal_to_base64() {
+  convert-id --input text --output hex "$1" | xxd -r -p | base64 | tr -d '\n'
+}
+
+# Polls an operation that PocketIC answered with 202 and a handle.
+poll_operation() {
+  local state_label op_id url response
+  state_label="$(jq -r .state_label <<<"$1")"
+  op_id="$(jq -r .op_id <<<"$1")"
+  url="$POCKETIC_URL/read_graph/$state_label/$op_id"
+  for ((attempt = 0; attempt < MAX_ATTEMPTS; attempt++)); do
+    response="$(curl -s -w '\n%{http_code}' "$url")"
+    if [[ "$(tail -n1 <<<"$response")" != "404" ]]; then
+      sed '$d' <<<"$response"
+      return
+    fi
+    sleep "$RETRY_DELAY_SECONDS"
+  done
+  echo "ERROR: Timed out on operation $op_id." >&2
+  exit 1
+}
+
+# Posts to the PocketIC instance. The network runs in live mode, so PocketIC
+# answers 409 while it advances time. Retry until it is free.
+post() {
+  local path body response code
+  path="$1"
+  body="$2"
+  for ((attempt = 0; attempt < MAX_ATTEMPTS; attempt++)); do
+    response="$(curl -s -w '\n%{http_code}' -X POST -H 'content-type: application/json' "$INSTANCE_URL/update/$path" -d "$body")"
+    code="$(tail -n1 <<<"$response")"
+    case "$code" in
+    202) poll_operation "$(sed '$d' <<<"$response")" && return ;;
+    409) sleep "$RETRY_DELAY_SECONDS" ;;
+    *)
+      sed '$d' <<<"$response"
+      return
+      ;;
+    esac
+  done
+  echo "ERROR: Timed out on $path." >&2
+  exit 1
+}
+
+payload="$(
+  didc encode "(record {
+    amount = opt ($CYCLES : nat);
+    settings = null;
+    specified_id = opt principal \"$CANISTER_ID\";
+  })" | xxd -r -p | base64 | tr -d '\n'
+)"
+
+submitted="$(post submit_ingress_message "$(jq -n \
+  --arg sender "$(principal_to_base64 "$CONTROLLER")" \
+  --arg effective "$(principal_to_base64 "$CANISTER_ID")" \
+  --arg payload "$payload" \
+  '{
+    sender: $sender,
+    canister_id: "",
+    effective_principal: { CanisterId: $effective },
+    method: "provisional_create_canister_with_cycles",
+    payload: $payload
+  }')")"
+jq -e .Ok <<<"$submitted" >/dev/null || {
+  echo "ERROR: Failed to submit the create call: $submitted"
+  exit 1
+} >&2
+
+result="$(post await_ingress_message "$(jq .Ok <<<"$submitted")")"
+jq -e 'has("Ok")' <<<"$result" >/dev/null || {
+  echo "ERROR: The create call failed: $result"
+  exit 1
+} >&2
+
+echo "Created canister $CANISTER_ID with controller $CONTROLLER."
