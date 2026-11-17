@@ -14,6 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- ckSOL is listed as a default token.
 - The quick search panel has an "Import SNS" tool. It adds an SNS that the NNS
   dapp does not list, with its root canister ID. The SNS then shows in the
   tokens, staking, neuron and proposal pages with an "Imported" tag. The list
