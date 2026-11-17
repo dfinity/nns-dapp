@@ -851,7 +851,12 @@ describe("icrc-accounts-services", () => {
           text: en.error.transaction_unknown_outcome,
         },
       ]);
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalled();
+      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith(
+        expect.objectContaining({ certified: true })
+      );
+      expect(ledgerApi.queryIcrcBalance).not.toHaveBeenCalledWith(
+        expect.objectContaining({ certified: false })
+      );
     });
 
     describe("when the user repeats a transfer with an unknown outcome", () => {
