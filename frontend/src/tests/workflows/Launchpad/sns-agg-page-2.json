@@ -38,14 +38,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 31473381681860,
-              "amount_e8s": 391738398249,
+              "amount_e8s": 151738418249,
               "account": {
                 "owner": "elxqo-raaaa-aaaaq-aacba-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793242274
+              "timestamp_seconds": 1794448842
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -63,14 +63,14 @@
               },
               "ledger_canister_id": "emww2-4yaaa-aaaaq-aacbq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793242274
+              "timestamp_seconds": 1794448842
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 67864679305735442,
-            "timestamp_seconds": 1793242274
+            "governance_total_potential_voting_power": 68072531214555102,
+            "timestamp_seconds": 1794448842
           },
-          "last_ledger_block_timestamp": 1793238439,
+          "last_ledger_block_timestamp": 1794443190,
           "num_recently_executed_proposals": 1,
           "num_recently_submitted_proposals": 1,
           "genesis_timestamp_seconds": 1702635311
@@ -79,11 +79,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793182514,
-      "end_timestamp_seconds": 1793182511,
-      "total_available_e8s_equivalent": 358838423929492,
+      "actual_timestamp_seconds": 1794392112,
+      "end_timestamp_seconds": 1794392111,
+      "total_available_e8s_equivalent": 7181277413564,
       "distributed_e8s_equivalent": 0,
-      "round": 1048,
+      "round": 1062,
       "settled_proposals": []
     },
     "parameters": {
@@ -1629,7 +1629,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104917229083454763,
+    "icrc1_total_supply": 104918463012080756,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3180,14 +3180,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 22452512222436,
-              "amount_e8s": 687933426,
+              "amount_e8s": 874801356,
               "account": {
                 "owner": "eqsml-lyaaa-aaaaq-aacdq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793242231
+              "timestamp_seconds": 1794448842
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -3205,27 +3205,27 @@
               },
               "ledger_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793242231
+              "timestamp_seconds": 1794448842
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 55708902932117,
-            "timestamp_seconds": 1793242231
+            "governance_total_potential_voting_power": 55715261670805,
+            "timestamp_seconds": 1794448842
           },
-          "last_ledger_block_timestamp": 1793243358,
-          "num_recently_executed_proposals": 16,
-          "num_recently_submitted_proposals": 16,
+          "last_ledger_block_timestamp": 1794443385,
+          "num_recently_executed_proposals": 14,
+          "num_recently_submitted_proposals": 14,
           "genesis_timestamp_seconds": 1702903688
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793191690,
-      "end_timestamp_seconds": 1793191688,
-      "total_available_e8s_equivalent": 104997151986,
+      "actual_timestamp_seconds": 1794401292,
+      "end_timestamp_seconds": 1794401288,
+      "total_available_e8s_equivalent": 182363054019,
       "distributed_e8s_equivalent": 0,
-      "round": 1045,
+      "round": 1059,
       "settled_proposals": []
     },
     "parameters": {
@@ -3975,7 +3975,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100921826200132,
+    "icrc1_total_supply": 100920182181864,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4728,7 +4728,8 @@
         "ev5f4-4yaaa-aaaad-qmk3q-cai",
         "fytbs-tqaaa-aaaad-qmk4a-cai",
         "vuy7a-iaaaa-aaaay-aaduq-cai",
-        "pxtkg-giaaa-aaaal-ajjzq-cai"
+        "pxtkg-giaaa-aaaal-ajjzq-cai",
+        "v7b6c-niaaa-aaaac-bgiiq-cai"
       ],
       "archives": ["h4f44-ayaaa-aaaaq-aacjq-cai"]
     },
@@ -4745,19 +4746,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 3000000000000,
-              "amount_e8s": 735720809487,
+              "amount_e8s": 731798288770,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793242214
+              "timestamp_seconds": 1794448722
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 165168536245,
+              "amount_e8s": 165211619601,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": {
@@ -4770,16 +4771,16 @@
               },
               "ledger_canister_id": "hvgxa-wqaaa-aaaaq-aacia-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793242214
+              "timestamp_seconds": 1794448722
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 801198072284,
-            "timestamp_seconds": 1793242214
+            "governance_total_potential_voting_power": 790095747610,
+            "timestamp_seconds": 1794448722
           },
-          "last_ledger_block_timestamp": 1793243386,
-          "num_recently_executed_proposals": 101,
-          "num_recently_submitted_proposals": 102,
+          "last_ledger_block_timestamp": 1794449654,
+          "num_recently_executed_proposals": 109,
+          "num_recently_submitted_proposals": 111,
           "genesis_timestamp_seconds": 1705799268
         }
       }
@@ -5521,6 +5522,20 @@
           }
         },
         {
+          "id": 6151,
+          "name": "Sneed Lock: DAO admin",
+          "description": "Runs a Sneed Lock admin action (settings, fees, fee recipient, admin list, support payouts to recorded owners, ICRC-3 log maintenance) by proposal. validate_dao_admin renders exactly what will happen. Canister pqsms-lqaaa-aaaal-ajjza-cai.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+              "target_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+              "validator_method_name": "validate_dao_admin",
+              "target_method_name": "dao_admin"
+            }
+          }
+        },
+        {
           "id": 7000,
           "name": "Sneed Hub frontend: commit proposed batch",
           "description": "Publishes a frontend release: commits the asset batch that a Prepare principal proposed on the Sneed Hub frontend asset canister, after the validator checks that batch id and evidence match the proposed batch. Canister pxtkg-giaaa-aaaal-ajjzq-cai.",
@@ -5688,7 +5703,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 992993002308,
+    "icrc1_total_supply": 992942380408,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6372,6 +6387,20 @@
                   "target_method_name": "set_canister_ids"
                 }
               }
+            },
+            {
+              "id": 6151,
+              "name": "Sneed Lock: DAO admin",
+              "description": "Runs a Sneed Lock admin action (settings, fees, fee recipient, admin list, support payouts to recorded owners, ICRC-3 log maintenance) by proposal. validate_dao_admin renders exactly what will happen. Canister pqsms-lqaaa-aaaal-ajjza-cai.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+                  "target_canister_id": "pqsms-lqaaa-aaaal-ajjza-cai",
+                  "validator_method_name": "validate_dao_admin",
+                  "target_method_name": "dao_admin"
+                }
+              }
             }
           ]
         }
@@ -6425,7 +6454,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793241707
+              "timestamp_seconds": 1794448262
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -6443,14 +6472,14 @@
               },
               "ledger_canister_id": "hhaaz-2aaaa-aaaaq-aacla-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793241707
+              "timestamp_seconds": 1794448262
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 12014445195597075,
-            "timestamp_seconds": 1793241707
+            "governance_total_potential_voting_power": 12005604621408060,
+            "timestamp_seconds": 1794448262
           },
-          "last_ledger_block_timestamp": 1793193533,
+          "last_ledger_block_timestamp": 1794416717,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1708958305
@@ -6459,11 +6488,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793198308,
-      "end_timestamp_seconds": 1793198305,
-      "total_available_e8s_equivalent": 31180766754946,
+      "actual_timestamp_seconds": 1794407912,
+      "end_timestamp_seconds": 1794407905,
+      "total_available_e8s_equivalent": 36373438981865,
       "distributed_e8s_equivalent": 0,
-      "round": 975,
+      "round": 989,
       "settled_proposals": []
     },
     "parameters": {
@@ -9485,7 +9514,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 18317732067283486,
+    "icrc1_total_supply": 18317818454092375,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12515,7 +12544,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793242979
+              "timestamp_seconds": 1794449532
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -12533,14 +12562,14 @@
               },
               "ledger_canister_id": "gemj7-oyaaa-aaaaq-aacnq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793242979
+              "timestamp_seconds": 1794449532
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 59782235127050944,
-            "timestamp_seconds": 1793242979
+            "governance_total_potential_voting_power": 59804987925369117,
+            "timestamp_seconds": 1794449532
           },
-          "last_ledger_block_timestamp": 1793238439,
+          "last_ledger_block_timestamp": 1794416717,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1709209147
@@ -12549,11 +12578,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793189949,
-      "end_timestamp_seconds": 1793189947,
-      "total_available_e8s_equivalent": 233079097719182,
+      "actual_timestamp_seconds": 1794399552,
+      "end_timestamp_seconds": 1794399547,
+      "total_available_e8s_equivalent": 256257571463756,
       "distributed_e8s_equivalent": 0,
-      "round": 972,
+      "round": 986,
       "settled_proposals": []
     },
     "parameters": {
@@ -13224,7 +13253,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 26274651446707109,
+    "icrc1_total_supply": 26274661382798659,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13894,7 +13923,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793240062
+              "timestamp_seconds": 1794446842
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -13912,14 +13941,14 @@
               },
               "ledger_canister_id": "ddsp7-7iaaa-aaaaq-aacqq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793240062
+              "timestamp_seconds": 1794446842
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 8593881469173163,
-            "timestamp_seconds": 1793240062
+            "governance_total_potential_voting_power": 8069592108734167,
+            "timestamp_seconds": 1794446842
           },
-          "last_ledger_block_timestamp": 1793231208,
+          "last_ledger_block_timestamp": 1794416717,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1710522988
@@ -13928,11 +13957,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793207792,
-      "end_timestamp_seconds": 1793207788,
-      "total_available_e8s_equivalent": 98894336237947,
+      "actual_timestamp_seconds": 1794417392,
+      "end_timestamp_seconds": 1794417388,
+      "total_available_e8s_equivalent": 102762050089989,
       "distributed_e8s_equivalent": 0,
-      "round": 957,
+      "round": 971,
       "settled_proposals": []
     },
     "parameters": {
@@ -14953,7 +14982,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10090568789128928,
+    "icrc1_total_supply": 10090609010664280,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15970,7 +15999,17 @@
         "lxeb6-dyaaa-aaaap-an2ga-cai",
         "ejwdq-iyaaa-aaaap-an47q-cai",
         "dpjyw-raaaa-aaaar-qbxlq-cai",
-        "ny3i7-miaaa-aaaap-an5mq-cai"
+        "ny3i7-miaaa-aaaap-an5mq-cai",
+        "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+        "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+        "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+        "wlv43-byaaa-aaaaj-qsjxa-cai",
+        "wmu2p-maaaa-aaaaj-qsjxq-cai",
+        "urjuh-7iaaa-aaaaj-qsjya-cai",
+        "uwist-sqaaa-aaaaj-qsjyq-cai",
+        "acjs3-cyaaa-aaaas-qg7da-cai",
+        "ghcje-dyaaa-aaaas-qg7va-cai",
+        "mpld4-maaaa-aaaas-qhepa-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
@@ -15987,14 +16026,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 1328107981470,
-              "amount_e8s": 6395691469,
+              "amount_e8s": 395681469,
               "account": {
                 "owner": "dwv6s-6aaaa-aaaaq-aacta-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793240651
+              "timestamp_seconds": 1794447322
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -16012,30 +16051,36 @@
               },
               "ledger_canister_id": "druyg-tyaaa-aaaaq-aactq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793240651
+              "timestamp_seconds": 1794447322
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 118820715765514332,
-            "timestamp_seconds": 1793240651
+            "governance_total_potential_voting_power": 120876670764990811,
+            "timestamp_seconds": 1794447322
           },
-          "last_ledger_block_timestamp": 1793240595,
-          "num_recently_executed_proposals": 77,
-          "num_recently_submitted_proposals": 77,
+          "last_ledger_block_timestamp": 1794449279,
+          "num_recently_executed_proposals": 132,
+          "num_recently_submitted_proposals": 132,
           "genesis_timestamp_seconds": 1710783210
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793208811,
-      "end_timestamp_seconds": 1793208810,
-      "total_available_e8s_equivalent": 11938925148338,
-      "distributed_e8s_equivalent": 11938925148171,
-      "round": 954,
+      "actual_timestamp_seconds": 1794418412,
+      "end_timestamp_seconds": 1794418410,
+      "total_available_e8s_equivalent": 11959860970128,
+      "distributed_e8s_equivalent": 11959860969958,
+      "round": 968,
       "settled_proposals": [
         {
-          "id": 567
+          "id": 620
+        },
+        {
+          "id": 624
+        },
+        {
+          "id": 626
         }
       ]
     },
@@ -17027,6 +17072,636 @@
               "target_method_name": "transferPosition"
             }
           }
+        },
+        {
+          "id": 3000,
+          "name": "commit_proposed_batch on dmsg_connect",
+          "description": "Commit a proposed asset batch whose evidence hash was approved, publishing the reviewed dMsg Connect files and response headers.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 3001,
+          "name": "grant_permission on dmsg_connect",
+          "description": "Grant Prepare, Commit or ManagePermissions to a principal. Keep routine publishers on Prepare; SNS governance needs Commit and ManagePermissions for governed publication and permission changes.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 3002,
+          "name": "revoke_permission on dmsg_connect",
+          "description": "Revoke a principal from Prepare, Commit or ManagePermissions, including removing direct asset publication rights from former deployers.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+              "validator_method_name": "validate_revoke_permission",
+              "target_method_name": "revoke_permission"
+            }
+          }
+        },
+        {
+          "id": 3003,
+          "name": "admin_add_user_home on dmsg_handle",
+          "description": "Append a user home to handle ownership and authorization routing. The home must share the deployment environment and issuer namespace and name this handle canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3004,
+          "name": "admin_set_registration_homes on dmsg_handle",
+          "description": "Replace the advertised user homes accepting new accounts with a subset of the registered homes. An empty list removes all registration homes from discovery.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_admin_set_registration_homes",
+              "target_method_name": "admin_set_registration_homes"
+            }
+          }
+        },
+        {
+          "id": 3005,
+          "name": "admin_set_revenue on dmsg_handle",
+          "description": "Set the ICRC account receiving new handle registration fees. Operations already started retain their original payee.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_admin_set_revenue",
+              "target_method_name": "admin_set_revenue"
+            }
+          }
+        },
+        {
+          "id": 3006,
+          "name": "update_ledger_fee on dmsg_handle",
+          "description": "Update the PANDA ledger fee used for new handle registration charges. Existing charge operations retain their recorded transfer parameters.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+              "validator_method_name": "validate_update_ledger_fee",
+              "target_method_name": "update_ledger_fee"
+            }
+          }
+        },
+        {
+          "id": 3007,
+          "name": "admin_set_account_limits on dmsg_user",
+          "description": "Set the account capacity and daily new-account quota while retaining existing accounts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "validator_method_name": "validate_admin_set_account_limits",
+              "target_method_name": "admin_set_account_limits"
+            }
+          }
+        },
+        {
+          "id": 3008,
+          "name": "admin_set_admission_key on dmsg_user",
+          "description": "Set or clear the Ed25519 public key that verifies new-account admission tickets. Clearing the key permits authenticated callers to register within the account quotas.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+              "validator_method_name": "validate_admin_set_admission_key",
+              "target_method_name": "admin_set_admission_key"
+            }
+          }
+        },
+        {
+          "id": 3009,
+          "name": "admin_add_user_home on dmsg_cose",
+          "description": "Append a user home allowed to authorize content-root recovery derivations, using the configured environment and issuer namespace.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3010,
+          "name": "admin_set_daily_budget on dmsg_cose",
+          "description": "Set the global daily limits on recovery derivations and their cycles budget. Usage already recorded for the current day is retained.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "validator_method_name": "validate_admin_set_daily_budget",
+              "target_method_name": "admin_set_daily_budget"
+            }
+          }
+        },
+        {
+          "id": 3011,
+          "name": "initialize_keys on dmsg_cose",
+          "description": "Initialize the content-root vetKD public key and verify its configured fingerprint. The deployment key name, derivation domain and expected fingerprint remain fixed.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+              "validator_method_name": "validate_initialize_keys",
+              "target_method_name": "initialize_keys"
+            }
+          }
+        },
+        {
+          "id": 3012,
+          "name": "admin_add_user_home on dmsg_directory",
+          "description": "Append a user home allowed to publish certified PrincipalDocuments for accounts allocated by that home.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3013,
+          "name": "admin_set_custom_domains on dmsg_directory",
+          "description": "Replace the custom domains advertised by the directory while retaining the host of the fixed principal origin.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+              "validator_method_name": "validate_admin_set_custom_domains",
+              "target_method_name": "admin_set_custom_domains"
+            }
+          }
+        },
+        {
+          "id": 3014,
+          "name": "admin_add_user_home on dmsg_payment",
+          "description": "Append a user home allowed to authorize paid-message escrow operations for its accounts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3015,
+          "name": "admin_set_limits on dmsg_payment",
+          "description": "Replace the paid-message admission, escrow capacity and ledger-call limits. Existing escrows and recovery operations remain available.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_admin_set_limits",
+              "target_method_name": "admin_set_limits"
+            }
+          }
+        },
+        {
+          "id": 3016,
+          "name": "admin_set_revenue on dmsg_payment",
+          "description": "Set the platform fee account used by new paid-message orders. Existing escrows and prepared transfers retain their original destination.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_admin_set_revenue",
+              "target_method_name": "admin_set_revenue"
+            }
+          }
+        },
+        {
+          "id": 3017,
+          "name": "rotate_receipt_signer on dmsg_payment",
+          "description": "Register a new receipt-signing epoch with its Ed25519 public key and validity interval for paid-message delivery receipts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_rotate_receipt_signer",
+              "target_method_name": "rotate_receipt_signer"
+            }
+          }
+        },
+        {
+          "id": 3018,
+          "name": "revoke_receipt_signer on dmsg_payment",
+          "description": "Revoke a receipt-signing epoch and disable new paid-message orders. The revoked key cannot authorize new receipt finalizations; reopening orders requires a separate action.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_revoke_receipt_signer",
+              "target_method_name": "revoke_receipt_signer"
+            }
+          }
+        },
+        {
+          "id": 3019,
+          "name": "set_orders_enabled on dmsg_payment",
+          "description": "Enable or disable new paid-message orders. Existing escrow settlement, reconciliation and refunds remain available.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_set_orders_enabled",
+              "target_method_name": "set_orders_enabled"
+            }
+          }
+        },
+        {
+          "id": 3020,
+          "name": "set_ledger_fee on dmsg_payment",
+          "description": "Update the network fee for new paid-message transfer parameters within the configured maximum fee.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_set_ledger_fee",
+              "target_method_name": "set_ledger_fee"
+            }
+          }
+        },
+        {
+          "id": 3021,
+          "name": "schedule_fee_policy on dmsg_payment",
+          "description": "Schedule a versioned platform fee policy with its rate, minimum fee and effective time. Existing orders retain their quoted fee policy.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+              "validator_method_name": "validate_schedule_fee_policy",
+              "target_method_name": "schedule_fee_policy"
+            }
+          }
+        },
+        {
+          "id": 3022,
+          "name": "configure_panda_service on membership",
+          "description": "Configure the user-home to commerce routes, claim capacity and PANDA application, qualification, authorization and product-call quotas.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "validator_method_name": "validate_configure_panda_service",
+              "target_method_name": "configure_panda_service"
+            }
+          }
+        },
+        {
+          "id": 3023,
+          "name": "schedule_panda_rate on membership",
+          "description": "Announce a versioned PANDA-per-USD conversion rate for the specified products. After the first rate, the effective time must satisfy the 15-day notice period at execution.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "validator_method_name": "validate_schedule_panda_rate",
+              "target_method_name": "schedule_panda_rate"
+            }
+          }
+        },
+        {
+          "id": 3024,
+          "name": "set_admission_pause on membership",
+          "description": "Pause or resume new PANDA membership applications while existing claims continue qualification refresh and reconciliation.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+              "validator_method_name": "validate_set_admission_pause",
+              "target_method_name": "set_admission_pause"
+            }
+          }
+        },
+        {
+          "id": 3025,
+          "name": "admin_add_user_home on dmsg_commerce",
+          "description": "Append a user home served by commerce. The home must name this commerce canister; product beneficiary-authority registrations are maintained separately.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3026,
+          "name": "admin_set_limits on dmsg_commerce",
+          "description": "Replace commerce admission, subject and order capacity, authorization, refresh and external-call limits.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_admin_set_limits",
+              "target_method_name": "admin_set_limits"
+            }
+          }
+        },
+        {
+          "id": 3027,
+          "name": "register_integration_app on dmsg_commerce",
+          "description": "Register or update an application with its allowed origins, products, capabilities and action schema, preserving immutable identity and authority fields.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_register_integration_app",
+              "target_method_name": "register_integration_app"
+            }
+          }
+        },
+        {
+          "id": 3028,
+          "name": "register_integration_product on dmsg_commerce",
+          "description": "Register or update a product with its quote and beneficiary authorities, adapter, merchant account, settlement ledgers, terms and pause state, subject to version and immutability checks.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_register_integration_product",
+              "target_method_name": "register_integration_product"
+            }
+          }
+        },
+        {
+          "id": 3029,
+          "name": "register_settlement_asset on dmsg_commerce",
+          "description": "Register a supported settlement asset or update its network fee, fee ceiling and enabled state. Existing assets retain the latest separately published price.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_register_settlement_asset",
+              "target_method_name": "register_settlement_asset"
+            }
+          }
+        },
+        {
+          "id": 3030,
+          "name": "verify_settlement_asset on dmsg_commerce",
+          "description": "Verify a settlement ledger against its live decimals, fee, supported standards and a sample transfer block before allowing it to fund cash checkouts.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_verify_settlement_asset",
+              "target_method_name": "verify_settlement_asset"
+            }
+          }
+        },
+        {
+          "id": 3031,
+          "name": "publish_settlement_price on dmsg_commerce",
+          "description": "Publish a settlement asset reference price and validity window. Cash checkouts require a current price within the permitted stablecoin price range.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_publish_settlement_price",
+              "target_method_name": "publish_settlement_price"
+            }
+          }
+        },
+        {
+          "id": 3032,
+          "name": "set_settlement_price_authority on dmsg_commerce",
+          "description": "Assign the principal allowed to publish settlement reference prices in addition to canister administrators.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_set_settlement_price_authority",
+              "target_method_name": "set_settlement_price_authority"
+            }
+          }
+        },
+        {
+          "id": 3033,
+          "name": "schedule_policy on dmsg_commerce",
+          "description": "Schedule a versioned subscription catalog with plan prices, resource limits, execution weights and storage products. Limits-only increases may take effect immediately under the existing policy checks.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_schedule_policy",
+              "target_method_name": "schedule_policy"
+            }
+          }
+        },
+        {
+          "id": 3034,
+          "name": "set_admission_pause on dmsg_commerce",
+          "description": "Pause or resume new cash checkouts. Reconciliation, refunds, existing entitlement maintenance and PANDA membership continue.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_set_admission_pause",
+              "target_method_name": "set_admission_pause"
+            }
+          }
+        },
+        {
+          "id": 3035,
+          "name": "set_app_store_config on dmsg_commerce",
+          "description": "Configure the App Store application identity, environment, trusted verifier principals and product-to-plan or storage mappings.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+              "validator_method_name": "validate_set_app_store_config",
+              "target_method_name": "set_app_store_config"
+            }
+          }
+        },
+        {
+          "id": 3036,
+          "name": "admin_add_user_home on dmsg_wallet_hub",
+          "description": "Append a user home whose accounts may authorize multisig wallet activation and creation.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_add_user_home",
+              "target_method_name": "admin_add_user_home"
+            }
+          }
+        },
+        {
+          "id": 3037,
+          "name": "admin_register_version on dmsg_wallet_hub",
+          "description": "Register the staged wallet Wasm by its hash and release notes as the next version for new wallets. Existing wallets upgrade only after their members accept that exact version and hash.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_register_version",
+              "target_method_name": "admin_register_version"
+            }
+          }
+        },
+        {
+          "id": 3038,
+          "name": "admin_retire_version on dmsg_wallet_hub",
+          "description": "Retire a registered wallet version from selection for new wallets. Existing wallets may still accept an upgrade to a retained retired version.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_retire_version",
+              "target_method_name": "admin_retire_version"
+            }
+          }
+        },
+        {
+          "id": 3039,
+          "name": "admin_remove_version on dmsg_wallet_hub",
+          "description": "Remove a retired wallet version and its module bytes only when no unexpired quote or unfinished activation still references it.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_remove_version",
+              "target_method_name": "admin_remove_version"
+            }
+          }
+        },
+        {
+          "id": 3040,
+          "name": "admin_set_pricing on dmsg_wallet_hub",
+          "description": "Set wallet activation pricing, cycles allocation, per-plan wallet quotas and the new-activation pause switch.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_set_pricing",
+              "target_method_name": "admin_set_pricing"
+            }
+          }
+        },
+        {
+          "id": 3041,
+          "name": "admin_set_revenue on dmsg_wallet_hub",
+          "description": "Set the account receiving wallet activation revenue, subject to the hub revenue-account checks.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_set_revenue",
+              "target_method_name": "admin_set_revenue"
+            }
+          }
+        },
+        {
+          "id": 3042,
+          "name": "admin_set_uploader on dmsg_wallet_hub",
+          "description": "Set or clear the additional principal allowed to stage wallet Wasm chunks. Registering a staged module as an approved version remains a governance operation.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+              "validator_method_name": "validate_admin_set_uploader",
+              "target_method_name": "admin_set_uploader"
+            }
+          }
+        },
+        {
+          "id": 3043,
+          "name": "admin_set_limits on dmsg_auth",
+          "description": "Set the maximum identity count, daily registration budget, per-minute interactive request and renewal budgets, and pending-challenge capacity. All budgets must be positive and pending challenges must be between 1 and 100,000. Existing identities and sessions are retained.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "validator_method_name": "validate_admin_set_limits",
+              "target_method_name": "admin_set_limits"
+            }
+          }
+        },
+        {
+          "id": 3044,
+          "name": "admin_set_admission_key on dmsg_auth",
+          "description": "Set or clear the Ed25519 public key used to verify registration admission tickets. Setting a key requires new registrations to present a valid ticket bound to this canister and caller; clearing it disables that ticket requirement while retaining service budgets. This does not grant account or device authority.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+              "validator_method_name": "validate_admin_set_admission_key",
+              "target_method_name": "admin_set_admission_key"
+            }
+          }
         }
       ]
     },
@@ -17350,7 +18025,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 109017390053148797,
+    "icrc1_total_supply": 109211015939013428,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -18266,6 +18941,272 @@
                   "target_method_name": "transferPosition"
                 }
               }
+            },
+            {
+              "id": 3000,
+              "name": "commit_proposed_batch on dmsg_connect",
+              "description": "Commit a proposed asset batch whose evidence hash was approved, publishing the reviewed dMsg Connect files and response headers.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            },
+            {
+              "id": 3004,
+              "name": "admin_set_registration_homes on dmsg_handle",
+              "description": "Replace the advertised user homes accepting new accounts with a subset of the registered homes. An empty list removes all registration homes from discovery.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_admin_set_registration_homes",
+                  "target_method_name": "admin_set_registration_homes"
+                }
+              }
+            },
+            {
+              "id": 3006,
+              "name": "update_ledger_fee on dmsg_handle",
+              "description": "Update the PANDA ledger fee used for new handle registration charges. Existing charge operations retain their recorded transfer parameters.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_update_ledger_fee",
+                  "target_method_name": "update_ledger_fee"
+                }
+              }
+            },
+            {
+              "id": 3007,
+              "name": "admin_set_account_limits on dmsg_user",
+              "description": "Set the account capacity and daily new-account quota while retaining existing accounts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "validator_method_name": "validate_admin_set_account_limits",
+                  "target_method_name": "admin_set_account_limits"
+                }
+              }
+            },
+            {
+              "id": 3010,
+              "name": "admin_set_daily_budget on dmsg_cose",
+              "description": "Set the global daily limits on recovery derivations and their cycles budget. Usage already recorded for the current day is retained.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "validator_method_name": "validate_admin_set_daily_budget",
+                  "target_method_name": "admin_set_daily_budget"
+                }
+              }
+            },
+            {
+              "id": 3015,
+              "name": "admin_set_limits on dmsg_payment",
+              "description": "Replace the paid-message admission, escrow capacity and ledger-call limits. Existing escrows and recovery operations remain available.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_admin_set_limits",
+                  "target_method_name": "admin_set_limits"
+                }
+              }
+            },
+            {
+              "id": 3018,
+              "name": "revoke_receipt_signer on dmsg_payment",
+              "description": "Revoke a receipt-signing epoch and disable new paid-message orders. The revoked key cannot authorize new receipt finalizations; reopening orders requires a separate action.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_revoke_receipt_signer",
+                  "target_method_name": "revoke_receipt_signer"
+                }
+              }
+            },
+            {
+              "id": 3019,
+              "name": "set_orders_enabled on dmsg_payment",
+              "description": "Enable or disable new paid-message orders. Existing escrow settlement, reconciliation and refunds remain available.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_set_orders_enabled",
+                  "target_method_name": "set_orders_enabled"
+                }
+              }
+            },
+            {
+              "id": 3020,
+              "name": "set_ledger_fee on dmsg_payment",
+              "description": "Update the network fee for new paid-message transfer parameters within the configured maximum fee.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_set_ledger_fee",
+                  "target_method_name": "set_ledger_fee"
+                }
+              }
+            },
+            {
+              "id": 3021,
+              "name": "schedule_fee_policy on dmsg_payment",
+              "description": "Schedule a versioned platform fee policy with its rate, minimum fee and effective time. Existing orders retain their quoted fee policy.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_schedule_fee_policy",
+                  "target_method_name": "schedule_fee_policy"
+                }
+              }
+            },
+            {
+              "id": 3023,
+              "name": "schedule_panda_rate on membership",
+              "description": "Announce a versioned PANDA-per-USD conversion rate for the specified products. After the first rate, the effective time must satisfy the 15-day notice period at execution.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "validator_method_name": "validate_schedule_panda_rate",
+                  "target_method_name": "schedule_panda_rate"
+                }
+              }
+            },
+            {
+              "id": 3024,
+              "name": "set_admission_pause on membership",
+              "description": "Pause or resume new PANDA membership applications while existing claims continue qualification refresh and reconciliation.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "validator_method_name": "validate_set_admission_pause",
+                  "target_method_name": "set_admission_pause"
+                }
+              }
+            },
+            {
+              "id": 3026,
+              "name": "admin_set_limits on dmsg_commerce",
+              "description": "Replace commerce admission, subject and order capacity, authorization, refresh and external-call limits.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_admin_set_limits",
+                  "target_method_name": "admin_set_limits"
+                }
+              }
+            },
+            {
+              "id": 3030,
+              "name": "verify_settlement_asset on dmsg_commerce",
+              "description": "Verify a settlement ledger against its live decimals, fee, supported standards and a sample transfer block before allowing it to fund cash checkouts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_verify_settlement_asset",
+                  "target_method_name": "verify_settlement_asset"
+                }
+              }
+            },
+            {
+              "id": 3031,
+              "name": "publish_settlement_price on dmsg_commerce",
+              "description": "Publish a settlement asset reference price and validity window. Cash checkouts require a current price within the permitted stablecoin price range.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_publish_settlement_price",
+                  "target_method_name": "publish_settlement_price"
+                }
+              }
+            },
+            {
+              "id": 3033,
+              "name": "schedule_policy on dmsg_commerce",
+              "description": "Schedule a versioned subscription catalog with plan prices, resource limits, execution weights and storage products. Limits-only increases may take effect immediately under the existing policy checks.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_schedule_policy",
+                  "target_method_name": "schedule_policy"
+                }
+              }
+            },
+            {
+              "id": 3034,
+              "name": "set_admission_pause on dmsg_commerce",
+              "description": "Pause or resume new cash checkouts. Reconciliation, refunds, existing entitlement maintenance and PANDA membership continue.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_set_admission_pause",
+                  "target_method_name": "set_admission_pause"
+                }
+              }
+            },
+            {
+              "id": 3040,
+              "name": "admin_set_pricing on dmsg_wallet_hub",
+              "description": "Set wallet activation pricing, cycles allocation, per-plan wallet quotas and the new-activation pause switch.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_set_pricing",
+                  "target_method_name": "admin_set_pricing"
+                }
+              }
+            },
+            {
+              "id": 3043,
+              "name": "admin_set_limits on dmsg_auth",
+              "description": "Set the maximum identity count, daily registration budget, per-minute interactive request and renewal budgets, and pending-challenge capacity. All budgets must be positive and pending challenges must be between 1 and 100,000. Existing identities and sessions are retained.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "validator_method_name": "validate_admin_set_limits",
+                  "target_method_name": "admin_set_limits"
+                }
+              }
             }
           ]
         },
@@ -18621,6 +19562,370 @@
                   "target_method_name": "admin_legacy_seal"
                 }
               }
+            },
+            {
+              "id": 3001,
+              "name": "grant_permission on dmsg_connect",
+              "description": "Grant Prepare, Commit or ManagePermissions to a principal. Keep routine publishers on Prepare; SNS governance needs Commit and ManagePermissions for governed publication and permission changes.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 3002,
+              "name": "revoke_permission on dmsg_connect",
+              "description": "Revoke a principal from Prepare, Commit or ManagePermissions, including removing direct asset publication rights from former deployers.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "target_canister_id": "acjs3-cyaaa-aaaas-qg7da-cai",
+                  "validator_method_name": "validate_revoke_permission",
+                  "target_method_name": "revoke_permission"
+                }
+              }
+            },
+            {
+              "id": 3003,
+              "name": "admin_add_user_home on dmsg_handle",
+              "description": "Append a user home to handle ownership and authorization routing. The home must share the deployment environment and issuer namespace and name this handle canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3005,
+              "name": "admin_set_revenue on dmsg_handle",
+              "description": "Set the ICRC account receiving new handle registration fees. Operations already started retain their original payee.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "target_canister_id": "wfxrt-2iaaa-aaaaj-qsjwa-cai",
+                  "validator_method_name": "validate_admin_set_revenue",
+                  "target_method_name": "admin_set_revenue"
+                }
+              }
+            },
+            {
+              "id": 3008,
+              "name": "admin_set_admission_key on dmsg_user",
+              "description": "Set or clear the Ed25519 public key that verifies new-account admission tickets. Clearing the key permits authenticated callers to register within the account quotas.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "target_canister_id": "wqqa6-3aaaa-aaaaj-qsjvq-cai",
+                  "validator_method_name": "validate_admin_set_admission_key",
+                  "target_method_name": "admin_set_admission_key"
+                }
+              }
+            },
+            {
+              "id": 3009,
+              "name": "admin_add_user_home on dmsg_cose",
+              "description": "Append a user home allowed to authorize content-root recovery derivations, using the configured environment and issuer namespace.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3011,
+              "name": "initialize_keys on dmsg_cose",
+              "description": "Initialize the content-root vetKD public key and verify its configured fingerprint. The deployment key name, derivation domain and expected fingerprint remain fixed.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "target_canister_id": "wcwxh-xqaaa-aaaaj-qsjwq-cai",
+                  "validator_method_name": "validate_initialize_keys",
+                  "target_method_name": "initialize_keys"
+                }
+              }
+            },
+            {
+              "id": 3012,
+              "name": "admin_add_user_home on dmsg_directory",
+              "description": "Append a user home allowed to publish certified PrincipalDocuments for accounts allocated by that home.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3013,
+              "name": "admin_set_custom_domains on dmsg_directory",
+              "description": "Replace the custom domains advertised by the directory while retaining the host of the fixed principal origin.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "target_canister_id": "wlv43-byaaa-aaaaj-qsjxa-cai",
+                  "validator_method_name": "validate_admin_set_custom_domains",
+                  "target_method_name": "admin_set_custom_domains"
+                }
+              }
+            },
+            {
+              "id": 3014,
+              "name": "admin_add_user_home on dmsg_payment",
+              "description": "Append a user home allowed to authorize paid-message escrow operations for its accounts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3016,
+              "name": "admin_set_revenue on dmsg_payment",
+              "description": "Set the platform fee account used by new paid-message orders. Existing escrows and prepared transfers retain their original destination.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_admin_set_revenue",
+                  "target_method_name": "admin_set_revenue"
+                }
+              }
+            },
+            {
+              "id": 3017,
+              "name": "rotate_receipt_signer on dmsg_payment",
+              "description": "Register a new receipt-signing epoch with its Ed25519 public key and validity interval for paid-message delivery receipts.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "target_canister_id": "urjuh-7iaaa-aaaaj-qsjya-cai",
+                  "validator_method_name": "validate_rotate_receipt_signer",
+                  "target_method_name": "rotate_receipt_signer"
+                }
+              }
+            },
+            {
+              "id": 3022,
+              "name": "configure_panda_service on membership",
+              "description": "Configure the user-home to commerce routes, claim capacity and PANDA application, qualification, authorization and product-call quotas.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "target_canister_id": "wmu2p-maaaa-aaaaj-qsjxq-cai",
+                  "validator_method_name": "validate_configure_panda_service",
+                  "target_method_name": "configure_panda_service"
+                }
+              }
+            },
+            {
+              "id": 3025,
+              "name": "admin_add_user_home on dmsg_commerce",
+              "description": "Append a user home served by commerce. The home must name this commerce canister; product beneficiary-authority registrations are maintained separately.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3027,
+              "name": "register_integration_app on dmsg_commerce",
+              "description": "Register or update an application with its allowed origins, products, capabilities and action schema, preserving immutable identity and authority fields.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_register_integration_app",
+                  "target_method_name": "register_integration_app"
+                }
+              }
+            },
+            {
+              "id": 3028,
+              "name": "register_integration_product on dmsg_commerce",
+              "description": "Register or update a product with its quote and beneficiary authorities, adapter, merchant account, settlement ledgers, terms and pause state, subject to version and immutability checks.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_register_integration_product",
+                  "target_method_name": "register_integration_product"
+                }
+              }
+            },
+            {
+              "id": 3029,
+              "name": "register_settlement_asset on dmsg_commerce",
+              "description": "Register a supported settlement asset or update its network fee, fee ceiling and enabled state. Existing assets retain the latest separately published price.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_register_settlement_asset",
+                  "target_method_name": "register_settlement_asset"
+                }
+              }
+            },
+            {
+              "id": 3032,
+              "name": "set_settlement_price_authority on dmsg_commerce",
+              "description": "Assign the principal allowed to publish settlement reference prices in addition to canister administrators.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_set_settlement_price_authority",
+                  "target_method_name": "set_settlement_price_authority"
+                }
+              }
+            },
+            {
+              "id": 3035,
+              "name": "set_app_store_config on dmsg_commerce",
+              "description": "Configure the App Store application identity, environment, trusted verifier principals and product-to-plan or storage mappings.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "target_canister_id": "uwist-sqaaa-aaaaj-qsjyq-cai",
+                  "validator_method_name": "validate_set_app_store_config",
+                  "target_method_name": "set_app_store_config"
+                }
+              }
+            },
+            {
+              "id": 3036,
+              "name": "admin_add_user_home on dmsg_wallet_hub",
+              "description": "Append a user home whose accounts may authorize multisig wallet activation and creation.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_add_user_home",
+                  "target_method_name": "admin_add_user_home"
+                }
+              }
+            },
+            {
+              "id": 3037,
+              "name": "admin_register_version on dmsg_wallet_hub",
+              "description": "Register the staged wallet Wasm by its hash and release notes as the next version for new wallets. Existing wallets upgrade only after their members accept that exact version and hash.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_register_version",
+                  "target_method_name": "admin_register_version"
+                }
+              }
+            },
+            {
+              "id": 3038,
+              "name": "admin_retire_version on dmsg_wallet_hub",
+              "description": "Retire a registered wallet version from selection for new wallets. Existing wallets may still accept an upgrade to a retained retired version.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_retire_version",
+                  "target_method_name": "admin_retire_version"
+                }
+              }
+            },
+            {
+              "id": 3039,
+              "name": "admin_remove_version on dmsg_wallet_hub",
+              "description": "Remove a retired wallet version and its module bytes only when no unexpired quote or unfinished activation still references it.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_remove_version",
+                  "target_method_name": "admin_remove_version"
+                }
+              }
+            },
+            {
+              "id": 3041,
+              "name": "admin_set_revenue on dmsg_wallet_hub",
+              "description": "Set the account receiving wallet activation revenue, subject to the hub revenue-account checks.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_set_revenue",
+                  "target_method_name": "admin_set_revenue"
+                }
+              }
+            },
+            {
+              "id": 3042,
+              "name": "admin_set_uploader on dmsg_wallet_hub",
+              "description": "Set or clear the additional principal allowed to stage wallet Wasm chunks. Registering a staged module as an approved version remains a governance operation.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "target_canister_id": "ghcje-dyaaa-aaaas-qg7va-cai",
+                  "validator_method_name": "validate_admin_set_uploader",
+                  "target_method_name": "admin_set_uploader"
+                }
+              }
+            },
+            {
+              "id": 3044,
+              "name": "admin_set_admission_key on dmsg_auth",
+              "description": "Set or clear the Ed25519 public key used to verify registration admission tickets. Setting a key requires new registrations to present a valid ticket bound to this canister and caller; clearing it disables that ticket requirement while retaining service budgets. This does not grant account or device authority.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "target_canister_id": "mpld4-maaaa-aaaas-qhepa-cai",
+                  "validator_method_name": "validate_admin_set_admission_key",
+                  "target_method_name": "admin_set_admission_key"
+                }
+              }
             }
           ]
         }
@@ -18676,7 +19981,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793240271
+              "timestamp_seconds": 1794446763
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -18694,28 +19999,47 @@
               },
               "ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793240271
+              "timestamp_seconds": 1794446763
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 56238901554242944,
-            "timestamp_seconds": 1793240271
+            "governance_total_potential_voting_power": 56688698285523827,
+            "timestamp_seconds": 1794446763
           },
-          "last_ledger_block_timestamp": 1793243259,
-          "num_recently_executed_proposals": 18,
-          "num_recently_submitted_proposals": 18,
+          "last_ledger_block_timestamp": 1794449301,
+          "num_recently_executed_proposals": 27,
+          "num_recently_submitted_proposals": 31,
           "genesis_timestamp_seconds": 1711034480
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793200881,
-      "end_timestamp_seconds": 1793200880,
-      "total_available_e8s_equivalent": 7874384851259,
-      "distributed_e8s_equivalent": 0,
-      "round": 951,
-      "settled_proposals": []
+      "actual_timestamp_seconds": 1794410482,
+      "end_timestamp_seconds": 1794410480,
+      "total_available_e8s_equivalent": 7877463208614,
+      "distributed_e8s_equivalent": 7877463208048,
+      "round": 965,
+      "settled_proposals": [
+        {
+          "id": 947
+        },
+        {
+          "id": 948
+        },
+        {
+          "id": 949
+        },
+        {
+          "id": 950
+        },
+        {
+          "id": 951
+        },
+        {
+          "id": 952
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -19819,7 +21143,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 95876909810558481,
+    "icrc1_total_supply": 95908841509534474,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20936,7 +22260,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793241709
+              "timestamp_seconds": 1794448262
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -20954,14 +22278,14 @@
               },
               "ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793241709
+              "timestamp_seconds": 1794448262
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 35160563736509644,
-            "timestamp_seconds": 1793241709
+            "governance_total_potential_voting_power": 35193976597526068,
+            "timestamp_seconds": 1794448262
           },
-          "last_ledger_block_timestamp": 1793183944,
+          "last_ledger_block_timestamp": 1794443190,
           "num_recently_executed_proposals": 0,
           "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1711451121
@@ -20970,11 +22294,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793185530,
-      "end_timestamp_seconds": 1793185521,
-      "total_available_e8s_equivalent": 119406861624643,
+      "actual_timestamp_seconds": 1794395122,
+      "end_timestamp_seconds": 1794395121,
+      "total_available_e8s_equivalent": 123034268420499,
       "distributed_e8s_equivalent": 0,
-      "round": 946,
+      "round": 960,
       "settled_proposals": []
     },
     "parameters": {
@@ -21690,7 +23014,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 94636452306751475,
+    "icrc1_total_supply": 94636452287751475,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -22415,7 +23739,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1793242859
+              "timestamp_seconds": 1794449254
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -22433,27 +23757,27 @@
               },
               "ledger_canister_id": "bliq2-niaaa-aaaaq-aac4q-cai",
               "treasury": 2,
-              "timestamp_seconds": 1793242859
+              "timestamp_seconds": 1794449254
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 84496896714549425,
-            "timestamp_seconds": 1793242859
+            "governance_total_potential_voting_power": 84536361148304797,
+            "timestamp_seconds": 1794449254
           },
-          "last_ledger_block_timestamp": 1793238439,
-          "num_recently_executed_proposals": 2,
-          "num_recently_submitted_proposals": 3,
+          "last_ledger_block_timestamp": 1794443190,
+          "num_recently_executed_proposals": 0,
+          "num_recently_submitted_proposals": 0,
           "genesis_timestamp_seconds": 1712478412
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1793176019,
-      "end_timestamp_seconds": 1793176012,
-      "total_available_e8s_equivalent": 385825428415526,
+      "actual_timestamp_seconds": 1794385622,
+      "end_timestamp_seconds": 1794385612,
+      "total_available_e8s_equivalent": 506022612570145,
       "distributed_e8s_equivalent": 0,
-      "round": 934,
+      "round": 948,
       "settled_proposals": []
     },
     "parameters": {
@@ -23189,7 +24513,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104528589722324057,
+    "icrc1_total_supply": 104528660024074084,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

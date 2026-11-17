@@ -1,4 +1,5 @@
 import BuildIcrcAccountUtil from "$lib/components/alfred/BuildIcrcAccountUtil.svelte";
+import ImportSnsUtil from "$lib/components/alfred/ImportSnsUtil.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { login, logout } from "$lib/services/auth.services";
 import {
@@ -11,6 +12,7 @@ import {
   type TransactionMemoOption,
 } from "$lib/stores/transaction-memo-option.store";
 import {
+  IconAdd,
   IconCopy,
   IconDarkMode,
   IconDocument,
@@ -46,6 +48,7 @@ interface AlfredItemBase {
     theme: ThemeStoreData;
     balancePrivacyOption: BalancePrivacyOptionData;
     memoOption: TransactionMemoOption;
+    isHotkeysPageEnabled: boolean;
   }) => boolean;
 }
 
@@ -136,6 +139,15 @@ const getAlfredItems = (): AlfredItem[] => {
       icon: IconLedger,
     },
     {
+      id: "hotkeys",
+      type: "page",
+      title: alfred.hotkeys_title,
+      description: alfred.hotkeys_description,
+      path: AppPath.Hotkeys,
+      icon: IconKey,
+      contextFilter: (context) => context.isHotkeysPageEnabled,
+    },
+    {
       id: "settings",
       type: "page",
       title: alfred.settings_title,
@@ -220,6 +232,14 @@ const getAlfredItems = (): AlfredItem[] => {
       component: BuildIcrcAccountUtil,
     },
     {
+      id: "import-sns",
+      type: "util",
+      title: alfred.import_sns_title,
+      description: alfred.import_sns_description,
+      icon: IconAdd,
+      component: ImportSnsUtil,
+    },
+    {
       id: "log-in",
       type: "action",
       title: alfred.log_in_title,
@@ -252,6 +272,7 @@ export const filterAlfredItems = (
     theme: ThemeStoreData;
     balancePrivacyOption: BalancePrivacyOptionData;
     memoOption: TransactionMemoOption;
+    isHotkeysPageEnabled: boolean;
   }
 ): AlfredItem[] => {
   const items = alfredItems.filter(

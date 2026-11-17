@@ -1,6 +1,7 @@
 import {
   CKOCT_LEDGER_CANISTER_ID_TEXT,
   CKPEPE_LEDGER_CANISTER_ID_TEXT,
+  CKSOL_LEDGER_CANISTER_ID_TEXT,
 } from "$lib/constants/ck-canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
@@ -40,6 +41,10 @@ describe("tokens-table.utils", () => {
   });
   const ckUSDCToken = createUserToken({
     universeId: CKUSDC_UNIVERSE_CANISTER_ID,
+  });
+  const ckSOLToken = createUserToken({
+    universeId: Principal.fromText(CKSOL_LEDGER_CANISTER_ID_TEXT),
+    title: "ckSOL",
   });
   const ckPepeToken = createUserToken({
     universeId: Principal.fromText(CKPEPE_LEDGER_CANISTER_ID_TEXT),
@@ -96,19 +101,25 @@ describe("tokens-table.utils", () => {
   describe("compareTokensByImportance", () => {
     it("should sort tokens by importance", () => {
       const token0 = createTokenWithBalance({ id: 0, amount: 0n });
-      const expectedOrder = [ckBTCToken, ckETHTToken, ckUSDCToken, token0];
+      const expectedOrder = [
+        ckBTCToken,
+        ckETHTToken,
+        ckUSDCToken,
+        ckSOLToken,
+        token0,
+      ];
       expect(
-        [token0, ckUSDCToken, ckETHTToken, ckBTCToken].sort(
+        [token0, ckUSDCToken, ckSOLToken, ckETHTToken, ckBTCToken].sort(
           compareTokensByImportance
         )
       ).toEqual(expectedOrder);
       expect(
-        [ckBTCToken, ckETHTToken, ckUSDCToken, token0].sort(
+        [ckBTCToken, ckETHTToken, ckSOLToken, ckUSDCToken, token0].sort(
           compareTokensByImportance
         )
       ).toEqual(expectedOrder);
       expect(
-        [ckETHTToken, ckBTCToken, token0, ckUSDCToken].sort(
+        [ckSOLToken, ckETHTToken, ckBTCToken, token0, ckUSDCToken].sort(
           compareTokensByImportance
         )
       ).toEqual(expectedOrder);
@@ -123,21 +134,37 @@ describe("tokens-table.utils", () => {
         ckETHTToken,
         ckOctToken,
         ckPepeToken,
+        ckSOLToken,
       ];
       expect(
-        [ckOctToken, ckPepeToken, ckUSDCToken, ckETHTToken, ckBTCToken].sort(
-          compareCkTokensByDefault
-        )
+        [
+          ckOctToken,
+          ckSOLToken,
+          ckPepeToken,
+          ckUSDCToken,
+          ckETHTToken,
+          ckBTCToken,
+        ].sort(compareCkTokensByDefault)
       ).toEqual(expectedOrder);
       expect(
-        [ckPepeToken, ckBTCToken, ckETHTToken, ckOctToken, ckUSDCToken].sort(
-          compareCkTokensByDefault
-        )
+        [
+          ckPepeToken,
+          ckBTCToken,
+          ckETHTToken,
+          ckOctToken,
+          ckUSDCToken,
+          ckSOLToken,
+        ].sort(compareCkTokensByDefault)
       ).toEqual(expectedOrder);
       expect(
-        [ckETHTToken, ckBTCToken, ckUSDCToken, ckPepeToken, ckOctToken].sort(
-          compareCkTokensByDefault
-        )
+        [
+          ckSOLToken,
+          ckETHTToken,
+          ckBTCToken,
+          ckUSDCToken,
+          ckPepeToken,
+          ckOctToken,
+        ].sort(compareCkTokensByDefault)
       ).toEqual(expectedOrder);
     });
   });
@@ -487,6 +514,7 @@ describe("tokens-table.utils", () => {
       ckBTCToken,
       ckETHTToken,
       ckUSDCToken,
+      ckSOLToken,
       snsToken1,
       snsToken2,
       importedToken1,
@@ -500,7 +528,12 @@ describe("tokens-table.utils", () => {
 
     it("should filter ckTokens (important ck tokens)", () => {
       const result = filterTokensByType({ tokens: allTokens, type: "ck" });
-      expect(result).toEqual([ckBTCToken, ckETHTToken, ckUSDCToken]);
+      expect(result).toEqual([
+        ckBTCToken,
+        ckETHTToken,
+        ckUSDCToken,
+        ckSOLToken,
+      ]);
     });
 
     it("should filter imported tokens", () => {

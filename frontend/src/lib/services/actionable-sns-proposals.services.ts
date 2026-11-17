@@ -35,6 +35,12 @@ export const loadActionableSnsProposals = async () => {
   );
 };
 
+// The user can remove an imported SNS while its proposals load.
+export const isCommittedSns = (rootCanisterId: Principal): boolean =>
+  get(snsProjectsCommittedStore).some(
+    (project) => project.rootCanisterId.toText() === rootCanisterId.toText()
+  );
+
 export const loadActionableProposalsForSns = async (
   rootCanisterId: Principal
 ): Promise<void> => {
@@ -65,6 +71,10 @@ export const loadActionableProposalsForSns = async (
       Math.max(allProposals.length) ===
       DEFAULT_LIST_PAGINATION_LIMIT * MAX_ACTIONABLE_REQUEST_COUNT;
 
+    if (!isCommittedSns(rootCanisterId)) {
+      return;
+    }
+
     actionableSnsProposalsStore.set({
       rootCanisterId,
       proposals: votableProposals,
@@ -74,7 +84,9 @@ export const loadActionableProposalsForSns = async (
     console.error(err);
 
     // Store the failed root canister ID to provide the correct loading state.
-    failedActionableSnsesStore.add(rootCanisterId.toText());
+    if (isCommittedSns(rootCanisterId)) {
+      failedActionableSnsesStore.add(rootCanisterId.toText());
+    }
   }
 };
 

@@ -1,6 +1,10 @@
 import type { DefaultIcrcCanisters } from "$lib/stores/default-icrc-canisters.store";
 import { Principal } from "@icp-sdk/core/principal";
 
+// ckSOL
+export const CKSOL_LEDGER_CANISTER_ID_TEXT = "ls5lp-lqaaa-aaaar-qb5oa-cai";
+const CKSOL_INDEX_CANISTER_ID_TEXT = "2ezyf-hqaaa-aaaar-qb6ga-cai";
+
 // ckEURC
 const CKEURC_LEDGER_CANISTER_ID_TEXT = "pe5t5-diaaa-aaaar-qahwa-cai";
 const CKEURC_INDEX_CANISTER_ID_TEXT = "pd4vj-oqaaa-aaaar-qahwq-cai";
@@ -42,6 +46,10 @@ export const CKOCT_LEDGER_CANISTER_ID_TEXT = "ebo5g-cyaaa-aaaar-qagla-cai";
 const CKOCT_INDEX_CANISTER_ID_TEXT = "egp3s-paaaa-aaaar-qaglq-cai";
 
 export const allCkTokens: DefaultIcrcCanisters[] = [
+  {
+    ledgerCanisterId: Principal.fromText(CKSOL_LEDGER_CANISTER_ID_TEXT),
+    indexCanisterId: Principal.fromText(CKSOL_INDEX_CANISTER_ID_TEXT),
+  },
   {
     ledgerCanisterId: Principal.fromText(CKEURC_LEDGER_CANISTER_ID_TEXT),
     indexCanisterId: Principal.fromText(CKEURC_INDEX_CANISTER_ID_TEXT),

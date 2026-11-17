@@ -155,9 +155,8 @@ export class AppPo extends BasePageObject {
   }
 
   async goToAddressBook(): Promise<void> {
-    await this.goBackAllTheWay();
-    await this.openMenu();
-    await this.getMenuItemsPo().clickAddressBook();
+    await this.getAccountMenuPo().openMenu();
+    await this.getAccountMenuPo().clickAddressBook();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
   }

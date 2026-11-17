@@ -13,14 +13,27 @@ import {
 import { expect, test } from "@playwright/test";
 
 test("Test address book functionality", async ({ page, context }) => {
-  await page.goto("/address-book");
+  await page.goto("/accounts");
   await disableCssAnimations(page);
-  await expect(page).toHaveTitle("Address Book | Network Nervous System");
 
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
+
+  step("Wait for the account in the nns-dapp canister");
+  // The app creates the account after sign-in. Before that, saving the
+  // address book fails with AccountNotFound.
+  await (
+    await appPo
+      .getAccountsPo()
+      .getNnsAccountsPo()
+      .getTokensTablePo()
+      .getRowByName("Main")
+  ).waitForBalance();
+
+  await appPo.goToAddressBook();
+  await expect(page).toHaveTitle("Address Book | Network Nervous System");
 
   const addressBookPo = appPo.getAddressBookPo();
 
