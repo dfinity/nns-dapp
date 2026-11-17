@@ -424,6 +424,43 @@ describe("hotkeys.services", () => {
       });
     });
 
+    it("should only add the new hotkey to a full SNS neuron that lost the old one", async () => {
+      const otherHotkey = {
+        principal: principal(100),
+        permissions: HOTKEY_PERMISSIONS,
+      };
+      const neuron = snsNeuron(1, [
+        { principal: oldHotkey, permissions: HOTKEY_PERMISSIONS },
+        otherHotkey,
+      ]);
+      setSnsNeurons([neuron]);
+      spyAddPermissions.mockRejectedValueOnce(new Error("add failed"));
+
+      const [firstResult] = await changeHotkeyOnNeurons({
+        change: replace,
+        neurons: [snsRef(neuron)],
+      });
+
+      expect(firstResult.success).toBe(false);
+      expect(spyRemovePermissions).toHaveBeenCalledTimes(1);
+
+      setSnsNeurons([snsNeuron(1, [otherHotkey])]);
+      const [retryResult] = await changeHotkeyOnNeurons({
+        change: replace,
+        neurons: [snsRef(neuron)],
+      });
+
+      expect(retryResult.success).toBe(true);
+      expect(spyRemovePermissions).toHaveBeenCalledTimes(1);
+      expect(spyAddPermissions).toHaveBeenCalledTimes(2);
+      expect(spyAddPermissions).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          permissions: HOTKEY_PERMISSIONS,
+          principal: newHotkey,
+        })
+      );
+    });
+
     it("should only remove the old hotkey from an SNS neuron that has the new one", async () => {
       const neuron = snsNeuron(1, [
         { principal: oldHotkey, permissions: HOTKEY_PERMISSIONS },
