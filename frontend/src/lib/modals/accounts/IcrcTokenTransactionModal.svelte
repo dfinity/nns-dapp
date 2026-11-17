@@ -1,14 +1,14 @@
 <script lang="ts">
-  import {
-    queryIcrcMintingAccount,
-    queryIcrcToken,
-  } from "$lib/api/icrc-ledger.api";
+  import { queryIcrcMintingAccount } from "$lib/api/icrc-ledger.api";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { getCurrentIdentity } from "$lib/services/auth.services";
-  import { transferTokens } from "$lib/services/icrc-accounts.services";
+  import {
+    getCertifiedIcrcTokenMetaData,
+    transferTokens,
+  } from "$lib/services/icrc-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
@@ -62,16 +62,7 @@
   };
 
   const loadCertifiedToken = async () => {
-    try {
-      certifiedToken = await queryIcrcToken({
-        identity: getCurrentIdentity(),
-        canisterId: ledgerCanisterId,
-        certified: true,
-      });
-    } catch (err) {
-      // Without certified metadata the user cannot continue.
-      toastsError({ labelKey: "error.token_not_found", err });
-    }
+    certifiedToken = await getCertifiedIcrcTokenMetaData({ ledgerCanisterId });
   };
 
   onMount(() => Promise.all([loadBurnAddress(), loadCertifiedToken()]));

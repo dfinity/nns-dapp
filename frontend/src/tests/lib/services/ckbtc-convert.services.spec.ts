@@ -39,7 +39,7 @@ describe("ckbtc-convert-services", () => {
   const params = {
     source: mockCkBTCMainAccount,
     destinationAddress: mockBTCAddressTestnet,
-    amount: 1,
+    amountUlps: numberToE8s(1),
     universeId: CKBTC_UNIVERSE_CANISTER_ID,
     canisters: mockCkBTCAdditionalCanisters,
   };
@@ -130,7 +130,7 @@ describe("ckbtc-convert-services", () => {
       expect(approveTransferSpy).toBeCalledWith({
         identity: mockIdentity,
         canisterId: params.universeId,
-        amount: numberToE8s(params.amount),
+        amount: params.amountUlps,
         expiresAt: BigInt(now) * 1_000_000n + 5n * 60n * 1_000_000_000n,
         spender: mockCkBTCAdditionalCanisters.minterCanisterId,
       });
@@ -163,7 +163,7 @@ describe("ckbtc-convert-services", () => {
         identity: mockIdentity,
         canisterId: mockCkBTCAdditionalCanisters.minterCanisterId,
         address: params.destinationAddress,
-        amount: numberToE8s(params.amount),
+        amount: params.amountUlps,
       });
 
       expect(approveTransferSpy).toBeCalledTimes(1);
