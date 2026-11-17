@@ -366,15 +366,23 @@ jobs:
         uses: ./.github/actions/start_icp_network
         with:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
-      - name: Create more SNS projects
-        # The network starts with four SNS projects. The pagination test needs
-        # more than one page of ten. All proposals are submitted first, so that
-        # the waits for the swaps to open overlap.
+          # This test needs neither the bought swaps nor the order of the
+          # end-to-end projects, so it creates its own projects below.
+          sns_projects: 'false'
+      - name: Create SNS projects
+        # The pagination test needs more than one page of ten. The order of the
+        # projects does not matter here, so all proposals are submitted at once.
+        # A second, sequential pass completes any project whose concurrent
+        # creation failed, and then waits for the swaps to open.
         run: |
-          names=("Echo Alot" "Foxtrot" "Golf Stream" "Hotel" "India" "Juliett" "Kilo Byte" "Lima Bean" "Mike Box")
-          symbols=(ECH FXT GLF HTL IND JLT KIO LIM MIK)
+          names=("Alfa Centauri" "Bravo" "Charlie" "Delta" "Echo Alot" "Foxtrot" "Golf Stream" "Hotel" "India" "Juliett" "Kilo Byte" "Lima Bean" "Mike Box")
+          symbols=(ALF BRV CHR DLT ECH FXT GLF HTL IND JLT KIO LIM MIK)
           for ((i = 0; i < ${#names[@]}; i++)); do
-            scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png --no_wait
+            scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png --no_wait > "sns-create-$i.log" 2>&1 &
+          done
+          wait
+          for ((i = 0; i < ${#names[@]}; i++)); do
+            echo "::group::Concurrent creation of ${names[$i]}" && cat "sns-create-$i.log" && echo "::endgroup::"
           done
           for ((i = 0; i < ${#names[@]}; i++)); do
             scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png

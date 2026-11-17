@@ -23,6 +23,10 @@ inputs:
     description: "Passed as --mode to icp canister install"
     required: false
     default: "reinstall"
+  sns_projects:
+    description: "Whether to create the SNS projects of the end-to-end tests"
+    required: false
+    default: "true"
 runs:
   using: "composite"
   steps:
@@ -59,10 +63,12 @@ runs:
         NNS_DAPP_INSTALL_MODE: ${{ inputs.nns_dapp_install_mode }}
         SNS_AGGREGATOR_WASM: ${{ inputs.sns_aggregator_wasm }}
         SNS_AGGREGATOR_INSTALL_MODE: ${{ inputs.sns_aggregator_install_mode }}
+        SNS_PROJECTS: ${{ inputs.sns_projects }}
       run: |
         set -euo pipefail
         scripts/icp-network-start \
           --nns_dapp_wasm "$NNS_DAPP_WASM" \
           --nns_dapp_install_mode "$NNS_DAPP_INSTALL_MODE" \
           --sns_aggregator_wasm "$SNS_AGGREGATOR_WASM" \
-          --sns_aggregator_install_mode "$SNS_AGGREGATOR_INSTALL_MODE"
+          --sns_aggregator_install_mode "$SNS_AGGREGATOR_INSTALL_MODE" \
+          $([[ "$SNS_PROJECTS" == "true" ]] || echo --no_sns_projects)

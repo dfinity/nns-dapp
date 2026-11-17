@@ -17,7 +17,8 @@ print_help() {
 	- deploys the ckRED test token,
 	- deploys a mock exchange rate canister with the mainnet canister ID,
 	- installs the given wasms, if any,
-	- creates the SNS projects of the end-to-end tests, see mocks/sns/README.md.
+	- creates the SNS projects of the end-to-end tests, see mocks/sns/README.md,
+	  unless --no_sns_projects is given.
 
 	If the network runs already, the script keeps it and only does the steps
 	above. A stopped network loses its state. Stop the network with:
@@ -40,6 +41,7 @@ DEFAULT_NNS_DAPP_ARG="nns-dapp-arg-local.did"
 clap.define long=nns_dapp_arg desc="The nns-dapp install argument file. The default is created with config.sh after the mocks are deployed." variable=NNS_DAPP_ARG default="$DEFAULT_NNS_DAPP_ARG"
 clap.define long=sns_aggregator_wasm desc="The sns_aggregator wasm to install" variable=SNS_AGGREGATOR_WASM default=""
 clap.define long=sns_aggregator_install_mode desc="Passed as --mode to icp canister install" variable=SNS_AGGREGATOR_INSTALL_MODE default="reinstall"
+clap.define long=no_sns_projects desc="Do not create the SNS projects of the end-to-end tests" variable=NO_SNS_PROJECTS nargs=0 default=""
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -272,7 +274,7 @@ create_sns_projects() {
   icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --commit
   icp-sns-aggregator-wait --network "$NETWORK"
 }
-create_sns_projects
+[[ "${NO_SNS_PROJECTS:-}" == "true" ]] || create_sns_projects
 
 echo
 echo "The '$NETWORK' network is ready:"
