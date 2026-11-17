@@ -279,19 +279,19 @@ export const stakeNeuron = async ({
   }
 };
 
-// Go up with each `listNeurons` call, and with each call that makes an update
-// call. A call is out of date when a later call makes an update call, so an
-// older response cannot replace newer neurons. A query-only call does not make
-// an earlier call out of date.
+// Goes up with each `listNeurons` call. A response is out of date when a later
+// call that makes an update call wrote the store, so an older response cannot
+// replace newer neurons. A query-only call does not make an earlier call out of
+// date.
 let listNeuronsCallCount = 0;
-let latestUpdatingListNeuronsCall = 0;
+let latestWrittenUpdatingListNeuronsCall = 0;
 
 // Returns a check that is true when a `listNeurons` call that makes an update
-// call starts after this point. Then the store has newer neurons than a single
-// neuron that is loaded from this point.
+// call, and starts after this point, wrote the store. Then the store has newer
+// neurons than a single neuron that is loaded from this point.
 const startSingleNeuronLoad = () => {
   const callsAtStart = listNeuronsCallCount;
-  return () => latestUpdatingListNeuronsCall > callsAtStart;
+  return () => latestWrittenUpdatingListNeuronsCall > callsAtStart;
 };
 
 /**
@@ -311,10 +311,7 @@ export const listNeurons = async ({
   const makesUpdateCall = callStrategy !== "query";
   listNeuronsCallCount += 1;
   const call = listNeuronsCallCount;
-  if (makesUpdateCall) {
-    latestUpdatingListNeuronsCall = call;
-  }
-  const isOutdated = () => latestUpdatingListNeuronsCall > call;
+  const isOutdated = () => latestWrittenUpdatingListNeuronsCall > call;
   // Data of a query-only call does not replace certified neurons.
   const isQueryOverCertified = () =>
     !makesUpdateCall && get(neuronsStore).certified === true;
@@ -333,6 +330,9 @@ export const listNeurons = async ({
       }
 
       neuronsStore.setNeurons({ neurons, certified });
+      if (makesUpdateCall) {
+        latestWrittenUpdatingListNeuronsCall = call;
+      }
 
       callback?.(certified);
     },

@@ -37,6 +37,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import {
   arrayOfNumberToUint8Array,
@@ -174,6 +175,46 @@ describe("sns-neurons-services", () => {
         strategy: "update",
       });
       await loadSnsNeurons({ rootCanisterId: mockPrincipal, certified: false });
+      resolveCertified([neuron]);
+      await certifiedLoad;
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [neuron],
+        certified: true,
+      });
+    });
+
+    it("should write an older query-only load before a later load writes the store", async () => {
+      const queryNeuron = { ...neuron, id: [{ id: Uint8Array.from([9, 9]) }] };
+      let resolveCertified: (neurons: SnsGovernanceDid.Neuron[]) => void;
+      let resolveQuery: (neurons: SnsGovernanceDid.Neuron[]) => void;
+      vi.spyOn(governanceApi, "querySnsNeurons").mockImplementation(
+        ({ certified }) =>
+          new Promise((resolve) => {
+            if (certified) {
+              resolveCertified = resolve;
+            } else {
+              resolveQuery = resolve;
+            }
+          })
+      );
+
+      const queryLoad = loadSnsNeurons({
+        rootCanisterId: mockPrincipal,
+        certified: false,
+      });
+      const certifiedLoad = syncSnsNeurons(mockPrincipal, {
+        strategy: "update",
+      });
+      await runResolvedPromises();
+      resolveQuery([queryNeuron as SnsGovernanceDid.Neuron]);
+      await queryLoad;
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [queryNeuron],
+        certified: false,
+      });
+
       resolveCertified([neuron]);
       await certifiedLoad;
 
