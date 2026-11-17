@@ -56,6 +56,8 @@ proposal is successful, the changes it released will be moved from this file to
   so the SNS end-to-end tests run again.
 - The local test network has a mock exchange rate canister, so the total value
   locked works and its test runs again.
+- The local test network submits all SNS proposals before it waits for the
+  swaps to open, so it starts about three minutes faster.
 
 #### Deprecated
 

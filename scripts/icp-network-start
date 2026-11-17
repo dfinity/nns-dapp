@@ -249,15 +249,25 @@ fi
 
 # Creates the SNS projects of the end-to-end tests, see mocks/sns/README.md.
 #
+# A swap opens in its periodic task, which runs once a minute. So all four
+# proposals are submitted first, in a fixed order that keeps the proposal and
+# canister IDs stable, and the waits for the swaps overlap.
+#
 # A bought swap needs up to two minutes to commit and finalize, so the two
-# committed projects are bought first and completed last. The open swaps are
-# created in between. The launchpad lists them in the order of their opening.
-# The participation test accepts the confirmation text of an open swap.
+# committed projects are bought first and completed last. The launchpad lists
+# the projects in the order of their opening. The participation test accepts
+# the confirmation text of an open swap.
 create_sns_projects() {
+  local bravo_text="I confirm that I take part in the Bravo swap at my own risk."
+  local charlie_text="I confirm that I take part in the Charlie swap at my own risk."
+  icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --no_wait
+  icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --no_wait
+  icp-sns-create --network "$NETWORK" --name "Bravo" --symbol BRV --logo mocks/sns/bravo.png --confirmation_text "$bravo_text" --no_wait
+  icp-sns-create --network "$NETWORK" --name "Charlie" --symbol CHR --logo mocks/sns/charlie.png --confirmation_text "$charlie_text" --no_wait
   icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --buy
   icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --buy
-  icp-sns-create --network "$NETWORK" --name "Bravo" --symbol BRV --logo mocks/sns/bravo.png --confirmation_text "I confirm that I take part in the Bravo swap at my own risk."
-  icp-sns-create --network "$NETWORK" --name "Charlie" --symbol CHR --logo mocks/sns/charlie.png --confirmation_text "I confirm that I take part in the Charlie swap at my own risk."
+  icp-sns-create --network "$NETWORK" --name "Bravo" --symbol BRV --logo mocks/sns/bravo.png --confirmation_text "$bravo_text"
+  icp-sns-create --network "$NETWORK" --name "Charlie" --symbol CHR --logo mocks/sns/charlie.png --confirmation_text "$charlie_text"
   icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --commit
   icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --commit
   icp-sns-aggregator-wait --network "$NETWORK"

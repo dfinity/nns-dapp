@@ -368,10 +368,14 @@ jobs:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
       - name: Create more SNS projects
         # The network starts with four SNS projects. The pagination test needs
-        # more than one page of ten.
+        # more than one page of ten. All proposals are submitted first, so that
+        # the waits for the swaps to open overlap.
         run: |
           names=("Echo Alot" "Foxtrot" "Golf Stream" "Hotel" "India" "Juliett" "Kilo Byte" "Lima Bean" "Mike Box")
           symbols=(ECH FXT GLF HTL IND JLT KIO LIM MIK)
+          for ((i = 0; i < ${#names[@]}; i++)); do
+            scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png --no_wait
+          done
           for ((i = 0; i < ${#names[@]}; i++)); do
             scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png
           done
