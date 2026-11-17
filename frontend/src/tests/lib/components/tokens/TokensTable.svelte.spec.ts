@@ -19,6 +19,7 @@ import {
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
+import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
@@ -456,6 +457,25 @@ describe("TokensTable", () => {
 
     expect(await row1Po.hasImportedTokenTag()).toBe(false);
     expect(await row2Po.hasImportedTokenTag()).toBe(true);
+  });
+
+  it("should render an imported SNS tag", async () => {
+    const importedRootCanisterId = principal(1);
+    setSnsProjects([]);
+    setImportedSnses([importedRootCanisterId]);
+    const token1 = createUserToken({
+      universeId: principal(0),
+    });
+    const token2 = createUserToken({
+      universeId: importedRootCanisterId,
+    });
+
+    const po = renderTable({ userTokensData: [token1, token2] });
+    const rows = await po.getRows();
+
+    expect(await rows[0].hasImportedSnsTag()).toBe(false);
+    expect(await rows[1].hasImportedSnsTag()).toBe(true);
+    expect(await rows[1].hasImportedTokenTag()).toBe(false);
   });
 
   describe("Sorting", () => {

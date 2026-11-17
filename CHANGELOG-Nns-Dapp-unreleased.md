@@ -14,6 +14,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- The quick search panel has an "Import SNS" tool. It adds an SNS that the NNS
+  dapp does not list, with its root canister ID. The SNS then shows in the
+  tokens, staking, neuron and proposal pages with an "Imported" tag. The list
+  stays in the browser.
 - Add a Hotkeys page with the hotkeys of all your neurons, behind the `ENABLE_HOTKEYS_PAGE` feature flag.
 
 #### Changed
@@ -24,6 +28,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- In a tool of the quick search panel, the Enter key no longer opens the first
+  search result.
+- Screen readers can now read and use the quick search panel.
 - No error toast when the SNS aggregator has no project.
 - The staking rewards and the APY load when there is no SNS project.
 - The canister page tells a user that they are not a controller also when the

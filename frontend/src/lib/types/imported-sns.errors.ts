@@ -1,4 +1,10 @@
 export type ImportedSnsErrorReason =
+  // The user already imported the SNS.
+  | "already-imported"
+  // The aggregator already lists the SNS.
+  | "already-listed"
+  // The user already imported the maximum number of SNSes.
+  | "limit"
   // The root canister does not list a governance, ledger, index or swap canister.
   | "missing-canisters"
   // The controllers do not link the canisters to the root canister.
