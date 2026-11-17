@@ -106,12 +106,6 @@
       "exitCode": 0
     },
     {
-      "command": "post_proposal_on_slack",
-      "stdout": "https://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
       "command": "get_module_hash_from_network mainnet",
       "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
       "stderr": "",
@@ -225,7 +219,7 @@
     "git checkout Release-2001-02-29",
     "",
     "git checkout Release-2001-02-29: \u001b[32mDone\u001b[0m",
-    "Post proposal on Slack: \u001b[32mhttps://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409\u001b[0m",
+    "Proposal URL: \u001b[32mhttps://nns.icp.net/voting/proposals/123490\u001b[0m",
     "Schedule an appointment (use \"NNS Upgrades\" calendar) for trusted neurons voting (in 3 days)",
     "",
     "When you've done that ☝️  confirm by entering 'y':",

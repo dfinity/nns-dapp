@@ -139,12 +139,6 @@
       "stdout": "123490",
       "stderr": "",
       "exitCode": 0
-    },
-    {
-      "command": "post_proposal_on_slack",
-      "stdout": "https://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409",
-      "stderr": "",
-      "exitCode": 0
     }
   ],
   "expectedOutput": [
