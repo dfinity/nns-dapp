@@ -280,20 +280,19 @@ export const stakeNeuron = async ({
 };
 
 // Goes up with each `listNeurons` call. A response is out of date when a later
-// call that makes an update call wrote the store, so an older response cannot
-// replace newer neurons. A query-only call does not make an earlier call out of
-// date.
+// call wrote certified neurons to the store, or reset the store after a failed
+// load. So an older response cannot replace newer certified neurons.
 let listNeuronsCallCount = 0;
-let latestWrittenUpdatingListNeuronsCall = 0;
-// True when that latest write has certified neurons, false after a failed load.
-let latestWrittenHasCertifiedNeurons = false;
+let latestCertifiedListNeuronsCall = 0;
+// False when that latest write is the reset after a failed load.
+let latestCertifiedHasNeurons = false;
 
-// Returns a check that is true when a `listNeurons` call that makes an update
-// call, and starts after this point, wrote the store. Then the store has newer
+// Returns a check that is true when a `listNeurons` call that starts after this
+// point wrote certified neurons or reset the store. Then the store has newer
 // neurons than a single neuron that is loaded from this point.
 const startSingleNeuronLoad = () => {
   const callsAtStart = listNeuronsCallCount;
-  return () => latestWrittenUpdatingListNeuronsCall > callsAtStart;
+  return () => latestCertifiedListNeuronsCall > callsAtStart;
 };
 
 /**
@@ -313,14 +312,14 @@ export const listNeurons = async ({
   const makesUpdateCall = callStrategy !== "query";
   listNeuronsCallCount += 1;
   const call = listNeuronsCallCount;
-  const isOutdated = () => latestWrittenUpdatingListNeuronsCall > call;
+  const isOutdated = () => latestCertifiedListNeuronsCall > call;
   // Data of a query-only call does not replace certified neurons.
   const isQueryOverCertified = () =>
     !makesUpdateCall && get(neuronsStore).certified === true;
   // The certified neurons of a later call are also the certified neurons of
   // this call.
   const reportLaterCertifiedNeurons = (certified: boolean) => {
-    if (certified && latestWrittenHasCertifiedNeurons) {
+    if (certified && latestCertifiedHasNeurons) {
       callback?.(true);
     }
   };
@@ -343,9 +342,9 @@ export const listNeurons = async ({
       }
 
       neuronsStore.setNeurons({ neurons, certified });
-      if (makesUpdateCall) {
-        latestWrittenUpdatingListNeuronsCall = call;
-        latestWrittenHasCertifiedNeurons = certified;
+      if (certified) {
+        latestCertifiedListNeuronsCall = call;
+        latestCertifiedHasNeurons = true;
       }
 
       callback?.(certified);
@@ -362,8 +361,8 @@ export const listNeurons = async ({
       // Explicitly handle only UPDATE errors
       neuronsStore.setNeurons({ neurons: [], certified });
       if (makesUpdateCall) {
-        latestWrittenUpdatingListNeuronsCall = call;
-        latestWrittenHasCertifiedNeurons = false;
+        latestCertifiedListNeuronsCall = call;
+        latestCertifiedHasNeurons = false;
       }
 
       toastsError({

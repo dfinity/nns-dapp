@@ -71,30 +71,30 @@ import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 // For each project, goes up with each neurons load. A response is out of date
-// when a later load of the same project that makes an update call wrote or
-// reset the store, so an older response cannot replace newer neurons. A
-// query-only load does not make an earlier load out of date.
+// when a later load of the same project wrote certified neurons to the store,
+// or reset the store after a failed load. So an older response cannot replace
+// newer certified neurons.
 const snsNeuronsLoads = new Map<
   string,
-  { count: number; latestWrittenUpdating: number }
+  { count: number; latestCertified: number }
 >();
 
 const getSnsNeuronsLoads = (key: string) => {
   const loads = snsNeuronsLoads.get(key) ?? {
     count: 0,
-    latestWrittenUpdating: 0,
+    latestCertified: 0,
   };
   snsNeuronsLoads.set(key, loads);
   return loads;
 };
 
-// Returns a check that is true when a load of the project that makes an update
-// call, and starts after this point, wrote or reset the store. Then the store
-// has newer neurons than a single neuron that is loaded from this point.
+// Returns a check that is true when a load of the project that starts after
+// this point wrote certified neurons or reset the store. Then the store has
+// newer neurons than a single neuron that is loaded from this point.
 export const startSnsSingleNeuronLoad = (rootCanisterId: Principal) => {
   const loads = getSnsNeuronsLoads(rootCanisterId.toText());
   const loadsAtStart = loads.count;
-  return () => loads.latestWrittenUpdating > loadsAtStart;
+  return () => loads.latestCertified > loadsAtStart;
 };
 
 const startSnsNeuronsLoad = ({
@@ -110,11 +110,11 @@ const startSnsNeuronsLoad = ({
   const load = loads.count;
 
   return {
-    isOutdated: () => loads.latestWrittenUpdating > load,
-    // Call after the load wrote or reset the store.
-    markWritten: () => {
+    isOutdated: () => loads.latestCertified > load,
+    // Call after the load wrote certified neurons or reset the store.
+    markCertifiedWrite: () => {
       if (makesUpdateCall) {
-        loads.latestWrittenUpdating = load;
+        loads.latestCertified = load;
       }
     },
     // Data of a query-only load does not replace certified neurons.
@@ -137,12 +137,11 @@ export const syncSnsNeurons = async (
   { strategy }: { strategy?: QueryAndUpdateStrategy } = {}
 ): Promise<void> => {
   const callStrategy = strategy ?? FORCE_CALL_STRATEGY;
-  const { isOutdated, isQueryOverCertified, markWritten } = startSnsNeuronsLoad(
-    {
+  const { isOutdated, isQueryOverCertified, markCertifiedWrite } =
+    startSnsNeuronsLoad({
       rootCanisterId,
       makesUpdateCall: callStrategy !== "query",
-    }
-  );
+    });
 
   return queryAndUpdate<SnsGovernanceDid.Neuron[], unknown>({
     strategy: callStrategy,
@@ -161,7 +160,9 @@ export const syncSnsNeurons = async (
         neurons,
         certified,
       });
-      markWritten();
+      if (certified) {
+        markCertifiedWrite();
+      }
     },
     onError: ({ error: err, certified, strategy }) => {
       console.error(err);
@@ -176,7 +177,7 @@ export const syncSnsNeurons = async (
 
       // hide unproven data
       snsNeuronsStore.resetProject(rootCanisterId);
-      markWritten();
+      markCertifiedWrite();
 
       toastsError(
         toToastError({
@@ -196,12 +197,11 @@ export const loadSnsNeurons = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<void> => {
-  const { isOutdated, isQueryOverCertified, markWritten } = startSnsNeuronsLoad(
-    {
+  const { isOutdated, isQueryOverCertified, markCertifiedWrite } =
+    startSnsNeuronsLoad({
       rootCanisterId,
       makesUpdateCall: certified,
-    }
-  );
+    });
   const identity = await getAuthenticatedIdentity();
   const neurons = await querySnsNeurons({
     identity,
@@ -216,7 +216,9 @@ export const loadSnsNeurons = async ({
     certified,
     neurons,
   });
-  markWritten();
+  if (certified) {
+    markCertifiedWrite();
+  }
 };
 
 const getSnsNeuronsFromStoreByProject = (

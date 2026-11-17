@@ -577,6 +577,44 @@ describe("neurons-services", () => {
       expect(get(neuronsStore)).toEqual({ neurons: [], certified: true });
     });
 
+    it("should write a certified response over the query response of a later call", async () => {
+      const laterQueryNeurons = [{ ...neurons[0], neuronId: 999n }];
+      const laterCertifiedNeurons = [{ ...neurons[0], neuronId: 998n }];
+      const certifiedResponses: Array<(neurons: NeuronInfo[]) => void> = [];
+      spyQueryNeurons.mockImplementation(({ certified }) =>
+        certified
+          ? new Promise((resolve) => certifiedResponses.push(resolve))
+          : Promise.resolve(laterQueryNeurons)
+      );
+      const olderCallback = vi.fn();
+
+      const olderCall = listNeurons({
+        strategy: "update",
+        callback: olderCallback,
+      });
+      await runResolvedPromises();
+      listNeurons({ strategy: "query_and_update" });
+      await runResolvedPromises();
+      expect(get(neuronsStore)).toEqual({
+        neurons: laterQueryNeurons,
+        certified: false,
+      });
+
+      certifiedResponses[0](neurons);
+      await olderCall;
+
+      expect(get(neuronsStore)).toEqual({ neurons, certified: true });
+      expect(olderCallback).toHaveBeenCalledWith(true);
+
+      certifiedResponses[1](laterCertifiedNeurons);
+      await runResolvedPromises();
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: laterCertifiedNeurons,
+        certified: true,
+      });
+    });
+
     it("should not replace certified neurons with a query-only response", async () => {
       neuronsStore.setNeurons({ neurons, certified: true });
       spyQueryNeurons.mockResolvedValue([{ ...neurons[0], neuronId: 999n }]);

@@ -247,6 +247,39 @@ describe("sns-neurons-services", () => {
       });
     });
 
+    it("should write a certified load over the query response of a later load", async () => {
+      const laterQueryNeuron = {
+        ...neuron,
+        id: [{ id: Uint8Array.from([9, 9]) }],
+      } as SnsGovernanceDid.Neuron;
+      const certifiedResponses: Array<
+        (neurons: SnsGovernanceDid.Neuron[]) => void
+      > = [];
+      vi.spyOn(governanceApi, "querySnsNeurons").mockImplementation(
+        ({ certified }) =>
+          certified
+            ? new Promise((resolve) => certifiedResponses.push(resolve))
+            : Promise.resolve([laterQueryNeuron])
+      );
+
+      const olderLoad = syncSnsNeurons(mockPrincipal, { strategy: "update" });
+      await runResolvedPromises();
+      syncSnsNeurons(mockPrincipal, { strategy: "query_and_update" });
+      await runResolvedPromises();
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [laterQueryNeuron],
+        certified: false,
+      });
+
+      certifiedResponses[0]([neuron]);
+      await olderLoad;
+
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [neuron],
+        certified: true,
+      });
+    });
+
     it("should not replace certified neurons with a query-only load", async () => {
       snsNeuronsStore.setNeurons({
         rootCanisterId: mockPrincipal,
