@@ -2,11 +2,12 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import ChangeHotkeyModal from "$lib/modals/hotkeys/ChangeHotkeyModal.svelte";
 import * as hotkeysServices from "$lib/services/hotkeys.services";
 import type { Hotkey } from "$lib/types/hotkeys";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ChangeHotkeyModalPo } from "$tests/page-objects/ChangeHotkeyModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("ChangeHotkeyModal", () => {
@@ -113,11 +114,25 @@ describe("ChangeHotkeyModal", () => {
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
 
     await po.typeNewHotkey(oldHotkey);
-    expect(await po.hasSameHotkeyError()).toBe(true);
+    expect(await po.getNewHotkeyError()).toBe(
+      "The new hotkey must be different from the current hotkey."
+    );
+    expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
+
+    await po.typeNewHotkey(Principal.anonymous().toText());
+    expect(await po.getNewHotkeyError()).toBe(
+      "The anonymous principal cannot be a hotkey."
+    );
+    expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
+
+    await po.typeNewHotkey(mockIdentity.getPrincipal().toText());
+    expect(await po.getNewHotkeyError()).toBe(
+      "Your own principal cannot be a hotkey."
+    );
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
 
     await po.typeNewHotkey(newHotkey);
-    expect(await po.hasSameHotkeyError()).toBe(false);
+    expect(await po.getNewHotkeyError()).toBeNull();
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(false);
     expect(await po.getConfirmButtonPo().getText()).toBe(
       "Replace on 2 Neurons"
@@ -181,5 +196,25 @@ describe("ChangeHotkeyModal", () => {
 
     expect(await po.hasResultPartial()).toBe(true);
     expect(await po.isRetryDisabled()).toBe(true);
+  });
+
+  it("should run a change only once on a double submit", async () => {
+    let resolveChange: () => void;
+    spyChange.mockImplementationOnce(
+      ({ neurons }) =>
+        new Promise((resolve) => {
+          resolveChange = () =>
+            resolve(neurons.map((neuron) => ({ ...neuron, success: true })));
+        })
+    );
+    const po = renderModal("remove");
+
+    await po.clickConfirm();
+    await po.clickConfirm();
+    resolveChange();
+    await runResolvedPromises();
+
+    expect(spyChange).toHaveBeenCalledTimes(1);
+    expect(await po.hasResultSuccess()).toBe(true);
   });
 });

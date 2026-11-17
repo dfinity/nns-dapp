@@ -1,3 +1,4 @@
+import { governanceApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
@@ -120,6 +121,28 @@ describe("Hotkeys", () => {
   it("should not list the principal of the user", async () => {
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
       nnsNeuron(1n, [mockIdentity.getPrincipal(), hotkeyA]),
+    ]);
+
+    const po = renderComponent();
+    await runResolvedPromises();
+
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
+  });
+
+  it("should not show the cached NNS neurons", async () => {
+    setSnsProjects([]);
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValueOnce([
+      nnsNeuron(1n, [hotkeyB]),
+    ]);
+    await governanceApiService.queryNeurons({
+      identity: mockIdentity,
+      certified: true,
+      includeEmptyNeurons: false,
+    });
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
+      nnsNeuron(1n, [hotkeyA]),
     ]);
 
     const po = renderComponent();

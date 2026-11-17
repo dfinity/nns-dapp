@@ -3,6 +3,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { changeHotkeyOnNeurons } from "$lib/services/hotkeys.services";
+  import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type {
@@ -36,7 +37,26 @@
   const isReplace = $derived(type === "replace");
 
   let newPrincipal = $state<Principal | undefined>();
-  const isSameHotkey = $derived(newPrincipal?.toText() === hotkey.principal);
+  const newHotkeyError = $derived.by(() => {
+    if (isNullish(newPrincipal)) {
+      return undefined;
+    }
+    if (newPrincipal.toText() === hotkey.principal) {
+      return $i18n.hotkeys.same_hotkey_error;
+    }
+    if (newPrincipal.isAnonymous()) {
+      return $i18n.hotkeys.anonymous_hotkey_error;
+    }
+    if (
+      newPrincipal.toText() === $authStore.identity?.getPrincipal().toText()
+    ) {
+      return $i18n.hotkeys.own_hotkey_error;
+    }
+    return undefined;
+  });
+
+  // A run is in progress, so a second submit or retry waits.
+  let running = $state(false);
 
   // All the neurons that the user can change start selected.
   const deselected = new SvelteSet<string>();
@@ -54,8 +74,9 @@
   );
 
   const canSubmit = $derived(
-    selectedNeurons.length > 0 &&
-      (!isReplace || (nonNullish(newPrincipal) && !isSameHotkey))
+    !running &&
+      selectedNeurons.length > 0 &&
+      (!isReplace || (nonNullish(newPrincipal) && isNullish(newHotkeyError)))
   );
 
   const confirmLabel = $derived.by(() => {
@@ -98,6 +119,10 @@
     change: HotkeyChange;
     neurons: HotkeyNeuronRef[];
   }) => {
+    if (running) {
+      return;
+    }
+    running = true;
     startBusy({ initiator: "change-hotkeys", labelKey: "hotkeys.changing" });
     try {
       const newResults = await changeHotkeyOnNeurons({ change, neurons });
@@ -110,6 +135,7 @@
           (result) => newResultsByKey.get(toKey(result)) ?? result
         ) ?? newResults;
     } finally {
+      running = false;
       stopBusy("change-hotkeys");
       onChange([...new Set(neurons.map(({ universeId }) => universeId))]);
     }
@@ -171,10 +197,8 @@
           >
             <span slot="label">{$i18n.hotkeys.new_hotkey}</span>
           </PrincipalInput>
-          {#if isSameHotkey}
-            <p class="error" data-tid="same-hotkey-error">
-              {$i18n.hotkeys.same_hotkey_error}
-            </p>
+          {#if nonNullish(newHotkeyError)}
+            <p class="error" data-tid="new-hotkey-error">{newHotkeyError}</p>
           {/if}
           <CalloutWarning htmlText={$i18n.hotkeys.new_hotkey_warning} />
         </div>
@@ -277,7 +301,7 @@
           <button
             class="secondary"
             data-tid="retry-button"
-            disabled={isLoading}
+            disabled={isLoading || running}
             onclick={retry}>{$i18n.hotkeys.retry}</button
           >
         {/if}

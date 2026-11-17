@@ -224,6 +224,8 @@ interface I18nHotkeys {
   new_hotkey: string;
   new_hotkey_placeholder: string;
   same_hotkey_error: string;
+  anonymous_hotkey_error: string;
+  own_hotkey_error: string;
   new_hotkey_warning: string;
   neurons_to_change: string;
   selected_neurons: string;

@@ -8,6 +8,7 @@
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { clearCache as clearGovernanceApiCache } from "$lib/api-services/governance.api-service";
   import { hotkeysStore } from "$lib/derived/hotkeys.derived";
   import ChangeHotkeyModal from "$lib/modals/hotkeys/ChangeHotkeyModal.svelte";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
@@ -42,6 +43,8 @@
 
   // Resolves to `true` if the certified neurons loaded.
   const loadNnsNeurons = async (): Promise<boolean> => {
+    // The cached neurons can be up to 5 minutes old.
+    clearGovernanceApiCache();
     let certifiedLoaded = false;
     await listNeurons({
       strategy: "update",

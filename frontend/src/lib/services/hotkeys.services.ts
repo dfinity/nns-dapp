@@ -18,7 +18,10 @@ import type {
   HotkeyNeuronRef,
 } from "$lib/types/hotkeys";
 import { mapPool } from "$lib/utils/reporting.utils";
-import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import {
+  getSnsNeuronHotkeys,
+  getSnsNeuronIdAsHexString,
+} from "$lib/utils/sns-neuron.utils";
 import {
   fromDefinedNullable,
   fromNullable,
@@ -137,6 +140,15 @@ const changeSnsNeuronHotkey = async ({
     neuron,
     principal: change.principal,
   });
+  // Removes only a hotkey. A principal without permissions is done already.
+  if (
+    currentPermissions.length > 0 &&
+    !getSnsNeuronHotkeys(neuron).includes(change.principal)
+  ) {
+    throw new Error(
+      `${change.principal} is not a hotkey of SNS neuron ${getSnsNeuronIdAsHexString(neuron)}`
+    );
+  }
   const remove = async () => {
     if (currentPermissions.length > 0) {
       await removeNeuronPermissions({
@@ -184,6 +196,29 @@ const changeSnsNeuronHotkey = async ({
       nonNullish(maxPrincipals) &&
       BigInt(neuron.permissions.length) >= maxPrincipals,
   });
+};
+
+const assertValidChange = ({
+  change,
+  identity,
+}: {
+  change: HotkeyChange;
+  identity: Identity;
+}) => {
+  const userPrincipal = identity.getPrincipal().toText();
+  if (change.principal === userPrincipal) {
+    throw new Error("The principal of the user is not a hotkey to change");
+  }
+  if (change.type === "remove") {
+    return;
+  }
+  if (
+    change.newPrincipal === change.principal ||
+    change.newPrincipal === userPrincipal ||
+    Principal.fromText(change.newPrincipal).isAnonymous()
+  ) {
+    throw new Error(`${change.newPrincipal} cannot be the new hotkey`);
+  }
 };
 
 type LoadedNeurons =
@@ -234,6 +269,7 @@ export const changeHotkeyOnNeurons = async ({
   neurons: HotkeyNeuronRef[];
 }): Promise<HotkeyChangeResult[]> => {
   const identity = await getAuthenticatedIdentity();
+  assertValidChange({ change, identity });
 
   const loads = await mapPool(
     [...new Set(neurons.map(({ universeId }) => universeId))],

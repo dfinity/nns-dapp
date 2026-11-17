@@ -16,7 +16,7 @@ import {
   SnsNeuronPermissionType,
   type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
-import type { Principal } from "@icp-sdk/core/principal";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("hotkeys.services", () => {
   const oldHotkey = principal(1);
@@ -250,6 +250,57 @@ describe("hotkeys.services", () => {
       );
       expect(spyAddPermissions).not.toHaveBeenCalled();
     });
+  });
+
+  it("should not remove an SNS principal that is no longer a hotkey", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const neuron = snsNeuron(1, [
+      {
+        principal: oldHotkey,
+        permissions: [
+          ...HOTKEY_PERMISSIONS,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+        ],
+      },
+    ]);
+    setSnsNeurons([neuron]);
+
+    const results = await changeHotkeyOnNeurons({
+      change: remove,
+      neurons: [snsRef(neuron)],
+    });
+
+    expect(results).toEqual([{ ...snsRef(neuron), success: false }]);
+    expect(spyRemovePermissions).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["the anonymous principal", Principal.anonymous().toText()],
+    ["the principal of the user", mockIdentity.getPrincipal().toText()],
+    ["the current hotkey", oldHotkey.toText()],
+  ])("should not replace a hotkey with %s", async (_, newPrincipal) => {
+    setNnsNeurons([nnsNeuron(1n, [oldHotkey])]);
+
+    await expect(
+      changeHotkeyOnNeurons({
+        change: { ...replace, newPrincipal },
+        neurons: [nnsRef(1n)],
+      })
+    ).rejects.toThrow("cannot be the new hotkey");
+    expect(spyAddHotkey).not.toHaveBeenCalled();
+    expect(spyRemoveHotkey).not.toHaveBeenCalled();
+  });
+
+  it("should not change the principal of the user", async () => {
+    await expect(
+      changeHotkeyOnNeurons({
+        change: {
+          type: "remove",
+          principal: mockIdentity.getPrincipal().toText(),
+        },
+        neurons: [nnsRef(1n)],
+      })
+    ).rejects.toThrow("not a hotkey to change");
   });
 
   it("should report each failed neuron and change the others", async () => {

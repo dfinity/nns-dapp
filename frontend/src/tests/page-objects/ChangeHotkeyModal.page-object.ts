@@ -26,8 +26,11 @@ export class ChangeHotkeyModalPo extends ModalPo {
     return this.getNewHotkeyInputPo().typeText(principal);
   }
 
-  hasSameHotkeyError(): Promise<boolean> {
-    return this.isPresent("same-hotkey-error");
+  async getNewHotkeyError(): Promise<string | null> {
+    const element = this.root.byTestId("new-hotkey-error");
+    return (await element.isPresent())
+      ? (await element.getText()).trim()
+      : null;
   }
 
   hasWarning(): Promise<boolean> {
