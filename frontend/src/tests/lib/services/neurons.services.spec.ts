@@ -586,7 +586,7 @@ describe("neurons-services", () => {
       expect(get(neuronsStore)).toEqual({ neurons, certified: true });
     });
 
-    it("should not call the callback of an out-of-date call", async () => {
+    it("should call the callback of an out-of-date call with the certified neurons of a later call", async () => {
       let resolveOlderCall: (neurons: NeuronInfo[]) => void;
       spyQueryNeurons.mockImplementationOnce(
         () =>
@@ -605,6 +605,31 @@ describe("neurons-services", () => {
       await olderCall;
 
       expect(get(definedNeuronsStore)).toEqual(neurons);
+      expect(olderCallback).toHaveBeenCalledTimes(1);
+      expect(olderCallback).toHaveBeenCalledWith(true);
+    });
+
+    it("should not call the callback of an out-of-date call after a later call failed", async () => {
+      spyConsoleError.mockReturnValue();
+      let rejectOlderCall: (error: Error) => void;
+      spyQueryNeurons
+        .mockImplementationOnce(
+          () =>
+            new Promise((_, reject) => {
+              rejectOlderCall = reject;
+            })
+        )
+        .mockRejectedValueOnce(new Error("Test error"));
+      const olderCallback = vi.fn();
+
+      const olderCall = listNeurons({
+        strategy: "update",
+        callback: olderCallback,
+      });
+      await listNeurons({ strategy: "update" });
+      rejectOlderCall(new Error("Older error"));
+      await olderCall;
+
       expect(olderCallback).not.toHaveBeenCalled();
     });
 

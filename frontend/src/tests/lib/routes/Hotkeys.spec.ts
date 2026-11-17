@@ -535,6 +535,33 @@ describe("Hotkeys", () => {
     );
   });
 
+  it("should not show a load error when a later certified load ends first", async () => {
+    setSnsProjects([]);
+    let resolvePageLoad: (neurons: NeuronInfo[]) => void;
+    let calls = 0;
+    vi.spyOn(governanceApi, "queryNeurons").mockImplementation(() => {
+      calls += 1;
+      if (calls === 1) {
+        return new Promise((resolve) => {
+          resolvePageLoad = resolve;
+        });
+      }
+      return Promise.resolve([nnsNeuron(1n, [hotkeyA])]);
+    });
+
+    const po = renderComponent();
+    await runResolvedPromises();
+    await listNeurons({ strategy: "update" });
+    resolvePageLoad([nnsNeuron(1n, [hotkeyB])]);
+    await runResolvedPromises();
+
+    expect(await po.isLoading()).toBe(false);
+    expect(await po.hasLoadError()).toBe(false);
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
+  });
+
   describe("when a certified load fails", () => {
     beforeEach(() => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);

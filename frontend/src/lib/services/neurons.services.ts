@@ -285,6 +285,8 @@ export const stakeNeuron = async ({
 // date.
 let listNeuronsCallCount = 0;
 let latestWrittenUpdatingListNeuronsCall = 0;
+// True when that latest write has certified neurons, false after a failed load.
+let latestWrittenHasCertifiedNeurons = false;
 
 // Returns a check that is true when a `listNeurons` call that makes an update
 // call, and starts after this point, wrote the store. Then the store has newer
@@ -298,7 +300,7 @@ const startSingleNeuronLoad = () => {
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
  * @param {Object} params
- * @param {callback} params.callback an optional callback that is called when a response writes the store (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
+ * @param {callback} params.callback an optional callback that is called when a response writes the store (certified or not), or with `true` when a later call already wrote certified neurons. Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
   callback,
@@ -315,6 +317,13 @@ export const listNeurons = async ({
   // Data of a query-only call does not replace certified neurons.
   const isQueryOverCertified = () =>
     !makesUpdateCall && get(neuronsStore).certified === true;
+  // The certified neurons of a later call are also the certified neurons of
+  // this call.
+  const reportLaterCertifiedNeurons = (certified: boolean) => {
+    if (certified && latestWrittenHasCertifiedNeurons) {
+      callback?.(true);
+    }
+  };
 
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy: callStrategy,
@@ -325,23 +334,28 @@ export const listNeurons = async ({
         includeEmptyNeurons: false,
       }),
     onLoad: async ({ response: neurons, certified }) => {
-      if (isOutdated() || isQueryOverCertified()) {
+      if (isQueryOverCertified()) {
+        return;
+      }
+      if (isOutdated()) {
+        reportLaterCertifiedNeurons(certified);
         return;
       }
 
       neuronsStore.setNeurons({ neurons, certified });
       if (makesUpdateCall) {
         latestWrittenUpdatingListNeuronsCall = call;
+        latestWrittenHasCertifiedNeurons = certified;
       }
 
       callback?.(certified);
     },
     onError: ({ error, certified, strategy }) => {
-      if (
-        !isLastCall({ strategy, certified }) ||
-        isOutdated() ||
-        isQueryOverCertified()
-      ) {
+      if (!isLastCall({ strategy, certified }) || isQueryOverCertified()) {
+        return;
+      }
+      if (isOutdated()) {
+        reportLaterCertifiedNeurons(certified);
         return;
       }
 
@@ -349,6 +363,7 @@ export const listNeurons = async ({
       neuronsStore.setNeurons({ neurons: [], certified });
       if (makesUpdateCall) {
         latestWrittenUpdatingListNeuronsCall = call;
+        latestWrittenHasCertifiedNeurons = false;
       }
 
       toastsError({
