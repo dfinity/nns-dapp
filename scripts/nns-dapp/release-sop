@@ -454,7 +454,8 @@ PROPOSAL_TAG="proposal-$PROPOSAL_ID"
 confirm_cmd git tag "$PROPOSAL_TAG"
 confirm_cmd git push origin "tags/$PROPOSAL_TAG"
 confirm_cmd git checkout "$BRANCH_NAME"
-record "Proposal URL" echo "https://nns.icp.net/voting/proposals/$PROPOSAL_ID"
+record "Proposal dashboard URL" echo "https://dashboard.internetcomputer.org/proposal/$PROPOSAL_ID"
+record "Proposal governance app URL" echo "https://nns.icp.net/voting/proposals/$PROPOSAL_ID"
 confirm_manual "Schedule voting" echo "Schedule an appointment (use \"NNS Upgrades\" calendar) for trusted neurons voting (in 3 days)"
 
 # Post-release
