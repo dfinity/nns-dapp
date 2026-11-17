@@ -286,6 +286,14 @@ export const stakeNeuron = async ({
 let listNeuronsCallCount = 0;
 let latestUpdatingListNeuronsCall = 0;
 
+// Returns a check that is true when a `listNeurons` call that makes an update
+// call starts after this point. Then the store has newer neurons than a single
+// neuron that is loaded from this point.
+const startSingleNeuronLoad = () => {
+  const callsAtStart = listNeuronsCallCount;
+  return () => latestUpdatingListNeuronsCall > callsAtStart;
+};
+
 /**
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
@@ -352,6 +360,7 @@ export const listNeurons = async ({
 // We always want to call this with the user identity
 export const getAndLoadNeuron = async (neuronId: NeuronId) => {
   const identity = await getAuthenticatedIdentity();
+  const isOutdated = startSingleNeuronLoad();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
     identity,
@@ -365,6 +374,9 @@ export const getAndLoadNeuron = async (neuronId: NeuronId) => {
     throw new NotAuthorizedNeuronError(
       `User not authorized to access neuron ${neuronId}`
     );
+  }
+  if (isOutdated()) {
+    return;
   }
   neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
 };
@@ -1172,12 +1184,17 @@ const claimOrRefreshAndLoadNeuron = async (
   }
 
   try {
+    const isOutdated = startSingleNeuronLoad();
     await loadNeuron({
       neuronId,
       forceFetch: true,
       strategy: "update",
-      setNeuron: ({ neuron, certified }) =>
-        neuronsStore.pushNeurons({ neurons: [neuron], certified }),
+      setNeuron: ({ neuron, certified }) => {
+        if (isOutdated()) {
+          return;
+        }
+        neuronsStore.pushNeurons({ neurons: [neuron], certified });
+      },
     });
   } catch (err) {
     console.error(err);
@@ -1337,11 +1354,15 @@ const claimNeuron = async ({
       "claimOrRefreshNeuronByMemo should either throw or return a neuronId."
     );
   }
+  const isOutdated = startSingleNeuronLoad();
   await loadNeuron({
     neuronId,
     forceFetch: true,
     strategy: "update",
     setNeuron: ({ neuron, certified }) => {
+      if (isOutdated()) {
+        return;
+      }
       neuronsStore.pushNeurons({ neurons: [neuron], certified });
     },
     handleError: () => {},

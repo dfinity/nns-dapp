@@ -59,6 +59,7 @@ const {
   addHotkey,
   addHotkeyForHardwareWalletNeuron,
   addFollowee,
+  getAndLoadNeuron,
   getIdentityOfControllerByNeuronId,
   toggleCommunityFund,
   listNeurons,
@@ -2657,6 +2658,81 @@ describe("neurons-services", () => {
 
       resolveClaims.forEach((resolve) => resolve());
       await Promise.all(reloads);
+    });
+
+    it("should not replace the neuron of a neuron list that starts later", async () => {
+      const listedNeuron = {
+        ...mockNeuron,
+        fullNeuron: { ...mockFullNeuron, hotKeys: [] },
+      };
+      const olderNeuron = {
+        ...mockNeuron,
+        fullNeuron: { ...mockFullNeuron, hotKeys: ["older-hotkey"] },
+      };
+      let resolveOlderNeuron: (neuron: NeuronInfo) => void;
+      spyGetNeuron.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveOlderNeuron = resolve;
+          })
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([listedNeuron]);
+
+      const reload = reloadNeuron(mockNeuron.neuronId);
+      await runResolvedPromises();
+      expect(spyGetNeuron).toBeCalledTimes(1);
+
+      await listNeurons({ strategy: "update" });
+      resolveOlderNeuron(olderNeuron);
+      await reload;
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: [listedNeuron],
+        certified: true,
+      });
+    });
+  });
+
+  describe("getAndLoadNeuron", () => {
+    it("should add the neuron to the store", async () => {
+      await getAndLoadNeuron(mockNeuron.neuronId);
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: [mockNeuron],
+        certified: true,
+      });
+    });
+
+    it("should not replace the neuron of a neuron list that starts later", async () => {
+      const listedNeuron = {
+        ...mockNeuron,
+        fullNeuron: { ...mockFullNeuron, hotKeys: [] },
+      };
+      const olderNeuron = {
+        ...mockNeuron,
+        fullNeuron: { ...mockFullNeuron, hotKeys: ["older-hotkey"] },
+      };
+      let resolveOlderNeuron: (neuron: NeuronInfo) => void;
+      spyGetNeuron.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveOlderNeuron = resolve;
+          })
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([listedNeuron]);
+
+      const load = getAndLoadNeuron(mockNeuron.neuronId);
+      await runResolvedPromises();
+      expect(spyGetNeuron).toBeCalledTimes(1);
+
+      await listNeurons({ strategy: "update" });
+      resolveOlderNeuron(olderNeuron);
+      await load;
+
+      expect(get(neuronsStore)).toEqual({
+        neurons: [listedNeuron],
+        certified: true,
+      });
     });
   });
 
