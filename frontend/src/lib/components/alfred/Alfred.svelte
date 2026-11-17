@@ -9,7 +9,7 @@
   import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
   import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
-  import { debounce, nonNullish } from "@dfinity/utils";
+  import { debounce, isNullish, nonNullish } from "@dfinity/utils";
   import { tick, type Component } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -17,6 +17,7 @@
   let selectedIndex = $state(0);
   let isProcessingKey = $state(false);
   let searchInput = $state<HTMLInputElement>();
+  let menuElement = $state<HTMLDivElement>();
   let UtilComponent = $state<Component | null>(null);
 
   const alfredVisible = $derived($alfredVisibleStore);
@@ -60,6 +61,9 @@
   };
 
   const handleKeyNavigation = async (event: KeyboardEvent): Promise<void> => {
+    // A util form handles its own keys, for example Enter to submit.
+    if (nonNullish(UtilComponent) && event.key !== "Escape") return;
+
     const prevIndex = selectedIndex;
 
     switch (event.key) {
@@ -130,10 +134,48 @@
     }
   };
 
+  const FOCUSABLE_SELECTOR =
+    "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+
+  // The panel is a modal dialog, so Tab and Shift+Tab stay inside it.
+  const trapFocus = (event: KeyboardEvent) => {
+    if (isNullish(menuElement)) return;
+
+    const focusable = Array.from(
+      menuElement.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+    );
+    // A busy util disables all its controls.
+    if (focusable.length === 0) {
+      event.preventDefault();
+      menuElement.focus();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (!menuElement.contains(active)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    } else if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   const onkeydown = (event: KeyboardEvent) => {
     if ((event.metaKey || event.ctrlKey) && event.key === "k") {
       event.preventDefault();
       toggleAlfred();
+      return;
+    }
+
+    if (alfredVisible && event.key === "Tab") {
+      trapFocus(event);
       return;
     }
 
@@ -151,13 +193,15 @@
   <div
     class="overlay"
     transition:fade={{ duration: 150 }}
-    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-label={$i18n.alfred.dialog_label}
     data-tid="alfred-component"
   >
     <Backdrop on:nnsClose={hideAlfred} />
 
     <div class="wrapper">
-      <div class="menu">
+      <div class="menu" tabindex="-1" bind:this={menuElement}>
         {#if nonNullish(UtilComponent)}
           <UtilComponent />
         {:else}
@@ -246,6 +290,10 @@
       }
 
       .menu {
+        &:focus {
+          outline: none;
+        }
+
         width: 600px;
         // One gutter on each side on a phone.
         max-width: calc(100% - var(--padding-4x));

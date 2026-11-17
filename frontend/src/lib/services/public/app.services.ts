@@ -2,6 +2,7 @@ import { browser } from "$app/environment";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { loadIcrcCanisters } from "$lib/services/icrc-canisters.services";
 import { watchIcrcTokensLoadTokenData } from "$lib/services/icrc-tokens.services";
+import { loadImportedSnses } from "$lib/services/imported-sns.services";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
@@ -13,13 +14,21 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
  * These data can be read by any users without being signed-in.
  */
 export const initAppPublicData = (): Promise<
-  [PromiseSettledResult<void>, PromiseSettledResult<void>]
+  [
+    PromiseSettledResult<void>,
+    PromiseSettledResult<void>,
+    PromiseSettledResult<void>,
+  ]
 > => {
   watchIcrcTokensLoadTokenData();
   /**
    * If one of the promises fails, we don't want to block the app.
    */
-  return Promise.allSettled([loadIcrcCanisters(), loadSnsProjects()]);
+  return Promise.allSettled([
+    loadIcrcCanisters(),
+    loadSnsProjects(),
+    loadImportedSnses(),
+  ]);
 };
 
 const syncAuthStore = async () => {
