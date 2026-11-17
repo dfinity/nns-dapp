@@ -341,7 +341,8 @@ export type CachedSnsDto = {
     derived: CachedSnsSwapDerivedDto;
   };
   icrc1_metadata: CachedSnsTokenMetadataDto;
-  icrc1_fee: [] | [number];
+  // A Candid Nat as 32-bit digits, least significant first.
+  icrc1_fee: number[];
   icrc1_total_supply: number;
   derived_state: CachedSnsSwapDerivedDto;
   swap_params: CachedSwapParamsResponseDto;
@@ -351,4 +352,6 @@ export type CachedSnsDto = {
   lifecycle: CachedLifecycleResponseDto | null;
   // TODO(mstr): Make it not optional after all the canisters are upgraded.
   topics?: CachedListTopicsResponseDto;
+  // Only for an imported SNS, because the aggregator does not serve its logo.
+  imported_logo?: string;
 };
