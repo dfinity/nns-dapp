@@ -183,6 +183,16 @@ describe("actionable proposals derived stores", () => {
       expect(get(actionableProposalsLoadedStore)).toEqual(true);
     });
 
+    it("should return true when there is no SNS project", async () => {
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+      setSnsProjects([]);
+      expect(get(actionableProposalsLoadedStore)).toEqual(false);
+
+      actionableNnsProposalsStore.setProposals([mockProposalInfo]);
+
+      expect(get(actionableProposalsLoadedStore)).toEqual(true);
+    });
+
     it("should return false when actionable proposals are loaded not of all Snses", async () => {
       expect(get(actionableProposalsLoadedStore)).toEqual(false);
       setSnsProjects([

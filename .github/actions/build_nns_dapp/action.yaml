@@ -41,23 +41,15 @@ runs:
       run: |
         set -euxo pipefail
         git log | head -n1 > out/commit.txt
-    - name: Get SNS scripts
-      uses: ./.github/actions/checkout_snsdemo
-      with:
-        token: ${{ inputs.token }}
-    - name: Add SNS scripts to the path
-      shell: bash
-      run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-    - name: Install dfx
-      uses: dfinity/setup-dfx@e50c04f104ee4285ec010f10609483cf41e4d365 # main
     - name: Install tools
       shell: bash
       run: |
         set -euxo pipefail
         if command -v didc
         then echo "Skipping didc installation, as didc is already installed"
-        else dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_RELEASE config.json)"
+        else scripts/install-didc
         fi
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
     - name: Create local arguments
       shell: bash
       run: |

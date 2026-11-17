@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# A failed command in a command substitution stops the script too.
+shopt -s inherit_errexit
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+# shellcheck disable=SC2317,SC2329
+print_help() {
+  cat <<-EOF
+
+	Waits until the SNS aggregator of a local icp-cli network lists every
+	deployed SNS with the current lifecycle of its swap.
+
+	The aggregator refreshes one SNS per update interval, which is two minutes
+	by default. If the aggregator is a dev build, which has the reconfigure
+	method, the script sets the interval to one second while it waits and
+	restores the configuration afterwards. Otherwise the script waits for
+	two refresh cycles.
+	EOF
+}
+
+RETRY_DELAY_SECONDS=1
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The icp network" variable=NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+cd "$SOURCE_DIR/.."
+
+# The network and the environment have the same name, see icp.yaml.
+ENVIRONMENT="$NETWORK"
+SNS_WASM="$(canister-id --network "$NETWORK" nns-sns-wasm)"
+AGGREGATOR_URL="$(dfx-canister-url --network "$NETWORK" sns_aggregator)"
+
+# Prints the root canister ID and the swap lifecycle of every deployed SNS, as sorted JSON.
+# A failed request stops the script.
+expected_snses() {
+  local instances instance root swap lifecycle
+  instances="$(icp canister call "$SNS_WASM" list_deployed_snses '(record {})' --network "$NETWORK" --query | idl2json | jq -c '.instances[]')"
+  while read -r instance; do
+    test -n "$instance" || continue
+    root="$(jq -r '.root_canister_id[0]' <<<"$instance")"
+    swap="$(jq -r '.swap_canister_id[0]' <<<"$instance")"
+    lifecycle="$(icp canister call "$swap" get_lifecycle '(record {})' --network "$NETWORK" --query | idl2json | jq -r '.lifecycle[0]')"
+    jq -n --arg root "$root" --argjson lifecycle "$lifecycle" '{root: $root, lifecycle: $lifecycle}'
+  done <<<"$instances" | jq -s -c 'sort_by(.root)'
+}
+
+# Prints the root canister ID and the swap lifecycle of every SNS that the aggregator lists, as sorted JSON.
+aggregator_snses() {
+  local page
+  for ((page = 0; ; page++)); do
+    curl -fsS "$AGGREGATOR_URL/v1/sns/list/page/$page/slow.json" 2>/dev/null | jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' || break
+  done | jq -s -c 'sort_by(.root)'
+}
+
+# Arguments: <update_interval_ms> <fast_interval_ms>
+# Fails on a production build, which has no reconfigure method. The candid
+# metadata lists the method in both builds, so a call is the only test.
+reconfigure() {
+  icp canister call sns_aggregator reconfigure "(opt record { update_interval_ms = $1 : nat64; fast_interval_ms = $2 : nat64 })" --environment "$ENVIRONMENT" >/dev/null 2>&1
+}
+
+# Restores the configuration that the aggregator had before the script.
+# shellcheck disable=SC2317,SC2329
+restore_config() {
+  reconfigure "$(jq -r .update_interval_ms <<<"$SAVED_CONFIG")" "$(jq -r .fast_interval_ms <<<"$SAVED_CONFIG")"
+}
+
+expected="$(expected_snses)"
+count="$(jq length <<<"$expected")"
+
+SAVED_CONFIG="$(icp canister call sns_aggregator get_canister_config '()' --environment "$ENVIRONMENT" --query | idl2json)"
+if reconfigure 1000 1000; then
+  trap restore_config EXIT
+  max_attempts=300
+else
+  interval_seconds="$(jq -r '.update_interval_ms | tonumber / 1000 | ceil' <<<"$SAVED_CONFIG")"
+  echo "The SNS aggregator has no reconfigure method, so it refreshes one SNS every $interval_seconds seconds."
+  # Two cycles: one to list the new SNSs and one to get their data.
+  max_attempts=$((2 * (count + 1) * interval_seconds + 60))
+fi
+
+echo "Waiting for the SNS aggregator to list $count SNS projects..."
+for ((attempt = 0; attempt < max_attempts; attempt++)); do
+  # A swap can commit while the script waits, so the lifecycles are read again.
+  expected="$(expected_snses)"
+  if [[ "$(aggregator_snses)" == "$expected" ]]; then
+    echo "The SNS aggregator lists every SNS project."
+    exit 0
+  fi
+  sleep "$RETRY_DELAY_SECONDS"
+done
+echo "ERROR: Timed out while waiting for the SNS aggregator." >&2
+echo "       Expected: $expected" >&2
+echo "       Listed:   $(aggregator_snses)" >&2
+exit 1

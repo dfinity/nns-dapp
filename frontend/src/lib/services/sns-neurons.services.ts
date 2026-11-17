@@ -28,7 +28,10 @@ import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.deri
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
-import { queryAndUpdate } from "$lib/services/utils.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -72,13 +75,16 @@ import { get } from "svelte/store";
  * (Loads sns parameters when not already in the store)
  *
  * @param {Principal} rootCanisterId
+ * @param {Object} options
+ * @param {QueryAndUpdateStrategy} options.strategy Defaults to `FORCE_CALL_STRATEGY`.
  * @returns {void}
  */
 export const syncSnsNeurons = async (
-  rootCanisterId: Principal
+  rootCanisterId: Principal,
+  { strategy }: { strategy?: QueryAndUpdateStrategy } = {}
 ): Promise<void> => {
   return queryAndUpdate<SnsGovernanceDid.Neuron[], unknown>({
-    strategy: FORCE_CALL_STRATEGY,
+    strategy: strategy ?? FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsNeurons({
         rootCanisterId,

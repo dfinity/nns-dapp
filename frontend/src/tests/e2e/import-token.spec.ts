@@ -1,8 +1,8 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
-  dfxCanisterId,
   disableCssAnimations,
+  localCanisterId,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -11,8 +11,8 @@ import { expect, test } from "@playwright/test";
 const TEST_TOKEN_NAME = "ckRED";
 
 test("Test imported tokens", async ({ page, context }) => {
-  const testLedgerCanisterId = await dfxCanisterId("ckred_ledger");
-  const testIndexCanisterId = await dfxCanisterId("ckred_index");
+  const testLedgerCanisterId = await localCanisterId("ckred_ledger");
+  const testIndexCanisterId = await localCanisterId("ckred_index");
 
   await page.goto("/tokens");
   await disableCssAnimations(page);

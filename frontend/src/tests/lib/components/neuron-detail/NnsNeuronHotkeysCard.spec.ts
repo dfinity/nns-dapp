@@ -3,10 +3,13 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { removeHotkey } from "$lib/services/neurons.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { NnsNeuronHotkeysCardPo } from "$tests/page-objects/NnsNeuronHotkeysCard.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -58,6 +61,41 @@ describe("NnsNeuronHotkeysCard", () => {
     });
 
     expect(queryByTestId("add-hotkey-button")).toBeInTheDocument();
+  });
+
+  describe("link to the hotkeys of all neurons", () => {
+    const renderCard = (neuron = controlledNeuron) => {
+      const { container } = render(NeuronContextActionsTest, {
+        props: {
+          neuron,
+          testComponent: NnsNeuronHotkeysCard,
+        },
+      });
+      return NnsNeuronHotkeysCardPo.under(new JestPageObjectElement(container));
+    };
+
+    it("should render the link to the Hotkeys page", async () => {
+      const linkPo = renderCard().getManageAllHotkeysLinkPo();
+
+      expect(await linkPo.isPresent()).toBe(true);
+      expect(await linkPo.getHref()).toBe(AppPath.Hotkeys);
+    });
+
+    it("should not render the link if the feature flag is disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_HOTKEYS_PAGE", false);
+
+      expect(await renderCard().getManageAllHotkeysLinkPo().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should not render the link if the user is not the controller", async () => {
+      expect(
+        await renderCard(unControlledNeuron)
+          .getManageAllHotkeysLinkPo()
+          .isPresent()
+      ).toBe(false);
+    });
   });
 
   it("renders no actions if user not controller", () => {
