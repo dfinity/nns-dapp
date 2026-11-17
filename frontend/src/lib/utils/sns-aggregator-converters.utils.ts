@@ -416,9 +416,11 @@ export const convertIcrc1Metadata = (
  */
 const convertDtoToSnsSummaryMetadata = (
   { url, name, description }: CachedSnsMetadataDto,
-  rootCanisterId: string
+  rootCanisterId: string,
+  importedLogo: string | undefined
 ): SnsSummaryMetadata | undefined => {
-  const nullishLogo = aggregatorCanisterLogoPath(rootCanisterId);
+  const nullishLogo =
+    importedLogo ?? aggregatorCanisterLogoPath(rootCanisterId);
 
   if (isNullish(url) || isNullish(name) || isNullish(description)) {
     return undefined;
@@ -539,6 +541,7 @@ export const convertDtoToSnsSummary = ({
   init,
   swap_params,
   lifecycle,
+  imported_logo,
 }: CachedSnsDto): SnsSummaryWrapper | undefined => {
   const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
@@ -546,7 +549,11 @@ export const convertDtoToSnsSummary = ({
     governanceCanisterId: Principal.from(governance_canister_id),
     ledgerCanisterId: Principal.from(ledger_canister_id),
     indexCanisterId: Principal.from(index_canister_id),
-    metadata: convertDtoToSnsSummaryMetadata(meta, root_canister_id),
+    metadata: convertDtoToSnsSummaryMetadata(
+      meta,
+      root_canister_id,
+      imported_logo
+    ),
     token: convertDtoToTokenMetadata(icrc1_metadata),
     swap: convertDtoToSnsSummarySwap(swap_state.swap),
     derived: convertDerived(derived_state),

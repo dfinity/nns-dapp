@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ManageAllHotkeysLink from "$lib/components/hotkeys/ManageAllHotkeysLink.svelte";
   import AddSnsHotkeyButton from "$lib/components/sns-neuron-detail/actions/AddSnsHotkeyButton.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
@@ -141,6 +142,7 @@
       {#if canManageHotkeys && neuronId !== undefined}
         <div class="actions">
           <AddSnsHotkeyButton />
+          <ManageAllHotkeysLink />
         </div>
       {/if}
     </CardInfo>
@@ -198,6 +200,9 @@
 
   .actions {
     display: flex;
-    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--padding-2x);
   }
 </style>

@@ -47,6 +47,10 @@ export class SelectUniverseCardPo extends CardPo {
     return this.getText("universe-name");
   }
 
+  hasImportedSnsTag(): Promise<boolean> {
+    return this.isPresent("imported-sns-tag");
+  }
+
   getLogoAltText(): Promise<string> {
     return this.getUniverseLogoPo().getLogoAltText();
   }

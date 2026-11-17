@@ -59,6 +59,13 @@ export class AccountMenuPo extends BasePageObject {
     });
   }
 
+  getLinkToHotkeysPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "hotkeys",
+    });
+  }
+
   getManangeIILinkPo(): LinkPo {
     return LinkPo.under({
       element: this.root,
@@ -68,6 +75,10 @@ export class AccountMenuPo extends BasePageObject {
 
   clickCanisters(): Promise<void> {
     return this.getCanistersLinkPo().click();
+  }
+
+  clickAddressBook(): Promise<void> {
+    return this.getLinkToAddressBookPo().click();
   }
 
   getAccountDetailsPo(): AccountDetailsPo {

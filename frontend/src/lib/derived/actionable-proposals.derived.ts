@@ -82,6 +82,12 @@ export const actionableProposalsLoadedStore: Readable<boolean> = derived(
     nonNullish(nnsProposals.proposals) &&
     // The SNS projects must be loaded. The list can be empty on a test network.
     nonNullish(snsAggregator.data) &&
-    committedSnsProjects.length ===
-      Object.keys(snsProposals).length + failedSnses.length
+    // The stores can also hold the result of an SNS that is not in the list anymore, for example a removed imported SNS.
+    committedSnsProjects.every(({ rootCanisterId }) => {
+      const rootCanisterIdText = rootCanisterId.toText();
+      return (
+        nonNullish(snsProposals[rootCanisterIdText]) ||
+        failedSnses.includes(rootCanisterIdText)
+      );
+    })
 );

@@ -118,6 +118,23 @@ describe("sns-neurons-services", () => {
       expect(spyQuery).toBeCalled();
     });
 
+    it("should make only the update call with the update strategy", async () => {
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockResolvedValue([neuron]);
+
+      await syncSnsNeurons(mockPrincipal, { strategy: "update" });
+
+      expect(spyQuery).toHaveBeenCalledTimes(1);
+      expect(spyQuery).toHaveBeenCalledWith(
+        expect.objectContaining({ certified: true })
+      );
+      expect(get(snsNeuronsStore)[mockPrincipal.toText()]).toEqual({
+        neurons: [neuron],
+        certified: true,
+      });
+    });
+
     it("should empty store if update call fails", async () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
 

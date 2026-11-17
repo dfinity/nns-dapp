@@ -20,7 +20,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import {
+    importedSnsesReadyStore,
+    snsAggregatorStore,
+  } from "$lib/stores/sns-aggregator.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let accountIdentifier: string | undefined | null = undefined;
@@ -52,6 +55,7 @@
     // before we have the list of Sns projects.
     // and imported tokens being loaded
     nonNullish($snsAggregatorStore.data) &&
+    $importedSnsesReadyStore &&
     (!$authSignedInStore || nonNullish($importedTokensStore.importedTokens));
   $: if (tokensReady) {
     // Check once per page load to handle navigation after signing out from the imported token page.

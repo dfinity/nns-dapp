@@ -3,6 +3,7 @@ description: |
   Starts the local icp-cli network from icp.yaml. The network has the NNS,
   the SNS, Internet Identity, the ICP ledger, the SNS aggregator and an
   nns-dapp. Optionally installs the given nns-dapp and sns_aggregator wasms.
+  The start script then creates the SNS projects of the end-to-end tests.
 
   Also installs the tools that the test scripts need: icp, didc and idl2json.
 inputs:
