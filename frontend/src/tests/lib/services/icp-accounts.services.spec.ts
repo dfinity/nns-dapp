@@ -783,6 +783,7 @@ describe("icp-accounts.services", () => {
         spySendICP.mockClear();
         spySendICP.mockRejectedValueOnce(unknownOutcomeError);
         await transferICP({ ...transferICPParams, memo: "1" });
+        vi.setSystemTime(Date.now() + 1_000);
         await transferICP({ ...transferICPParams, memo: "01" });
 
         expect(createdAtOfCall(1)).toEqual(createdAtOfCall(0));

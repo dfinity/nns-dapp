@@ -904,6 +904,7 @@ describe("icrc-accounts-services", () => {
           TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
         );
         await transferTokens(subaccountParams);
+        vi.setSystemTime(Date.now() + 1_000);
         await transferTokens({
           ...subaccountParams,
           destinationAddress: destination.replace(/\.1$/, ".01"),
