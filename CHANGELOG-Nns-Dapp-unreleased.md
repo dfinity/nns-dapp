@@ -14,6 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- ckSOL is listed as a default token.
 - Add an "Import SNS" tool to the quick search panel to add an SNS that the
   NNS dapp does not list.
 - Add a Hotkeys page to replace or remove a hotkey on all your NNS and SNS neurons at once.
