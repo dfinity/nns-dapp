@@ -60,11 +60,21 @@ test("Test hotkeys", async ({ page, context }) => {
   step("See the hotkey of both neurons");
   await appPo.goToHotkeys();
   const hotkeysPo = appPo.getHotkeysPo();
-  // A row that leaves with a transition has no tooltip, so a read can fail
-  // until the transition ends.
-  const getRowsData = () => hotkeysPo.getRowsData().catch(() => undefined);
+  // A row that leaves with a transition can fail a read, or detach in the
+  // middle of one. Playwright has no action timeout here, so a read of a
+  // detached row would wait until the test times out. Each read has a limit,
+  // and the poll reads again.
+  const READ_LIMIT_MILLIS = 5_000;
+  const readWithLimit = <T>(read: () => Promise<T>): Promise<T | undefined> =>
+    Promise.race([
+      read(),
+      new Promise<undefined>((resolve) =>
+        setTimeout(resolve, READ_LIMIT_MILLIS)
+      ),
+    ]).catch(() => undefined);
+  const getRowsData = () => readWithLimit(() => hotkeysPo.getRowsData());
   const areActionsDisabled = () =>
-    hotkeysPo.areActionsDisabled(0).catch(() => undefined);
+    readWithLimit(() => hotkeysPo.areActionsDisabled(0));
   await expect.poll(getRowsData).toEqual([
     {
       principal: oldHotkey,
