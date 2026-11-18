@@ -52,8 +52,8 @@ expected_snses() {
 
 # Prints the root canister ID and the swap lifecycle of every SNS that the aggregator lists, as sorted JSON.
 # The aggregator creates page 0 on setup, also with no SNS, so a missing or
-# invalid page 0 means that the aggregator is not ready. It then prints [null],
-# which matches no expected list.
+# invalid page 0 means that the aggregator is not ready. An invalid page then
+# adds null, so the list matches no expected list.
 aggregator_snses() {
   local page json
   for ((page = 0; ; page++)); do
@@ -61,7 +61,10 @@ aggregator_snses() {
       ((page > 0)) || echo null
       break
     fi
-    jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' <<<"$json"
+    jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' <<<"$json" 2>/dev/null || {
+      echo null
+      break
+    }
   done | jq -s -c 'sort_by(.root)'
 }
 
