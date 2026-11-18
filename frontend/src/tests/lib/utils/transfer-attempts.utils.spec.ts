@@ -132,15 +132,15 @@ describe("transfer-attempts.utils", () => {
       localStorage.getItem(StoreLocalStorageKey.TransferAttempts);
 
     it("should remove only the expired attempts", () => {
-      startTransferAttempt("expired");
-      vi.setSystemTime(Date.now() + windowMillis);
-      startTransferAttempt(key);
-      vi.setSystemTime(Date.now() + 1_000);
+      const now = nowInBigIntNanoSeconds();
+      saveFromOtherTab({
+        expired: now - LEDGER_DEDUPLICATION_WINDOW_NANOS,
+        [key]: now,
+      });
 
       removeExpiredTransferAttempts();
 
-      expect(stored()).not.toContain("expired");
-      expect(startTransferAttempt(key).isRetry).toBe(true);
+      expect(Object.keys(JSON.parse(stored() ?? "{}"))).toEqual([key]);
     });
 
     it("should remove the storage entry if all attempts expired", () => {
