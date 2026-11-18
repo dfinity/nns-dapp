@@ -14,6 +14,7 @@ import en from "$tests/mocks/i18n.mock";
 import { UnsupportedMethodError } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
+  CborDecodeErrorCode,
   CertificateVerificationErrorCode,
   CertifiedRejectErrorCode,
   ErrorKindEnum,
@@ -206,6 +207,16 @@ describe("error-utils", () => {
           InputError.fromCode(new IngressExpiryInvalidErrorCode("expiry", 5))
         )
       ).toBe(false);
+    });
+
+    it("should return true if the agent cannot decode a response", () => {
+      expect(
+        isUnknownOutcomeError(
+          InputError.fromCode(
+            new CborDecodeErrorCode(new Error("cbor"), new Uint8Array([0xff]))
+          )
+        )
+      ).toBe(true);
     });
 
     it("should return false for an error outside the agent", () => {
