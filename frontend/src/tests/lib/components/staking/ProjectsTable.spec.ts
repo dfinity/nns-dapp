@@ -8,7 +8,6 @@ import {
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
@@ -87,51 +86,6 @@ describe("ProjectsTable", () => {
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
-  });
-
-  describe("table when ENABLE_APY_PORTFOLIO disabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-    });
-
-    it("should render desktop headers", async () => {
-      const po = renderComponent();
-      expect(await po.getDesktopColumnHeaders()).toEqual([
-        "Staked ICP Native utility token of the Internet Computer",
-        "Stake",
-        "Maturity",
-        "Neurons",
-        "", // No header for actions column.
-        "Staked SNS Tokens Dapp community projects",
-        "Stake",
-        "Maturity",
-        "Neurons",
-        "", // No header for actions column.
-      ]);
-    });
-
-    it("should render cell alignment classes", async () => {
-      const po = renderComponent();
-      const rows = await po.getRows();
-      expect(await rows[0].getCellAlignments()).toEqual([
-        "desktop-align-left", // Nervous Systems
-        "desktop-align-right", // Stake
-        "desktop-align-right", // Maturity
-        "desktop-align-right", // Neurons
-        "desktop-align-right", // Actions
-      ]);
-    });
-
-    it("should use correct template columns", async () => {
-      const po = renderComponent();
-
-      expect(await po.getDesktopGridTemplateColumns()).toBe(
-        ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
-      );
-      expect(await po.getMobileGridTemplateAreas()).toBe(
-        '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
-      );
-    });
   });
 
   it("should render desktop headers", async () => {
@@ -1201,7 +1155,6 @@ describe("ProjectsTable", () => {
   });
 
   it("should display Staking Rewards banner", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
     stakingRewardsStore.set({
       loading: false,
       rewardBalanceUSD: 100,
@@ -1221,25 +1174,5 @@ describe("ProjectsTable", () => {
     expect(await apyCardPo.isPresent()).toBe(true);
     // Check that the link is not present
     expect(await apyCardPo.getLinkPo().isPresent()).toBe(false);
-  });
-
-  it("should not display Staking Rewards banner w/o the feature flag", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-    stakingRewardsStore.set({
-      loading: false,
-      rewardBalanceUSD: 100,
-      rewardEstimateWeekUSD: 10,
-      stakingPower: 1,
-      stakingPowerUSD: 1,
-      icpOnly: {
-        maturityBalance: 1,
-        maturityEstimateWeek: 1,
-        stakingPower: 1,
-      },
-      apy: new Map(),
-    });
-
-    const po = renderComponent();
-    expect(await po.getApyCardPo().isPresent()).toBe(false);
   });
 });

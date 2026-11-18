@@ -27,7 +27,6 @@
   } from "$lib/services/accounts-balances.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -72,20 +71,14 @@
         ? compareByStake(universeOrder)
         : undefined,
     },
-    ...($ENABLE_APY_PORTFOLIO
-      ? [
-          {
-            id: "apy",
-            title: $i18n.neuron_detail.apy_and_max,
-            cellComponent: ProjectApyCell,
-            alignment: "right",
-            templateColumns: ["1fr"],
-            comparator: $authSignedInStore
-              ? compareByApy(universeOrder)
-              : undefined,
-          } as ProjectsTableColumn,
-        ]
-      : []),
+    {
+      id: "apy",
+      title: $i18n.neuron_detail.apy_and_max,
+      cellComponent: ProjectApyCell,
+      alignment: "right",
+      templateColumns: ["1fr"],
+      comparator: $authSignedInStore ? compareByApy(universeOrder) : undefined,
+    },
     {
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: ProjectMaturityCell,
@@ -150,9 +143,7 @@
       snsNeurons: $snsNeuronsStore,
       tickersStore: $tickersStore,
       failedActionableSnses: $failedActionableSnsesStore,
-      stakingRewardsResult: $ENABLE_APY_PORTFOLIO
-        ? $stakingRewardsStore
-        : undefined,
+      stakingRewardsResult: $stakingRewardsStore,
     })
   );
 
@@ -250,9 +241,7 @@
     }
   });
 
-  const apyCardVisible = $derived(
-    $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)
-  );
+  const apyCardVisible = $derived(nonNullish(totalUsdAmount));
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
