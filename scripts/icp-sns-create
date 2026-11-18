@@ -13,7 +13,8 @@ print_help() {
 	The script submits a CreateServiceNervousSystem proposal with the large NNS
 	neuron of the anonymous principal, see scripts/icp-network-start. The neuron
 	has the majority, so the NNS adopts and executes the proposal at once. The
-	local NNS governance is a test build, so the swap opens at once.
+	local NNS governance is a test build, so the swap opens in its next periodic
+	task, within a minute, instead of a day later.
 
 	With --buy, the anonymous principal buys the whole swap. The swap then
 	commits and finalizes itself, which takes up to two minutes. With --commit,
@@ -70,6 +71,10 @@ test -f "$LOGO" || {
   exit 1
 } >&2
 LOGO="$(realpath "$LOGO")"
+if [[ "${NO_WAIT:-}" == "true" && ("${BUY:-}" == "true" || "${COMMIT:-}" == "true") ]]; then
+  echo "ERROR: --no_wait cannot be combined with --buy or --commit." >&2
+  exit 1
+fi
 
 cd "$SOURCE_DIR/.."
 
@@ -263,13 +268,16 @@ transfer() {
   } >&2
 }
 
-# Buys the whole swap as the anonymous principal, unless the swap has the
-# participation already. The swap rejects a refresh once its target is reached.
+# Buys the whole swap as the anonymous principal, unless the swap reached its
+# direct participation target already. The swap rejects a refresh once its
+# target is reached, also when other participants filled it.
 buy_swap() {
-  local max_e8s participation_e8s principal_hex subaccount balance
-  max_e8s="$(call "$SWAP_CANISTER_ID" get_init '(record {})' --query | idl2json | jq -r '.init[0].max_participant_icp_e8s[0]')"
-  participation_e8s="$(call "$SWAP_CANISTER_ID" get_buyer_state "(record { principal_id = opt principal \"$ANONYMOUS_PRINCIPAL\" })" --query | idl2json | jq -r '.buyer_state[0].icp[0].amount_e8s // "0"')"
-  if ((participation_e8s >= max_e8s)); then
+  local init max_e8s max_direct_e8s direct_e8s principal_hex subaccount balance
+  init="$(call "$SWAP_CANISTER_ID" get_init '(record {})' --query | idl2json)"
+  max_e8s="$(jq -r '.init[0].max_participant_icp_e8s[0]' <<<"$init")"
+  max_direct_e8s="$(jq -r '.init[0].max_direct_participation_icp_e8s[0]' <<<"$init")"
+  direct_e8s="$(call "$SWAP_CANISTER_ID" get_derived_state '(record {})' --query | idl2json | jq -r '.direct_participation_icp_e8s[0] // "0"')"
+  if ((direct_e8s >= max_direct_e8s)); then
     return
   fi
   # The swap keeps the ICP of a buyer in a subaccount: the length of the
