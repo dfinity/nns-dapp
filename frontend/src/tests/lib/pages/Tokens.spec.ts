@@ -4,7 +4,6 @@ import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -86,11 +85,6 @@ describe("Tokens page", () => {
     expect(await po.hasTokensTable()).toBeDefined();
   });
 
-  it("should render a row per token", async () => {
-    const po = renderPage([token1, token2]);
-    expect(await po.getTokensTable().getRows()).toHaveLength(2);
-  });
-
   it("should show settings button", async () => {
     const po = renderPage([token1, token2]);
     expect(await po.getSettingsButtonPo().isPresent()).toBe(true);
@@ -122,26 +116,11 @@ describe("Tokens page", () => {
     expect(await po.getBackdropPo().isPresent()).toBe(false);
   });
 
-  it("should hide tokens with zero balance", async () => {
-    const po = renderPage([positiveBalance, zeroBalance]);
-
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Positive balance",
-      "Zero balance",
-    ]);
-
-    await po.getSettingsButtonPo().click();
-    await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
-
-    // Finish transitions
-    await advanceTime(500);
-
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Positive balance",
-    ]);
-  });
-
   it("should not hide imported tokens, even if they have a zero balance.", async () => {
+    const importedZeroBalance = {
+      ...zeroBalance,
+      ledgerCanisterId: zeroBalance.universeId,
+    };
     importedTokensStore.set({
       importedTokens: [
         {
@@ -151,10 +130,12 @@ describe("Tokens page", () => {
       ],
       certified: true,
     });
-    const po = renderPage([positiveBalance, zeroBalance]);
+    const po = renderPage([positiveBalance, importedZeroBalance]);
 
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
+    expect(await po.getSnsTokensTable().getTokenNames()).toEqual([
       "Positive balance",
+    ]);
+    expect(await po.getImportedTokensTable().getTokenNames()).toEqual([
       "Zero balance",
     ]);
 
@@ -164,8 +145,10 @@ describe("Tokens page", () => {
     // Finish transitions
     await advanceTime(500);
 
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
+    expect(await po.getSnsTokensTable().getTokenNames()).toEqual([
       "Positive balance",
+    ]);
+    expect(await po.getImportedTokensTable().getTokenNames()).toEqual([
       "Zero balance",
     ]);
   });
@@ -173,7 +156,7 @@ describe("Tokens page", () => {
   it("should hide tokens without balance", async () => {
     const po = renderPage([unavailableBalance, positiveBalance]);
 
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
+    expect(await po.getSnsTokensTable().getTokenNames()).toEqual([
       "Positive balance",
       "Unavailable balance",
     ]);
@@ -184,137 +167,30 @@ describe("Tokens page", () => {
     // Finish transitions
     await advanceTime(500);
 
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
+    expect(await po.getSnsTokensTable().getTokenNames()).toEqual([
       "Positive balance",
     ]);
   });
 
-  it("should not hide ICP even with zero balance and should prioritize it", async () => {
+  it("should not hide ICP even with zero balance", async () => {
     const po = renderPage([icpZeroBalance, positiveBalance]);
 
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
+    expect(await po.getIcpTokensTable().getTokenNames()).toEqual([
       "Internet Computer",
+    ]);
+    expect(await po.getSnsTokensTable().getTokenNames()).toEqual([
       "Positive balance",
     ]);
 
     await po.getSettingsButtonPo().click();
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
+    expect(await po.getIcpTokensTable().getTokenNames()).toEqual([
       "Internet Computer",
+    ]);
+    expect(await po.getSnsTokensTable().getTokenNames()).toEqual([
       "Positive balance",
     ]);
-  });
-
-  it("show-all button should show all tokens", async () => {
-    const po = renderPage([positiveBalance, zeroBalance]);
-
-    expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
-
-    await po.getSettingsButtonPo().click();
-    await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
-
-    // Finish transitions
-    await advanceTime(500);
-
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Positive balance",
-    ]);
-
-    expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
-    await po.getShowAllButtonPo().click();
-
-    // Finish transitions
-    await advanceTime(500);
-
-    expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
-    expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Positive balance",
-      "Zero balance",
-    ]);
-  });
-
-  describe("when import token feature flag is enabled", () => {
-    it("should show import token button", async () => {
-      const po = renderPage([positiveBalance, zeroBalance]);
-      expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
-    });
-
-    it("should show import token and show all buttons", async () => {
-      const po = renderPage([positiveBalance, zeroBalance]);
-
-      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
-
-      await po.getSettingsButtonPo().click();
-      await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
-
-      expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
-      expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
-    });
-
-    it("should not display import token button before imported tokens are available", async () => {
-      importedTokensStore.reset();
-      const po = renderPage([]);
-
-      expect(await po.getImportTokenButtonPo().isPresent()).toBe(false);
-
-      importedTokensStore.set({ importedTokens: [], certified: true });
-      await runResolvedPromises();
-      expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
-    });
-
-    it("should disable import token button when maximum imported", async () => {
-      const setImportedTokens = (count: number) =>
-        importedTokensStore.set({
-          importedTokens: Array.from({ length: count }, (_, i) => ({
-            ledgerCanisterId: principal(i),
-            indexCanisterId: undefined,
-          })),
-          certified: true,
-        });
-
-      setImportedTokens(MAX_IMPORTED_TOKENS - 1);
-      const po = renderPage([]);
-      await runResolvedPromises();
-
-      expect(await po.getImportTokenButtonPo().isPresent()).toBe(true);
-      expect(await po.getImportTokenButtonPo().isDisabled()).toBe(false);
-
-      setImportedTokens(MAX_IMPORTED_TOKENS);
-      await runResolvedPromises();
-      expect(await po.getImportTokenButtonPo().isDisabled()).toBe(true);
-
-      setImportedTokens(MAX_IMPORTED_TOKENS + 1);
-      await runResolvedPromises();
-      expect(await po.getImportTokenButtonPo().isDisabled()).toBe(true);
-    });
-
-    it("should open import token modal", async () => {
-      const po = renderPage([positiveBalance, zeroBalance]);
-
-      await po.getImportTokenButtonPo().click();
-
-      expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
-    });
-
-    it("opens import token modal when ledger canister id in URL", async () => {
-      vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue({
-        name: "Tetris",
-        symbol: "TET",
-        logo: "https://tetris.tet/logo.png",
-      } as IcrcTokenMetadata);
-
-      page.mock({
-        routeId: AppPath.Tokens,
-        data: {
-          universe: OWN_CANISTER_ID_TEXT,
-          importTokenLedgerId: principal(1).toText(),
-        },
-      });
-      const po = renderPage([positiveBalance, zeroBalance]);
-
-      expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
-    });
   });
 
   it("should show total USD value banner when feature flag is enabled", async () => {
@@ -372,14 +248,14 @@ describe("Tokens page", () => {
       },
     ]);
 
-    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+    expect(await po.getIcpTokensTable().getColumnHeaderWithArrow()).toBe(
       "Balance"
     );
   });
 
   it("should change order based on order store", async () => {
     const po = renderPage(userTokensPageMock);
-    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+    expect(await po.getIcpTokensTable().getColumnHeaderWithArrow()).toBe(
       "Balance"
     );
 
@@ -389,14 +265,14 @@ describe("Tokens page", () => {
       },
     ]);
 
-    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
-      "Projects"
+    expect(await po.getIcpTokensTable().getColumnHeaderWithArrow()).toBe(
+      "ICP Tokens Native utility token of the Internet Computer"
     );
   });
 
   it("should change order store based on clicked header", async () => {
     const po = renderPage(userTokensPageMock);
-    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+    expect(await po.getIcpTokensTable().getColumnHeaderWithArrow()).toBe(
       "Balance"
     );
 
@@ -406,7 +282,11 @@ describe("Tokens page", () => {
       },
     ]);
 
-    await po.getTokensTable().clickColumnHeader("Projects");
+    await po
+      .getIcpTokensTable()
+      .clickColumnHeader(
+        "ICP Tokens Native utility token of the Internet Computer"
+      );
 
     expect(get(tokensTableOrderStore)).toEqual([
       {
@@ -418,11 +298,7 @@ describe("Tokens page", () => {
     ]);
   });
 
-  describe("new table feature flag is on", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_NEW_TABLES", true);
-    });
-
+  describe("tables by token type", () => {
     it("should render all mandatory tables", async () => {
       const po = renderPage(userTokensPageMock);
       const tables = po.getAllTokensTable();
@@ -531,6 +407,19 @@ describe("Tokens page", () => {
       const tables = po.getAllTokensTable();
 
       await tables[0].getSettingsButtonPo().click();
+      expect(await tables[0].getImportTokenButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should not display import token button before imported tokens are available", async () => {
+      importedTokensStore.reset();
+      const po = renderPage([]);
+      const tables = po.getAllTokensTable();
+
+      await tables[0].getSettingsButtonPo().click();
+      expect(await tables[0].getImportTokenButtonPo().isPresent()).toBe(false);
+
+      importedTokensStore.set({ importedTokens: [], certified: true });
+      await runResolvedPromises();
       expect(await tables[0].getImportTokenButtonPo().isPresent()).toBe(true);
     });
 
