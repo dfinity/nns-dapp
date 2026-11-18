@@ -167,6 +167,29 @@ const getAccounts = async ({
   ];
 };
 
+/**
+ * Waits for the certified response, because the modals copy the balance after this call.
+ * On failure, keeps the cached accounts, so that the user can still check them.
+ */
+const reloadAccountsAfterUnknownOutcome = async (
+  ledgerCanisterId: Principal
+): Promise<void> => {
+  try {
+    const certified = FORCE_CALL_STRATEGY !== "query";
+    const accounts = await getAccounts({
+      identity: await getAuthenticatedIdentity(),
+      certified,
+      ledgerCanisterId,
+    });
+    icrcAccountsStore.set({
+      ledgerCanisterId,
+      accounts: { accounts, certified },
+    });
+  } catch (err: unknown) {
+    console.error(err);
+  }
+};
+
 export const loadAccounts = async ({
   handleError,
   ledgerCanisterId,
@@ -314,11 +337,7 @@ export const transferTokens = async ({
     );
 
     if (unknownOutcome) {
-      // The modals copy the balance after this call, so wait for the certified response.
-      await loadAccounts({
-        ledgerCanisterId,
-        strategy: FORCE_CALL_STRATEGY ?? "update",
-      });
+      await reloadAccountsAfterUnknownOutcome(ledgerCanisterId);
     }
 
     return { blockIndex: undefined, unknownOutcome };

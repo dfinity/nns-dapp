@@ -846,6 +846,47 @@ describe("icrc-accounts-services", () => {
       );
     });
 
+    it("should keep the cached data if the reload after an unknown outcome fails", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      importedTokensStore.set({
+        importedTokens: [{ ledgerCanisterId, indexCanisterId: undefined }],
+        certified: true,
+      });
+      const cachedAccounts = {
+        accounts: [mockIcrcMainAccount],
+        certified: true,
+      };
+      icrcAccountsStore.set({ ledgerCanisterId, accounts: cachedAccounts });
+      const unknownOutcomeError = TransportError.fromCode(
+        new HttpFetchErrorCode(new Error("fetch"))
+      );
+      vi.spyOn(ledgerApi, "icrcTransfer").mockRejectedValue(
+        unknownOutcomeError
+      );
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        unknownOutcomeError
+      );
+
+      await transferTokens({
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        fee,
+        ledgerCanisterId,
+      });
+
+      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toEqual(
+        cachedAccounts
+      );
+      expect(get(failedImportedTokenLedgerIdsStore)).toEqual([]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: en.error.transaction_unknown_outcome,
+        },
+      ]);
+    });
+
     it("should not reload accounts after a definite failure", async () => {
       vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(ledgerApi, "icrcTransfer").mockRejectedValue(new Error("test"));
