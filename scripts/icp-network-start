@@ -272,9 +272,10 @@ create_sns_projects() {
   icp-sns-create --network "$NETWORK" --name "Charlie" --symbol CHR --logo mocks/sns/charlie.png --confirmation_text "$charlie_text"
   icp-sns-create --network "$NETWORK" --name "Alfa Centauri" --symbol ALF --logo mocks/sns/alfa-centauri.png --commit
   icp-sns-create --network "$NETWORK" --name "Delta" --symbol DLT --logo mocks/sns/delta.png --commit
-  icp-sns-aggregator-wait --network "$NETWORK"
 }
 [[ "${NO_SNS_PROJECTS:-}" == "true" ]] || create_sns_projects
+# A reinstalled aggregator has an empty cache, also when no project is created.
+icp-sns-aggregator-wait --network "$NETWORK"
 
 echo
 echo "The '$NETWORK' network is ready:"

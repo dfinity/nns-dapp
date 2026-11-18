@@ -372,18 +372,25 @@ jobs:
       - name: Create SNS projects
         # The pagination test needs more than one page of ten. The order of the
         # projects does not matter here, so all proposals are submitted at once.
-        # A second, sequential pass completes any project whose concurrent
-        # creation failed, and then waits for the swaps to open.
+        # Each creation checks that its proposal executed, and the step fails if
+        # any creation failed. A second pass then waits for the swaps to open.
         run: |
           names=("Alfa Centauri" "Bravo" "Charlie" "Delta" "Echo Alot" "Foxtrot" "Golf Stream" "Hotel" "India" "Juliett" "Kilo Byte" "Lima Bean" "Mike Box")
           symbols=(ALF BRV CHR DLT ECH FXT GLF HTL IND JLT KIO LIM MIK)
+          pids=()
           for ((i = 0; i < ${#names[@]}; i++)); do
             scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png --no_wait > "sns-create-$i.log" 2>&1 &
+            pids+=("$!")
           done
-          wait
+          failed=()
           for ((i = 0; i < ${#names[@]}; i++)); do
-            echo "::group::Concurrent creation of ${names[$i]}" && cat "sns-create-$i.log" && echo "::endgroup::"
+            wait "${pids[$i]}" || failed+=("${names[$i]}")
+            echo "::group::Creation of ${names[$i]}" && cat "sns-create-$i.log" && echo "::endgroup::"
           done
+          if ((${#failed[@]} > 0)); then
+            echo "ERROR: Could not create the SNS projects: ${failed[*]}" >&2
+            exit 1
+          fi
           for ((i = 0; i < ${#names[@]}; i++)); do
             scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png
           done
