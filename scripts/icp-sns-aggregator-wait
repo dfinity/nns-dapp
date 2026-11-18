@@ -51,10 +51,17 @@ expected_snses() {
 }
 
 # Prints the root canister ID and the swap lifecycle of every SNS that the aggregator lists, as sorted JSON.
+# The aggregator creates page 0 on setup, also with no SNS, so a missing or
+# invalid page 0 means that the aggregator is not ready. It then prints [null],
+# which matches no expected list.
 aggregator_snses() {
-  local page
+  local page json
   for ((page = 0; ; page++)); do
-    curl -fsS "$AGGREGATOR_URL/v1/sns/list/page/$page/slow.json" 2>/dev/null | jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' || break
+    if ! json="$(curl -fsS "$AGGREGATOR_URL/v1/sns/list/page/$page/slow.json" 2>/dev/null)" || ! jq -e 'type == "array"' <<<"$json" >/dev/null 2>&1; then
+      ((page > 0)) || echo null
+      break
+    fi
+    jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' <<<"$json"
   done | jq -s -c 'sort_by(.root)'
 }
 
@@ -89,9 +96,7 @@ echo "Waiting for the SNS aggregator to list $count SNS projects..."
 for ((attempt = 0; attempt < max_attempts; attempt++)); do
   # A swap can commit while the script waits, so the lifecycles are read again.
   expected="$(expected_snses)"
-  # A failed request also lists no SNS, so an empty list counts only when the
-  # aggregator answers.
-  if [[ "$(aggregator_snses)" == "$expected" ]] && { [[ "$expected" != "[]" ]] || curl -fsS "$AGGREGATOR_URL/" >/dev/null 2>&1; }; then
+  if [[ "$(aggregator_snses)" == "$expected" ]]; then
     echo "The SNS aggregator lists every SNS project."
     exit 0
   fi
