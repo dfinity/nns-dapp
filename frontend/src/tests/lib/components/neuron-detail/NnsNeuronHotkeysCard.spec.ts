@@ -3,7 +3,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { removeHotkey } from "$lib/services/neurons.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -79,14 +78,6 @@ describe("NnsNeuronHotkeysCard", () => {
 
       expect(await linkPo.isPresent()).toBe(true);
       expect(await linkPo.getHref()).toBe(AppPath.Hotkeys);
-    });
-
-    it("should not render the link if the feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_HOTKEYS_PAGE", false);
-
-      expect(await renderCard().getManageAllHotkeysLinkPo().isPresent()).toBe(
-        false
-      );
     });
 
     it("should not render the link if the user is not the controller", async () => {

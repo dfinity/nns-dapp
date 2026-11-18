@@ -23,8 +23,6 @@ export interface FeatureFlags<T> {
   ENABLE_NNS_TOPICS: T;
   ENABLE_APY_PORTFOLIO: T;
   ENABLE_NEW_TABLES: T;
-  ENABLE_ADDRESS_BOOK: T;
-  ENABLE_HOTKEYS_PAGE: T;
 }
 export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKTESTBTC: false,
@@ -35,8 +33,6 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_NNS_TOPICS: false,
   ENABLE_APY_PORTFOLIO: true,
   ENABLE_NEW_TABLES: false,
-  ENABLE_ADDRESS_BOOK: true,
-  ENABLE_HOTKEYS_PAGE: false,
 };
 
 export type FeatureKey = keyof FeatureFlags<boolean>;

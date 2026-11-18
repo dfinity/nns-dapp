@@ -61,11 +61,11 @@ describe("icrc-canisters.services", () => {
         vi.spyOn(defaultIcrcCanistersStore, "setCanisters");
         await loadIcrcCanisters();
         expect(defaultIcrcCanistersStore.setCanisters).toHaveBeenCalledTimes(
-          13
+          14
         );
         await loadIcrcCanisters();
         expect(defaultIcrcCanistersStore.setCanisters).toHaveBeenCalledTimes(
-          13
+          14
         );
       });
     });

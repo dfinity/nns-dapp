@@ -2,7 +2,6 @@ import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
 import * as icpAccountsServices from "$lib/services/icp-accounts.services";
 import { transferICP } from "$lib/services/icp-accounts.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -16,12 +15,21 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("IcpTransactionModal", () => {
+  const enterDestinationAddress = (container: HTMLElement) => {
+    const addressInput = container.querySelector(
+      "input[name='accounts-address']"
+    );
+    addressInput &&
+      fireEvent.input(addressInput, {
+        target: { value: mockSubAccount.identifier },
+      });
+  };
+
   const renderTransactionModal = () =>
     renderModal({
       component: IcpTransactionModal,
@@ -36,8 +44,6 @@ describe("IcpTransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-
-    overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
 
     vi.spyOn(icpAccountsServices, "transferICP").mockResolvedValue({
       success: true,
@@ -136,10 +142,7 @@ describe("IcpTransactionModal", () => {
     const input = container.querySelector("input[name='amount']");
     input && fireEvent.input(input, { target: { value: icpAmount } });
 
-    // Choose select account
-    // It will choose the fist subaccount as default
-    const toggle = queryToggleById(container);
-    toggle && fireEvent.click(toggle);
+    enterDestinationAddress(container);
     await waitFor(() =>
       expect(participateButton?.hasAttribute("disabled")).toBe(false)
     );
@@ -187,10 +190,7 @@ describe("IcpTransactionModal", () => {
     const input = container.querySelector("input[name='amount']");
     input && fireEvent.input(input, { target: { value: icpAmount } });
 
-    // Choose select account
-    // It will choose the fist subaccount as default
-    const toggle = queryToggleById(container);
-    toggle && fireEvent.click(toggle);
+    enterDestinationAddress(container);
 
     // Memo should be visible now
     const memoInput = container.querySelector('input[name="memo"]');

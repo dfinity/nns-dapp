@@ -1,6 +1,7 @@
 {
   "args": [
     "--new",
+    "--devenv",
     "--test_network",
     "devenv_user",
     "--test_domain",
@@ -140,12 +141,6 @@
       "exitCode": 0
     },
     {
-      "command": "post_proposal_on_slack",
-      "stdout": "https://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
       "command": "get_module_hash_from_network mainnet",
       "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
       "stderr": "",
@@ -161,6 +156,7 @@
   "expectedOutput": [
     "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
     "Start time: \u001b[32m2001-02-29 14:15:16\u001b[0m",
+    "Deploy RC to DevEnv: \u001b[32mtrue\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
     "git fetch --tags --force",
@@ -200,12 +196,12 @@
     "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: \u001b[32mDone\u001b[0m",
     "CI NNS-dapp WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
     "Local WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
+    "dfx identity: \u001b[32mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
     "scripts/canister_ids --remove --network devenv_user --canister nns-dapp",
     "",
     "scripts/canister_ids --remove --network devenv_user --canister nns-dapp: \u001b[32mDone\u001b[0m",
-    "dfx identity: \u001b[32mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
     "dfx canister create nns-dapp --network devenv_user --no-wallet",
@@ -248,7 +244,7 @@
     "Proposal to upgrade NNS dapp canister...",
     "======================================================================",
     "",
-    "Review the proposal above ☝️, paste this description in the previously created thread in the channel #eng-nns-dapp, and ping your colleagues for a review.",
+    "Review the proposal above ☝️.",
     "",
     "When you've done that ☝️  confirm by entering 'y':",
     "Review proposal: \u001b[32mDone\u001b[0m",
@@ -284,7 +280,8 @@
     "git checkout Release-2001-02-29",
     "",
     "git checkout Release-2001-02-29: \u001b[32mDone\u001b[0m",
-    "Post proposal on Slack: \u001b[32mhttps://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409\u001b[0m",
+    "Proposal dashboard URL: \u001b[32mhttps://dashboard.internetcomputer.org/proposal/123490\u001b[0m",
+    "Proposal governance app URL: \u001b[32mhttps://nns.icp.net/voting/proposals/123490\u001b[0m",
     "Schedule an appointment (use \"NNS Upgrades\" calendar) for trusted neurons voting (in 3 days)",
     "",
     "When you've done that ☝️  confirm by entering 'y':",

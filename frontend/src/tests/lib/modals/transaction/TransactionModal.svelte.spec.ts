@@ -2,7 +2,6 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
 import { addressBookStore } from "$lib/stores/address-book.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
@@ -25,7 +24,6 @@ import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-ob
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { ICPToken, TokenAmount, type Token } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -38,6 +36,16 @@ import {
 import type { Component } from "svelte";
 
 describe("TransactionModal", () => {
+  const enterDestinationAddress = (container: HTMLElement) => {
+    const addressInput = container.querySelector(
+      "input[name='accounts-address']"
+    );
+    addressInput &&
+      fireEvent.input(addressInput, {
+        target: { value: mockSubAccount.identifier },
+      });
+  };
+
   const renderTransactionModal = ({
     destinationAddress,
     sourceAccount,
@@ -84,8 +92,6 @@ describe("TransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-
-    overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
 
     setAccountsForTesting({
       main: mockMainAccount,
@@ -148,10 +154,7 @@ describe("TransactionModal", () => {
     const input = container.querySelector("input[name='amount']");
     input && fireEvent.input(input, { target: { value: icpAmount } });
 
-    // Choose select account
-    // It will choose the fist subaccount as default
-    const toggle = queryToggleById(container);
-    toggle && fireEvent.click(toggle);
+    enterDestinationAddress(container);
 
     await waitFor(() =>
       expect(participateButton?.hasAttribute("disabled")).toBe(false)
@@ -226,10 +229,7 @@ describe("TransactionModal", () => {
       const input = container.querySelector("input[name='amount']");
       input && fireEvent.input(input, { target: { value: "10" } });
 
-      // Choose select account
-      // It will choose the fist subaccount as default
-      const toggle = queryToggleById(container);
-      toggle && fireEvent.click(toggle);
+      enterDestinationAddress(container);
 
       await waitFor(() =>
         expect(participateButton?.hasAttribute("disabled")).toBe(false)
@@ -248,10 +248,7 @@ describe("TransactionModal", () => {
       const input = container.querySelector("input[name='amount']");
       input && fireEvent.input(input, { target: { value: "10" } });
 
-      // Choose select account
-      // It will choose the fist subaccount as default
-      const toggle = queryToggleById(container);
-      toggle && fireEvent.click(toggle);
+      enterDestinationAddress(container);
 
       await waitFor(() =>
         expect(participateButton?.hasAttribute("disabled")).toBeTruthy()
@@ -383,10 +380,7 @@ describe("TransactionModal", () => {
       const input = container.querySelector("input[name='amount']");
       input && fireEvent.input(input, { target: { value: "10" } });
 
-      // Choose select account
-      // It will choose the fist subaccount as default
-      const toggle = queryToggleById(container);
-      toggle && fireEvent.click(toggle);
+      enterDestinationAddress(container);
 
       await waitFor(() =>
         expect(participateButton?.hasAttribute("disabled")).toBe(false)
@@ -616,7 +610,6 @@ describe("TransactionModal", () => {
 
   describe("address book integration", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", true);
       addressBookStore.reset();
     });
 
@@ -635,7 +628,6 @@ describe("TransactionModal", () => {
 
       expect(await form.getSelectDestinationElement().isPresent()).toBe(true);
 
-      // The destination section should render when feature flag is on
       expect(await form.hasDestinationSection()).toBe(true);
 
       // Should not show address book dropdown

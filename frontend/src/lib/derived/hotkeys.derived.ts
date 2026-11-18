@@ -1,4 +1,5 @@
 import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -16,18 +17,27 @@ export const hotkeysStore: Readable<Hotkey[]> = derived(
   [
     neuronsStore,
     snsNeuronsStore,
+    snsParametersStore,
     nnsUniverseStore,
     snsProjectsCommittedStore,
     authStore,
   ],
-  ([nnsNeurons, snsNeurons, nnsUniverse, snsProjects, { identity }]) =>
+  ([
+    nnsNeurons,
+    snsNeurons,
+    snsParameters,
+    nnsUniverse,
+    snsProjects,
+    { identity },
+  ]) =>
     getHotkeys({
       nnsNeurons: nnsNeurons.neurons ?? [],
       snsNeurons,
+      snsParameters,
       universes: [
         nnsUniverse,
         ...snsProjects.map(({ summary }) => createUniverse(summary)),
       ],
-      excludedPrincipal: identity?.getPrincipal().toText(),
+      identity,
     })
 );
