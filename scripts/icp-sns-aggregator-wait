@@ -89,7 +89,9 @@ echo "Waiting for the SNS aggregator to list $count SNS projects..."
 for ((attempt = 0; attempt < max_attempts; attempt++)); do
   # A swap can commit while the script waits, so the lifecycles are read again.
   expected="$(expected_snses)"
-  if [[ "$(aggregator_snses)" == "$expected" ]]; then
+  # A failed request also lists no SNS, so an empty list counts only when the
+  # aggregator answers.
+  if [[ "$(aggregator_snses)" == "$expected" ]] && { [[ "$expected" != "[]" ]] || curl -fsS "$AGGREGATOR_URL/" >/dev/null 2>&1; }; then
     echo "The SNS aggregator lists every SNS project."
     exit 0
   fi

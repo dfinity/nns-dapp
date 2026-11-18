@@ -370,27 +370,17 @@ jobs:
           # end-to-end projects, so it creates its own projects below.
           sns_projects: 'false'
       - name: Create SNS projects
-        # The pagination test needs more than one page of ten. The order of the
-        # projects does not matter here, so all proposals are submitted at once.
-        # Each creation checks that its proposal executed, and the step fails if
-        # any creation failed. A second pass then waits for the swaps to open.
+        # The pagination test needs more than one page of ten. The proposals are
+        # submitted one after another: the aggregator numbers the projects in
+        # the order that SNS-W lists them but pages them by root canister ID,
+        # and the test expects both orders to match. A second pass then waits
+        # for the swaps to open, so the waits overlap.
         run: |
           names=("Alfa Centauri" "Bravo" "Charlie" "Delta" "Echo Alot" "Foxtrot" "Golf Stream" "Hotel" "India" "Juliett" "Kilo Byte" "Lima Bean" "Mike Box")
           symbols=(ALF BRV CHR DLT ECH FXT GLF HTL IND JLT KIO LIM MIK)
-          pids=()
           for ((i = 0; i < ${#names[@]}; i++)); do
-            scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png --no_wait > "sns-create-$i.log" 2>&1 &
-            pids+=("$!")
+            scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png --no_wait
           done
-          failed=()
-          for ((i = 0; i < ${#names[@]}; i++)); do
-            wait "${pids[$i]}" || failed+=("${names[$i]}")
-            echo "::group::Creation of ${names[$i]}" && cat "sns-create-$i.log" && echo "::endgroup::"
-          done
-          if ((${#failed[@]} > 0)); then
-            echo "ERROR: Could not create the SNS projects: ${failed[*]}" >&2
-            exit 1
-          fi
           for ((i = 0; i < ${#names[@]}; i++)); do
             scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png
           done
