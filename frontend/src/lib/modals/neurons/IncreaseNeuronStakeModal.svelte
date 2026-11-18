@@ -43,14 +43,18 @@
         : "neurons.may_take_while",
     });
 
-    const { success, unknownOutcome } = await topUpNeuron({
+    const { success, unknownOutcome, alreadySent } = await topUpNeuron({
       neuron,
       sourceAccount,
       amount,
     });
 
     if (success) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      toastsSuccess({
+        labelKey: alreadySent
+          ? "accounts.transaction_already_sent"
+          : "accounts.transaction_success",
+      });
     }
 
     stopBusy("top-up-neuron");

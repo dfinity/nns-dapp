@@ -1183,7 +1183,11 @@ export const topUpNeuron = async ({
   amount: number;
   neuron: NeuronInfo;
   sourceAccount: Account;
-}): Promise<{ success: boolean; unknownOutcome?: boolean }> => {
+}): Promise<{
+  success: boolean;
+  unknownOutcome?: boolean;
+  alreadySent?: boolean;
+}> => {
   if (neuron.fullNeuron?.accountIdentifier === undefined) {
     toastsError({
       labelKey: "error.neuron_account_not_found",
@@ -1200,7 +1204,7 @@ export const topUpNeuron = async ({
     return { success: false };
   }
 
-  const { success, unknownOutcome } = await transferICP({
+  const { success, unknownOutcome, alreadySent } = await transferICP({
     sourceAccount,
     destinationAddress: neuron.fullNeuron?.accountIdentifier,
     amount,
@@ -1211,7 +1215,7 @@ export const topUpNeuron = async ({
     await reloadNeuron(neuron.neuronId);
   }
 
-  return { success, unknownOutcome };
+  return { success, unknownOutcome, alreadySent };
 };
 
 const neuronNeedsRefresh = async (fullNeuron: Neuron): Promise<boolean> => {
