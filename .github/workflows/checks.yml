@@ -296,8 +296,14 @@ jobs:
         # commit may still be building, for example right after a merge, and
         # then has nothing to download.
         run: |
-          read -r MAIN_COMMIT RUN_CREATED_AT < <(gh run list --repo "$GITHUB_REPOSITORY" --workflow "Build and test" --branch main --event push --status success --limit 1 --json headSha,createdAt --jq '.[0] | "\(.headSha) \(.createdAt)"')
-          AGE_OF_BUILD="$(( $(date +%s) - $(jq -rn --arg t "$RUN_CREATED_AT" '$t | fromdate') ))"
+          # startedAt is the start of the latest attempt, which uploaded the artifacts.
+          read -r MAIN_COMMIT RUN_STARTED_AT < <(gh run list --repo "$GITHUB_REPOSITORY" --workflow "Build and test" --branch main --event push --status success --limit 1 --json headSha,startedAt --jq '.[0] // {} | "\(.headSha // "") \(.startedAt // "")"')
+          if [[ -z "${MAIN_COMMIT:-}" ]]; then
+            echo "The main branch has no successful build, so there is nothing to download."
+            echo "We'll test again after the next build."
+            exit 0
+          fi
+          AGE_OF_BUILD="$(( $(date +%s) - $(jq -rn --arg t "$RUN_STARTED_AT" '$t | fromdate') ))"
           if [[ "$AGE_OF_BUILD" -gt "$((3 * 24 * 60 * 60))" ]]; then
             echo "The last successful build of the main branch is over 3 days old so the build artifact may have expired, which means we can't download it."
             echo "We'll test again after the next build."
