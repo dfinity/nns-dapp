@@ -1206,7 +1206,8 @@ export const topUpNeuron = async ({
     amount,
   });
 
-  if (success) {
+  // After an unknown outcome, the stake can be already higher.
+  if (success || unknownOutcome === true) {
     await reloadNeuron(neuron.neuronId);
   }
 

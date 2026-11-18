@@ -2683,7 +2683,7 @@ describe("neurons-services", () => {
       expect(spyGetNeuron).toBeCalledTimes(1);
     });
 
-    it("should report an unknown outcome of the transfer", async () => {
+    it("should reload the neuron after an unknown outcome of the transfer", async () => {
       vi.mocked(transferICP).mockResolvedValueOnce({
         success: false,
         err: "error.transaction_unknown_outcome",
@@ -2697,7 +2697,15 @@ describe("neurons-services", () => {
       });
 
       expect(result).toEqual({ success: false, unknownOutcome: true });
-      expect(spyClaimOrRefresh).not.toBeCalled();
+      expect(spyClaimOrRefresh).toBeCalledWith({
+        identity: mockIdentity,
+        neuronId: mockNeuron.neuronId,
+      });
+      expect(spyGetNeuron).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        neuronId: mockNeuron.neuronId,
+      });
     });
 
     it("should fail if neuron has no account identifier", async () => {
