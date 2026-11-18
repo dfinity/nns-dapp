@@ -68,6 +68,13 @@ aggregator_snses() {
   done | jq -s -c 'sort_by(.root)'
 }
 
+# Succeeds when an aggregator without SNS answers but has no page 0. Builds
+# before #7312, such as aggregator-prod, create page 0 only with the first SNS.
+legacy_aggregator_is_empty() {
+  [[ "$(curl -sS -o /dev/null -w '%{http_code}' "$AGGREGATOR_URL/v1/sns/list/page/0/slow.json" 2>/dev/null)" == "404" ]] &&
+    icp canister call sns_aggregator get_canister_config '()' --environment "$ENVIRONMENT" --query >/dev/null 2>&1
+}
+
 # Arguments: <update_interval_ms> <fast_interval_ms>
 # Fails on a production build, which has no reconfigure method. The candid
 # metadata lists the method in both builds, so a call is the only test.
@@ -99,7 +106,7 @@ echo "Waiting for the SNS aggregator to list $count SNS projects..."
 for ((attempt = 0; attempt < max_attempts; attempt++)); do
   # A swap can commit while the script waits, so the lifecycles are read again.
   expected="$(expected_snses)"
-  if [[ "$(aggregator_snses)" == "$expected" ]]; then
+  if [[ "$(aggregator_snses)" == "$expected" ]] || { [[ "$expected" == "[]" ]] && legacy_aggregator_is_empty; }; then
     echo "The SNS aggregator lists every SNS project."
     exit 0
   fi
