@@ -13,7 +13,8 @@ print_help() {
 	The script submits a CreateServiceNervousSystem proposal with the large NNS
 	neuron of the anonymous principal, see scripts/icp-network-start. The neuron
 	has the majority, so the NNS adopts and executes the proposal at once. The
-	local NNS governance is a test build, so the swap opens at once.
+	local NNS governance is a test build, so the swap opens in its next periodic
+	task, within a minute, instead of a day later.
 
 	With --buy, the anonymous principal buys the whole swap. The swap then
 	commits and finalizes itself, which takes up to two minutes. With --commit,
