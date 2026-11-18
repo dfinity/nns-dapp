@@ -14,11 +14,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- The quick search panel has an "Import SNS" tool. It adds an SNS that the NNS
-  dapp does not list, with its root canister ID. The SNS then shows in the
-  tokens, staking, neuron and proposal pages with an "Imported" tag. The list
-  stays in the browser.
-- Add a Hotkeys page with the hotkeys of all your neurons, behind the `ENABLE_HOTKEYS_PAGE` feature flag.
+- ckSOL is listed as a default token.
+- Add an "Import SNS" tool to the quick search panel to add an SNS that the
+  NNS dapp does not list.
+- Add a Hotkeys page to replace or remove a hotkey on all your NNS and SNS neurons at once.
 
 #### Changed
 
@@ -58,6 +57,8 @@ proposal is successful, the changes it released will be moved from this file to
   so the SNS end-to-end tests run again.
 - The local test network has a mock exchange rate canister, so the total value
   locked works and its test runs again.
+- The release script deploys the release candidate to the devenv only with
+  `--devenv`, and the Slack links are optional.
 
 #### Deprecated
 

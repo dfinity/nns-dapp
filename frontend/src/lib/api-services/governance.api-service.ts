@@ -85,10 +85,14 @@ interface NeuronsCache {
 }
 
 let neuronsCache: NeuronsCache | null = null;
+// Goes up with each certified neurons request and each clear. Only the
+// response of the newest request writes the cache.
+let neuronsCacheVersion = 0;
 
 export const clearCache = () => {
   neuronsCache = null;
   knownNeuronsCache = null;
+  neuronsCacheVersion += 1;
 };
 
 const hasValidCachedNeurons = (identity: Identity): boolean => {
@@ -149,12 +153,17 @@ export const governanceApiService = {
     if (!params.certified) {
       return promise;
     }
-    neuronsCache = {
-      neurons: await promise,
-      timestampSeconds: nowInSeconds(),
-      principalText: params.identity.getPrincipal().toText(),
-    };
-    return neuronsCache.neurons;
+    neuronsCacheVersion += 1;
+    const version = neuronsCacheVersion;
+    const neurons = await promise;
+    if (version === neuronsCacheVersion) {
+      neuronsCache = {
+        neurons,
+        timestampSeconds: nowInSeconds(),
+        principalText: params.identity.getPrincipal().toText(),
+      };
+    }
+    return neurons;
   },
   getNetworkEconomicsParameters(params: ApiQueryParams) {
     return getNetworkEconomicsParameters(params);

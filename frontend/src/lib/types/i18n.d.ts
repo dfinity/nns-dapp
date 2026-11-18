@@ -215,6 +215,30 @@ interface I18nHotkeys {
   load_error_title: string;
   load_error_description: string;
   retry: string;
+  replace: string;
+  remove: string;
+  replace_aria_label: string;
+  remove_aria_label: string;
+  replace_title: string;
+  remove_title: string;
+  current_hotkey: string;
+  new_hotkey: string;
+  new_hotkey_placeholder: string;
+  same_hotkey_error: string;
+  anonymous_hotkey_error: string;
+  own_hotkey_error: string;
+  new_hotkey_warning: string;
+  neurons_to_change: string;
+  selected_neurons: string;
+  cannot_change: string;
+  replace_on_neurons: string;
+  replace_on_neurons_plural: string;
+  remove_from_neurons: string;
+  remove_from_neurons_plural: string;
+  changing: string;
+  result_success: string;
+  result_success_plural: string;
+  result_partial: string;
 }
 
 interface I18nAlfred {

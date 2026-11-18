@@ -8,7 +8,6 @@
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { addressBookStore } from "$lib/stores/address-book.store";
-  import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { AddressBookFilter } from "$lib/types/address-book";
@@ -203,7 +202,7 @@
 
   // Get count of applicable addresses for toggle disabled state
   let hasApplicableAddresses: boolean;
-  $: if ($ENABLE_ADDRESS_BOOK) {
+  $: {
     const addresses = $addressBookStore.namedAddresses ?? [];
     hasApplicableAddresses =
       addressFilter === AddressBookFilter.All
@@ -231,11 +230,7 @@
   // Enable toggle by default only once when address book finishes loading with applicable addresses (if no destination address is already entered)
   let useAddressBook = false;
   let initializedAddressBook = false;
-  $: if (
-    $ENABLE_ADDRESS_BOOK &&
-    hasApplicableAddresses &&
-    !initializedAddressBook
-  ) {
+  $: if (hasApplicableAddresses && !initializedAddressBook) {
     if (!selectedDestinationAddress) {
       useAddressBook = true;
     }
@@ -251,7 +246,7 @@
   // When using address book with ckBTC (or other tokens requiring network selection),
   // automatically set network to ICP since address book only contains ICP/ICRC addresses
   let forceIcpNetwork = false;
-  $: if ($ENABLE_ADDRESS_BOOK && useAddressBook && mustSelectNetwork) {
+  $: if (useAddressBook && mustSelectNetwork) {
     selectedNetwork = TransactionNetwork.ICP;
     forceIcpNetwork = true;
   } else {
@@ -271,76 +266,64 @@
   />
 
   {#if canSelectDestination}
-    {#if $ENABLE_ADDRESS_BOOK}
-      <div class="destination-wrapper" data-tid="destination-wrapper">
-        <div class="destination-header">
-          <p class="label">{$i18n.accounts.destination}</p>
-          {#if hasApplicableAddresses}
+    <div class="destination-wrapper" data-tid="destination-wrapper">
+      <div class="destination-header">
+        <p class="label">{$i18n.accounts.destination}</p>
+        {#if hasApplicableAddresses}
+          <div class="toggle-wrapper">
+            <p>{$i18n.address_book.use_address_book}</p>
+            <Toggle
+              bind:checked={useAddressBook}
+              on:nnsToggle={toggleAddressBook}
+              ariaLabel={$i18n.address_book.use_address_book}
+            />
+          </div>
+        {:else}
+          <Tooltip
+            id="address-book-toggle-disabled"
+            text={addressBookDisabledTooltip}
+          >
             <div class="toggle-wrapper">
               <p>{$i18n.address_book.use_address_book}</p>
               <Toggle
-                bind:checked={useAddressBook}
-                on:nnsToggle={toggleAddressBook}
+                checked={false}
+                disabled={true}
                 ariaLabel={$i18n.address_book.use_address_book}
               />
             </div>
-          {:else}
-            <Tooltip
-              id="address-book-toggle-disabled"
-              text={addressBookDisabledTooltip}
-            >
-              <div class="toggle-wrapper">
-                <p>{$i18n.address_book.use_address_book}</p>
-                <Toggle
-                  checked={false}
-                  disabled={true}
-                  ariaLabel={$i18n.address_book.use_address_book}
-                />
-              </div>
-            </Tooltip>
-          {/if}
-        </div>
-        {#if useAddressBook}
-          <AddressBookSelect
-            bind:selectedAddress={selectedDestinationAddress}
-            filter={addressFilter}
-          />
-        {:else}
-          <SelectDestinationAddress
-            {rootCanisterId}
-            filterAccounts={filterDestinationAccounts}
-            bind:selectedDestinationAddress
-            bind:showManualAddress
-            bind:selectMethods={selectDestinationMethods}
-            {selectedNetwork}
-            on:nnsOpenQRCodeReader
-            hideTitle={true}
-          />
-          <div class="manual-address-info">
-            <p class="warning" data-tid="manual-address-warning">
-              {$i18n.address_book.manual_address_warning}
-              <a
-                href={AppPath.AddressBook}
-                class="link"
-                data-tid="manual-address-warning-link"
-              >
-                {$i18n.address_book.check_address_book_link}
-              </a>
-            </p>
-          </div>
+          </Tooltip>
         {/if}
       </div>
-    {:else}
-      <SelectDestinationAddress
-        {rootCanisterId}
-        filterAccounts={filterDestinationAccounts}
-        bind:selectedDestinationAddress
-        bind:showManualAddress
-        bind:selectMethods={selectDestinationMethods}
-        {selectedNetwork}
-        on:nnsOpenQRCodeReader
-      />
-    {/if}
+      {#if useAddressBook}
+        <AddressBookSelect
+          bind:selectedAddress={selectedDestinationAddress}
+          filter={addressFilter}
+        />
+      {:else}
+        <SelectDestinationAddress
+          {rootCanisterId}
+          filterAccounts={filterDestinationAccounts}
+          bind:selectedDestinationAddress
+          bind:showManualAddress
+          bind:selectMethods={selectDestinationMethods}
+          {selectedNetwork}
+          on:nnsOpenQRCodeReader
+          hideTitle={true}
+        />
+        <div class="manual-address-info">
+          <p class="warning" data-tid="manual-address-warning">
+            {$i18n.address_book.manual_address_warning}
+            <a
+              href={AppPath.AddressBook}
+              class="link"
+              data-tid="manual-address-warning-link"
+            >
+              {$i18n.address_book.check_address_book_link}
+            </a>
+          </p>
+        </div>
+      {/if}
+    </div>
   {/if}
 
   {#if mustSelectNetwork}

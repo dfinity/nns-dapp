@@ -10,12 +10,12 @@
 </script>
 
 <ul data-tid="hotkey-projects-cell">
-  {#each rowData.hotkey.projects as { universe, neuronCount } (universe.canisterId)}
+  {#each rowData.hotkey.projects as { universe, neurons } (universe.canisterId)}
     <li data-tid="hotkey-project">
       <Logo src={universe.logo} alt={universe.title} size="small" framed />
       <span data-tid="hotkey-project-title">{universe.title}</span>
       <span class="count" data-tid="hotkey-project-neuron-count"
-        >{neuronCount}</span
+        >{neurons.length}</span
       >
     </li>
   {/each}

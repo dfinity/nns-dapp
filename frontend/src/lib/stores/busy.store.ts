@@ -6,6 +6,7 @@ import {
 
 export type BusyStateInitiatorType =
   | "logout"
+  | "change-hotkeys"
   | "stake-neuron"
   | "update-delay"
   | "link-canister"

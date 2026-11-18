@@ -1,17 +1,27 @@
+import { governanceApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import Hotkeys from "$lib/routes/Hotkeys.svelte";
+import * as hotkeysServices from "$lib/services/hotkeys.services";
+import { listNeurons } from "$lib/services/neurons.services";
+import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
+import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { ChangeHotkeyModalPo } from "$tests/page-objects/ChangeHotkeyModal.page-object";
 import { HotkeysPo } from "$tests/page-objects/Hotkeys.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
-import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
+import {
+  SnsNeuronPermissionType,
+  type SnsGovernanceDid,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
@@ -122,6 +132,28 @@ describe("Hotkeys", () => {
     ]);
   });
 
+  it("should not show the cached NNS neurons", async () => {
+    setSnsProjects([]);
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValueOnce([
+      nnsNeuron(1n, [hotkeyB]),
+    ]);
+    await governanceApiService.queryNeurons({
+      identity: mockIdentity,
+      certified: true,
+      includeEmptyNeurons: false,
+    });
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
+      nnsNeuron(1n, [hotkeyA]),
+    ]);
+
+    const po = renderComponent();
+    await runResolvedPromises();
+
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
+  });
+
   it("should show the empty state if the neurons have no hotkeys", async () => {
     setSnsProjects([]);
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
@@ -149,6 +181,385 @@ describe("Hotkeys", () => {
     await runResolvedPromises();
 
     expect(await po.hasEmptyState()).toBe(true);
+  });
+
+  describe("actions", () => {
+    const controlledNeuron: NeuronInfo = {
+      ...nnsNeuron(1n, [hotkeyA]),
+      fullNeuron: {
+        ...nnsNeuron(1n, [hotkeyA]).fullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    };
+
+    beforeEach(() => {
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([
+        controlledNeuron,
+      ]);
+      vi.spyOn(hotkeysServices, "changeHotkeyOnNeurons").mockImplementation(
+        async ({ neurons }) =>
+          neurons.map((neuron) => ({ ...neuron, success: true }))
+      );
+    });
+
+    // The SNS neuron query has no cache, so each load calls the API.
+    const snsNeuronOfUser = createMockSnsNeuron({
+      id: [1],
+      permissions: [
+        {
+          principal: [mockIdentity.getPrincipal()],
+          permission_type: Int32Array.from([
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+          ]),
+        },
+        {
+          principal: [hotkeyA],
+          permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+        },
+      ],
+    });
+
+    const removeSnsHotkeyA = async () => {
+      setSnsProjects([
+        { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+      ]);
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+      const { container } = render(Hotkeys);
+      const po = HotkeysPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      await po.clickRemove(0);
+      await ChangeHotkeyModalPo.under(
+        new JestPageObjectElement(container)
+      ).clickConfirm();
+      await runResolvedPromises();
+      return po;
+    };
+
+    it("should load the changed neurons again after a change", async () => {
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        snsNeuronOfUser,
+      ]);
+
+      await removeSnsHotkeyA();
+
+      expect(hotkeysServices.changeHotkeyOnNeurons).toHaveBeenCalledWith({
+        change: { type: "remove", principal: hotkeyA.toText() },
+        neurons: [
+          {
+            universeId: snsRootCanisterId.toText(),
+            neuronId: getSnsNeuronIdAsHexString(snsNeuronOfUser),
+          },
+        ],
+      });
+      expect(snsGovernanceApi.querySnsNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should show the load error if the neurons do not load after a change", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons")
+        .mockResolvedValueOnce([snsNeuronOfUser])
+        .mockRejectedValue(new Error("SNS neurons failed"));
+
+      const po = await removeSnsHotkeyA();
+
+      expect(await po.hasLoadError()).toBe(true);
+    });
+
+    it("should disable the actions while the neurons load", async () => {
+      setSnsProjects([
+        { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+      ]);
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        snsNeuronOfUser,
+      ]);
+      let resolveNnsNeurons: (neurons: NeuronInfo[]) => void;
+      vi.spyOn(governanceApi, "queryNeurons").mockReturnValue(
+        new Promise((resolve) => {
+          resolveNnsNeurons = resolve;
+        })
+      );
+
+      const po = renderComponent();
+      await runResolvedPromises();
+
+      expect(await po.areActionsDisabled(0)).toEqual([true, true]);
+
+      resolveNnsNeurons([]);
+      await runResolvedPromises();
+
+      expect(await po.areActionsDisabled(0)).toEqual([false, false]);
+    });
+
+    it("should open the Replace modal for the hotkey", async () => {
+      const { container } = render(Hotkeys);
+      const po = HotkeysPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      await po.clickReplace(0);
+
+      const modalPo = ChangeHotkeyModalPo.under(
+        new JestPageObjectElement(container)
+      );
+      expect(await modalPo.getModalTitle()).toBe("Replace Hotkey");
+      expect(await modalPo.getCurrentHotkey()).toBe(hotkeyA.toText());
+    });
+
+    it("should open the Remove modal for the hotkey", async () => {
+      const { container } = render(Hotkeys);
+      const po = HotkeysPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      await po.clickRemove(0);
+
+      const modalPo = ChangeHotkeyModalPo.under(
+        new JestPageObjectElement(container)
+      );
+      expect(await modalPo.getModalTitle()).toBe("Remove Hotkey");
+      expect(await modalPo.getCurrentHotkey()).toBe(hotkeyA.toText());
+
+      await modalPo.closeModal();
+      await modalPo.waitForClosed();
+    });
+  });
+
+  it("should not show a removed hotkey again when an older neuron load ends after the change", async () => {
+    setSnsProjects([]);
+    vi.spyOn(governanceApi, "removeHotkey").mockResolvedValue();
+    const neuronWithHotkey: NeuronInfo = {
+      ...nnsNeuron(1n, [hotkeyA]),
+      fullNeuron: {
+        ...nnsNeuron(1n, [hotkeyA]).fullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    };
+    const neuronWithoutHotkey: NeuronInfo = {
+      ...neuronWithHotkey,
+      fullNeuron: { ...neuronWithHotkey.fullNeuron, hotKeys: [] },
+    };
+    // Calls 1 and 2: the query and update calls of a load that a previous
+    // page started. Calls 3 and 4: the page load and the load before the
+    // change. Then the load after the change.
+    const olderResponses: Array<(neurons: NeuronInfo[]) => void> = [];
+    let calls = 0;
+    vi.spyOn(governanceApi, "queryNeurons").mockImplementation(() => {
+      calls += 1;
+      if (calls <= 2) {
+        return new Promise((resolve) => olderResponses.push(resolve));
+      }
+      return Promise.resolve(
+        calls <= 4 ? [neuronWithHotkey] : [neuronWithoutHotkey]
+      );
+    });
+
+    listNeurons();
+    const { container } = render(Hotkeys);
+    const po = HotkeysPo.under(new JestPageObjectElement(container));
+    await runResolvedPromises();
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
+
+    await po.clickRemove(0);
+    await ChangeHotkeyModalPo.under(
+      new JestPageObjectElement(container)
+    ).clickConfirm();
+    await runResolvedPromises();
+    expect(await po.hasEmptyState()).toBe(true);
+
+    olderResponses.forEach((resolve) => resolve([neuronWithHotkey]));
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(true);
+  });
+
+  it("should not show a removed SNS hotkey again when an older SNS neuron load ends after the change", async () => {
+    setSnsProjects([
+      { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+    ]);
+    vi.spyOn(snsGovernanceApi, "removeNeuronPermissions").mockResolvedValue();
+    const userPermission = {
+      principal: [mockIdentity.getPrincipal()] as [Principal],
+      permission_type: Int32Array.from([
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+      ]),
+    };
+    const neuronWithHotkey = createMockSnsNeuron({
+      id: [1],
+      permissions: [
+        userPermission,
+        {
+          principal: [hotkeyA],
+          permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+        },
+      ],
+    });
+    const neuronWithoutHotkey = createMockSnsNeuron({
+      id: [1],
+      permissions: [userPermission],
+    });
+    // Calls 1 and 2: the query and update calls of a load that a previous
+    // page started. Calls 3 and 4: the page load and the load before the
+    // change. Then the load after the change.
+    const olderResponses: Array<(neurons: SnsGovernanceDid.Neuron[]) => void> =
+      [];
+    let calls = 0;
+    vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockImplementation(() => {
+      calls += 1;
+      if (calls <= 2) {
+        return new Promise((resolve) => olderResponses.push(resolve));
+      }
+      return Promise.resolve(
+        calls <= 4 ? [neuronWithHotkey] : [neuronWithoutHotkey]
+      );
+    });
+
+    syncSnsNeurons(snsRootCanisterId);
+    const { container } = render(Hotkeys);
+    const po = HotkeysPo.under(new JestPageObjectElement(container));
+    await runResolvedPromises();
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
+
+    await po.clickRemove(0);
+    await ChangeHotkeyModalPo.under(
+      new JestPageObjectElement(container)
+    ).clickConfirm();
+    await runResolvedPromises();
+    expect(await po.hasEmptyState()).toBe(true);
+
+    olderResponses.forEach((resolve) => resolve([neuronWithHotkey]));
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(true);
+  });
+
+  it("should not show a removed SNS hotkey again when an older SNS neuron refresh ends after the change", async () => {
+    setSnsProjects([
+      { rootCanisterId: snsRootCanisterId, projectName: snsTitle },
+    ]);
+    const neuronWithHotkey = createMockSnsNeuron({
+      id: [1],
+      permissions: [
+        {
+          principal: [mockIdentity.getPrincipal()],
+          permission_type: Int32Array.from([
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+          ]),
+        },
+        {
+          principal: [hotkeyA],
+          permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+        },
+      ],
+    });
+    const neuronWithoutHotkey = {
+      ...neuronWithHotkey,
+      permissions: [neuronWithHotkey.permissions[0]],
+    };
+    let removed = false;
+    vi.spyOn(snsGovernanceApi, "removeNeuronPermissions").mockImplementation(
+      async () => {
+        removed = true;
+      }
+    );
+    vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockImplementation(
+      async () => (removed ? [neuronWithoutHotkey] : [neuronWithHotkey])
+    );
+    // The neuron detail page refreshes a neuron with a stake that is not the
+    // balance of its subaccount.
+    vi.spyOn(snsGovernanceApi, "getNeuronBalance").mockResolvedValue(
+      neuronWithHotkey.cached_neuron_stake_e8s + 1n
+    );
+    vi.spyOn(snsGovernanceApi, "refreshNeuron").mockResolvedValue();
+    let resolveOlderNeuron: (neuron: SnsGovernanceDid.Neuron) => void;
+    vi.spyOn(snsGovernanceApi, "getSnsNeuron").mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveOlderNeuron = resolve;
+        })
+    );
+
+    refreshNeuronIfNeeded({
+      rootCanisterId: snsRootCanisterId,
+      neuron: neuronWithHotkey,
+    });
+    await runResolvedPromises();
+    const { container } = render(Hotkeys);
+    const po = HotkeysPo.under(new JestPageObjectElement(container));
+    await runResolvedPromises();
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
+
+    await po.clickRemove(0);
+    await ChangeHotkeyModalPo.under(
+      new JestPageObjectElement(container)
+    ).clickConfirm();
+    await runResolvedPromises();
+    expect(await po.hasEmptyState()).toBe(true);
+
+    resolveOlderNeuron(neuronWithHotkey);
+    await runResolvedPromises();
+
+    expect(await po.hasEmptyState()).toBe(true);
+  });
+
+  it("should keep its certified neurons when a query-only load ends during the page load", async () => {
+    setSnsProjects([]);
+    let resolveCertified: (neurons: NeuronInfo[]) => void;
+    vi.spyOn(governanceApi, "queryNeurons").mockImplementation(
+      ({ certified }) =>
+        certified
+          ? new Promise((resolve) => {
+              resolveCertified = resolve;
+            })
+          : Promise.resolve([nnsNeuron(1n, [hotkeyB])])
+    );
+
+    const po = renderComponent();
+    await runResolvedPromises();
+    // The query-only fallback of the actionable proposals.
+    await listNeurons({ strategy: "query" });
+    resolveCertified([nnsNeuron(1n, [hotkeyA])]);
+    await runResolvedPromises();
+
+    expect(await po.isLoading()).toBe(false);
+    expect(await po.hasLoadError()).toBe(false);
+    // The row of the query-only data leaves with a transition.
+    await vi.waitFor(async () =>
+      expect(
+        (await po.getRowsData()).map(({ principal }) => principal)
+      ).toEqual([hotkeyA.toText()])
+    );
+  });
+
+  it("should not show a load error when a later certified load ends first", async () => {
+    setSnsProjects([]);
+    let resolvePageLoad: (neurons: NeuronInfo[]) => void;
+    let calls = 0;
+    vi.spyOn(governanceApi, "queryNeurons").mockImplementation(() => {
+      calls += 1;
+      if (calls === 1) {
+        return new Promise((resolve) => {
+          resolvePageLoad = resolve;
+        });
+      }
+      return Promise.resolve([nnsNeuron(1n, [hotkeyA])]);
+    });
+
+    const po = renderComponent();
+    await runResolvedPromises();
+    await listNeurons({ strategy: "update" });
+    resolvePageLoad([nnsNeuron(1n, [hotkeyB])]);
+    await runResolvedPromises();
+
+    expect(await po.isLoading()).toBe(false);
+    expect(await po.hasLoadError()).toBe(false);
+    expect((await po.getRowsData()).map(({ principal }) => principal)).toEqual([
+      hotkeyA.toText(),
+    ]);
   });
 
   describe("when a certified load fails", () => {

@@ -101,9 +101,7 @@
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_NNS_TOPICS": false,
           "ENABLE_APY_PORTFOLIO": true,
-          "ENABLE_NEW_TABLES": true,
-          "ENABLE_ADDRESS_BOOK": true,
-          "ENABLE_HOTKEYS_PAGE": false
+          "ENABLE_NEW_TABLES": true
         }
       }
     },
