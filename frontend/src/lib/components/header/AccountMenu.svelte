@@ -11,7 +11,6 @@
   import ToggleBalancePrivacyOption from "$lib/components/header/ToggleBalancePrivacyOption.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { login } from "$lib/services/auth.services";
-  import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutAuthReady } from "$lib/stores/layout.store";
   import { IconLogin, IconUser, Popover } from "@dfinity/gix-components";
@@ -45,9 +44,7 @@
 
         <LinkToSettings on:nnsLink={closeMenu} />
 
-        {#if $ENABLE_ADDRESS_BOOK}
-          <LinkToAddressBook on:nnsLink={closeMenu} />
-        {/if}
+        <LinkToAddressBook on:nnsLink={closeMenu} />
 
         <LinkToCanisters on:nnsLink={closeMenu} />
 
