@@ -91,7 +91,13 @@ describe("ProjectsTable", () => {
   it("should render desktop headers", async () => {
     const po = renderComponent();
     expect(await po.getDesktopColumnHeaders()).toEqual([
-      "Nervous Systems",
+      "Staked ICP Native utility token of the Internet Computer",
+      "Stake",
+      "APY (max APY)",
+      "Maturity",
+      "Neurons",
+      "", // No header for actions column.
+      "Staked SNS Tokens Dapp community projects",
       "Stake",
       "APY (max APY)",
       "Maturity",
@@ -103,7 +109,9 @@ describe("ProjectsTable", () => {
   it("should render mobile headers", async () => {
     const po = renderComponent();
     expect(await po.getMobileColumnHeaders()).toEqual([
-      "Nervous Systems",
+      "Staked ICP Native utility token of the Internet Computer",
+      "", // No header for actions column.
+      "Staked SNS Tokens Dapp community projects",
       "", // No header for actions column.
     ]);
   });
@@ -943,7 +951,9 @@ describe("ProjectsTable", () => {
         },
       ]);
 
-      expect(await po.getColumnHeaderWithArrow()).toBe("Nervous Systems");
+      expect(await po.getColumnHeaderWithArrow()).toBe(
+        "Staked ICP Native utility token of the Internet Computer"
+      );
     });
 
     it("should change order store based on clicked header", async () => {

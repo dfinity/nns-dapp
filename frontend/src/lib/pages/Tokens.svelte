@@ -8,21 +8,18 @@
     abandonedProjectsCanisterId,
     OWN_CANISTER_ID_TEXT,
   } from "$lib/constants/canister-ids.constants";
-  import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { ENABLE_NEW_TABLES } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
   import type { ImportedTokenData } from "$lib/types/imported-tokens";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { filterTokensByType } from "$lib/utils/tokens-table.utils";
-  import { IconHeldTokens, IconPlus, Tooltip } from "@dfinity/gix-components";
+  import { IconHeldTokens } from "@dfinity/gix-components";
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
@@ -101,9 +98,6 @@
   };
 
   let showImportTokenModal = false;
-  let maximumImportedTokensReached = false;
-  $: maximumImportedTokensReached =
-    ($importedTokensStore.importedTokens?.length ?? 0) >= MAX_IMPORTED_TOKENS;
 </script>
 
 <div class="wrapper" data-tid="tokens-page-component">
@@ -111,15 +105,47 @@
     <IconHeldTokens slot="icon" />
   </UsdValueBanner>
 
-  {#if $ENABLE_NEW_TABLES}
+  <TokensTable
+    userTokensData={icpTokensData}
+    on:nnsAction
+    firstColumnHeader={$i18n.tokens.projects_header_icp}
+    subtitle={$i18n.tokens.projects_header_icp_subtitle}
+    bind:order={$tokensTableOrderStore}
+    displayTableSettings
+    testId="icp-tokens-table-component"
+    {universeOrder}
+  >
+    <svelte:fragment slot="settings-popover">
+      <HideZeroBalancesToggle />
+      <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
+      <Separator spacing="none" />
+    </svelte:fragment>
+
+    <div slot="last-row" class:last-row={shouldHideZeroBalances}>
+      {#if shouldHideZeroBalances}
+        <div class="show-all-button-container">
+          {$i18n.tokens.zero_balance_hidden}
+          <button
+            data-tid="show-all-button"
+            class="ghost show-all"
+            on:click={showAll}
+          >
+            {$i18n.tokens.show_all}</button
+          >
+        </div>
+      {/if}
+    </div>
+  </TokensTable>
+
+  {#if ckTokensData.length > 0}
     <TokensTable
-      userTokensData={icpTokensData}
+      userTokensData={ckTokensData}
       on:nnsAction
-      firstColumnHeader={$i18n.tokens.projects_header_icp}
-      subtitle={$i18n.tokens.projects_header_icp_subtitle}
+      firstColumnHeader={$i18n.tokens.projects_header_ck}
+      subtitle={$i18n.tokens.projects_header_ck_subtitle}
       bind:order={$tokensTableOrderStore}
       displayTableSettings
-      testId="icp-tokens-table-component"
+      testId="ck-tokens-table-component"
       {universeOrder}
     >
       <svelte:fragment slot="settings-popover">
@@ -127,131 +153,44 @@
         <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
         <Separator spacing="none" />
       </svelte:fragment>
-
-      <div slot="last-row" class:last-row={shouldHideZeroBalances}>
-        {#if shouldHideZeroBalances}
-          <div class="show-all-button-container">
-            {$i18n.tokens.zero_balance_hidden}
-            <button
-              data-tid="show-all-button"
-              class="ghost show-all"
-              on:click={showAll}
-            >
-              {$i18n.tokens.show_all}</button
-            >
-          </div>
-        {/if}
-      </div>
     </TokensTable>
+  {/if}
 
-    {#if ckTokensData.length > 0}
-      <TokensTable
-        userTokensData={ckTokensData}
-        on:nnsAction
-        firstColumnHeader={$i18n.tokens.projects_header_ck}
-        subtitle={$i18n.tokens.projects_header_ck_subtitle}
-        bind:order={$tokensTableOrderStore}
-        displayTableSettings
-        testId="ck-tokens-table-component"
-        {universeOrder}
-      >
-        <svelte:fragment slot="settings-popover">
-          <HideZeroBalancesToggle />
-          <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
-          <Separator spacing="none" />
-        </svelte:fragment>
-      </TokensTable>
-    {/if}
-
-    {#if snsTokensData.length > 0}
-      <TokensTable
-        userTokensData={snsTokensData}
-        on:nnsAction
-        firstColumnHeader={$i18n.tokens.projects_header_sns}
-        subtitle={$i18n.tokens.projects_header_sns_subtitle}
-        bind:order={$tokensTableOrderStore}
-        displayTableSettings
-        testId="sns-tokens-table-component"
-        {universeOrder}
-      >
-        <svelte:fragment slot="settings-popover">
-          <HideZeroBalancesToggle />
-          <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
-          <Separator spacing="none" />
-        </svelte:fragment>
-      </TokensTable>
-    {/if}
-
-    {#if importedTokensData.length > 0}
-      <TokensTable
-        userTokensData={importedTokensData}
-        on:nnsAction
-        firstColumnHeader={$i18n.tokens.projects_header_imported}
-        subtitle={$i18n.tokens.projects_header_imported_subtitle}
-        bind:order={$tokensTableOrderStore}
-        displayTableSettings
-        testId="imported-tokens-table-component"
-        {universeOrder}
-      >
-        <svelte:fragment slot="settings-popover">
-          <HideZeroBalancesToggle />
-          <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
-          <Separator spacing="none" />
-        </svelte:fragment>
-      </TokensTable>
-    {/if}
-  {:else}
+  {#if snsTokensData.length > 0}
     <TokensTable
-      userTokensData={shownTokensData}
+      userTokensData={snsTokensData}
       on:nnsAction
-      firstColumnHeader={$i18n.tokens.projects_header}
+      firstColumnHeader={$i18n.tokens.projects_header_sns}
+      subtitle={$i18n.tokens.projects_header_sns_subtitle}
       bind:order={$tokensTableOrderStore}
       displayTableSettings
+      testId="sns-tokens-table-component"
       {universeOrder}
     >
       <svelte:fragment slot="settings-popover">
         <HideZeroBalancesToggle />
+        <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
         <Separator spacing="none" />
       </svelte:fragment>
+    </TokensTable>
+  {/if}
 
-      <div slot="last-row" class="last-row">
-        {#if shouldHideZeroBalances}
-          <div class="show-all-button-container">
-            {$i18n.tokens.zero_balance_hidden}
-            <button
-              data-tid="show-all-button"
-              class="ghost show-all"
-              on:click={showAll}
-            >
-              {$i18n.tokens.show_all}</button
-            >
-          </div>
-        {/if}
-
-        {#if nonNullish($importedTokensStore.importedTokens)}
-          <Tooltip
-            top
-            testId="maximum-imported-tokens-tooltip"
-            text={maximumImportedTokensReached
-              ? replacePlaceholders(
-                  $i18n.import_token.maximum_reached_tooltip,
-                  {
-                    $max: `${MAX_IMPORTED_TOKENS}`,
-                  }
-                )
-              : undefined}
-          >
-            <button
-              data-tid="import-token-button"
-              class="ghost with-icon import-token-button"
-              on:click={() => (showImportTokenModal = true)}
-              disabled={maximumImportedTokensReached}
-            >
-              <IconPlus />{$i18n.import_token.import_token}
-            </button>
-          </Tooltip>
-        {/if}
-      </div>
+  {#if importedTokensData.length > 0}
+    <TokensTable
+      userTokensData={importedTokensData}
+      on:nnsAction
+      firstColumnHeader={$i18n.tokens.projects_header_imported}
+      subtitle={$i18n.tokens.projects_header_imported_subtitle}
+      bind:order={$tokensTableOrderStore}
+      displayTableSettings
+      testId="imported-tokens-table-component"
+      {universeOrder}
+    >
+      <svelte:fragment slot="settings-popover">
+        <HideZeroBalancesToggle />
+        <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
+        <Separator spacing="none" />
+      </svelte:fragment>
     </TokensTable>
   {/if}
 
@@ -261,7 +200,6 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/effect";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .wrapper {
@@ -309,15 +247,6 @@
 
       button.show-all {
         text-decoration: underline;
-      }
-    }
-
-    .import-token-button {
-      gap: var(--padding);
-      color: var(--primary);
-
-      &:disabled {
-        color: var(--button-disable-color);
       }
     }
   }

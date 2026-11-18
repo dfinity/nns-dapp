@@ -3,7 +3,10 @@ import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { HideZeroBalancesTogglePo } from "$tests/page-objects/HideZeroBalancesToggle.page-object";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
-import type { TokensTableRowData } from "$tests/page-objects/TokensTableRow.page-object";
+import type {
+  TokensTableRowData,
+  TokensTableRowPo,
+} from "$tests/page-objects/TokensTableRow.page-object";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -79,23 +82,58 @@ export class TokensPagePo extends BasePageObject {
     return this.getTokensTable().isPresent();
   }
 
-  getTokenNames(): Promise<string[]> {
-    return this.getTokensTable().getTokenNames();
+  async getPresentTokensTables(): Promise<TokensTablePo[]> {
+    const tables = this.getAllTokensTable();
+    const present = await Promise.all(tables.map((table) => table.isPresent()));
+    return tables.filter((_, index) => present[index]);
   }
 
-  getRowsData(): Promise<TokensTableRowData[]> {
-    return this.getTokensTable().getRowsData();
+  async getRows(): Promise<TokensTableRowPo[]> {
+    const tables = await this.getPresentTokensTables();
+    return (await Promise.all(tables.map((table) => table.getRows()))).flat();
   }
 
-  getRowData(projectName: string): Promise<TokensTableRowData> {
-    return this.getTokensTable().getRowData(projectName);
+  async getTokenNames(): Promise<string[]> {
+    const tables = await this.getPresentTokensTables();
+    return (
+      await Promise.all(tables.map((table) => table.getTokenNames()))
+    ).flat();
   }
 
-  clickSendOnRow(projectName: string): Promise<void> {
-    return this.getTokensTable().clickSendOnRow(projectName);
+  async getRowsData(): Promise<TokensTableRowData[]> {
+    const tables = await this.getPresentTokensTables();
+    return (
+      await Promise.all(tables.map((table) => table.getRowsData()))
+    ).flat();
   }
 
-  clickReceiveOnRow(projectName: string): Promise<void> {
-    return this.getTokensTable().clickReceiveOnRow(projectName);
+  async getTableWithRow(projectName: string): Promise<TokensTablePo> {
+    const tables = await this.getPresentTokensTables();
+    for (const table of tables) {
+      if ((await table.getTokenNames()).includes(projectName)) {
+        return table;
+      }
+    }
+    throw new Error(`Row with project name ${projectName} not found`);
+  }
+
+  async getRowByName(projectName: string): Promise<TokensTableRowPo> {
+    const table = await this.getTableWithRow(projectName);
+    return table.getRowByName(projectName);
+  }
+
+  async getRowData(projectName: string): Promise<TokensTableRowData> {
+    const table = await this.getTableWithRow(projectName);
+    return table.getRowData(projectName);
+  }
+
+  async clickSendOnRow(projectName: string): Promise<void> {
+    const table = await this.getTableWithRow(projectName);
+    return table.clickSendOnRow(projectName);
+  }
+
+  async clickReceiveOnRow(projectName: string): Promise<void> {
+    const table = await this.getTableWithRow(projectName);
+    return table.clickReceiveOnRow(projectName);
   }
 }
