@@ -310,6 +310,7 @@ export const transferICP = async ({
   success: boolean;
   err?: string;
   alreadySent?: boolean;
+  unknownOutcome?: boolean;
 }> => {
   let attempt: TransferAttempt | undefined;
 
@@ -410,6 +411,8 @@ export const transferICP = async ({
 
     if (unknownOutcome) {
       await loadTransferBalances({ identifier, to });
+
+      return { ...result, unknownOutcome: true };
     }
 
     return result;

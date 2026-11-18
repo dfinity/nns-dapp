@@ -43,7 +43,7 @@
       }),
     });
 
-    const { success, alreadySent } = await transferICP({
+    const { success, alreadySent, unknownOutcome } = await transferICP({
       sourceAccount,
       destinationAddress,
       amount,
@@ -62,7 +62,12 @@
 
     // We close the modal in case of success or error if the selected source is not a Ledger device.
     // In case of Ledger device, the error messages might contain interesting information for the user such as "your device is idle"
-    if (success || !isAccountHardwareWallet(sourceAccount)) {
+    // After an unknown outcome, the modal closes, so that the user checks the balance before a new send.
+    if (
+      success ||
+      unknownOutcome === true ||
+      !isAccountHardwareWallet(sourceAccount)
+    ) {
       dispatcher("nnsClose");
     }
   };

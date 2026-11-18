@@ -730,6 +730,7 @@ describe("icp-accounts.services", () => {
       expect(result).toEqual({
         success: false,
         err: "error.transaction_unknown_outcome",
+        unknownOutcome: true,
       });
       expect(get(toastsStore)).toMatchObject([
         {
