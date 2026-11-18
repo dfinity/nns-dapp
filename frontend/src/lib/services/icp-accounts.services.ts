@@ -298,7 +298,11 @@ export const transferICP = async ({
   destinationAddress: to,
   amount,
   memo,
-}: NewTransaction): Promise<{ success: boolean; err?: string }> => {
+}: NewTransaction): Promise<{
+  success: boolean;
+  err?: string;
+  unknownOutcome?: boolean;
+}> => {
   try {
     const { identifier, subAccount } = sourceAccount;
 
@@ -359,6 +363,8 @@ export const transferICP = async ({
         identifier: sourceAccount.identifier,
         to,
       });
+
+      return { ...result, unknownOutcome: true };
     }
 
     return result;
