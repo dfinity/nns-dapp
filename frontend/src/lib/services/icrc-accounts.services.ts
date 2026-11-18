@@ -342,11 +342,12 @@ export const transferTokens = async ({
 
     const unknownOutcome = isUnknownOutcomeError(err);
 
+    // The ledger rejects the timestamp itself, so the next attempt needs a new one.
     // After other errors, a call with the same timestamp, for example in another tab, can still execute.
     if (
       nonNullish(attempt) &&
       err instanceof IcrcTransferError &&
-      "TooOld" in err.errorType
+      ("TooOld" in err.errorType || "CreatedInFuture" in err.errorType)
     ) {
       clearTransferAttempt(attempt);
     }

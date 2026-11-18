@@ -970,6 +970,20 @@ describe("icp-accounts.services", () => {
       expect(saved).toContain(transferICPParams.destinationAddress);
     });
 
+    it("should use a new timestamp after the user corrects a clock that is ahead", async () => {
+      const now = 1_000_000_000_000;
+      vi.useFakeTimers({ now: now + 3_600_000, toFake: ["Date"] });
+      spySendICP.mockRejectedValueOnce(new TxCreatedInFutureError());
+      await transferICP(transferICPParams);
+      vi.setSystemTime(now);
+      await transferICP(transferICPParams);
+      vi.useRealTimers();
+
+      expect(spySendICP.mock.calls[1][0].createdAt).toEqual(
+        BigInt(now) * 1_000_000n
+      );
+    });
+
     it("should keep the timestamp after a rejected first attempt", async () => {
       vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
       spySendICP.mockRejectedValueOnce(new Error("test"));

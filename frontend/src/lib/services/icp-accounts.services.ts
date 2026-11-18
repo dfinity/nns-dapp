@@ -397,8 +397,12 @@ export const transferICP = async ({
 
     const unknownOutcome = isUnknownOutcomeError(err);
 
+    // The ledger rejects the timestamp itself, so the next attempt needs a new one.
     // After other errors, a call with the same timestamp, for example in another tab, can still execute.
-    if (nonNullish(attempt) && err instanceof TxTooOldError) {
+    if (
+      nonNullish(attempt) &&
+      (err instanceof TxTooOldError || err instanceof TxCreatedInFutureError)
+    ) {
       clearTransferAttempt(attempt);
     }
 

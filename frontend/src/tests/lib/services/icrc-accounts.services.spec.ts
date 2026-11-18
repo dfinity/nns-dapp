@@ -950,6 +950,36 @@ describe("icrc-accounts-services", () => {
       });
     });
 
+    it("should use a new timestamp after the user corrects a clock that is ahead", async () => {
+      const now = 1_000_000_000_000;
+      vi.useFakeTimers({ now: now + 3_600_000, toFake: ["Date"] });
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(ledgerApi, "icrcTransfer")
+        .mockResolvedValue(1n)
+        .mockRejectedValueOnce(
+          new IcrcTransferError({
+            errorType: { CreatedInFuture: { ledger_time: 0n } },
+            msg: "test",
+          })
+        );
+      const params = {
+        source: mockIcrcMainAccount,
+        amountUlps: amountE8s,
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        fee,
+        ledgerCanisterId,
+      };
+
+      await transferTokens(params);
+      vi.setSystemTime(now);
+      await transferTokens(params);
+      vi.useRealTimers();
+
+      expect(
+        vi.mocked(ledgerApi.icrcTransfer).mock.calls[1][0].createdAt
+      ).toEqual(BigInt(now) * 1_000_000n);
+    });
+
     it("should keep the timestamp after a rejected first attempt", async () => {
       vi.useFakeTimers({ now: 1_000_000_000_000, toFake: ["Date"] });
       vi.spyOn(console, "error").mockReturnValue();
