@@ -376,38 +376,13 @@ review_proposal() {
   echo
   echo "======================================================================"
   echo
-  echo "Review the proposal above ☝️, paste this description in the previously created thread in the channel #eng-nns-dapp, and ping your colleagues for a review."
+  echo "Review the proposal above ☝️."
 }
 
 review_feature_flags() {
   execute cat "release/nns-dapp-arg-mainnet.did" | idl2json | jq '.[] | .args[] | select(."0" == "FEATURE_FLAGS") | ."1" | fromjson'
   echo
   echo "Review the feature flags above ☝️  ."
-}
-
-post_proposal_on_slack() {
-  DASHBOARD_PROPOSAL_URL="https://dashboard.internetcomputer.org/proposal/$PROPOSAL_ID"
-  GOVERNANCE_APP_PROPOSAL_URL="https://nns.icp.net/voting/proposals/$PROPOSAL_ID"
-  NNS_RELEASES_CHANNEL_URL="https://dfinity.slack.com/channels/eng-nns-releases"
-  (
-    echo
-    echo "======================================================================"
-    echo
-    echo "NNS-dapp upgrade proposal:"
-    echo "* $DASHBOARD_PROPOSAL_URL"
-    echo "* $GOVERNANCE_APP_PROPOSAL_URL"
-    echo
-    echo '````'
-    cat "release/PROPOSAL.md"
-    echo '````'
-    echo
-    echo "Post the above ☝️  on $NNS_RELEASES_CHANNEL_URL."
-    echo "Apply code-block formatting to the proposal text."
-    echo -n "Then enter the Slack link, or press ENTER to skip: "
-  ) >&2
-  local SLACK_LINK
-  read -r SLACK_LINK
-  echo "${SLACK_LINK:-Skipped}"
 }
 
 release_sop_tests_need_update() {
@@ -479,7 +454,8 @@ PROPOSAL_TAG="proposal-$PROPOSAL_ID"
 confirm_cmd git tag "$PROPOSAL_TAG"
 confirm_cmd git push origin "tags/$PROPOSAL_TAG"
 confirm_cmd git checkout "$BRANCH_NAME"
-record "Post proposal on Slack" post_proposal_on_slack
+record "Proposal dashboard URL" echo "https://dashboard.internetcomputer.org/proposal/$PROPOSAL_ID"
+record "Proposal governance app URL" echo "https://nns.icp.net/voting/proposals/$PROPOSAL_ID"
 confirm_manual "Schedule voting" echo "Schedule an appointment (use \"NNS Upgrades\" calendar) for trusted neurons voting (in 3 days)"
 
 # Post-release
