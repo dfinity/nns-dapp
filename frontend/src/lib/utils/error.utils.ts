@@ -32,6 +32,7 @@ import {
 } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
+  CborDecodeErrorCode,
   CertifiedRejectErrorCode,
   ErrorKindEnum,
   UncertifiedRejectErrorCode,
@@ -198,12 +199,14 @@ export const isPayloadSizeError = (err: unknown): boolean => {
  */
 export const isUnknownOutcomeError = (err: unknown): boolean =>
   err instanceof AgentError &&
-  [
+  ([
     ErrorKindEnum.Protocol,
     ErrorKindEnum.Transport,
     ErrorKindEnum.Trust,
     ErrorKindEnum.Unknown,
-  ].includes(err.kind);
+  ].includes(err.kind) ||
+    // The agent decodes only responses, so the call can be already submitted.
+    err.hasCode(CborDecodeErrorCode));
 
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;
