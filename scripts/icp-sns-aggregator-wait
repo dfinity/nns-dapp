@@ -51,9 +51,11 @@ expected_snses() {
 }
 
 # Prints the root canister ID and the swap lifecycle of every SNS that the aggregator lists, as sorted JSON.
-# The aggregator creates page 0 on setup, also with no SNS, and the pages end
-# with a 404. Any other failed or invalid page means that the aggregator is not
-# ready. Such a page adds null, so the list matches no expected list.
+# The aggregator creates page 0 on setup, also with no SNS. After page 0, an
+# error status ends the list: the canister answers a missing page with a 404,
+# which the HTTP gateway may pass on with another status. A failed page 0, or
+# a successful response that is not a list of SNS, means that the aggregator is
+# not ready. Such a page adds null, so the list matches no expected list.
 aggregator_snses() {
   local page response code json
   for ((page = 0; ; page++)); do
@@ -63,7 +65,7 @@ aggregator_snses() {
     fi
     code="${response##*$'\n'}"
     json="${response%$'\n'*}"
-    if [[ "$code" == "404" ]] && ((page > 0)); then
+    if [[ "$code" != "200" ]] && ((page > 0)); then
       break
     fi
     if [[ "$code" != "200" ]] || ! jq -e 'type == "array"' <<<"$json" >/dev/null 2>&1; then
