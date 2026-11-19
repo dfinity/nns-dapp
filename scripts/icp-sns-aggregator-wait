@@ -51,14 +51,23 @@ expected_snses() {
 }
 
 # Prints the root canister ID and the swap lifecycle of every SNS that the aggregator lists, as sorted JSON.
-# The aggregator creates page 0 on setup, also with no SNS, so a missing or
-# invalid page 0 means that the aggregator is not ready. An invalid page then
-# adds null, so the list matches no expected list.
+# The aggregator creates page 0 on setup, also with no SNS, and the pages end
+# with a 404. Any other failed or invalid page means that the aggregator is not
+# ready. Such a page adds null, so the list matches no expected list.
 aggregator_snses() {
-  local page json
+  local page response code json
   for ((page = 0; ; page++)); do
-    if ! json="$(curl -fsS "$AGGREGATOR_URL/v1/sns/list/page/$page/slow.json" 2>/dev/null)" || ! jq -e 'type == "array"' <<<"$json" >/dev/null 2>&1; then
-      ((page > 0)) || echo null
+    if ! response="$(curl -sS -w '\n%{http_code}' "$AGGREGATOR_URL/v1/sns/list/page/$page/slow.json" 2>/dev/null)"; then
+      echo null
+      break
+    fi
+    code="${response##*$'\n'}"
+    json="${response%$'\n'*}"
+    if [[ "$code" == "404" ]] && ((page > 0)); then
+      break
+    fi
+    if [[ "$code" != "200" ]] || ! jq -e 'type == "array"' <<<"$json" >/dev/null 2>&1; then
+      echo null
       break
     fi
     jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' <<<"$json" 2>/dev/null || {
