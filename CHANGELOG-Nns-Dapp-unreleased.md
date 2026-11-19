@@ -58,6 +58,8 @@ proposal is successful, the changes it released will be moved from this file to
   locked works and its test runs again.
 - The release script deploys the release candidate to the devenv only with
   `--devenv`, and the Slack links are optional.
+- The local test network submits all SNS proposals before it waits for the
+  swaps to open, so it starts faster.
 
 #### Deprecated
 

@@ -13,7 +13,8 @@ print_help() {
 	The script submits a CreateServiceNervousSystem proposal with the large NNS
 	neuron of the anonymous principal, see scripts/icp-network-start. The neuron
 	has the majority, so the NNS adopts and executes the proposal at once. The
-	local NNS governance is a test build, so the swap opens at once.
+	local NNS governance is a test build, so the swap opens in its next periodic
+	task, within a minute, instead of a day later.
 
 	With --buy, the anonymous principal buys the whole swap. The swap then
 	commits and finalizes itself, which takes up to two minutes. With --commit,
@@ -21,6 +22,11 @@ print_help() {
 	disburses the neuron of the anonymous principal that has no dissolve delay
 	and sends the tokens to the test account of the "Get tokens" menu, see
 	frontend/src/lib/api/dev.api.ts.
+
+	With --no_wait, the script returns once the SNS exists, without waiting for
+	the swap to open. The swap opens in its periodic task, which runs once a
+	minute, so a caller that creates several projects can submit every proposal
+	first and wait for the swaps together.
 
 	The script looks the project up by name. Each step is skipped when an
 	earlier run did it, so an interrupted run can be completed by the next run.
@@ -52,6 +58,7 @@ clap.define long=logo desc="The project logo, a PNG file" variable=LOGO
 clap.define long=confirmation_text desc="A text that a participant of the swap confirms" variable=CONFIRMATION_TEXT default=""
 clap.define long=buy desc="Buy the whole swap, so that it commits, and return" variable=BUY nargs=0 default=""
 clap.define long=commit desc="Buy the whole swap, wait for the finalization and fund the test account" variable=COMMIT nargs=0 default=""
+clap.define long=no_wait desc="Return once the SNS exists, without waiting for the swap to open" variable=NO_WAIT nargs=0 default=""
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -64,6 +71,10 @@ test -f "$LOGO" || {
   exit 1
 } >&2
 LOGO="$(realpath "$LOGO")"
+if [[ "${NO_WAIT:-}" == "true" && ("${BUY:-}" == "true" || "${COMMIT:-}" == "true") ]]; then
+  echo "ERROR: --no_wait cannot be combined with --buy or --commit." >&2
+  exit 1
+fi
 
 cd "$SOURCE_DIR/.."
 
@@ -257,10 +268,25 @@ transfer() {
   } >&2
 }
 
-# Buys the whole swap as the anonymous principal.
+# Buys the whole swap as the anonymous principal, unless the swap reached its
+# direct participation target already. The swap rejects a refresh once its
+# target is reached, also when other participants filled it.
 buy_swap() {
-  local max_e8s principal_hex subaccount balance
-  max_e8s="$(call "$SWAP_CANISTER_ID" get_init '(record {})' --query | idl2json | jq -r '.init[0].max_participant_icp_e8s[0]')"
+  local init max_e8s max_direct_e8s direct_e8s participation_e8s principal_hex subaccount balance
+  init="$(call "$SWAP_CANISTER_ID" get_init '(record {})' --query | idl2json)"
+  max_e8s="$(jq -r '.init[0].max_participant_icp_e8s[0]' <<<"$init")"
+  max_direct_e8s="$(jq -r '.init[0].max_direct_participation_icp_e8s[0]' <<<"$init")"
+  direct_e8s="$(call "$SWAP_CANISTER_ID" get_derived_state '(record {})' --query | idl2json | jq -r '.direct_participation_icp_e8s[0] // "0"')"
+  if ((direct_e8s >= max_direct_e8s)); then
+    # A full swap without a purchase of the anonymous principal gives it no
+    # neuron, so --commit could not fund the test account.
+    participation_e8s="$(call "$SWAP_CANISTER_ID" get_buyer_state "(record { principal_id = opt principal \"$ANONYMOUS_PRINCIPAL\" })" --query | idl2json | jq -r '.buyer_state[0].icp[0].amount_e8s // "0"')"
+    if ((participation_e8s == 0)); then
+      echo "ERROR: Other participants filled the $NAME swap, so the anonymous principal cannot buy it." >&2
+      exit 1
+    fi
+    return
+  fi
   # The swap keeps the ICP of a buyer in a subaccount: the length of the
   # principal, the principal bytes, then zeros.
   principal_hex="$(convert-id --input text --output hex "$ANONYMOUS_PRINCIPAL")"
@@ -311,6 +337,9 @@ fi
 ROOT_CANISTER_ID="$(jq -r '.root_canister_id[0]' <<<"$SNS")"
 SWAP_CANISTER_ID="$(jq -r '.swap_canister_id[0]' <<<"$SNS")"
 echo "The $NAME SNS has root canister $ROOT_CANISTER_ID."
+if [[ "${NO_WAIT:-}" == "true" ]]; then
+  exit 0
+fi
 
 wait_for "the $NAME swap to open" 'tostring == "2" or tostring == "3"' swap_lifecycle
 if [[ "${BUY:-}" == "true" || "${COMMIT:-}" == "true" ]]; then
