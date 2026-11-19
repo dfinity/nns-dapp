@@ -16,7 +16,7 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=v long=can-vote desc="Only include neurons with enough dissolve delay to vote" variable=CAN_VOTE nargs=0 default="false"
 clap.define short=p long=can-propose desc="Only include neurons with enough dissolve delay and stake to propose" variable=CAN_PROPOSE nargs=0 default="false"
-clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
 clap.define long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"

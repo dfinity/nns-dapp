@@ -7,7 +7,7 @@ print_help() {
 	Reruns a failed GitHub Actions run based on its URL.
 
 	EXAMPLE USAGE:
-		$0 https://github.com/dfinity/snsdemo/actions/runs/11514250845/job/32052488208
+		$0 https://github.com/dfinity/nns-dapp/actions/runs/<run-id>/job/<job-id>
 	EOF
 }
 

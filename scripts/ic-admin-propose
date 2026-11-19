@@ -15,7 +15,7 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define long=summary desc="Passed to ic-admin with --summary" variable=SUMMARY default="Proposal made via $0"
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
-clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
