@@ -18,7 +18,7 @@
     WizardModal,
     type WizardStep,
     type WizardSteps,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 

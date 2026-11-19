@@ -14,7 +14,7 @@
     followeesByFunction,
     subaccountToHexString,
   } from "$lib/utils/sns-neuron.utils";
-  import { IconClose, Value } from "@dfinity/gix-components";
+  import { IconClose, Value } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable } from "@dfinity/utils";
@@ -94,7 +94,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "../../gix/styles/mixins/card";
 
   ul {
     @include card.list;

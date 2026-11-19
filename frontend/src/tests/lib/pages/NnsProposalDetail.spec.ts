@@ -2,6 +2,7 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { toastsStore } from "$lib/gix";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { page } from "$mocks/$app/stores";
@@ -15,7 +16,6 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { NnsProposalPo } from "$tests/page-objects/NnsProposal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   ProposalRewardStatus,
   Vote,

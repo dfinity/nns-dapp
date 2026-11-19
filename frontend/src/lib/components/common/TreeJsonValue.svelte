@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
   import { splitE8sIntoChunks, stringifyJson } from "$lib/utils/utils.js";
-  import { Html } from "@dfinity/gix-components";
+  import { Html } from "$lib/gix";
 
   // To avoid having quotes around all the value types
   const formatE8s = (data: unknown): string[] =>
@@ -72,7 +72,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .value {
     color: var(--description-color);

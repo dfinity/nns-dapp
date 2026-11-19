@@ -14,7 +14,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
-  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
+  import { IconClose, IconWarning, Value } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
@@ -112,7 +112,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "../../gix/styles/mixins/card";
 
   h3 {
     line-height: var(--line-height-standard);

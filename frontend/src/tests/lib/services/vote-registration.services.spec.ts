@@ -1,6 +1,7 @@
 import * as governanceApi from "$lib/api/governance.api";
 import * as api from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { toastsStore } from "$lib/gix";
 import * as authServices from "$lib/services/auth.services";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
@@ -22,7 +23,6 @@ import {
   proposalActionMotion,
 } from "$tests/mocks/proposal.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   GovernanceError,
   ProposalRewardStatus,

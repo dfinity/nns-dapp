@@ -4,7 +4,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { Island } from "@dfinity/gix-components";
+  import { Island } from "$lib/gix";
 
   layoutTitleStore.set({
     title: $i18n.navigation.reporting,

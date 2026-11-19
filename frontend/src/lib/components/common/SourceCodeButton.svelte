@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconGitHub } from "@dfinity/gix-components";
+  import { IconGitHub } from "$lib/gix";
 </script>
 
 <a
@@ -15,7 +15,7 @@
 </a>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
   .source-code-button {
     @include fonts.small;
     display: flex;

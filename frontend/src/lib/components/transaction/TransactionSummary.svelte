@@ -5,7 +5,7 @@
   import { formatUsdValue } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { getUsdValue, toTokenAmountV2 } from "$lib/utils/token.utils";
-  import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
+  import { IconSouth, KeyValuePair } from "$lib/gix";
   import {
     isNullish,
     nonNullish,
@@ -133,7 +133,7 @@
 </article>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .container {
     display: flex;

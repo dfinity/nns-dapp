@@ -5,7 +5,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { Modal, Spinner } from "@dfinity/gix-components";
+  import { Modal, Spinner } from "$lib/gix";
   import type { NeuronId, NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher, onMount } from "svelte";
 

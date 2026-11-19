@@ -1,0 +1,117 @@
+@use "../mixins/effect";
+@use "../mixins/fonts";
+@use "../mixins/button";
+
+button {
+  &[disabled],
+  &[disabled]:hover {
+    cursor: default;
+  }
+
+  &.with-icon {
+    @include button.with-icon;
+  }
+
+  &.ghost,
+  &.text {
+    @include button.text;
+  }
+
+  &.full-width {
+    @include button.full-width;
+  }
+
+  &.icon-only {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    vertical-align: bottom;
+
+    color: inherit;
+
+    padding: var(--padding-0_5x);
+
+    border-radius: 50%;
+
+    @include effect.ripple-effect(--card-background);
+  }
+
+  &.primary,
+  &.secondary,
+  &.success,
+  &.danger,
+  &.warning {
+    @include button.base;
+  }
+
+  &.primary {
+    @include button.primary;
+  }
+
+  &.secondary {
+    @include button.secondary;
+  }
+
+  &.success {
+    background: var(--positive-emphasis);
+    color: var(--positive-emphasis-contrast);
+
+    &:not([disabled]):hover {
+      filter: contrast(1.25);
+    }
+  }
+
+  &.danger {
+    background: var(--negative-emphasis);
+    color: var(--negative-emphasis-contrast);
+
+    &:not([disabled]):hover {
+      filter: contrast(1.25);
+    }
+  }
+
+  &.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding);
+
+    height: 100%;
+    margin: 0;
+    box-sizing: border-box;
+
+    border-radius: var(--border-radius);
+    border: var(--card-border-size) dashed var(--tertiary);
+
+    transition: all var(--animation-time-normal);
+
+    &:not([disabled]):hover,
+    &:not([disabled]):focus {
+      color: var(--button-card-focus-color);
+      background: var(--button-card-focus-background);
+      border: var(--card-border-size) dashed var(--secondary);
+    }
+
+    &:active {
+      filter: contrast(1.25);
+    }
+
+    .icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      height: var(--padding-4x);
+      width: var(--padding-4x);
+
+      padding: var(--padding);
+      box-sizing: border-box;
+
+      border-radius: 50%;
+
+      background: var(--primary);
+      color: var(--primary-contrast);
+    }
+  }
+}

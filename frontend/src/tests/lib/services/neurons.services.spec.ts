@@ -4,6 +4,7 @@ import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { definedNeuronsStore } from "$lib/derived/neurons.derived";
+import { toastsStore } from "$lib/gix";
 import * as icpLedgerServicesProxy from "$lib/proxy/icp-ledger.services.proxy";
 import * as authServices from "$lib/services/auth.services";
 import * as icpAccountsServices from "$lib/services/icp-accounts.services";
@@ -38,7 +39,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import {

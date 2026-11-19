@@ -2,7 +2,7 @@
   import { beforeNavigate } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { IconDocument } from "@dfinity/gix-components";
+  import { IconDocument } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();

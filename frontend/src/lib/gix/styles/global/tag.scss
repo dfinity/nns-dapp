@@ -1,0 +1,26 @@
+@use "../mixins/fonts";
+
+.tag {
+  @include fonts.small;
+  border-radius: var(--border-radius-0_5x);
+
+  display: flex;
+  align-items: center;
+  gap: var(--padding-0_5x);
+
+  // Force fit-content for `li` tags.
+  width: fit-content;
+  padding: var(--padding-0_5x) var(--padding);
+
+  // "info" intent is the default
+  background-color: var(--content-background);
+  color: var(--text-color);
+
+  &.tag--large {
+    @include fonts.standard;
+  }
+}
+
+li.tag {
+  display: list-item;
+}

@@ -3,7 +3,7 @@
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
   import Title from "$lib/components/header/Title.svelte";
   import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
-  import { SplitContent } from "@dfinity/gix-components";
+  import { SplitContent } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
@@ -46,7 +46,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   // Temporarily redefine default values of the SplitContent until the proper redesign is implemented.
   .container {

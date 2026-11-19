@@ -9,7 +9,7 @@
     WizardModal,
     type WizardStep,
     type WizardSteps,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   export let availableMaturityE8s: bigint;

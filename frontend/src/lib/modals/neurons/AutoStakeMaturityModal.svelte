@@ -1,7 +1,7 @@
 <script lang="ts">
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Html } from "@dfinity/gix-components";
+  import { Html } from "$lib/gix";
 
   export let hasAutoStakeOn: boolean;
 </script>

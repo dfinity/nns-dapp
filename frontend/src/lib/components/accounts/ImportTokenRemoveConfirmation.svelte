@@ -3,7 +3,7 @@
   import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
-  import { Tag } from "@dfinity/gix-components";
+  import { Tag } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
 
   export let tokenToRemove:

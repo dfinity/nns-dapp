@@ -1,3 +1,4 @@
+import { toastsStore } from "$lib/gix";
 import {
   PollingCancelledError,
   PollingLimitExceededError,
@@ -22,7 +23,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { uint8ArraysEqual } from "@dfinity/utils";
 import { get } from "svelte/store";
 

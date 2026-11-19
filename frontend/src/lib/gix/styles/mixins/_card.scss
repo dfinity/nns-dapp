@@ -1,0 +1,43 @@
+@use "./text";
+@use "./media";
+@use "./display";
+
+@mixin stacked-title {
+  display: grid;
+  flex-direction: column;
+
+  margin: 0 0 var(--padding);
+  max-width: 100%;
+}
+
+@mixin list {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: var(--padding-2x);
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding);
+}
+
+@mixin list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin title {
+  line-height: var(--line-height-standard);
+  margin: 0 var(--padding) 0 0;
+
+  @include text.truncate;
+}
+
+@mixin meta {
+  @include display.space-between;
+
+  margin: 0 0 var(--padding);
+
+  :global(.value:last-of-type) {
+    text-align: right;
+  }
+}

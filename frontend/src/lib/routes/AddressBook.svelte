@@ -17,12 +17,7 @@
     ResponsiveTableOrder,
   } from "$lib/types/responsive-table";
   import { createAscendingComparator } from "$lib/utils/sort.utils";
-  import {
-    IconAdd,
-    IconUserLogin,
-    Spinner,
-    Tooltip,
-  } from "@dfinity/gix-components";
+  import { IconAdd, IconUserLogin, Spinner, Tooltip } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   layoutTitleStore.set({
@@ -177,7 +172,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../gix/styles/mixins/media";
 
   .is-empty {
     display: flex;

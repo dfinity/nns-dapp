@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconFilter } from "@dfinity/gix-components";
+  import { IconFilter } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   /**

@@ -3,7 +3,7 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import TagsList from "$lib/components/ui/TagsList.svelte";
   import type { SnsFolloweesByNeuron } from "$lib/utils/sns-neuron.utils";
-  import { Tag } from "@dfinity/gix-components";
+  import { Tag } from "$lib/gix";
 
   export let followee: SnsFolloweesByNeuron;
 </script>

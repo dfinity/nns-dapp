@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TableProject } from "$lib/types/staking";
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   export let rowData: TableProject;

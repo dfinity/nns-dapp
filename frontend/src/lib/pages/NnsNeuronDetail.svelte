@@ -41,7 +41,7 @@
     isSpawning,
     neuronVoting,
   } from "$lib/utils/neuron.utils";
-  import { Island } from "@dfinity/gix-components";
+  import { Island } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import type { NeuronId, NeuronInfo } from "@icp-sdk/canisters/nns";
   import { onMount, setContext } from "svelte";

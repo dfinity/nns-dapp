@@ -1,12 +1,12 @@
 import * as api from "$lib/api/proposals.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import ProjectProposal from "$lib/components/project-detail/ProjectProposal.svelte";
+import { toastsStore } from "$lib/gix";
 import { setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { createSummary } from "$tests/mocks/sns-projects.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";

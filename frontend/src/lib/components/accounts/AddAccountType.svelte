@@ -5,7 +5,7 @@
     type AccountType,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
-  import { Card } from "@dfinity/gix-components";
+  import { Card } from "$lib/gix";
   import { getContext } from "svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(

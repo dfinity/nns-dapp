@@ -9,7 +9,7 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
 
   loadIcpSwapTickers();
 

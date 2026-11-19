@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconInfo, Tooltip } from "@dfinity/gix-components";
+  import { IconInfo, Tooltip } from "$lib/gix";
 
   type Props = {
     tooltipId?: string;

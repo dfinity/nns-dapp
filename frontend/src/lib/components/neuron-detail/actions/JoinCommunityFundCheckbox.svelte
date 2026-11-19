@@ -6,7 +6,7 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { hasJoinedCommunityFund } from "$lib/utils/neuron.utils";
-  import { Checkbox } from "@dfinity/gix-components";
+  import { Checkbox } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { getContext } from "svelte";
 

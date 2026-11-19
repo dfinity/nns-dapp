@@ -1,6 +1,6 @@
 <script lang="ts">
   import { translate } from "$lib/utils/i18n.utils";
-  import { Input } from "@dfinity/gix-components";
+  import { Input } from "$lib/gix";
 
   export let testId: string = "input-ui-element";
   export let name: string;

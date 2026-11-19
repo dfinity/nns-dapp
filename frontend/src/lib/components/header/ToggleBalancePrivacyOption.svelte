@@ -3,7 +3,7 @@
   import { analytics } from "$lib/services/analytics.services";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
-  import { IconEyeClosed, IconEyeOpen, Toggle } from "@dfinity/gix-components";
+  import { IconEyeClosed, IconEyeOpen, Toggle } from "$lib/gix";
 
   let checked = $derived($isBalancePrivacyOptionStore);
   const label = $derived(

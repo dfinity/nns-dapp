@@ -1,7 +1,7 @@
 <script lang="ts">
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import type { CardType } from "$lib/types/card";
-  import { Card } from "@dfinity/gix-components";
+  import { Card } from "$lib/gix";
 
   export let role: undefined | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;

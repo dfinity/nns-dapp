@@ -17,11 +17,7 @@
     type ProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
-  import {
-    Html,
-    KeyValuePair,
-    KeyValuePairInfo,
-  } from "@dfinity/gix-components";
+  import { Html, KeyValuePair, KeyValuePairInfo } from "$lib/gix";
   import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 

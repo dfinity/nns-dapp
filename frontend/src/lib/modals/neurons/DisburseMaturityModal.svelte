@@ -21,7 +21,7 @@
     WizardModal,
     type WizardStep,
     type WizardSteps,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

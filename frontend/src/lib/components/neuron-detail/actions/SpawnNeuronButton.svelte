@@ -15,7 +15,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";

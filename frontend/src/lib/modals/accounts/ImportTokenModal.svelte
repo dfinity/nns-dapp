@@ -19,11 +19,7 @@
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { WizardModal, type WizardStep, type WizardSteps } from "$lib/gix";
   import { Principal } from "@icp-sdk/core/principal";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

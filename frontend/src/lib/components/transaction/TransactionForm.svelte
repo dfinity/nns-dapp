@@ -30,7 +30,7 @@
     getMaxTransactionAmount,
     toTokenAmountV2,
   } from "$lib/utils/token.utils";
-  import { Toggle, Tooltip } from "@dfinity/gix-components";
+  import { Toggle, Tooltip } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import {
     isNullish,

@@ -5,6 +5,7 @@ import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import * as analytics from "$lib/services/analytics.services";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
 
+import { toastsStore } from "$lib/gix";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import App from "$routes/+layout.svelte";
@@ -13,7 +14,6 @@ import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

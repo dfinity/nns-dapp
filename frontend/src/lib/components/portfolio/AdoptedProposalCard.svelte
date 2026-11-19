@@ -5,12 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { durationTillSwapStart } from "$lib/utils/projects.utils";
-  import {
-    IconClockNoFill,
-    IconRight,
-    IconRocketLaunch,
-    Tag,
-  } from "@dfinity/gix-components";
+  import { IconClockNoFill, IconRight, IconRocketLaunch, Tag } from "$lib/gix";
   import { secondsToDuration } from "@dfinity/utils";
 
   type Props = {
@@ -82,9 +77,9 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/text";
   .wrapper {
     display: flex;
     flex-direction: column;

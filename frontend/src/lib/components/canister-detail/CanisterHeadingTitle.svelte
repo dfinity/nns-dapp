@@ -4,7 +4,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   export let details: CanisterDetails | undefined;
@@ -35,8 +35,8 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   h2 {
     @include fonts.h1;

@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { CanisterDetailModalDetach } from "$lib/types/canister-detail.modal";
   import { emit } from "$lib/utils/events.utils";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
 
   export let canisterId: Principal;

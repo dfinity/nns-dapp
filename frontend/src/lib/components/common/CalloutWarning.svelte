@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Html, IconError } from "@dfinity/gix-components";
+  import { Html, IconError } from "$lib/gix";
 
   export let htmlText: string;
   // TODO(mstr): Use Banner component here instead of custom styling.

@@ -1,0 +1,73 @@
+@use "../mixins/media";
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--padding-2x);
+  grid-auto-rows: 1fr;
+
+  @include media.min-width(medium) {
+    grid-template-columns: repeat(2, calc((100% - var(--padding-2x)) / 2));
+  }
+
+  @include media.min-width(xlarge) {
+    grid-template-columns: repeat(3, calc((100% - var(--padding-4x)) / 3));
+  }
+
+  :global(.card) {
+    margin: 0;
+    height: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.content-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--row-gap);
+  width: 100%;
+
+  @include media.min-width(large) {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: max-content 1fr;
+    place-items: stretch;
+    column-gap: var(--column-gap);
+    min-height: auto;
+
+    grid-template-areas:
+      "content-a content-a content-a content-a content-a content-a content-b content-b content-b content-b content-b content-b"
+      "content-c content-c content-c content-c content-c content-c content-d content-d content-d content-d content-d content-d";
+  }
+
+  @include media.min-width(large) {
+    grid-template-areas:
+      "content-a content-a content-a content-a content-a content-a content-b content-b content-b content-b content-b content-b"
+      "content-c content-c content-c content-c content-c content-c content-d content-d content-d content-d content-d content-d";
+  }
+
+  .ff-flexbox-fix {
+    // https://stackoverflow.com/a/28909778/4971475
+    min-width: 0;
+  }
+
+  .content-a {
+    @extend .ff-flexbox-fix;
+    grid-area: content-a;
+  }
+
+  .content-b {
+    @extend .ff-flexbox-fix;
+    grid-area: content-b;
+  }
+
+  .content-c {
+    @extend .ff-flexbox-fix;
+    grid-area: content-c;
+  }
+
+  .content-d {
+    @extend .ff-flexbox-fix;
+    grid-area: content-d;
+  }
+}

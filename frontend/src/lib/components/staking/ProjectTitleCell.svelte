@@ -6,7 +6,7 @@
   import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
   import type { TableProject } from "$lib/types/staking";
   import { FailedTokenAmount } from "$lib/utils/token.utils";
-  import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
+  import { IconError, Tag, Tooltip } from "$lib/gix";
 
   export let rowData: TableProject;
 </script>

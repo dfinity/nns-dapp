@@ -20,7 +20,7 @@
     mapPool,
   } from "$lib/utils/reporting.utils";
   import { sortSnsNeuronsByStake } from "$lib/utils/sns-neuron.utils";
-  import { IconDown } from "@dfinity/gix-components";
+  import { IconDown } from "$lib/gix";
 
   type Props = { source?: ReportingNeuronsSource };
   let { source = "nns" }: Props = $props();

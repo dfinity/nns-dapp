@@ -21,7 +21,7 @@
     wizardStepIndex,
     type WizardStep,
     type WizardSteps,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import type { NeuronId, NeuronInfo, Topic } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";

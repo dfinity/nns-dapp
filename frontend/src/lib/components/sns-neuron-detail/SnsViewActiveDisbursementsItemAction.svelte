@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
-  import { IconPace } from "@dfinity/gix-components";
+  import { IconPace } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
   export let neuron: SnsGovernanceDid.Neuron;

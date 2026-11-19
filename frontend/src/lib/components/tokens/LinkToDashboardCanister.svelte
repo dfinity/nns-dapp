@@ -2,7 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { IconOpenInNew } from "@dfinity/gix-components";
+  import { IconOpenInNew } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
 

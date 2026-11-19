@@ -1,10 +1,6 @@
 <script lang="ts">
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import {
-    IconCheckCircle,
-    IconCheckCircleFill,
-    Tooltip,
-  } from "@dfinity/gix-components";
+  import { IconCheckCircle, IconCheckCircleFill, Tooltip } from "$lib/gix";
   import { i18n } from "$lib/stores/i18n";
   import { nonNullish } from "@dfinity/utils";
 

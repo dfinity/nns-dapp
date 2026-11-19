@@ -8,7 +8,7 @@
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { Html, IconInfo, IconOpenInNew } from "@dfinity/gix-components";
+  import { Html, IconInfo, IconOpenInNew } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
@@ -119,7 +119,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   p.description {
     margin: 0 0 var(--padding-2x);

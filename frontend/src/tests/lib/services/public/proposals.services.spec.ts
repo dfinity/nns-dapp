@@ -1,4 +1,5 @@
 import * as api from "$lib/api/proposals.api";
+import { toastsStore } from "$lib/gix";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import {
   listNextProposals,
@@ -11,7 +12,6 @@ import {
 } from "$lib/stores/proposals.store";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 

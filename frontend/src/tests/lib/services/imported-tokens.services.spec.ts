@@ -4,6 +4,7 @@ import {
   TooManyImportedTokensError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { busyStore, toastsStore } from "$lib/gix";
 import {
   addImportedToken,
   addIndexCanister,
@@ -18,7 +19,6 @@ import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { busyStore, toastsStore } from "@dfinity/gix-components";
 import * as dfinityUtils from "@dfinity/utils";
 import { get } from "svelte/store";
 

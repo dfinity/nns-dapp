@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Markdown } from "@dfinity/gix-components";
+  import { Markdown } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   export let summary: string | undefined;
@@ -21,8 +21,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   .markdown {
     overflow-wrap: break-word;

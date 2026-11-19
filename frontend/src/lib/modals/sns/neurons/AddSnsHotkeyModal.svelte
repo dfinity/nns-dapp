@@ -9,7 +9,7 @@
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher, getContext } from "svelte";
 

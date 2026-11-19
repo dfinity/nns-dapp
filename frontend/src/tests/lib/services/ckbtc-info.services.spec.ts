@@ -4,6 +4,7 @@ import {
   CKBTC_MINTER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import { toastsStore } from "$lib/gix";
 import * as authServices from "$lib/services/auth.services";
 import * as services from "$lib/services/ckbtc-info.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
@@ -13,7 +14,6 @@ import {
   resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

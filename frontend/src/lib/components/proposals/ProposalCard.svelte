@@ -6,13 +6,7 @@
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import {
-    Card,
-    IconChat,
-    IconClockNoFill,
-    IconUser,
-    Value,
-  } from "@dfinity/gix-components";
+  import { Card, IconChat, IconClockNoFill, IconUser, Value } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   export let hidden = false;
@@ -91,7 +85,7 @@
 </li>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/text";
 
   li {
     list-style: none;

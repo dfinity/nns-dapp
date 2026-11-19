@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconClose } from "@dfinity/gix-components";
+  import { IconClose } from "$lib/gix";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -31,7 +31,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../../gix/styles/mixins/fonts";
 
   .container {
     @include fonts.small(true);

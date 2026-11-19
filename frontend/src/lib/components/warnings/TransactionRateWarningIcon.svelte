@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconMeter } from "@dfinity/gix-components";
+  import { IconMeter } from "$lib/gix";
 </script>
 
 <div>

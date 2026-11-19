@@ -1,6 +1,6 @@
 <script lang="ts">
   import PageHeader from "$lib/components/common/PageHeader.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 </script>
 
 <PageHeader>
@@ -13,7 +13,7 @@
 </PageHeader>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   div {
     width: 90%;

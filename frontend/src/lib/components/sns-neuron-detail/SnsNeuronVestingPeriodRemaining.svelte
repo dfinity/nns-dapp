@@ -2,7 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { isVesting, vestingInSeconds } from "$lib/utils/sns-neuron.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { secondsToDuration } from "@dfinity/utils";
 

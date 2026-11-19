@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsLegacyFollowings } from "$lib/types/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import { IconErrorOutline } from "@dfinity/gix-components";
+  import { IconErrorOutline } from "$lib/gix";
 
   type Props = {
     catchAllLegacyFollowings: SnsLegacyFollowings;
@@ -61,7 +61,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../../gix/styles/mixins/fonts";
 
   .header {
     margin: 0 var(--padding-4x);

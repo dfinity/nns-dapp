@@ -15,11 +15,7 @@
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import {
-    KeyValuePair,
-    KeyValuePairInfo,
-    Section,
-  } from "@dfinity/gix-components";
+  import { KeyValuePair, KeyValuePairInfo, Section } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {

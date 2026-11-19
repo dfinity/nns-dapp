@@ -1,7 +1,7 @@
 <script lang="ts">
   import Copy from "$lib/components/ui/Copy.svelte";
   import { addressToLabelStore } from "$lib/stores/address-book.store";
-  import { Tooltip, Value } from "@dfinity/gix-components";
+  import { Tooltip, Value } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

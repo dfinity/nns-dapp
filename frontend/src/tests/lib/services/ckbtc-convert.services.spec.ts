@@ -5,6 +5,7 @@ import {
   CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import { toastsStore } from "$lib/gix";
 import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import * as walletAccountsServices from "$lib/services/icrc-accounts.services";
 import { loadIcrcAccountTransactions } from "$lib/services/icrc-transactions.services";
@@ -17,7 +18,6 @@ import {
   mockCkBTCMainAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   CkBtcMinterCanister,
   MinterInsufficientFundsError,

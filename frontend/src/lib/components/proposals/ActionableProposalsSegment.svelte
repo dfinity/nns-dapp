@@ -2,7 +2,7 @@
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { i18n } from "$lib/stores/i18n";
-  import { Segment, SegmentButton } from "@dfinity/gix-components";
+  import { Segment, SegmentButton } from "$lib/gix";
 
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();
@@ -34,7 +34,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   div {
     display: contents;

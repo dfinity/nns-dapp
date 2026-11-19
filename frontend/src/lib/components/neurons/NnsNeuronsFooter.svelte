@@ -8,7 +8,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { sortedNeuronStore } from "$lib/derived/neurons.derived";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
 
   type ModalKey = "stake-neuron" | "merge-neurons";
   let showModal: ModalKey | undefined = undefined;

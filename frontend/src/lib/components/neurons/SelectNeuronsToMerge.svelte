@@ -10,7 +10,7 @@
     mapNeuronIds,
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { NeuronId } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 

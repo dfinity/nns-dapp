@@ -13,7 +13,7 @@
     getTopicSubtitle,
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
-  import { IconClose, Value } from "@dfinity/gix-components";
+  import { IconClose, Value } from "$lib/gix";
   import {
     Topic,
     type NeuronId,
@@ -99,7 +99,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "../../gix/styles/mixins/card";
 
   ul {
     @include card.list;

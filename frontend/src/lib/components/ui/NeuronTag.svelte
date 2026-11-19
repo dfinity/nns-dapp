@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronTagData } from "$lib/utils/neuron.utils";
-  import { Tag } from "@dfinity/gix-components";
+  import { Tag } from "$lib/gix";
 
   export let tag: NeuronTagData;
   export let size: "medium" | "large" = "medium";

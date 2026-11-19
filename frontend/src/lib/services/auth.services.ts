@@ -1,11 +1,11 @@
 import { browser } from "$app/environment";
+import type { ToastLevel } from "$lib/gix";
 import { authStore } from "$lib/stores/auth.store";
 import { startBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { I18nKeys } from "$lib/utils/i18n.utils";
 import { replaceHistory } from "$lib/utils/route.utils";
 import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
-import type { ToastLevel } from "@dfinity/gix-components";
 import type { Identity } from "@icp-sdk/core/agent";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";

@@ -17,7 +17,7 @@
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { Island, busy } from "@dfinity/gix-components";
+  import { Island, busy } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
@@ -247,7 +247,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../gix/styles/mixins/media";
 
   section {
     display: flex;

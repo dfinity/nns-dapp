@@ -17,7 +17,7 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { Universe } from "$lib/types/universe";
   import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
-  import { IconStakedTokens, PageBanner } from "@dfinity/gix-components";
+  import { IconStakedTokens, PageBanner } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";

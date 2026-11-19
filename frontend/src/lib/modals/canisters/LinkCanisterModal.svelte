@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
-  import { Modal, busy } from "@dfinity/gix-components";
+  import { Modal, busy } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

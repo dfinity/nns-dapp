@@ -2,7 +2,7 @@
   import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { ballotsWithDefinedProposal } from "$lib/utils/neuron.utils";
-  import { InfiniteScroll } from "@dfinity/gix-components";
+  import { InfiniteScroll } from "$lib/gix";
   import type { BallotInfo, NeuronInfo } from "@icp-sdk/canisters/nns";
   import { debounce } from "@dfinity/utils";
 

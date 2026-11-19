@@ -2,7 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import { cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
 
@@ -34,7 +34,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .tag {
     position: relative;

@@ -2,7 +2,7 @@
   import InProgress from "$lib/components/common/InProgress.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
-  import type { ProgressStep } from "@dfinity/gix-components";
+  import type { ProgressStep } from "$lib/gix";
 
   export let progressStep: ConvertBtcStep;
 

@@ -16,7 +16,7 @@
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
-  import { Html, Spinner, busy } from "@dfinity/gix-components";
+  import { Html, Spinner, busy } from "$lib/gix";
   import {
     Topic,
     type FolloweesForTopic,

@@ -1,16 +1,16 @@
 // This import needs to be at the top for the mock to work:
 import MockQRCodeReaderModal from "$tests/lib/modals/transaction/MockQRCodeReaderModal.svelte";
 
+import type { WizardSteps } from "$lib/gix";
 import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { mockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { WizardSteps } from "@dfinity/gix-components";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
-vi.mock("@dfinity/gix-components", async () => ({
-  ...(await vi.importActual("@dfinity/gix-components")),
+vi.mock("$lib/gix", async () => ({
+  ...(await vi.importActual("$lib/gix")),
   QRCodeReaderModal: MockQRCodeReaderModal,
 }));
 

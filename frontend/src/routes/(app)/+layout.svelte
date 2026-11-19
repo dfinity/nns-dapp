@@ -15,7 +15,7 @@
   import { logWithTimestamp } from "$lib/utils/dev.utils";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
-  import { BusyScreen, Toasts } from "@dfinity/gix-components";
+  import { BusyScreen, Toasts } from "$lib/gix";
   import { isNullish } from "@dfinity/utils";
   import type { AfterNavigate } from "@sveltejs/kit";
 

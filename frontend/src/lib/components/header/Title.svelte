@@ -19,7 +19,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/text";
 
   h1 {
     background-color: var(--sidebar-button-background);

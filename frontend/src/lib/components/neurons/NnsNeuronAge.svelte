@@ -2,7 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { neuronAge } from "$lib/utils/neuron.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { secondsToDuration } from "@dfinity/utils";
 

@@ -1,7 +1,7 @@
 <script lang="ts" module>
   import { i18n } from "$lib/stores/i18n";
   import type { ComponentWithProps } from "$lib/types/svelte";
-  import { IconLeft, IconRight } from "@dfinity/gix-components";
+  import { IconLeft, IconRight } from "$lib/gix";
   import { onDestroy } from "svelte";
 
   const REFRESH_INTERVAL = 5000;

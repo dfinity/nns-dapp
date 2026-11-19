@@ -2,7 +2,7 @@
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
-  import { BREAKPOINT_LARGE, Nav } from "@dfinity/gix-components";
+  import { BREAKPOINT_LARGE, Nav } from "$lib/gix";
 
   let innerWidth = 0;
   let list = false;
@@ -29,8 +29,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
 
   .title {
     margin: 0;

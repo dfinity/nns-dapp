@@ -11,7 +11,7 @@
     hasPermissionToDisburseMaturity,
     hasPermissionToStakeMaturity,
   } from "$lib/utils/sns-neuron.utils";
-  import { IconExpandCircleDown } from "@dfinity/gix-components";
+  import { IconExpandCircleDown } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
 

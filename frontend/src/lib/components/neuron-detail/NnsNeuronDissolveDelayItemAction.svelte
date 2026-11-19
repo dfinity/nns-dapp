@@ -14,7 +14,7 @@
     getSpawningTimeInSeconds,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { IconClockNoFill } from "@dfinity/gix-components";
+  import { IconClockNoFill } from "$lib/gix";
   import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken } from "@dfinity/utils";
 

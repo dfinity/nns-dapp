@@ -3,7 +3,7 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { IconUserLogin, PageBanner } from "@dfinity/gix-components";
+  import { IconUserLogin, PageBanner } from "$lib/gix";
 
   layoutTitleStore.set({
     title: $i18n.navigation.hotkeys,

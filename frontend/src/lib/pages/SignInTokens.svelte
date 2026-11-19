@@ -12,7 +12,7 @@
     compareCkTokensByDefault,
     filterTokensByType,
   } from "$lib/utils/tokens-table.utils";
-  import { IconAccountsPage, PageBanner } from "@dfinity/gix-components";
+  import { IconAccountsPage, PageBanner } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
@@ -74,7 +74,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../gix/styles/mixins/media";
 
   .content {
     display: flex;

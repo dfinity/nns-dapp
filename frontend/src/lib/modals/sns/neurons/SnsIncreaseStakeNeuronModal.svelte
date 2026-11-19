@@ -15,7 +15,7 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
-  import type { WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { type Token, TokenAmountV2, nonNullish } from "@dfinity/utils";

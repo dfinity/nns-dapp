@@ -1,0 +1,106 @@
+@use "../mixins/media";
+
+:root {
+  --header-height: 40px;
+  --menu-expanded-width: 200px;
+  --menu-collapsed-width: 50px;
+  --max-main-content-width: calc(1600px + (2 * var(--padding-4x)));
+  --content-start-width: 280px;
+  --content-start-height: calc(140px + var(--padding-2x));
+
+  --icon-width: 24px;
+  --page-banner-image-width-desktop: 144px;
+  --page-banner-image-width-mobile: 86px;
+
+  --padding: 8px;
+
+  --padding-0_25x: calc(var(--padding) / 4);
+  --padding-0_5x: calc(var(--padding) / 2);
+  --padding-1_5x: calc(1.5 * var(--padding));
+  --padding-2x: calc(2 * var(--padding));
+  --padding-3x: calc(3 * var(--padding));
+  --padding-4x: calc(4 * var(--padding));
+  --padding-6x: calc(6 * var(--padding));
+  --padding-8x: calc(8 * var(--padding));
+
+  --column-gap: var(--padding-2x);
+  --row-gap: var(--padding-2x);
+
+  --border-radius: 8px;
+  --border-radius-0_5x: calc(0.5 * var(--border-radius));
+  --border-radius-2x: calc(2 * var(--border-radius));
+  --border-radius-5x: calc(5 * var(--border-radius));
+
+  --z-index: 1;
+  --menu-z-index: calc(var(--z-index) + 996);
+  --overlay-z-index: calc(var(--menu-z-index) + 1);
+  --toast-info-z-index: calc(var(--overlay-z-index) + 1);
+  --toast-error-z-index: calc(var(--overlay-z-index) + 4);
+  --modal-z-index: calc(var(--overlay-z-index) + 3);
+  --bottom-sheet-z-index: calc(var(--overlay-z-index) + 2);
+  --tooltip-z-index: calc(var(--overlay-z-index) + 5);
+
+  --section-max-width: 800px;
+  --island-width: 768px;
+  --island-max-width: calc(100% - var(--padding-6x));
+  --footer-height: calc(12vh + var(--padding));
+
+  --animation-time-long: 0.5s;
+  --animation-time-normal: 0.2s;
+  --animation-time-short: 0.125s;
+
+  --menu-animation-timing-function: cubic-bezier(0.55, 0.49, 0.44, 0.87);
+
+  --button-min-height: 45px;
+  --button-border-size: 2px;
+
+  --card-border-size: 2px;
+
+  // Modal
+
+  --alert-width: calc(100% - var(--padding-8x));
+  --alert-max-width: calc(100vw - var(--padding-4x));
+  --alert-max-height: calc(100vh - var(--padding-4x));
+  --alert-border-radius: var(--border-radius-2x);
+  --alert-padding-y: var(--padding-4x);
+  --alert-padding-x: var(--padding-2x);
+
+  --dialog-width: 100vw;
+  --dialog-max-width: 100vw;
+  --dialog-height: 100vh;
+  --dialog-border-radius: 0;
+  --dialog-padding-y: var(--padding-4x);
+  --dialog-padding-x: var(--padding-2x);
+
+  // CSS variables used when the content needs to fit the maximum height as when a QR-Code reader is embedded in a modal
+  --dialog-header-height: 74px;
+
+  // Nav
+  --nav-component-title-display: block;
+
+  // Menu selection
+  --menu-selection-outer-radius: var(--border-radius-2x);
+  --menu-selection-content-box-shadow: inset 2px 0 0 0
+    var(--menu-selected-background);
+
+  @supports (-webkit-touch-callout: none) {
+    --dialog-height: -webkit-fill-available;
+    --alert-max-height: -webkit-fill-available;
+  }
+
+  @include media.min-width(medium) {
+    --alert-width: 500px;
+
+    --dialog-width: 600px;
+    --dialog-max-width: var(--alert-max-width);
+    --dialog-min-height: calc(100vh - var(--padding-8x));
+    --dialog-height: initial;
+    --dialog-max-height: var(--alert-max-height);
+    --dialog-border-radius: var(--alert-border-radius);
+    --dialog-padding-x: var(--padding-4x);
+  }
+
+  @media (min-width: 768px) and (min-height: 560px) {
+    --dialog-min-height: 554.25px;
+  }
+}

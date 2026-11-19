@@ -1,0 +1,18 @@
+{
+  "core": {
+    "close": "Close",
+    "back": "Back",
+    "menu": "Open menu to access navigation options",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "copy": "Copy to clipboard"
+  },
+  "theme": {
+    "switch_theme": "Switch theme"
+  },
+  "progress": {
+    "completed": "Completed",
+    "in_progress": "In progress",
+    "failed": "Failed"
+  }
+}

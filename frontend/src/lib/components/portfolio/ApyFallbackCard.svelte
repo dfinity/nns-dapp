@@ -1,7 +1,7 @@
 <script lang="ts">
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { IconError } from "@dfinity/gix-components";
+  import { IconError } from "$lib/gix";
 
   type Props = {
     stakingRewardData?:
@@ -77,7 +77,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .skeleton {
     border-radius: 4px;

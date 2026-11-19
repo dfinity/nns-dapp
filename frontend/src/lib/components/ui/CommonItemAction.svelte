@@ -1,6 +1,6 @@
 <script lang="ts">
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import { ItemAction } from "@dfinity/gix-components";
+  import { ItemAction } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   export let testId: string;

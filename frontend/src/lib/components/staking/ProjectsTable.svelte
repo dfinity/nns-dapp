@@ -46,7 +46,7 @@
     sortTableProjects,
   } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { IconNeuronsPage } from "@dfinity/gix-components";
+  import { IconNeuronsPage } from "$lib/gix";
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
@@ -340,7 +340,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .wrapper {
     display: flex;

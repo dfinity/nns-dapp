@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isVesting, vestingInSeconds } from "$lib/utils/sns-neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { secondsToDuration } from "@dfinity/utils";
 

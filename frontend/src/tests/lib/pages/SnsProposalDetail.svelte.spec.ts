@@ -3,6 +3,7 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
+import { toastsStore } from "$lib/gix";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -32,7 +33,6 @@ import {
 } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { Vote } from "@icp-sdk/canisters/nns";
 import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import {

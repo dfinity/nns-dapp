@@ -5,6 +5,7 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
+import { toastsStore } from "$lib/gix";
 import {
   getIcrcAccountIdentity,
   getIcrcTokenMetaData,
@@ -32,7 +33,6 @@ import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   AgentError,

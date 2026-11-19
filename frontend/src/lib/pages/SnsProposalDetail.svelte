@@ -37,7 +37,7 @@
     type SnsProposalDataMap,
   } from "$lib/utils/sns-proposals.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
-  import { SplitBlock } from "@dfinity/gix-components";
+  import { SplitBlock } from "$lib/gix";
   import { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";

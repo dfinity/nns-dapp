@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
 
   export let loading: boolean;
 </script>

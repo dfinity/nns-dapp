@@ -11,7 +11,7 @@
   } from "$lib/types/proposals";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { navigationIdComparator } from "$lib/utils/proposals.utils";
-  import { IconLeft, IconRight } from "@dfinity/gix-components";
+  import { IconLeft, IconRight } from "$lib/gix";
   import { assertNonNullish, isNullish } from "@dfinity/utils";
 
   export let currentProposalId: ProposalsNavigationId;
@@ -85,8 +85,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   div.proposal-nav {
     margin-bottom: var(--padding-2x);

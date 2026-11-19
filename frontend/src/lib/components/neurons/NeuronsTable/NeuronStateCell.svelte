@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import { NeuronState } from "@icp-sdk/canisters/nns";
 
   type Props = {
@@ -34,7 +34,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../../gix/styles/mixins/fonts";
 
   .icon {
     display: contents;

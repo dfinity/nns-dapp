@@ -8,7 +8,7 @@
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import { createEventDispatcher, getContext } from "svelte";
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);

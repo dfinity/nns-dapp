@@ -3,6 +3,7 @@ import {
   NEW_CANISTER_MIN_T_CYCLES,
 } from "$lib/constants/canisters.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+import { toastsStore } from "$lib/gix";
 import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
 import * as canistersServices from "$lib/services/canisters.services";
 import {
@@ -19,7 +20,6 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";

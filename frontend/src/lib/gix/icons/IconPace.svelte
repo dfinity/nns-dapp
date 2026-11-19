@@ -1,0 +1,39 @@
+<!-- Source DFINITY Foundation -->
+<script lang="ts">
+  import { DEFAULT_ICON_SIZE } from "$lib/gix/constants/constants";
+
+  interface Props {
+    size?: string | number;
+  }
+
+  let { size = `${DEFAULT_ICON_SIZE}px` }: Props = $props();
+</script>
+
+<svg
+  fill="none"
+  height={size}
+  stroke="currentColor"
+  viewBox="0 0 20 20"
+  width={size}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="1.5"
+  />
+  <path
+    d="M18 10C18 14.4183 14.4183 18 10 18"
+    stroke-dasharray="2 3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="1.5"
+  />
+  <path
+    d="M10 5V10.25L13 12"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="1.5"
+  />
+</svg>

@@ -7,7 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { IconErrorOutline } from "@dfinity/gix-components";
+  import { IconErrorOutline } from "$lib/gix";
   import { isNullish } from "@dfinity/utils";
 
   interface Props {

@@ -5,7 +5,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
-  import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
+  import { Html, KeyValuePair, Modal } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

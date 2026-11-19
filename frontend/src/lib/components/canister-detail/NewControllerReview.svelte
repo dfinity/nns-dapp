@@ -8,7 +8,7 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher, getContext } from "svelte";
 

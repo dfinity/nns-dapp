@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconProposalsPage, PageBanner } from "@dfinity/gix-components";
+  import { IconProposalsPage, PageBanner } from "$lib/gix";
 </script>
 
 <PageBanner testId="actionable-proposals-empty">

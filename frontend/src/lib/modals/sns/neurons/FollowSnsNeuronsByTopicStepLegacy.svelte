@@ -8,7 +8,7 @@
     getSnsTopicInfoKey,
     getLegacyFolloweesByTopics,
   } from "$lib/utils/sns-topics.utils";
-  import { Collapsible, IconErrorOutline } from "@dfinity/gix-components";
+  import { Collapsible, IconErrorOutline } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons//FollowSnsNeuronsByTopicLegacyFollowee.svelte";
@@ -109,7 +109,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../../gix/styles/mixins/fonts";
 
   .header {
     margin: 0 var(--padding-4x);

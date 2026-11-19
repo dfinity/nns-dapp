@@ -2,6 +2,7 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as importedSnsApi from "$lib/api/imported-sns.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { MAX_IMPORTED_SNSES } from "$lib/constants/imported-snses.constants";
+import { toastsStore } from "$lib/gix";
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import {
   getImportedSns,
@@ -29,7 +30,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
 import { setImportedSnses, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,

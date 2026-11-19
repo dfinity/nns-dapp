@@ -2,7 +2,7 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
   export let proposer: SnsGovernanceDid.NeuronId;

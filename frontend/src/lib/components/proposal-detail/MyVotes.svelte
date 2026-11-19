@@ -9,7 +9,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
   import { getVoteDisplay } from "$lib/utils/proposals.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import { Vote } from "@icp-sdk/canisters/nns";
   import { fade } from "svelte/transition";
 

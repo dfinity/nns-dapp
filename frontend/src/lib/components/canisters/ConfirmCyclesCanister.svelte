@@ -4,7 +4,7 @@
   import type { Account } from "$lib/types/account";
   import { formatNumber } from "$lib/utils/format.utils";
   import { convertIcpToTCycles } from "$lib/utils/token.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import { ICPToken, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
@@ -74,7 +74,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .wrapper {
     display: flex;

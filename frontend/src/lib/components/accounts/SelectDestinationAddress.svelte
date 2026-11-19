@@ -13,7 +13,7 @@
     getAccountsByRootCanister,
     invalidAddress,
   } from "$lib/utils/accounts.utils";
-  import { Toggle } from "@dfinity/gix-components";
+  import { Toggle } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
 
@@ -94,7 +94,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .title {
     display: flex;

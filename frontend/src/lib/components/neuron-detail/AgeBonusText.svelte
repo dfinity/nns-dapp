@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
 
   export let ageMultiplier: number;
 </script>

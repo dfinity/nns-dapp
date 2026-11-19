@@ -8,7 +8,7 @@
     isNeuronControlledByHardwareWallet,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
+  import { IconPublicBadge, Tooltip } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;

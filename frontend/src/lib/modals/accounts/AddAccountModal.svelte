@@ -10,11 +10,7 @@
     AddAccountStore,
   } from "$lib/types/add-account.context";
   import { ADD_ACCOUNT_CONTEXT_KEY } from "$lib/types/add-account.context";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { WizardModal, type WizardStep, type WizardSteps } from "$lib/gix";
   import { createEventDispatcher, setContext, tick } from "svelte";
   import { writable } from "svelte/store";
 

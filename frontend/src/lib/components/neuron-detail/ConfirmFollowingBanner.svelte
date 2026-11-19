@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconErrorOutline } from "@dfinity/gix-components";
+  import { IconErrorOutline } from "$lib/gix";
   import Banner from "$lib/components/ui/Banner.svelte";
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";

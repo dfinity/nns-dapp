@@ -3,6 +3,7 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
+import { toastsStore } from "$lib/gix";
 import {
   cancelPollGetOpenTicket,
   initiateSnsSaleParticipation,
@@ -45,7 +46,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   ICPToken,
   TokenAmount,

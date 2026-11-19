@@ -1,8 +1,8 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
+import { toastsStore } from "$lib/gix";
 import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 

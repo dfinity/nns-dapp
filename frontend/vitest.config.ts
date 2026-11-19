@@ -29,13 +29,6 @@ export default defineConfig(
           find: "$mocks",
           replacement: resolve(__dirname, "__mocks__"),
         },
-        {
-          find: "@dfinity/gix-components",
-          replacement: resolve(
-            __dirname,
-            "node_modules/@dfinity/gix-components"
-          ),
-        },
         // vitest issue https://github.com/vitest-dev/vitest/issues/2834#issuecomment-1425371719
         {
           find: /svelte\/ssr.mjs/,

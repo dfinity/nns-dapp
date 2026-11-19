@@ -10,6 +10,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { toastsStore } from "$lib/gix";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { loadedImportedSnsesStore } from "$lib/stores/imported-snses.store";
@@ -45,7 +46,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { nonNullish } from "@dfinity/utils";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";

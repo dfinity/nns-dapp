@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
+  import { IconThumbDown, IconThumbUp } from "$lib/gix";
   import { Vote } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 

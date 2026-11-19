@@ -16,7 +16,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { Html, Modal, Spinner, busy } from "@dfinity/gix-components";
+  import { Html, Modal, Spinner, busy } from "$lib/gix";
   import {
     Topic,
     type NeuronId,

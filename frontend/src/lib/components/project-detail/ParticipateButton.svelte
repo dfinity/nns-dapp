@@ -16,7 +16,7 @@
     participateButtonStatus,
     type ParticipationButtonStatus,
   } from "$lib/utils/projects.utils";
-  import { BottomSheet, Tooltip } from "@dfinity/gix-components";
+  import { BottomSheet, Tooltip } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
   import { nonNullish } from "@dfinity/utils";
@@ -119,8 +119,8 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/toolbar";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/toolbar";
 
   .participate {
     display: flex;

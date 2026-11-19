@@ -7,7 +7,7 @@
   import type { NnsNeuronModalVotingHistory } from "$lib/types/nns-neuron-detail.modal";
   import { emit } from "$lib/utils/events.utils";
   import { getTopicTitle, type FolloweesNeuron } from "$lib/utils/neuron.utils";
-  import { Tag } from "@dfinity/gix-components";
+  import { Tag } from "$lib/gix";
   import type { NeuronInfo, Topic } from "@icp-sdk/canisters/nns";
 
   type Props = {

@@ -16,7 +16,7 @@
   import { importedSnsRootCanisterIdsStore } from "$lib/stores/sns-aggregator.store";
   import type { Universe } from "$lib/types/universe";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
-  import { Card, Tag } from "@dfinity/gix-components";
+  import { Card, Tag } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
@@ -111,9 +111,9 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/text";
 
   .container {
     display: flex;

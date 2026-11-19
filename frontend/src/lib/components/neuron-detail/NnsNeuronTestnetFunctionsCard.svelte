@@ -2,7 +2,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { unlockNeuron } from "$lib/services/nns-neurons-dev.services";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;

@@ -10,6 +10,7 @@ import {
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { busyStore, toastsStore } from "$lib/gix";
 import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -35,7 +36,6 @@ import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";

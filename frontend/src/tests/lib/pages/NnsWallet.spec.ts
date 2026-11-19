@@ -12,6 +12,7 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { toastsStore } from "$lib/gix";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { canistersStore } from "$lib/stores/canisters.store";
@@ -53,7 +54,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import { memoToNeuronAccountIdentifier } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";

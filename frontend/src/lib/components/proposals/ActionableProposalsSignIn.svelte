@@ -1,7 +1,7 @@
 <script lang="ts">
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconProposalsPage, PageBanner } from "@dfinity/gix-components";
+  import { IconProposalsPage, PageBanner } from "$lib/gix";
 
   // TODO: to be removed.
 </script>

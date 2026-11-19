@@ -1,7 +1,7 @@
 <script lang="ts">
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
   import Title from "$lib/components/header/Title.svelte";
-  import { Content } from "@dfinity/gix-components";
+  import { Content } from "$lib/gix";
   import type { Snippet } from "svelte";
 
   type Props = {
@@ -23,7 +23,7 @@
 </Content>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/layout";
+  @use "../../gix/styles/mixins/layout";
 
   :global(.content .toolbar .back) {
     background-color: var(--sidebar-button-background);

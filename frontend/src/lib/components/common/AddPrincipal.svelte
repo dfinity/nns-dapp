@@ -1,7 +1,7 @@
 <script lang="ts">
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher } from "svelte";
 

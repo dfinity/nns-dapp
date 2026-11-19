@@ -8,7 +8,7 @@
     NewTransaction,
     TransactionNetwork,
   } from "$lib/types/transaction";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import type { Token, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher, type Snippet } from "svelte";
 

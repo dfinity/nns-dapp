@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Checkbox, Tooltip } from "@dfinity/gix-components";
+  import { Checkbox, Tooltip } from "$lib/gix";
 
   type Props = {
     hasAutoStakeOn: boolean;

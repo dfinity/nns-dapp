@@ -23,7 +23,6 @@
     "vitest:coverage": "vitest run --coverage --config ./vitest.config.ts",
     "test-e2e": "tsc --noEmit -p src/tests/e2e/tsconfig.json && playwright test",
     "update:agent": "npm rm @icp-sdk/core @icp-sdk/auth @icp-sdk/canisters @dfinity/utils && npm i @icp-sdk/core @icp-sdk/auth @icp-sdk/canisters@next @dfinity/utils@next && ../scripts/revert-next.sh",
-    "update:gix": "npm update @dfinity/gix-components",
     "upgrade:next": "npm rm @icp-sdk/canisters @dfinity/utils && npm i @icp-sdk/canisters@next @dfinity/utils@next && ../scripts/revert-next.sh"
   },
   "engines": {
@@ -72,7 +71,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@dfinity/gix-components": "^10.0.5",
     "@dfinity/utils": "next",
     "@icp-sdk/auth": "^5.0.0",
     "@icp-sdk/canisters": "3.5.2-next-2026-04-21.1",
@@ -82,7 +80,12 @@
     "@zondax/ledger-icp": "^4.0.0",
     "@zondax/ledger-js": "^2.1.0",
     "buffer": "^6.0.3",
+    "decimal.js": "^10.6.0",
+    "dompurify": "^3.4.18",
+    "html5-qrcode": "^2.3.8",
+    "marked": "^18.2.1",
     "plausible-tracker": "0.3.9",
+    "qr-creator": "^1.0.0",
     "rxjs": "7.8.2"
   },
   "overrides": {

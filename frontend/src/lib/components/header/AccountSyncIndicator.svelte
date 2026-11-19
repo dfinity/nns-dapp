@@ -3,7 +3,7 @@
   import { syncOverallStatusStore } from "$lib/derived/sync.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { SyncState } from "$lib/types/sync";
-  import { IconError, IconSync, Popover } from "@dfinity/gix-components";
+  import { IconError, IconSync, Popover } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import type { Component } from "svelte";
 
@@ -82,7 +82,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/header";
+  @use "../../gix/styles/mixins/header";
 
   button {
     @include header.button(--primary-tint);

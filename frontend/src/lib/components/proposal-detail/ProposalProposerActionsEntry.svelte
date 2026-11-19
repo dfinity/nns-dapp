@@ -41,8 +41,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/text";
 
   .header-text {
     display: flex;

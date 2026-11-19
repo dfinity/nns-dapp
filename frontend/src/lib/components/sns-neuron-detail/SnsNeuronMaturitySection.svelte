@@ -4,7 +4,7 @@
   import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
-  import { Section } from "@dfinity/gix-components";
+  import { Section } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
 

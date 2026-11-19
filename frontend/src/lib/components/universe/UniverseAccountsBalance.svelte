@@ -3,7 +3,7 @@
   import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
   import { nonNullish, TokenAmountV2, type Token } from "@dfinity/utils";
 
   export let universe: Universe;

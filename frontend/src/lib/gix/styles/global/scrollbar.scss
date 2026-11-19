@@ -1,0 +1,21 @@
+@use "../mixins/media";
+
+// Rely on the default scrollbar styles for mobile devices
+@include media.min-width(medium) {
+  ::-webkit-scrollbar {
+    background: var(--scrollbar-thumb-background);
+    width: var(--padding-2x);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-color);
+    border: calc(var(--padding) * 2 / 3) var(--scrollbar-thumb-background) solid;
+    border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: var(--scrollbar-thumb-color);
+  }
+}

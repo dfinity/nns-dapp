@@ -16,13 +16,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import {
-    Html,
-    IconQRCode,
-    QRCode,
-    SkeletonText,
-    Spinner,
-  } from "@dfinity/gix-components";
+  import { Html, IconQRCode, QRCode, SkeletonText, Spinner } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
@@ -153,7 +147,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   div {
     position: relative;

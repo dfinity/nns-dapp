@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
-  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
+  import { IconThumbDown, IconThumbUp } from "$lib/gix";
 
   type Props = {
     yes: number;
@@ -54,8 +54,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   .votes-info {
     display: grid;

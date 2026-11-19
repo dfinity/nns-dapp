@@ -13,7 +13,7 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import {
     ICPToken,

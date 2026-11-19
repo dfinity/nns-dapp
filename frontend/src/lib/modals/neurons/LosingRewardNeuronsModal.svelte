@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal } from "$lib/gix";
   import { createEventDispatcher, onMount } from "svelte";
   import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -86,7 +86,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .description {
     margin: 0 0 var(--padding-3x);

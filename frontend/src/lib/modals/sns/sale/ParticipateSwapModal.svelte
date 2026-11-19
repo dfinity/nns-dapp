@@ -41,7 +41,7 @@
     getCommitmentE8s,
     hasOpenTicketInProcess,
   } from "$lib/utils/sns.utils";
-  import type { WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "$lib/gix";
   import { ICPToken, nonNullish, TokenAmount } from "@dfinity/utils";
   import {
     createEventDispatcher,

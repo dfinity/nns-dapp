@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    Collapsible,
-    IconExpandCircleDown,
-    stopPropagation,
-  } from "@dfinity/gix-components";
+  import { Collapsible, IconExpandCircleDown, stopPropagation } from "$lib/gix";
   import { fade } from "svelte/transition";
   import type { Snippet } from "svelte";
 
@@ -55,7 +51,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../gix/styles/mixins/media";
 
   .container {
     padding-bottom: var(--padding-2x);

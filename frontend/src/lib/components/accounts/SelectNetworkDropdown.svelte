@@ -9,7 +9,7 @@
   } from "$lib/utils/accounts.utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import { BtcNetwork } from "@icp-sdk/canisters/ckbtc";
-  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
+  import { Dropdown, DropdownItem } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let universeId: UniverseCanisterId;

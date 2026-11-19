@@ -21,12 +21,7 @@
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
   import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
-  import {
-    Html,
-    KeyValuePair,
-    KeyValuePairInfo,
-    Section,
-  } from "@dfinity/gix-components";
+  import { Html, KeyValuePair, KeyValuePairInfo, Section } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 

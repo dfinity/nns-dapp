@@ -14,7 +14,7 @@
     type FolloweesNeuron,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import { Card, IconRight } from "@dfinity/gix-components";
+  import { Card, IconRight } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 

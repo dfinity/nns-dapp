@@ -16,7 +16,7 @@
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo, Section } from "$lib/gix";
   import { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {

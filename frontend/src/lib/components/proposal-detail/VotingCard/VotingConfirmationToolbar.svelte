@@ -6,7 +6,7 @@
     type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
-  import { Spinner, busy } from "@dfinity/gix-components";
+  import { Spinner, busy } from "$lib/gix";
   import { Vote } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
@@ -83,7 +83,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../gix/styles/mixins/media";
 
   [role="toolbar"] {
     display: flex;

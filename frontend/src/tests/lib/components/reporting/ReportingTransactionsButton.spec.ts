@@ -5,6 +5,7 @@ import * as icrcLedger from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { busyStore } from "$lib/gix";
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
@@ -33,7 +34,6 @@ import {
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { busyStore } from "@dfinity/gix-components";
 import { nonNullish } from "@dfinity/utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";

@@ -19,7 +19,7 @@
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
-  import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
+  import { IconNeuronsPage, Spinner } from "$lib/gix";
   import { onMount } from "svelte";
 
   let isLoading = false;

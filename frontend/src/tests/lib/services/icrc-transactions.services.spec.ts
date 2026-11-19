@@ -1,5 +1,6 @@
 import * as indexApi from "$lib/api/icrc-index.api";
 import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { toastsStore } from "$lib/gix";
 import {
   loadIcrcAccountNextTransactions,
   loadIcrcAccountTransactions,
@@ -12,7 +13,6 @@ import {
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   AgentError,
   ErrorKindEnum,

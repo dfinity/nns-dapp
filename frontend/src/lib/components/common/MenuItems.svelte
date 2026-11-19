@@ -25,7 +25,7 @@
     ThemeToggleButton,
     layoutMenuOpen,
     menuCollapsed,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import type { Component } from "svelte";
   import { cubicIn, cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
@@ -132,7 +132,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
   .menu-container {
     display: flex;
     flex-direction: column;

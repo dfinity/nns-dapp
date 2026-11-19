@@ -6,7 +6,7 @@
     formatMaturity,
     totalMaturityDisbursementsInProgress,
   } from "$lib/utils/neuron.utils";
-  import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
+  import { Html, KeyValuePair, Modal } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken } from "@dfinity/utils";
 

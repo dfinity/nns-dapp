@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Toolbar } from "@dfinity/gix-components";
+  import { Toolbar } from "$lib/gix";
 
   export let testId: string | undefined = undefined;
   export let columns = 2;
@@ -18,8 +18,8 @@
 </footer>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/text";
 
   footer {
     height: var(--footer-height);

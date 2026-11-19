@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   type Props = {

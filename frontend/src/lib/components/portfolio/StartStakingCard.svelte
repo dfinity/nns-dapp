@@ -4,7 +4,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight } from "$lib/gix";
 
   const testId = "start-staking-card";
   const href = AppPath.Staking;
@@ -41,7 +41,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   a {
     text-decoration: none;

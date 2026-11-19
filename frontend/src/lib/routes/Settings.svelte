@@ -3,11 +3,7 @@
   import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
-  import {
-    Island,
-    KeyValuePairInfo,
-    SkeletonText,
-  } from "@dfinity/gix-components";
+  import { Island, KeyValuePairInfo, SkeletonText } from "$lib/gix";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
   let principalText = "";

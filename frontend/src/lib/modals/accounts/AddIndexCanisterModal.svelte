@@ -5,7 +5,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

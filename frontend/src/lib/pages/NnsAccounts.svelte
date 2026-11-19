@@ -14,7 +14,7 @@
   import { findAccount } from "$lib/utils/accounts.utils";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { IconAdd, IconHeldTokens } from "@dfinity/gix-components";
+  import { IconAdd, IconHeldTokens } from "$lib/gix";
   import { isNullish } from "@dfinity/utils";
   import { onDestroy, onMount } from "svelte";
 
@@ -108,7 +108,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "../gix/styles/mixins/interaction";
 
   .wrapper {
     display: flex;

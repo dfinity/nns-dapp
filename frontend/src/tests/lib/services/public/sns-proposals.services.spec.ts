@@ -1,5 +1,6 @@
 import * as api from "$lib/api/sns-governance.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
+import { toastsStore } from "$lib/gix";
 import {
   getSnsProposalById,
   loadSnsProposals,
@@ -29,7 +30,6 @@ import {
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,

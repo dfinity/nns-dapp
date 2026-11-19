@@ -17,12 +17,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import {
-    Modal,
-    Segment,
-    SegmentButton,
-    Spinner,
-  } from "@dfinity/gix-components";
+  import { Modal, Segment, SegmentButton, Spinner } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
@@ -187,7 +182,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .receive {
     display: flex;

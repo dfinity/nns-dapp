@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Html, KeyValuePair } from "@dfinity/gix-components";
+  import { Html, KeyValuePair } from "$lib/gix";
   import { NeuronState } from "@icp-sdk/canisters/nns";
   import { secondsToDuration } from "@dfinity/utils";
 

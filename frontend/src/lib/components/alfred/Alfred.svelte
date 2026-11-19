@@ -8,7 +8,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
-  import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
+  import { Backdrop, Input, themeStore } from "$lib/gix";
   import { debounce, isNullish, nonNullish } from "@dfinity/utils";
   import { tick, type Component } from "svelte";
   import { fade } from "svelte/transition";
@@ -261,11 +261,11 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/overlay";
-  @use "@dfinity/gix-components/dist/styles/mixins/display";
-  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/overlay";
+  @use "../../gix/styles/mixins/display";
+  @use "../../gix/styles/mixins/interaction";
+  @use "../../gix/styles/mixins/media";
 
   .overlay {
     position: fixed;

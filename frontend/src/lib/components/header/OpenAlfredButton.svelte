@@ -1,7 +1,7 @@
 <script lang="ts">
   import { alfredVisibleStore } from "$lib/stores/alfred.store";
   import { i18n } from "$lib/stores/i18n";
-  import { IconSearch } from "@dfinity/gix-components";
+  import { IconSearch } from "$lib/gix";
 
   // The panel covers the header with a backdrop while it is open, so this
   // button can only ever open it.
@@ -18,7 +18,7 @@
 </button>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/header";
+  @use "../../gix/styles/mixins/header";
 
   .toggle {
     @include header.button(--primary-tint);

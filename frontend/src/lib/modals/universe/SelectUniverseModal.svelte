@@ -6,7 +6,7 @@
     ACTIONABLE_PROPOSALS_URL,
     buildSwitchUniverseUrl,
   } from "$lib/utils/navigation.utils";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();

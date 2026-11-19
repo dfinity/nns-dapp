@@ -10,11 +10,7 @@
     ResponsiveTableOrder,
   } from "$lib/types/responsive-table";
   import { selectPrimaryOrder } from "$lib/utils/responsive-table.utils";
-  import {
-    IconSouth,
-    ChipGroup,
-    type ChipGroupItem,
-  } from "@dfinity/gix-components";
+  import { IconSouth, ChipGroup, type ChipGroupItem } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   export let columns: ResponsiveTableColumn<RowDataType>[];
@@ -62,7 +58,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .responsive-table-sort-control {
     display: flex;

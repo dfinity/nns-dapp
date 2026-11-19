@@ -7,7 +7,7 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { keyOf } from "$lib/utils/utils";
-  import { Tag } from "@dfinity/gix-components";
+  import { Tag } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { getContext } from "svelte";

@@ -1,11 +1,7 @@
 <script lang="ts">
   import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { WizardModal, type WizardStep, type WizardSteps } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   let steps: WizardSteps = [

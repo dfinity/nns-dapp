@@ -2,7 +2,7 @@
   import { ActionType } from "$lib/types/actions";
   import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
-  import { IconQRCodeScanner } from "@dfinity/gix-components";
+  import { IconQRCodeScanner } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   // The UserTokenFailed type was added to unify the action types. However, this action only works with UserTokenData.

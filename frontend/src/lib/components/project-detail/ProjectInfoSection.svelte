@@ -7,7 +7,7 @@
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 

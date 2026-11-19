@@ -2,7 +2,7 @@
   import EmptyCards from "$lib/components/common/EmptyCards.svelte";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconSettingsPage, PageBanner } from "@dfinity/gix-components";
+  import { IconSettingsPage, PageBanner } from "$lib/gix";
 </script>
 
 <main>

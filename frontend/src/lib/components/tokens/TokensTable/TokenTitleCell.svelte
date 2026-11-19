@@ -14,7 +14,7 @@
     isIndexCanisterOfTokenUninstalled,
     isUserTokenFailed,
   } from "$lib/utils/user-token.utils";
-  import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
+  import { IconError, Tag, Tooltip } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
@@ -70,8 +70,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../../gix/styles/mixins/media";
+  @use "../../../gix/styles/mixins/text";
 
   .title,
   .subtitle {

@@ -2,11 +2,7 @@
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { QrResponse, QrResult } from "$lib/types/qr-wizard-modal";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { WizardModal, type WizardStep, type WizardSteps } from "$lib/gix";
   import { decodePayment } from "@icp-sdk/canisters/ledger/icrc";
   import {
     assertNonNullish,

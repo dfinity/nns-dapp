@@ -3,6 +3,7 @@ import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { toastsStore } from "$lib/gix";
 import * as authServices from "$lib/services/auth.services";
 import {
   addController,
@@ -38,7 +39,6 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/svelte";

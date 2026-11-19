@@ -6,7 +6,7 @@
     convertIcpToTCycles,
     convertTCyclesToIcpNumber,
   } from "$lib/utils/token.utils";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher, onMount } from "svelte";
 
@@ -131,7 +131,7 @@
 </form>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .inputs {
     display: grid;

@@ -20,7 +20,7 @@
     sortTableData,
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconMenu, IconSouth, Popover } from "@dfinity/gix-components";
+  import { IconMenu, IconSouth, Popover } from "$lib/gix";
   import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
@@ -244,8 +244,8 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/effect";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/effect";
+  @use "../../gix/styles/mixins/media";
   @use "../../themes/mixins/grid-table";
 
   div[role="table"] {

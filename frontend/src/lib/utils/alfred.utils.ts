@@ -1,16 +1,6 @@
 import BuildIcrcAccountUtil from "$lib/components/alfred/BuildIcrcAccountUtil.svelte";
 import ImportSnsUtil from "$lib/components/alfred/ImportSnsUtil.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
-import { login, logout } from "$lib/services/auth.services";
-import {
-  balancePrivacyOptionStore,
-  type BalancePrivacyOptionData,
-} from "$lib/stores/balance-privacy-option.store";
-import { i18n } from "$lib/stores/i18n";
-import {
-  transactionMemoOptionStore,
-  type TransactionMemoOption,
-} from "$lib/stores/transaction-memo-option.store";
 import {
   IconAdd,
   IconCopy,
@@ -33,7 +23,17 @@ import {
   Theme,
   themeStore,
   type ThemeStoreData,
-} from "@dfinity/gix-components";
+} from "$lib/gix";
+import { login, logout } from "$lib/services/auth.services";
+import {
+  balancePrivacyOptionStore,
+  type BalancePrivacyOptionData,
+} from "$lib/stores/balance-privacy-option.store";
+import { i18n } from "$lib/stores/i18n";
+import {
+  transactionMemoOptionStore,
+  type TransactionMemoOption,
+} from "$lib/stores/transaction-memo-option.store";
 import type { Component } from "svelte";
 import { get } from "svelte/store";
 

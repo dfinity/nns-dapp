@@ -16,6 +16,7 @@ import {
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
+import type { WizardStep } from "$lib/gix";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -103,7 +104,6 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { WizardStep } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import {
   NeuronState,

@@ -24,7 +24,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../../gix/styles/mixins/text";
 
   .title-wrapper {
     display: flex;

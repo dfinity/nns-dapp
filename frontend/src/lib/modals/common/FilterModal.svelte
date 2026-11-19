@@ -8,7 +8,7 @@
     type NnsProposalFilterCategory,
     type SnsProposalFilterCategory,
   } from "$lib/types/filters";
-  import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
+  import { Checkbox, Modal, Spinner } from "$lib/gix";
   import { Topic } from "@icp-sdk/canisters/nns";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

@@ -5,7 +5,7 @@
     TransactionInit,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import type { WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
 

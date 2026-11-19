@@ -15,7 +15,7 @@
     ValidateAmountFn,
   } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
