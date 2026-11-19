@@ -1,7 +1,7 @@
 import Menu from "$lib/gix/components/Menu.svelte";
 import { layoutMenuOpen } from "$lib/gix/stores/layout.store";
+import MenuTest from "$tests/lib/gix/components/MenuTest.svelte";
 import { render } from "@testing-library/svelte";
-import MenuTest from "./MenuTest.svelte";
 
 describe("Menu", () => {
   it("should be displayed open", () => {

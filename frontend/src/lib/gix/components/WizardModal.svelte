@@ -4,7 +4,7 @@
 
 <script generics="T extends string" lang="ts">
   import type { Snippet } from "svelte";
-  import WizardTransition from "./WizardTransition.svelte";
+  import WizardTransition from "$lib/gix/components/WizardTransition.svelte";
   import Modal from "$lib/gix/components/Modal.svelte";
   import { WizardStepsState } from "$lib/gix/stores/wizard.state";
   import type { WizardStep, WizardSteps } from "$lib/gix/types/wizard";

@@ -1,7 +1,7 @@
+import DropdownTest from "$tests/lib/gix/components/DropdownTest.svelte";
 import { clickByTestId } from "$tests/lib/gix/test-utils/utils.test-utils";
 import { assertNonNullish } from "@dfinity/utils";
 import { fireEvent, render } from "@testing-library/svelte";
-import DropdownTest from "./DropdownTest.svelte";
 
 describe("Dropdown", () => {
   const options = [

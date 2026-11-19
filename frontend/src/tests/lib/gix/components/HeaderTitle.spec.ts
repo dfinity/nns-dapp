@@ -1,6 +1,6 @@
 import HeaderTitle from "$lib/gix/components/HeaderTitle.svelte";
+import ComponentTest from "$tests/lib/gix/components/ComponentTest.svelte";
 import { render } from "@testing-library/svelte";
-import ComponentTest from "./ComponentTest.svelte";
 
 describe("HeaderTitle", () => {
   it("should render a slotted content", () => {

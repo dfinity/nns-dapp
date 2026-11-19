@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import TestIdWrapper from "./TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/gix/components/TestIdWrapper.svelte";
   import IconExpandMore from "$lib/gix/icons/IconExpandMore.svelte";
   import { i18n } from "$lib/gix/stores/i18n";
   import type { CollapsibleProps } from "$lib/gix/types/collapsible";

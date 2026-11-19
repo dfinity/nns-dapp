@@ -1,6 +1,6 @@
 import InputRange from "$lib/gix/components/InputRange.svelte";
+import InputRangeTest from "$tests/lib/gix/components/InputRangeTest.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import InputRangeTest from "./InputRangeTest.svelte";
 
 describe("InputRange", () => {
   const min = 0;

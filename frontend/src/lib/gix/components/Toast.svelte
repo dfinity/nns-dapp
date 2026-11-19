@@ -2,8 +2,8 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Component } from "svelte";
   import { fade, fly } from "svelte/transition";
-  import Html from "./Html.svelte";
-  import Spinner from "./Spinner.svelte";
+  import Html from "$lib/gix/components/Html.svelte";
+  import Spinner from "$lib/gix/components/Spinner.svelte";
   import { DEFAULT_ICON_SIZE } from "$lib/gix/constants/constants";
   import IconCheckCircle from "$lib/gix/icons/IconCheckCircle.svelte";
   import IconClose from "$lib/gix/icons/IconClose.svelte";

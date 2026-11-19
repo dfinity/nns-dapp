@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { ChipGroupItem } from "../types/chip-group";
-  import Chip from "./Chip.svelte";
+  import type { ChipGroupItem } from "$lib/gix/types/chip-group";
+  import Chip from "$lib/gix/components/Chip.svelte";
 
   interface Props {
     chips?: ChipGroupItem[];

@@ -1,11 +1,11 @@
 import InfiniteScroll from "$lib/gix/components/InfiniteScroll.svelte";
-import { render } from "@testing-library/svelte";
+import InfiniteScrollTest from "$tests/lib/gix/components/InfiniteScrollTest.svelte";
 import {
   IntersectionObserverActive,
   IntersectionObserverPassive,
-} from "../mocks/infinitescroll.mock";
-import { mockSnippet } from "../mocks/snippet.mocks";
-import InfiniteScrollTest from "./InfiniteScrollTest.svelte";
+} from "$tests/lib/gix/mocks/infinitescroll.mock";
+import { mockSnippet } from "$tests/lib/gix/mocks/snippet.mocks";
+import { render } from "@testing-library/svelte";
 
 describe("InfiniteScroll", () => {
   beforeAll(() => {

@@ -1,5 +1,5 @@
+import TestIdWrapper from "$tests/lib/gix/components/TestIdWrapperTest.svelte";
 import { render } from "@testing-library/svelte";
-import TestIdWrapper from "./TestIdWrapperTest.svelte";
 
 describe("TestIdWrapper", () => {
   const testId = "test-id";

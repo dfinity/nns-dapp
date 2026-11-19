@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Toggle from "./Toggle.svelte";
+  import Toggle from "$lib/gix/components/Toggle.svelte";
   import IconDarkMode from "$lib/gix/icons/IconDarkMode.svelte";
   import IconLightMode from "$lib/gix/icons/IconLightMode.svelte";
   import { i18n } from "$lib/gix/stores/i18n";

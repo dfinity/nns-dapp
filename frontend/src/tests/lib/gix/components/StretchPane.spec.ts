@@ -1,5 +1,5 @@
+import StretchPaneTest from "$tests/lib/gix/components/StretchPaneTest.svelte";
 import { render } from "@testing-library/svelte";
-import StretchPaneTest from "./StretchPaneTest.svelte";
 
 describe("StretchPane", () => {
   it("should render slotted elements", () => {

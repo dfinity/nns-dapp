@@ -2,7 +2,7 @@
 <script lang="ts">
   import { quintOut } from "svelte/easing";
   import { fade, scale } from "svelte/transition";
-  import Backdrop from "./Backdrop.svelte";
+  import Backdrop from "$lib/gix/components/Backdrop.svelte";
   import IconClose from "$lib/gix/icons/IconClose.svelte";
   import { i18n } from "$lib/gix/stores/i18n";
   import type { PopoverDirection } from "$lib/gix/types/popover";

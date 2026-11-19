@@ -1,9 +1,9 @@
 import ThemeToggle from "$lib/gix/components/ThemeToggle.svelte";
 import { themeStore } from "$lib/gix/stores/theme.store";
 import { Theme } from "$lib/gix/types/theme";
+import en from "$tests/lib/gix/mocks/i18n.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import en from "../mocks/i18n.mock";
 
 describe("ThemeToggle", () => {
   it("should render a toggle", () => {

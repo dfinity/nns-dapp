@@ -1,8 +1,8 @@
 import { toastsStore } from "$lib/gix/stores/toasts.store";
+import ToastsTest from "$tests/lib/gix/components/ToastsTest.svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import ToastsTest from "./ToastsTest.svelte";
 
 describe("Toasts", () => {
   afterEach(() => {

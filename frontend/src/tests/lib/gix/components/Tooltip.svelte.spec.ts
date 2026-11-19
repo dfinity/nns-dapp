@@ -1,7 +1,7 @@
+import TooltipListTest from "$tests/lib/gix/components/TooltipListTest.svelte";
+import TooltipTest from "$tests/lib/gix/components/TooltipTest.svelte";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import TooltipListTest from "./TooltipListTest.svelte";
-import TooltipTest from "./TooltipTest.svelte";
 
 describe("Tooltip", () => {
   const id = "tid";

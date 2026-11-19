@@ -1,10 +1,10 @@
+import SegmentTest from "$tests/lib/gix/components/SegmentTest.svelte";
 import {
   fireEvent,
   render,
   waitFor,
   type RenderResult,
 } from "@testing-library/svelte";
-import SegmentTest from "./SegmentTest.svelte";
 
 describe("Segment", () => {
   const firstSegmentId = Symbol();

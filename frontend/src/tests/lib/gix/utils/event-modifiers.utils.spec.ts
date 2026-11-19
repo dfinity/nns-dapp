@@ -2,9 +2,9 @@ import {
   preventDefault,
   stopPropagation,
 } from "$lib/gix/utils/event-modifiers.utils";
+import PreventDefaultTest from "$tests/lib/gix/utils/PreventDefaultTest.svelte";
+import StopPropagationTest from "$tests/lib/gix/utils/StopPropagationTest.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import PreventDefaultTest from "./PreventDefaultTest.svelte";
-import StopPropagationTest from "./StopPropagationTest.svelte";
 
 describe("event-modifiers-utils", () => {
   describe("stopPropagation", () => {

@@ -1,6 +1,6 @@
+import KeyValuePairInfoTest from "$tests/lib/gix/components/KeyValuePairInfoTest.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import KeyValuePairInfoTest from "./KeyValuePairInfoTest.svelte";
 
 describe("KeyValuePairInfo", () => {
   const key = "test-key";

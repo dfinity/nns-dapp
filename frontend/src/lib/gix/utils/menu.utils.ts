@@ -1,6 +1,6 @@
 import { Menu } from "$lib/gix/types/menu";
+import { enumFromStringExists } from "$lib/gix/utils/enum.utils";
 import { isNode } from "$lib/gix/utils/env.utils";
-import { enumFromStringExists } from "./enum.utils";
 
 export const MENU_ATTRIBUTE = "menu";
 export const LOCALSTORAGE_MENU_KEY = "nnsMenu";

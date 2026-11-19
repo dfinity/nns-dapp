@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Toast from "./Toast.svelte";
+  import Toast from "$lib/gix/components/Toast.svelte";
   import { layoutBottomOffset } from "$lib/gix/stores/layout.store";
   import { toastsStore } from "$lib/gix/stores/toasts.store";
   import type { ToastPosition } from "$lib/gix/types/toast";

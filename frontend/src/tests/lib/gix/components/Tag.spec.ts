@@ -1,7 +1,7 @@
 import Tag from "$lib/gix/components/Tag.svelte";
+import TagTest from "$tests/lib/gix/components/TagTest.svelte";
+import { mockSnippet } from "$tests/lib/gix/mocks/snippet.mocks";
 import { render } from "@testing-library/svelte";
-import { mockSnippet } from "../mocks/snippet.mocks";
-import TagTest from "./TagTest.svelte";
 
 describe("Tag", () => {
   it("should render a span element by default", () => {

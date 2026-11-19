@@ -1,7 +1,7 @@
 import { Theme } from "$lib/gix/types/theme";
+import { enumFromStringExists } from "$lib/gix/utils/enum.utils";
 import { isNode } from "$lib/gix/utils/env.utils";
 import { notEmptyString } from "@dfinity/utils";
-import { enumFromStringExists } from "./enum.utils";
 
 export const THEME_ATTRIBUTE = "theme";
 export const LOCALSTORAGE_THEME_KEY = "nnsTheme";

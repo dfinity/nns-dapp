@@ -1,6 +1,6 @@
 import { layoutMenuOpen } from "$lib/gix/stores/layout.store";
+import ContentTest from "$tests/lib/gix/components/ContentTest.svelte";
 import { render } from "@testing-library/svelte";
-import ContentTest from "./ContentTest.svelte";
 
 describe("Content", () => {
   it("should render slotted elements", () => {

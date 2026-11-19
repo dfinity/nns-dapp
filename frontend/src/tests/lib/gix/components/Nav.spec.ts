@@ -1,5 +1,5 @@
+import NavTest from "$tests/lib/gix/components/NavTest.svelte";
 import { render } from "@testing-library/svelte";
-import NavTest from "./NavTest.svelte";
 
 describe("Nav", () => {
   it("should render slotted elements", () => {

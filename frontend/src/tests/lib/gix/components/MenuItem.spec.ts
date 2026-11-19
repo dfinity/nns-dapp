@@ -1,6 +1,6 @@
 import MenuItem from "$lib/gix/components/MenuItem.svelte";
+import MenuItemTest from "$tests/lib/gix/components/MenuItemTest.svelte";
 import { render } from "@testing-library/svelte";
-import MenuItemTest from "./MenuItemTest.svelte";
 
 describe("Menuitem", () => {
   const props = {

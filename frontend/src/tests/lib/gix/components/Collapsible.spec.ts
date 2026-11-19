@@ -1,9 +1,9 @@
 import type { CollapsibleProps, OnToggle } from "$lib/gix/types/collapsible";
+import CollapsibleBindTest from "$tests/lib/gix/components/CollapsibleBindTest.svelte";
+import CollapsibleTest from "$tests/lib/gix/components/CollapsibleTest.svelte";
 import { render } from "$tests/lib/gix/test-utils/render.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { tick } from "svelte";
-import CollapsibleBindTest from "./CollapsibleBindTest.svelte";
-import CollapsibleTest from "./CollapsibleTest.svelte";
 
 // props
 const props = (props: Omit<CollapsibleProps, "header" | "children">) => ({

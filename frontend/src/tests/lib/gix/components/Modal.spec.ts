@@ -1,11 +1,11 @@
 import { startBusy } from "$lib/gix";
 import Modal from "$lib/gix/components/Modal.svelte";
 import type { ModalProps } from "$lib/gix/types/modal";
+import ModalPropagationTest from "$tests/lib/gix/components/ModalPropagationTest.svelte";
+import ModalTest from "$tests/lib/gix/components/ModalTest.svelte";
+import { mockSnippet } from "$tests/lib/gix/mocks/snippet.mocks";
 import { render } from "$tests/lib/gix/test-utils/render.test-utils";
 import { fireEvent } from "@testing-library/svelte";
-import { mockSnippet } from "../mocks/snippet.mocks";
-import ModalPropagationTest from "./ModalPropagationTest.svelte";
-import ModalTest from "./ModalTest.svelte";
 
 describe("Modal", () => {
   const props: ModalProps = { visible: true, children: mockSnippet };

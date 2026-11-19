@@ -1,11 +1,11 @@
 import Input from "$lib/gix/components/Input.svelte";
+import InputCurrencyTest from "$tests/lib/gix/components/InputCurrencyTest.svelte";
+import InputElementTest from "$tests/lib/gix/components/InputElementTest.svelte";
+import InputTest from "$tests/lib/gix/components/InputTest.svelte";
+import InputValueTest from "$tests/lib/gix/components/InputValueTest.svelte";
 import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import InputCurrencyTest from "./InputCurrencyTest.svelte";
-import InputElementTest from "./InputElementTest.svelte";
-import InputTest from "./InputTest.svelte";
-import InputValueTest from "./InputValueTest.svelte";
 
 describe("Input", () => {
   type InputType = "icp" | "number" | "text" | "currency";

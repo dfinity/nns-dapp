@@ -1,5 +1,5 @@
+import SplitBlockTest from "$tests/lib/gix/components/SplitBlockTest.svelte";
 import { render } from "@testing-library/svelte";
-import SplitBlockTest from "./SplitBlockTest.svelte";
 
 describe("SplitBlock", () => {
   it("should render slotted elements", () => {

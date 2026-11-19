@@ -1,7 +1,6 @@
 <script lang="ts">
-  import Input, {
-    type Props as InputProps,
-  } from "$lib/gix/components/Input.svelte";
+  import Input from "$lib/gix/components/Input.svelte";
+  import type { InputProps } from "$lib/gix/types/input";
 
   // eslint-disable-next-line svelte/valid-compile
   let props: InputProps = $props();

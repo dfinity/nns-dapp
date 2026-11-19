@@ -1,7 +1,7 @@
 import ProgressBar from "$lib/gix/components/ProgressBar.svelte";
+import ProgressBarTest from "$tests/lib/gix/components/ProgressBarTest.svelte";
 import { assertNonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import ProgressBarTest from "./ProgressBarTest.svelte";
 
 describe("ProgressBar", () => {
   it("should render a progress element with value", () => {

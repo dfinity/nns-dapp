@@ -1,7 +1,7 @@
 import BottomSheet from "$lib/gix/components/BottomSheet.svelte";
+import BottomSheetTest from "$tests/lib/gix/components/BottomSheetTest.svelte";
+import ComponentTest from "$tests/lib/gix/components/ComponentTest.svelte";
 import { render } from "@testing-library/svelte";
-import BottomSheetTest from "./BottomSheetTest.svelte";
-import ComponentTest from "./ComponentTest.svelte";
 
 describe("BottomSheet", () => {
   it("should render a slotted content", () => {

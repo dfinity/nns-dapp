@@ -1,5 +1,5 @@
+import ToolbarTest from "$tests/lib/gix/components/ToolbarTest.svelte";
 import { render } from "@testing-library/svelte";
-import ToolbarTest from "./ToolbarTest.svelte";
 
 describe("Toolbar-ui", () => {
   it("should render slots", () => {

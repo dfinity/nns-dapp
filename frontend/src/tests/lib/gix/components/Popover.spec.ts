@@ -1,6 +1,6 @@
 import Popover from "$lib/gix/components/Popover.svelte";
+import PopoverTest from "$tests/lib/gix/components/PopoverTest.svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import PopoverTest from "./PopoverTest.svelte";
 
 describe("Popover", () => {
   it("should be closed by default", () => {

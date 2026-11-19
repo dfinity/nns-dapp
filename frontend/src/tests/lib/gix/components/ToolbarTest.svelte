@@ -3,7 +3,11 @@
 </script>
 
 <Toolbar>
-  <div data-tid="toolbar-test-start-slot"></div>
+  {#snippet start()}
+    <div data-tid="toolbar-test-start-slot"></div>
+  {/snippet}
   <div data-tid="toolbar-test-slot"></div>
-  <div data-tid="toolbar-test-end-slot"></div>
+  {#snippet end()}
+    <div data-tid="toolbar-test-end-slot"></div>
+  {/snippet}
 </Toolbar>

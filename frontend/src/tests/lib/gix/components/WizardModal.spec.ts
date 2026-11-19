@@ -1,9 +1,9 @@
 import WizardModal from "$lib/gix/components/WizardModal.svelte";
 import type { WizardStep, WizardSteps } from "$lib/gix/types/wizard";
+import WizardModalTest from "$tests/lib/gix/components/WizardModalTest.svelte";
+import { mockSnippet } from "$tests/lib/gix/mocks/snippet.mocks";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick, type Snippet } from "svelte";
-import { mockSnippet } from "../mocks/snippet.mocks";
-import WizardModalTest from "./WizardModalTest.svelte";
 
 describe("WizardModal", () => {
   const steps: WizardSteps = [

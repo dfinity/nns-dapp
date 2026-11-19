@@ -9,11 +9,11 @@ import Modal from "$lib/gix/components/Modal.svelte";
 import Popover from "$lib/gix/components/Popover.svelte";
 import ThemeToggleButton from "$lib/gix/components/ThemeToggleButton.svelte";
 import Toast from "$lib/gix/components/Toast.svelte";
+import FormTest from "$tests/lib/gix/components/FormTest.svelte";
+import SegmentTest from "$tests/lib/gix/components/SegmentTest.svelte";
+import { mockSnippet } from "$tests/lib/gix/mocks/snippet.mocks";
 import { fireEvent, render } from "@testing-library/svelte";
 import type { Component } from "svelte";
-import { mockSnippet } from "../mocks/snippet.mocks";
-import FormTest from "./FormTest.svelte";
-import SegmentTest from "./SegmentTest.svelte";
 
 describe("Buttons", () => {
   beforeEach(() => {

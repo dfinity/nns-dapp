@@ -1,8 +1,8 @@
 <script lang="ts">
   import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
-  import Collapsible from "./Collapsible.svelte";
-  import KeyValuePair from "./KeyValuePair.svelte";
+  import Collapsible from "$lib/gix/components/Collapsible.svelte";
+  import KeyValuePair from "$lib/gix/components/KeyValuePair.svelte";
   import IconInfo from "$lib/gix/icons/IconInfo.svelte";
   import { stopPropagation } from "$lib/gix/utils/event-modifiers.utils";
 

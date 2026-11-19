@@ -1,5 +1,5 @@
+import KeyValuePairTest from "$tests/lib/gix/components/KeyValuePairTest.svelte";
 import { render } from "@testing-library/svelte";
-import KeyValuePairTest from "./KeyValuePairTest.svelte";
 
 describe("KeyValuePair", () => {
   const key = "test-key";

@@ -1,8 +1,8 @@
 import MenuButton from "$lib/gix/components/MenuButton.svelte";
 import { layoutMenuOpen } from "$lib/gix/stores/layout.store";
+import en from "$tests/lib/gix/mocks/i18n.mock";
 import { fireEvent, render, type RenderResult } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import en from "../mocks/i18n.mock";
 
 describe("MenuButton", () => {
   const toggleMenu = async ({ getByTestId }: RenderResult<MenuButton>) => {
