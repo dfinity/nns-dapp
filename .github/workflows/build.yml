@@ -375,13 +375,22 @@ jobs:
         # the order that SNS-W lists them but pages them by root canister ID,
         # and the test expects both orders to match. A second pass then waits
         # for the swaps to open, so the waits overlap.
+        #
+        # The upgrade checks need a committed swap too. The first project is
+        # bought halfway through, once its swap is open, so that it commits
+        # while the other proposals are submitted. --commit then waits for the
+        # finalization.
         run: |
           names=("Alfa Centauri" "Bravo" "Charlie" "Delta" "Echo Alot" "Foxtrot" "Golf Stream" "Hotel" "India" "Juliett" "Kilo Byte" "Lima Bean" "Mike Box")
           symbols=(ALF BRV CHR DLT ECH FXT GLF HTL IND JLT KIO LIM MIK)
           for ((i = 0; i < ${#names[@]}; i++)); do
             scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png --no_wait
+            if ((i == 5)); then
+              scripts/icp-sns-create --name "${names[0]}" --symbol "${symbols[0]}" --logo mocks/sns/delta.png --buy
+            fi
           done
-          for ((i = 0; i < ${#names[@]}; i++)); do
+          scripts/icp-sns-create --name "${names[0]}" --symbol "${symbols[0]}" --logo mocks/sns/delta.png --commit
+          for ((i = 1; i < ${#names[@]}; i++)); do
             scripts/icp-sns-create --name "${names[$i]}" --symbol "${symbols[$i]}" --logo mocks/sns/delta.png
           done
           scripts/icp-sns-aggregator-wait
