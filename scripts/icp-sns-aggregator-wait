@@ -81,9 +81,14 @@ aggregator_snses() {
 
 # Succeeds when an aggregator without SNS answers but has no page 0. Builds
 # before #7312, such as aggregator-prod, create page 0 only with the first SNS.
+# The HTTP gateway may pass on the 404 of a missing page with another status,
+# so the canister is asked directly. The gateway must answer too.
 legacy_aggregator_is_empty() {
-  [[ "$(curl -sS -o /dev/null -w '%{http_code}' "$AGGREGATOR_URL/v1/sns/list/page/0/slow.json" 2>/dev/null)" == "404" ]] &&
-    icp canister call sns_aggregator get_canister_config '()' --environment "$ENVIRONMENT" --query >/dev/null 2>&1
+  local gateway_code canister_code
+  gateway_code="$(curl -sS -o /dev/null -w '%{http_code}' "$AGGREGATOR_URL/v1/sns/list/page/0/slow.json" 2>/dev/null)" || return 1
+  [[ "$gateway_code" != "000" ]] || return 1
+  canister_code="$(icp canister call sns_aggregator http_request '(record { url = "/v1/sns/list/page/0/slow.json"; method = "GET"; body = blob ""; headers = vec {} })' --environment "$ENVIRONMENT" --query 2>/dev/null | idl2json | jq -r '.status_code')" || return 1
+  [[ "$canister_code" == "404" ]]
 }
 
 # Arguments: <update_interval_ms> <fast_interval_ms>
