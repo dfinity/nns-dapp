@@ -40,7 +40,7 @@ filter_can_propose() {
     return
   fi
 
-  filter_can_vote | jq "select((.[\"1\"].stake_e8s | tonumber) >= $MIN_STAKE_TO_PROPOSE)"
+  CAN_VOTE=true filter_can_vote | jq "select((.[\"1\"].stake_e8s | tonumber) >= $MIN_STAKE_TO_PROPOSE)"
 }
 
 dfx canister call nns-governance list_neurons \
