@@ -19,6 +19,9 @@ print_help() {
 	To start a new release process on the same day as a previous release, run:
 	  ./release-sop.sh --new --name Release-\$(date +%Y-%m-%d)-v2
 
+	To also deploy the release candidate to the DevEnv test network, add:
+	  --devenv
+
 	To continue an existing release process, make sure the release branch is
 	checked out and run:
 	  ./release-sop.sh --continue
@@ -32,6 +35,7 @@ source "$SOURCE_DIR/../clap.bash"
 clap.define long=new desc="Start a new release branch" variable=IS_NEW_RELEASE nargs=0 default="false"
 clap.define long=continue desc="Continue with an existing release branch" variable=CONTINUE nargs=0 default="false"
 clap.define long=name desc="The name of the new release branch" variable=BRANCH_NAME default=""
+clap.define long=devenv desc="Deploy the release candidate to the DevEnv test network" variable=DEPLOY_TO_DEVENV nargs=0 default="false"
 clap.define long=test_network desc="The dfx network to deploy the release candidate to for testing" variable=TEST_NETWORK default="devenv_$DEVENV_USER"
 clap.define long=test_domain desc="The domain to use for the Release candidate URL" variable=TEST_DOMAIN default="${DEVENV_USER}-ingress.devenv.dfinity.network"
 clap.define long=mock-json desc="A json file with mock responses for commands during testing" variable=MOCK_JSON default=""
@@ -344,10 +348,10 @@ post_rc_on_slack() {
     echo "[Use a VPN](https://www.notion.so/dfinityorg/NNS-dapp-on-DevEnv-2882138a87fa45c39bf0966591c3dd73#929a5ccd7edd4b428efbc765aedf4d84) to test on mobile."
     echo "Please try it out."
     echo
-    echo -n "Then enter the Slack link: "
+    echo -n "Then enter the Slack link, or press ENTER to skip: "
   ) >&2
   read -r SLACK_LINK
-  echo "$SLACK_LINK"
+  echo "${SLACK_LINK:-Skipped}"
 }
 
 verify_build() {
@@ -372,38 +376,13 @@ review_proposal() {
   echo
   echo "======================================================================"
   echo
-  echo "Review the proposal above ☝️, paste this description in the previously created thread in the channel #eng-nns-dapp, and ping your colleagues for a review."
+  echo "Review the proposal above ☝️."
 }
 
 review_feature_flags() {
   execute cat "release/nns-dapp-arg-mainnet.did" | idl2json | jq '.[] | .args[] | select(."0" == "FEATURE_FLAGS") | ."1" | fromjson'
   echo
   echo "Review the feature flags above ☝️  ."
-}
-
-post_proposal_on_slack() {
-  DASHBOARD_PROPOSAL_URL="https://dashboard.internetcomputer.org/proposal/$PROPOSAL_ID"
-  GOVERNANCE_APP_PROPOSAL_URL="https://nns.icp.net/voting/proposals/$PROPOSAL_ID"
-  NNS_RELEASES_CHANNEL_URL="https://dfinity.slack.com/channels/eng-nns-releases"
-  (
-    echo
-    echo "======================================================================"
-    echo
-    echo "NNS-dapp upgrade proposal:"
-    echo "* $DASHBOARD_PROPOSAL_URL"
-    echo "* $GOVERNANCE_APP_PROPOSAL_URL"
-    echo
-    echo '````'
-    cat "release/PROPOSAL.md"
-    echo '````'
-    echo
-    echo "Post the above ☝️  on $NNS_RELEASES_CHANNEL_URL."
-    echo "Apply code-block formatting to the proposal text."
-    echo -n "Then enter the Slack link: "
-  ) >&2
-  local SLACK_LINK
-  read -r SLACK_LINK
-  echo "$SLACK_LINK"
 }
 
 release_sop_tests_need_update() {
@@ -422,6 +401,8 @@ echo Checklist file: "$CHECKLIST_FILE"
 
 # Pre-release
 record "Start time" date +"%Y-%m-%d %H:%M:%S"
+# The choice is recorded, so that --continue follows the choice of --new.
+record "Deploy RC to DevEnv" echo "$DEPLOY_TO_DEVENV"
 confirm_cmd git fetch --tags --force
 record "Release SOP script is newest version" is_release_sop_script_newest_version
 confirm_cmd git checkout -b "$BRANCH_NAME" --no-track origin/main
@@ -437,20 +418,24 @@ record "Security test: no HTML in templates" no_html_in_templates
 confirm_cmd "$SOURCE_DIR/download-ci-wasm" --commit tags/release-candidate --dir "$TOP_DIR/release/ci" --wasm-filename nns-dapp.wasm.gz
 record "CI NNS-dapp WASM hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate
 verify "CI NNS-dapp WASM hash" "Local WASM hash" sha256 "$TOP_DIR/release/ci/nns-dapp.wasm.gz"
-confirm_cmd scripts/canister_ids --remove --network "$TEST_NETWORK" --canister nns-dapp
 record "dfx identity" get_dfx_identity
-confirm_cmd dfx canister create nns-dapp --network "$TEST_NETWORK" --no-wallet
-record "NNS-dapp $TEST_NETWORK canister ID" dfx canister id nns-dapp --network "$TEST_NETWORK"
-verify "NNS-dapp $TEST_NETWORK canister ID" "Current NNS-dapp $TEST_NETWORK canister ID" dfx canister id nns-dapp --network "$TEST_NETWORK"
-CANISTER_ID="$(checklist_must_get "NNS-dapp $TEST_NETWORK canister ID")"
-confirm_cmd DFX_NETWORK="$TEST_NETWORK" ./config.sh
-confirm_cmd dfx canister install nns-dapp --argument "$(execute cat "nns-dapp-arg-${TEST_NETWORK}.did")" --network "$TEST_NETWORK" --wasm ./release/ci/nns-dapp.wasm.gz
-record "Release candidate URL" echo "https://$CANISTER_ID.${TEST_DOMAIN}/"
-verify "CI NNS-dapp WASM hash" "RC WASM hash" get_module_hash_from_network "$TEST_NETWORK"
-record "Post RC on Slack" post_rc_on_slack
+if [ "$(checklist_must_get "Deploy RC to DevEnv")" = "true" ]; then
+  confirm_cmd scripts/canister_ids --remove --network "$TEST_NETWORK" --canister nns-dapp
+  confirm_cmd dfx canister create nns-dapp --network "$TEST_NETWORK" --no-wallet
+  record "NNS-dapp $TEST_NETWORK canister ID" dfx canister id nns-dapp --network "$TEST_NETWORK"
+  verify "NNS-dapp $TEST_NETWORK canister ID" "Current NNS-dapp $TEST_NETWORK canister ID" dfx canister id nns-dapp --network "$TEST_NETWORK"
+  CANISTER_ID="$(checklist_must_get "NNS-dapp $TEST_NETWORK canister ID")"
+  confirm_cmd DFX_NETWORK="$TEST_NETWORK" ./config.sh
+  confirm_cmd dfx canister install nns-dapp --argument "$(execute cat "nns-dapp-arg-${TEST_NETWORK}.did")" --network "$TEST_NETWORK" --wasm ./release/ci/nns-dapp.wasm.gz
+  record "Release candidate URL" echo "https://$CANISTER_ID.${TEST_DOMAIN}/"
+  verify "CI NNS-dapp WASM hash" "RC WASM hash" get_module_hash_from_network "$TEST_NETWORK"
+  record "Post RC on Slack" post_rc_on_slack
+fi
 
 # Release
-record "Canister IDs" "$SOURCE_DIR/../canister_ids" --export --network "$TEST_NETWORK"
+if [ "$(checklist_must_get "Deploy RC to DevEnv")" = "true" ]; then
+  record "Canister IDs" "$SOURCE_DIR/../canister_ids" --export --network "$TEST_NETWORK"
+fi
 record "Build hashes" verify_build
 confirm_cmd "$SOURCE_DIR/release-template"
 confirm_cmd "$SOURCE_DIR/release-check"
@@ -469,7 +454,8 @@ PROPOSAL_TAG="proposal-$PROPOSAL_ID"
 confirm_cmd git tag "$PROPOSAL_TAG"
 confirm_cmd git push origin "tags/$PROPOSAL_TAG"
 confirm_cmd git checkout "$BRANCH_NAME"
-record "Post proposal on Slack" post_proposal_on_slack
+record "Proposal dashboard URL" echo "https://dashboard.internetcomputer.org/proposal/$PROPOSAL_ID"
+record "Proposal governance app URL" echo "https://nns.icp.net/voting/proposals/$PROPOSAL_ID"
 confirm_manual "Schedule voting" echo "Schedule an appointment (use \"NNS Upgrades\" calendar) for trusted neurons voting (in 3 days)"
 
 # Post-release

@@ -11,7 +11,6 @@
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
   import {
@@ -142,7 +141,7 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO}>
+  <div class="top apy-card">
     {#if !$authSignedInStore}
       <LoginCard />
       <StartStakingCard />
@@ -151,10 +150,10 @@
         usdAmount={totalAssetsUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={!$ENABLE_APY_PORTFOLIO}
+        isFullWidth={false}
       />
 
-      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalAssetsUsdAmount)}
+      {#if $isDesktopViewportStore && nonNullish(totalAssetsUsdAmount)}
         {#if isStakingRewardDataReady(stakingRewardResult)}
           <ApyCard
             icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
@@ -168,7 +167,7 @@
       {/if}
     {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalAssetsUsdAmount) && nonNullish(stakingRewardResult)}
+    {#if !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalAssetsUsdAmount) && nonNullish(stakingRewardResult)}
       {#if isStakingRewardDataReady(stakingRewardResult)}
         <ApyCard
           icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
