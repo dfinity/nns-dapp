@@ -1,6 +1,5 @@
 import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import Portfolio from "$lib/pages/Portfolio.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import type { StakingRewardResult } from "$lib/utils/staking-rewards.utils";
@@ -114,7 +113,6 @@ describe("Portfolio page", () => {
     });
 
     it("should not show ApyCard", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
       const po = renderPage();
 
       expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
@@ -413,7 +411,6 @@ describe("Portfolio page", () => {
 
     describe("StakedTokensCard", () => {
       it("should display the top staked tokens by staked balance in Usd", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           icpTableProject: icpProject,
           nonIcpTableProjects: [tableProject1, tableProject2, tableProject3],
@@ -421,7 +418,6 @@ describe("Portfolio page", () => {
         const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
         const titles = await stakedTokensCardPo.getStakedTokensTitle();
-        const maturities = await stakedTokensCardPo.getStakedTokensMaturity();
         const stakesInUsd =
           await stakedTokensCardPo.getStakedTokensStakeInUsd();
         const stakesInNativeCurrency =
@@ -432,8 +428,6 @@ describe("Portfolio page", () => {
         expect(titles.length).toBe(3);
         expect(titles).toEqual(["Project 3", "Project 2", "Project 1"]);
 
-        expect(maturities.length).toBe(3);
-        expect(maturities).toEqual(["1.00", "0", "0"]);
         expect(stakesInUsd.length).toBe(3);
         expect(stakesInUsd).toEqual(["$400.00", "$300.00", "$200.00"]);
 
@@ -454,7 +448,6 @@ describe("Portfolio page", () => {
             return () => {};
           }
         );
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           icpTableProject: icpProject,
           nonIcpTableProjects: [tableProject2, tableProject3],
@@ -463,7 +456,6 @@ describe("Portfolio page", () => {
         const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
         const titles = await stakedTokensCardPo.getStakedTokensTitle();
-        const maturities = await stakedTokensCardPo.getStakedTokensMaturity();
         const stakesInUsd =
           await stakedTokensCardPo.getStakedTokensStakeInUsd();
         const stakesInNativeCurrency =
@@ -473,9 +465,6 @@ describe("Portfolio page", () => {
 
         expect(titles.length).toBe(2);
         expect(titles).toEqual(["Project 3", "Project 2"]);
-
-        expect(maturities.length).toBe(2);
-        expect(maturities).toEqual(["1.00", "0"]);
 
         expect(stakesInUsd.length).toBe(2);
         expect(stakesInUsd).toEqual(["$400.00", "$300.00"]);
@@ -608,10 +597,6 @@ describe("Portfolio page", () => {
     });
 
     describe("ApyCard", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-      });
-
       it("should show fallback Apy card while data loads", async () => {
         const po = renderPage({
           stakingRewardResult: {
@@ -627,18 +612,6 @@ describe("Portfolio page", () => {
         expect(
           await po.getApyFallbackCardPo().getErrorContent().isPresent()
         ).toBe(false);
-      });
-
-      it("should not show ApyCard if FF is off", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-        const po = renderPage({
-          stakingRewardResult: {
-            loading: true,
-          },
-        });
-
-        expect(await po.getApyCardPo().isPresent()).toBe(false);
-        expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
       });
 
       it("should show fallback Apy card with an error when calculation fails", async () => {
