@@ -68,7 +68,7 @@ aggregator_snses() {
     if [[ "$code" != "200" ]] && ((page > 0)); then
       break
     fi
-    if [[ "$code" != "200" ]] || ! jq -e 'type == "array"' <<<"$json" >/dev/null 2>&1; then
+    if [[ "$code" != "200" ]] || ! jq -s -e 'length == 1 and (.[0] | type == "array")' <<<"$json" >/dev/null 2>&1; then
       echo null
       break
     fi
