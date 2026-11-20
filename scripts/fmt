@@ -3,8 +3,10 @@ set -euxo pipefail
 cd "$(dirname "$(realpath "$0")")/.."
 
 set -x
+# `cargo sort` rewrites each Cargo.toml. `cargo fmt` reads them, so it must run after.
+time ./scripts/fmt-cargo
+
 time xargs -P8 -I{} bash -c "{}" <<EOF
-./scripts/fmt-cargo
 ./scripts/fmt-frontend
 ./scripts/fmt-json
 ./scripts/fmt-rs
