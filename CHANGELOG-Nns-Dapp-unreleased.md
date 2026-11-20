@@ -32,8 +32,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* The local test network submits all SNS proposals before it waits for the
-* The upgrade proposal has a short title with the short commit hash. The commit
+- The local test network submits all SNS proposals before it waits for the
+  swaps to open, so it starts faster.
+- The upgrade proposal has a short title with the short commit hash. The commit
+  and the Wasm hash are in the "Wasm Verification" section.
 
 #### Deprecated
 
