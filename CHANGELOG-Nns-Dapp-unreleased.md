@@ -60,6 +60,8 @@ proposal is successful, the changes it released will be moved from this file to
   `--devenv`, and the Slack links are optional.
 - The local test network submits all SNS proposals before it waits for the
   swaps to open, so it starts faster.
+- The upgrade proposal has a short title with the short commit hash. The commit
+  and the Wasm hash are in the "Wasm Verification" section.
 - The UI components of gix-components are part of the nns-dapp repository,
   instead of the `@dfinity/gix-components` npm package.
 
