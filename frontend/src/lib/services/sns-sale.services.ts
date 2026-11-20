@@ -180,9 +180,11 @@ export const loadOpenTicket = async ({
       // set explicitly null to mark the ticket absence
       snsTicketsStore.setNoTicket(rootCanisterId);
     } else {
+      // The ticket was created in a previous flow. The user must confirm it before the ICP transfer.
       snsTicketsStore.setTicket({
         rootCanisterId,
         ticket,
+        requiresConfirmation: true,
       });
     }
 
@@ -259,14 +261,19 @@ const handleNewSaleTicketError = ({
           toastsError({
             labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
             substitutions: {
+              $amount: formatTokenE8s({
+                value: existingTicket.amount_icp_e8s,
+              }),
               $time: nanoSecondsToDateTime(existingTicket.creation_time),
             },
           });
 
-          // Continue the flow with existing ticket (restore the flow)
+          // The existing ticket can have a different amount than the one the user just reviewed.
+          // The user must confirm it before the ICP transfer.
           snsTicketsStore.setTicket({
             rootCanisterId,
             ticket: existingTicket,
+            requiresConfirmation: true,
           });
         }
         return;
@@ -372,6 +379,11 @@ const getProjectFromStore = (
 ): SnsFullProject | undefined =>
   get(snsProjectsRecordStore)[rootCanisterId.toText()];
 
+const getConfirmationText = (rootCanisterId: Principal): string | undefined => {
+  const project = getProjectFromStore(rootCanisterId);
+  return project && getConditionsToAccept(project.summary);
+};
+
 export interface ParticipateInSnsSaleParameters {
   rootCanisterId: Principal;
   userCommitment: bigint;
@@ -379,16 +391,18 @@ export interface ParticipateInSnsSaleParameters {
   updateProgress: (step: SaleStep) => void;
 }
 
-export const restoreSnsSaleParticipation = async ({
+/**
+ * Loads the open ticket of the user for the sale, if any, into the store.
+ * The ticket is marked as requiring confirmation. No ICP is transferred.
+ */
+export const findOpenSnsSaleTicket = async ({
   rootCanisterId,
   swapCanisterId,
-  userCommitment,
-  postprocess,
-  updateProgress,
-}: ParticipateInSnsSaleParameters & {
+}: {
+  rootCanisterId: Principal;
   swapCanisterId: Principal;
 }): Promise<void> => {
-  // avoid concurrent restores
+  // avoid concurrent lookups while a participation is in progress
   if (nonNullish(get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket)) {
     return;
   }
@@ -398,16 +412,29 @@ export const restoreSnsSaleParticipation = async ({
     rootCanisterId,
     certified: true,
   });
+};
 
-  const ticket: SnsSwapDid.Ticket | undefined | null =
-    get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
+/**
+ * Completes the participation of an open ticket after the user confirmed its amount.
+ */
+export const restoreSnsSaleParticipation = async ({
+  rootCanisterId,
+  swapCanisterId,
+  userCommitment,
+  postprocess,
+  updateProgress,
+  ticket,
+}: ParticipateInSnsSaleParameters & {
+  swapCanisterId: Principal;
+  ticket: SnsSwapDid.Ticket;
+}): Promise<{ success: boolean }> => {
+  // The user confirmed the ticket. Mark it as in progress.
+  snsTicketsStore.setTicket({
+    rootCanisterId,
+    ticket,
+  });
 
-  // no open tickets
-  if (isNullish(ticket)) {
-    return;
-  }
-
-  await participateInSnsSale({
+  return participateInSnsSale({
     rootCanisterId,
     swapCanisterId,
     userCommitment,
@@ -415,6 +442,58 @@ export const restoreSnsSaleParticipation = async ({
     updateProgress,
     ticket,
   });
+};
+
+/**
+ * Removes the open ticket of the user without a new ICP transfer.
+ *
+ * The ICP of the ticket can already be on the swap subaccount if the previous flow stopped after the transfer.
+ * In that case `refresh_buyer_tokens` commits the participation and the swap canister removes the ticket.
+ */
+export const cancelSnsSaleParticipation = async ({
+  rootCanisterId,
+  userCommitment,
+  postprocess,
+}: {
+  rootCanisterId: Principal;
+  userCommitment: bigint;
+  postprocess: () => Promise<void>;
+}): Promise<void> => {
+  const identity = await getCurrentIdentity();
+
+  let committed = false;
+  try {
+    const { icp_accepted_participation_e8s } = await notifyParticipation({
+      buyer: identity.getPrincipal(),
+      rootCanisterId,
+      identity,
+      confirmationText: getConfirmationText(rootCanisterId),
+    });
+    committed = icp_accepted_participation_e8s > userCommitment;
+  } catch (err) {
+    // Expected when the ICP of the ticket was not transferred
+    logWithTimestamp("[sale] cancel: no ICP to commit", err);
+  }
+
+  if (committed) {
+    await postprocess();
+
+    toastsSuccess({
+      labelKey: "sns_project_detail.participate_success",
+    });
+  } else {
+    await removeOpenTicket({
+      rootCanisterId,
+      identity,
+    });
+
+    toastsSuccess({
+      labelKey: "sns_sale.participation_cancelled",
+    });
+  }
+
+  // enable participate button
+  snsTicketsStore.setNoTicket(rootCanisterId);
 };
 
 /**
@@ -467,8 +546,10 @@ export const initiateSnsSaleParticipation = async ({
     const swapCanisterId = project?.summary.swapCanisterId;
     // Edge case: `initiateSnsSaleParticipation` can't be called if there is no swap canister id
     assertNonNullish(swapCanisterId);
-    const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
-    if (nonNullish(ticket)) {
+    const { ticket, requiresConfirmation } =
+      get(snsTicketsStore)[rootCanisterId?.toText()] ?? {};
+    // An existing ticket requires a confirmation of its amount before the transfer
+    if (nonNullish(ticket) && requiresConfirmation !== true) {
       // Step 2. to finish
       const { success } = await participateInSnsSale({
         rootCanisterId,
@@ -506,8 +587,7 @@ const pollNotifyParticipation = async ({
   identity: Identity;
 }) => {
   try {
-    const project = getProjectFromStore(rootCanisterId);
-    const confirmationText = project && getConditionsToAccept(project.summary);
+    const confirmationText = getConfirmationText(rootCanisterId);
 
     return await poll({
       fn: (): Promise<SnsSwapDid.RefreshBuyerTokensResponse> =>
