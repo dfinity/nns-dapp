@@ -51,11 +51,45 @@ expected_snses() {
 }
 
 # Prints the root canister ID and the swap lifecycle of every SNS that the aggregator lists, as sorted JSON.
+# The aggregator creates page 0 on setup, also with no SNS. After page 0, an
+# error status ends the list: the canister answers a missing page with a 404,
+# which the HTTP gateway may pass on with another status. A failed page 0, or
+# a successful response that is not a list of SNS, means that the aggregator is
+# not ready. Such a page adds null, so the list matches no expected list.
 aggregator_snses() {
-  local page
+  local page response code json
   for ((page = 0; ; page++)); do
-    curl -fsS "$AGGREGATOR_URL/v1/sns/list/page/$page/slow.json" 2>/dev/null | jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' || break
+    if ! response="$(curl -sS -w '\n%{http_code}' "$AGGREGATOR_URL/v1/sns/list/page/$page/slow.json" 2>/dev/null)"; then
+      echo null
+      break
+    fi
+    code="${response##*$'\n'}"
+    json="${response%$'\n'*}"
+    if [[ "$code" != "200" ]] && ((page > 0)); then
+      break
+    fi
+    if [[ "$code" != "200" ]] || ! jq -s -e 'length == 1 and (.[0] | type == "array")' <<<"$json" >/dev/null 2>&1; then
+      echo null
+      break
+    fi
+    jq -c '.[] | {root: .canister_ids.root_canister_id, lifecycle: .lifecycle.lifecycle}' <<<"$json" 2>/dev/null || {
+      echo null
+      break
+    }
   done | jq -s -c 'sort_by(.root)'
+}
+
+# Succeeds when an aggregator without SNS answers but has no page 0. Builds
+# before #7312, such as aggregator-prod, create page 0 only with the first SNS.
+# The HTTP gateway may pass on the 404 of a missing page with another status,
+# so the canister is asked directly. The gateway must serve /index.html, which
+# every build has.
+legacy_aggregator_is_empty() {
+  local gateway_code canister_code
+  gateway_code="$(curl -sS -o /dev/null -w '%{http_code}' "$AGGREGATOR_URL/index.html" 2>/dev/null)" || return 1
+  [[ "$gateway_code" == "200" ]] || return 1
+  canister_code="$(icp canister call sns_aggregator http_request '(record { url = "/v1/sns/list/page/0/slow.json"; method = "GET"; body = blob ""; headers = vec {} })' --environment "$ENVIRONMENT" --query 2>/dev/null | idl2json | jq -r '.status_code')" || return 1
+  [[ "$canister_code" == "404" ]]
 }
 
 # Arguments: <update_interval_ms> <fast_interval_ms>
@@ -89,7 +123,7 @@ echo "Waiting for the SNS aggregator to list $count SNS projects..."
 for ((attempt = 0; attempt < max_attempts; attempt++)); do
   # A swap can commit while the script waits, so the lifecycles are read again.
   expected="$(expected_snses)"
-  if [[ "$(aggregator_snses)" == "$expected" ]]; then
+  if [[ "$(aggregator_snses)" == "$expected" ]] || { [[ "$expected" == "[]" ]] && legacy_aggregator_is_empty; }; then
     echo "The SNS aggregator lists every SNS project."
     exit 0
   fi
