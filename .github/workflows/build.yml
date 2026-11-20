@@ -428,8 +428,9 @@ jobs:
           then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
-      # TODO: Verify that fast data is updated fast. scripts/sns/aggregator/test-fast
-      # buys a swap with the snsdemo scripts. Port it to scripts/icp-sns-create.
+      - name: Verify that fast data is updated fast
+        # Runs last, as it adds an SNS project and changes the configuration.
+        run: scripts/sns/aggregator/test-fast
       - name: Stop the local network
         run: icp network stop
   assets:

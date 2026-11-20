@@ -1,29 +1,55 @@
 #!/usr/bin/env bash
+set -euo pipefail
+# A failed command in a command substitution stops the script too.
+shopt -s inherit_errexit
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../.."
 PATH="$SOURCE_DIR:$PATH"
 
+# shellcheck disable=SC2317,SC2329
 print_help() {
   cat <<-EOF
 
-	Tests that SNSs with open sales have teh following fields updated promptly:
+	Tests that the SNS aggregator updates these fields of an open swap promptly:
 	- buyer_total_icp_e8s
 	- direct_participant_count
 	- lifecycle
+
+	The script creates an SNS project on a local icp-cli network with
+	scripts/icp-sns-create, buys the swap in three steps as the anonymous
+	principal, and checks the aggregator after each purchase.
+
+	Prerequisites:
+	 * The aggregator is a dev build, which has the reconfigure method.
+	 * No other process changes the configuration of the aggregator.
+
+	The script leaves the aggregator with a slow full update and a fast partial
+	update of one second.
 	EOF
 }
+
+ANONYMOUS_PRINCIPAL="2vxsx-fae"
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
-clap.define short=c long=ic_commit desc="The IC commit of the wasms" variable=DFX_IC_COMMIT default="$DFX_IC_COMMIT"
-clap.define short=x long=ic_dir desc="Directory containing the ic source code" variable=IC_REPO_DIR default="$HOME/dfn/ic"
-clap.define short=y long=nd_dir desc="Directory containing the nns-dapp source code" variable=ND_REPO_DIR default="$HOME/dfn/nns-dapp"
-clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
-clap.define short=b long=bin desc="Local directory for executables" variable=USER_BIN default="$HOME/.local/bin"
+clap.define short=n long=network desc="The icp network" variable=NETWORK default="local"
+clap.define long=name desc="The name of the SNS project that the test creates" variable=NAME default="Fast Update $(date +%s)"
+clap.define long=symbol desc="The token symbol of the SNS project" variable=SYMBOL default="FST"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-set -euo pipefail
+
+cd "$SOURCE_DIR/.."
+
+# The network and the environment have the same name, see icp.yaml.
+ENVIRONMENT="$NETWORK"
+NNS_LEDGER="$(canister-id --network "$NETWORK" nns-ledger)"
+SNS_WASM="$(canister-id --network "$NETWORK" nns-sns-wasm)"
+AGGREGATOR_CANISTER_URL="$(dfx-canister-url --network "$NETWORK" sns_aggregator)"
+
+# Calls a canister by ID as the anonymous principal.
+call() {
+  icp canister call "$@" --network "$NETWORK" --identity anonymous
+}
 
 # Prints some variables
 #
@@ -32,67 +58,6 @@ printvars() {
   local VARNAME
   for VARNAME in "${@}"; do
     echo "${VARNAME}=${!VARNAME}"
-  done
-}
-
-# Waits for the latest SNS to be listed in the aggregator
-#
-# Sets the canister IDs for DFX and these environment variables:
-# - GOVERNANCE_CANISTER_ID
-# - LEDGER_CANISTER_ID
-# - ROOT_CANISTER_ID
-# - SWAP_CANISTER_ID
-# - AGGREGATOR_URL = Aggregator URL for this SNS
-wait_for_latest_sns() {
-  local CANISTER_ID
-  echo Set the canister IDs
-  for canister in governance ledger root swap; do
-    CANISTER_ID="$(dfx canister call nns-sns-wasm list_deployed_snses '(record{})' | idl2json | jq -r ".instances[-1].${canister}_canister_id[0]")"
-    dfx-canister-set-id --canister_name "sns_$canister" --canister_id "$CANISTER_ID"
-    eval "${canister^^}_CANISTER_ID='$CANISTER_ID'"
-  done
-  AGGREGATOR_URL="$(dfx-canister-url sns_aggregator)/v1/sns/root/${ROOT_CANISTER_ID}/slow.json"
-
-  echo Wait for the SNS to be listed in the aggregator
-  printf "Waiting for the aggregator to list the SNS..."
-  for ((i = 60; i >= 0; i--)); do
-    if curl -sSL --fail "$AGGREGATOR_URL" 2>/dev/null >/dev/null; then
-      echo OK
-      break
-    fi
-    if ((i > 0)); then
-      printf .
-      sleep 1
-    else
-      echo TIMEOUT
-      exit 1
-    fi
-  done
-}
-
-# Waits for the aggregator to have expected values for a sample of frequently updated fields.
-#
-# Arguments: <EXPECTED_FIELDS> [seconds=10]
-#
-# Note: A fast update typically requires 4 blocks and we trigger updates every second, so 10 seconds should be plenty for a typical fast update.
-wait_for_aggregator_to_contain() {
-  local EXPECTED_FIELDS ACTUAL_FIELDS COUNTDOWN
-  EXPECTED_FIELDS="$1"
-  for ((COUNTDOWN = ${2:-10}; COUNTDOWN >= 0; COUNTDOWN--)); do
-    ACTUAL_FIELDS="$(curl -sSL --fail "$AGGREGATOR_URL" | jq -c '{buyer_total_icp_e8s: .derived_state.buyer_total_icp_e8s, direct_participant_count: .derived_state.direct_participant_count, lifecycle: .lifecycle.lifecycle}')"
-    if [[ "$EXPECTED_FIELDS" == "$ACTUAL_FIELDS" ]]; then
-      echo "OK"
-      printvars ACTUAL_FIELDS
-      break
-    fi
-    if ((COUNTDOWN == 0)); then
-      echo TIMEOUT
-      printvars EXPECTED_FIELDS ACTUAL_FIELDS
-      return 1
-    else
-      printf .
-      sleep 3
-    fi
   done
 }
 
@@ -106,55 +71,131 @@ title() {
 	EOF
 }
 
-title Configure the aggregator full update to run fast.
-dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1_000; fast_interval_ms = 1_000_000_000; })'
-
-title Wait for the aggregator to list the latest pre-existing SNS
-wait_for_latest_sns
-
-title Create an SNS
-NUM_SNS_BEFORE="$(dfx canister call nns-sns-wasm list_deployed_snses '(record{})' | idl2json | jq '.instances | length')"
-dfx-sns-demo-mksns
-NUM_SNS_AFTER="$(dfx canister call nns-sns-wasm list_deployed_snses '(record{})' | idl2json | jq '.instances | length')"
-((NUM_SNS_AFTER == NUM_SNS_BEFORE + 1)) || {
-  echo "ERROR: Test failed.  Expected to have a new SNS in the test environment."
-  for varname in NUM_SNS_BEFORE NUM_SNS_AFTER; do
-    echo "${varname}=${!varname}"
-  done
-  exit 1
+# Arguments: <update_interval_ms> <fast_interval_ms>
+reconfigure() {
+  icp canister call sns_aggregator reconfigure "(opt record { update_interval_ms = $1 : nat64; fast_interval_ms = $2 : nat64 })" --environment "$ENVIRONMENT" >/dev/null
 }
 
-title Wait for the new SNS to be listed in the aggregator
-wait_for_latest_sns
+# Prints the number of deployed SNS projects.
+sns_count() {
+  call "$SNS_WASM" list_deployed_snses '(record {})' --query | idl2json | jq '.instances | length'
+}
 
-title Wait for the sale to start
+# Prints the aggregator data of the SNS.
+aggregator_sns() {
+  curl -sSL --fail "$AGGREGATOR_URL"
+}
+
+# Waits for the aggregator to list the SNS.
+wait_for_aggregator_to_list() {
+  printf "Waiting for the aggregator to list the SNS..."
+  for ((i = 120; i >= 0; i--)); do
+    if aggregator_sns >/dev/null 2>&1; then
+      echo OK
+      return
+    fi
+    if ((i > 0)); then
+      printf .
+      sleep 1
+    else
+      echo TIMEOUT
+      exit 1
+    fi
+  done
+}
+
+# Waits for the aggregator to have expected values for a sample of frequently updated fields.
+#
+# The fast update refreshes one open swap per interval, so a round takes as many
+# intervals as there are open swaps.
+#
+# Arguments: <EXPECTED_FIELDS> [attempts=40]
+wait_for_aggregator_to_contain() {
+  local EXPECTED_FIELDS ACTUAL_FIELDS COUNTDOWN
+  EXPECTED_FIELDS="$1"
+  for ((COUNTDOWN = ${2:-40}; COUNTDOWN >= 0; COUNTDOWN--)); do
+    ACTUAL_FIELDS="$(aggregator_sns | jq -c '{buyer_total_icp_e8s: .derived_state.buyer_total_icp_e8s, direct_participant_count: .derived_state.direct_participant_count, lifecycle: .lifecycle.lifecycle}')"
+    if [[ "$EXPECTED_FIELDS" == "$ACTUAL_FIELDS" ]]; then
+      echo "OK"
+      printvars ACTUAL_FIELDS
+      return
+    fi
+    if ((COUNTDOWN == 0)); then
+      echo TIMEOUT
+      printvars EXPECTED_FIELDS ACTUAL_FIELDS
+      exit 1
+    fi
+    printf .
+    sleep 3
+  done
+}
+
+# Adds ICP to the swap participation of the anonymous principal.
+# The swap keeps the ICP of a buyer in a subaccount: the length of the
+# principal, the principal bytes, then zeros.
+#
+# Arguments: <e8s>
+buy() {
+  local principal_hex subaccount result
+  principal_hex="$(convert-id --input text --output hex "$ANONYMOUS_PRINCIPAL")"
+  subaccount="$(printf '%02x%s' "$((${#principal_hex} / 2))" "$principal_hex")"
+  subaccount="$(printf '%-64s' "$subaccount" | tr ' ' 0 | sed -e 's/../\\&/g')"
+  echo "Buying $1 e8s of the swap..."
+  result="$(call "$NNS_LEDGER" icrc1_transfer "(record { to = record { owner = principal \"$SWAP_CANISTER_ID\"; subaccount = opt blob \"$subaccount\" }; amount = $1 : nat; fee = null; memo = null; from_subaccount = null; created_at_time = null })" | idl2json)"
+  jq -e '.Ok' <<<"$result" >/dev/null || {
+    echo "ERROR: The ICP ledger rejected the transfer: $result"
+    exit 1
+  } >&2
+  call "$SWAP_CANISTER_ID" refresh_buyer_tokens "(record { buyer = \"$ANONYMOUS_PRINCIPAL\"; confirmation_text = null })" >/dev/null
+}
+
+title Configure the aggregator full update to run fast.
+reconfigure 1_000 1_000_000_000
+
+title Create an SNS
+NUM_SNS_BEFORE="$(sns_count)"
+icp-sns-create --network "$NETWORK" --name "$NAME" --symbol "$SYMBOL" --logo mocks/sns/delta.png
+NUM_SNS_AFTER="$(sns_count)"
+((NUM_SNS_AFTER == NUM_SNS_BEFORE + 1)) || {
+  echo "ERROR: Test failed.  Expected to have a new SNS in the test environment."
+  printvars NUM_SNS_BEFORE NUM_SNS_AFTER
+  exit 1
+} >&2
+SNS="$(call "$SNS_WASM" list_deployed_snses '(record {})' --query | idl2json | jq -c '.instances[-1]')"
+ROOT_CANISTER_ID="$(jq -r '.root_canister_id[0]' <<<"$SNS")"
+SWAP_CANISTER_ID="$(jq -r '.swap_canister_id[0]' <<<"$SNS")"
+AGGREGATOR_URL="$AGGREGATOR_CANISTER_URL/v1/sns/root/${ROOT_CANISTER_ID}/slow.json"
+printvars ROOT_CANISTER_ID SWAP_CANISTER_ID AGGREGATOR_URL
+
+title Wait for the new SNS to be listed in the aggregator
+wait_for_aggregator_to_list
+
+title Wait for the aggregator to show the open sale
 EXPECTED_FIELDS='{"buyer_total_icp_e8s":0,"direct_participant_count":0,"lifecycle":2}'
-printf "Waiting for sale to start..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 300
+printf "Waiting for the sale to be open..."
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 100
 
 title Configure the aggregator full update to run slow but the partial update to run once a second.
-dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000; })'
+reconfigure 1_000_000_000 1_000
 
 title If we buy 1 ICP, the ICP and participant count should increase
-dfx-sns-sale-buy --icp 1
+buy 100_000_000
 EXPECTED_FIELDS='{"buyer_total_icp_e8s":100000000,"direct_participant_count":1,"lifecycle":2}'
-printf "Waiting for ICP and participant  count to increase..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 300
+printf "Waiting for the ICP and the participant count to increase..."
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS"
 
 title If we buy more, only the ICP should increase
-dfx-sns-sale-buy --icp 2
+buy 200_000_000
 EXPECTED_FIELDS='{"buyer_total_icp_e8s":300000000,"direct_participant_count":1,"lifecycle":2}'
 printf "Waiting for the ICP to increase..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 300
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS"
 
-title If we increase participation the maximum available, the SNS lifecycle should change as the SNS configuration allows one buyer to buy all tokens.
-MAY_BUY="$(curl -sSL --fail "$AGGREGATOR_URL" | jq '(.swap_params.params.max_participant_icp_e8s - .derived_state.buyer_total_icp_e8s)/100000000')"
-dfx-sns-sale-buy --icp "$MAY_BUY"
-EXPECTED_FIELDS="$(curl -sSL --fail "$AGGREGATOR_URL" | jq -c '{buyer_total_icp_e8s: .swap_params.params.max_participant_icp_e8s, direct_participant_count: 1, lifecycle: 3}')"
+title If we buy the rest of the swap, the SNS lifecycle should change, as one buyer may buy all tokens.
+MAX_PARTICIPANT_ICP_E8S="$(aggregator_sns | jq -r '.swap_params.params.max_participant_icp_e8s')"
+buy "$((MAX_PARTICIPANT_ICP_E8S - 300000000))"
+EXPECTED_FIELDS="{\"buyer_total_icp_e8s\":$MAX_PARTICIPANT_ICP_E8S,\"direct_participant_count\":1,\"lifecycle\":3}"
 printf "Waiting for the SNS lifecycle to change..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 300
-
-: TODO: Make a slow update counter. Verify that the last number of slow updates is as expected.
-: TODO: Make a fast update counter. Verify that the number of fast updates is as expected.
+# The swap commits in its periodic task, which runs once a minute.
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 60
 
 echo OK
