@@ -102,7 +102,7 @@ cat -s "$RELEASED_CHANGELOG" | sponge "$RELEASED_CHANGELOG"
 # 1. Take the old unrelease changelog.
 # 2. Apply the change that have been made since, but add an extra '+' at the
 #    start of each line of the new entries, also the continuation lines.
-# 3. Remove the entries without the extra '+'.
+# 3. Remove the entries whose first line has no extra '+'.
 # 4. Remove the extra '+' from the new entries.
 
 # Add 1 to start after the title.
@@ -115,8 +115,14 @@ diff -u "$OLD_UNRELEASED_CHANGELOG" "$UNRELEASED_CHANGELOG" >"$PATCH" || true
 # Apply the new entries with an extra '+'.
 sed -E 's@^\+([-*] |  )@+&@' <"$PATCH" | patch "$OLD_UNRELEASED_CHANGELOG"
 
-# Remove the entries that don't have the extra '+'.
-grep -v '^[-* ] ' "$OLD_UNRELEASED_CHANGELOG" | sed -E 's@^\+([-* ] )@\1@' >"$UNRELEASED_CHANGELOG"
+# Keep only the entries whose first line has the extra '+', and remove the
+# extra '+'. A continuation line goes with the first line of its entry.
+awk '
+  /^\+[-*] / { keep = 1; print substr($0, 2); next }
+  /^[-*] / { keep = 0; next }
+  /^\+?  / { if (keep) print (/^\+/ ? substr($0, 2) : $0); next }
+  { keep = 0; print }
+' "$OLD_UNRELEASED_CHANGELOG" >"$UNRELEASED_CHANGELOG"
 
 # Remove duplicate blank lines.
 cat -s "$UNRELEASED_CHANGELOG" | sponge "$UNRELEASED_CHANGELOG"

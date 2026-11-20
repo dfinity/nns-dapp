@@ -51,6 +51,12 @@ Introduction unreleased...
 
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Released entry that gets a new line.
+  This line is new.
+* Released entry with a
+  changed second line.
+* Released entry with a new edit
+  in the first line.
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 #### Security
@@ -131,6 +137,11 @@ Introduction unreleased...
 
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Released entry that gets a new line.
+* Released entry with a
+  second line.
+* Released entry with an edit
+  in the first line.
 
 #### Security
 #### Not Published
@@ -177,6 +188,8 @@ Introduction unreleased...
 #### Removed
 #### Fixed
 
+* Released entry with a new edit
+  in the first line.
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 #### Security
@@ -237,6 +250,11 @@ Introduction released...
 
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Released entry that gets a new line.
+* Released entry with a
+  second line.
+* Released entry with an edit
+  in the first line.
 
 ### Operations
 
