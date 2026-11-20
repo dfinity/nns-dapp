@@ -60,7 +60,8 @@ here after a successful release.
 
 #### Changed
 
-* Connect to the Ledger device through the Ledger Device Management Kit.
+- Connect to the Ledger device through the Ledger Device Management Kit. It
+  replaces the old transport that Ledger deprecated.
 
 ### Operations
 
