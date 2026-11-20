@@ -139,8 +139,11 @@ test -e "${SUMMARY_FILE:-}" || {
   exit 1
 } >&2
 
+# Gets the proposal title
+PROPOSAL_TITLE="Upgrade NNS Dapp Canister to $(git rev-parse --short tags/release-candidate)"
+
 # Prepares the command
-set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH" --arg-sha256 "$ARG_PATH_HASH"
+set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --proposal-title "$PROPOSAL_TITLE" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH" --arg-sha256 "$ARG_PATH_HASH"
 
 # ... just checking...
 echo
