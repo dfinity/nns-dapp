@@ -39,7 +39,8 @@ Introduction unreleased...
 * Simplify rust cache expiry with \`pop_first()\`.
 * Disable functionality buttons while SNS neuron is vesting.
 * Updated \`bitcoin-canister\` revision for proposal payload support.
-* Ignore sign-in "error" \`UserInterrupt\`.
+* Ignore sign-in "error" \`UserInterrupt\`. The entry wraps
+  onto a second line.
 
 #### Deprecated
 
@@ -50,6 +51,12 @@ Introduction unreleased...
 
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Released entry that gets a new line.
+  This line is new.
+* Released entry with a
+  changed second line.
+* Released entry with a new edit
+  in the first line.
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 #### Security
@@ -75,6 +82,9 @@ Introduction unreleased...
 - Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
+- A new entry that wraps onto
+  a second line and
+  a third line.
 
 #### Deprecated
 #### Removed
@@ -115,7 +125,8 @@ Introduction unreleased...
 #### Changed
 
 * Disable functionality buttons while SNS neuron is vesting.
-* Ignore sign-in "error" \`UserInterrupt\`.
+* Ignore sign-in "error" \`UserInterrupt\`. The entry wraps
+  onto a second line.
 
 #### Deprecated
 
@@ -126,6 +137,11 @@ Introduction unreleased...
 
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Released entry that gets a new line.
+* Released entry with a
+  second line.
+* Released entry with an edit
+  in the first line.
 
 #### Security
 #### Not Published
@@ -172,6 +188,8 @@ Introduction unreleased...
 #### Removed
 #### Fixed
 
+* Released entry with a new edit
+  in the first line.
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 #### Security
@@ -182,15 +200,18 @@ Introduction unreleased...
 ### Operations
 
 #### Added
-* CreateServiceNervousSystem proposal support.
-* Base64 image support for payload rendering.
-* \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
+- CreateServiceNervousSystem proposal support.
+- Base64 image support for payload rendering.
+- \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
 
 #### Changed
-* Consolidated the config tests.
-* Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
-* Improve Canister Detail tests by mocking the api layer instead of services.
-* Copied the newest version of clap.bash from snsdemo.
+- Consolidated the config tests.
+- Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
+- Improve Canister Detail tests by mocking the api layer instead of services.
+- Copied the newest version of clap.bash from snsdemo.
+- A new entry that wraps onto
+  a second line and
+  a third line.
 
 #### Deprecated
 #### Removed
@@ -218,7 +239,8 @@ Introduction released...
 #### Changed
 
 * Disable functionality buttons while SNS neuron is vesting.
-* Ignore sign-in "error" \`UserInterrupt\`.
+* Ignore sign-in "error" \`UserInterrupt\`. The entry wraps
+  onto a second line.
 
 #### Deprecated
 
@@ -228,6 +250,11 @@ Introduction released...
 
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Released entry that gets a new line.
+* Released entry with a
+  second line.
+* Released entry with an edit
+  in the first line.
 
 ### Operations
 
