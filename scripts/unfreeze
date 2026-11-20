@@ -14,7 +14,7 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 clap.define long=freezing-threshold desc="Passed to dfx canister update-settings" variable=DFX_FREEZING_THRESHOLD default="2592000"
 clap.define long=cycles desc="Target cycles balance of canister" variable=DFX_CYCLES default="1000000000000"
-clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
 clap.define long=network desc="dfx network to use" variable="DFX_NETWORK" default="local"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"

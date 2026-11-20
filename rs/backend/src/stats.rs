@@ -34,7 +34,7 @@ pub struct Stats {
     pub performance_counts: Vec<PerformanceCount>,
     // TODO: After a transition period, these two can be required rather than being optional.
     //       The transition period can be considered over when most deployments, including
-    //       production, CI and snsdemo populate these fields.
+    //       production and CI populate these fields.
     pub stable_memory_size_bytes: Option<u64>,
     pub wasm_memory_size_bytes: Option<u64>,
     pub migration_countdown: Option<u32>, // When non-zero, a migration is in progress.

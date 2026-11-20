@@ -18,7 +18,7 @@ clap.define short=w long=wasm desc="The WASM file to install" variable=WASM defa
 clap.define short=m long=mode desc="The install mode to use" variable=MODE default="upgrade"
 clap.define short=a long=arg-did-file desc="Optional canister args candid file" variable=ARG_DID_FILE default=""
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
-clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 

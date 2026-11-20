@@ -29,7 +29,7 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=p long=proposal desc="The ID of the proposal to vote on" variable=PROPOSAL_ID default="all"
 clap.define short=n long=neuron desc="The ID of the neuron to vote with" variable=NEURON_ID default="all"
 clap.define short=r long=reject desc="Reject the proposal instead of adopting" variable=REJECT nargs=0 default="false"
-clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
 clap.define long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
