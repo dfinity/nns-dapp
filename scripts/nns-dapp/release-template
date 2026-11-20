@@ -56,8 +56,7 @@ get_unreleased_changelog() {
 }
 
 cat <<EOF >release/PROPOSAL.md
-# Upgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
-Wasm sha256 hash: \`${SHA}\` (\`${CI}\`)
+# NNS Dapp Canister Upgrade
 
 ## Change Log
 
@@ -71,6 +70,10 @@ $(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)
 \`\`\`
 
 ## Wasm Verification
+
+Commit: \`$(git rev-parse tags/release-candidate)\`
+
+Wasm sha256 hash: \`${SHA}\` ([CI build](${CI}))
 
 To build the wasm module yourself and verify its hash, run the following commands from the root of the [nns-dapp repo](https://github.com/dfinity/nns-dapp):
 
