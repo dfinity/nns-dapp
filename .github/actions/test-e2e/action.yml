@@ -25,6 +25,8 @@ runs:
     - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
         node-version: ${{ env.NODE_VERSION }}
+        cache: npm
+        cache-dependency-path: frontend/package-lock.json
     - name: Get nns-dapp
       uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       with:
@@ -48,7 +50,10 @@ runs:
       run: |
         npm ci
         npm run prepare
-        npx playwright install
+        # The tests run in the Google Chrome of the runner image, see the
+        # "chrome" channel in playwright.config.ts, so Playwright does not
+        # need to download its own browsers.
+        command -v google-chrome
     - name: Run Playwright end-to-end tests
       shell: bash
       working-directory: frontend
