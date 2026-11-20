@@ -1,5 +1,5 @@
+import type { ToastMsg as ToastMsgUI } from "$lib/gix";
 import type { I18nKeys, I18nSubstitutions } from "$lib/utils/i18n.utils";
-import type { ToastMsg as ToastMsgUI } from "@dfinity/gix-components";
 
 // Note: This is a "hack"/"bug" supported by the TS team
 // We use empty object intersection (string & {}) instead of plain string

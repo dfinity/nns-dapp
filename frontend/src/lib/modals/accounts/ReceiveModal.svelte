@@ -7,7 +7,7 @@
   import type { Account } from "$lib/types/account";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   export let universeId: UniverseCanisterId | undefined = undefined;

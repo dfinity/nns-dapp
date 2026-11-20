@@ -15,7 +15,7 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 

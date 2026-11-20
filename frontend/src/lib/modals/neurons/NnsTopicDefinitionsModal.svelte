@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { getTopicSubtitle, getTopicTitle } from "$lib/utils/neuron.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
-  import { Modal, Collapsible } from "@dfinity/gix-components";
+  import { Modal, Collapsible } from "$lib/gix";
   import { Topic } from "@icp-sdk/canisters/nns";
 
   interface Props {

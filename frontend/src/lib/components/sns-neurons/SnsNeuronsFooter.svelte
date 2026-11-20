@@ -8,7 +8,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
-  import { Modal, Spinner } from "@dfinity/gix-components";
+  import { Modal, Spinner } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

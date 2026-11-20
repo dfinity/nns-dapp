@@ -10,7 +10,7 @@
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
-  import { Modal, busy } from "@dfinity/gix-components";
+  import { Modal, busy } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, getContext } from "svelte";
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Collapsible } from "@dfinity/gix-components";
+  import { Collapsible } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
@@ -62,7 +62,7 @@
 </article>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "../../gix/styles/mixins/interaction";
 
   article {
     padding: 0 0 var(--padding-2x);

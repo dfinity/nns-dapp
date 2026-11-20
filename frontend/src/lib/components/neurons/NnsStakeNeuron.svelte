@@ -18,7 +18,7 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { isEnoughToStakeNeuron } from "$lib/utils/neuron.utils";
   import { getMaxTransactionAmount, numberToE8s } from "$lib/utils/token.utils";
-  import { busy, Checkbox } from "@dfinity/gix-components";
+  import { busy, Checkbox } from "$lib/gix";
   import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

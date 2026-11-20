@@ -1,6 +1,6 @@
 <script>
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 </script>
 
 <div data-tid="loading-actionable-proposals-component">

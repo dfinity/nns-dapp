@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Html } from "@dfinity/gix-components";
+  import { Html } from "$lib/gix";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
 
   type Props = {
@@ -68,7 +68,7 @@
 </form>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../../gix/styles/mixins/fonts";
 
   .label {
     margin: 0;

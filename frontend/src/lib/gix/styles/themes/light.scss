@@ -1,0 +1,248 @@
+/** Light theme colors - override default dark options */
+
+:root {
+  &[theme="light"] {
+    // -------- NEW CSS VARIABLES ----------------
+    // We want to migrate to a new set of CSS variables for colors more adapted to our Figma.
+    --elements-divider: var(--neutral-250);
+    --elements-icons: var(--blue-600);
+    --elements-badges: var(--blue-accent);
+    --elements-badges-inactive: var(--blue-250);
+    --text-description: var(--blue-600);
+    --text-description-tint: var(--blue-250);
+
+    --tag-background: var(--neutral-250);
+    --tag-text: var(--blue-600);
+    --tag-text-light: var(--neutral-50);
+    --tag-text-dark: var(--blue-900);
+
+    --input-focus-background: var(--neutral-75);
+    --button-primary: var(--blue-accent);
+    --table-background: var(--neutral-75);
+    --table-header-background: var(--cp-light-100);
+    --table-row-background: var(--neutral-75);
+    --table-row-background-hover: var(--cp-light-100);
+
+    --alert: var(--pink-200);
+    --alert-tint: var(--pink-200-a25);
+    --check: var(--green-200);
+    --check-tint: var(--green-200-a25);
+    --pending-color: var(--orange-200);
+    --pending-background: var(--orange-200-a25);
+    --island-card-background: var(--neutral-50);
+
+    // -------- OLD CSS VARIABLES ----------------
+    // Shadows
+    // TODO-colors: Remove along the dark shadows.
+    --box-shadow-color: #d6c3db;
+    --box-shadow-color-rgb: 111, 89, 133;
+
+    --box-shadow: 0px 0px 6px var(--box-shadow-color);
+    --interaction-box-shadow:
+      0px 4px 4px rgba(var(--box-shadow-color-rgb), 0.25),
+      1px 1px 2px rgba(var(--box-shadow-color-rgb), 0.3);
+    --bottom-sheet-box-shadow: -1px -1px 10px
+      rgba(var(--box-shadow-color-rgb), 0.25);
+    --input-box-shadow: 1px 1px 3px rgba(var(--box-shadow-color-rgb), 0.4) inset;
+    --content-box-shadow: 0px 0px 10px rgba(var(--box-shadow-color-rgb), 0.05);
+    --overlay-box-shadow: 0px 0px 8px rgba(var(--box-shadow-color-rgb), 0.2);
+
+    // Footer
+    // TODO-colors: Remove
+    --footer-background: transparent;
+
+    // Gradient
+    --primary-gradient: var(--blue-accent);
+    --primary-gradient-fallback: var(--blue-accent);
+
+    // Json colors
+    --json-bracket-color: inherit;
+    --json-value-color: var(--description-color);
+    --json-string-color: var(--value-color);
+    --json-number-color: var(--value-color);
+    --json-null-color: var(--description-color);
+    --json-principal-color: var(--value-color);
+    --json-hash-color: var(--value-color);
+    --json-bigint-color: var(--value-color);
+    --json-boolean-color: var(--value-color);
+
+    // Inputs
+    /* Design Light/7969C0 (8%)-light */
+    --input-border-color: var(--neutral-250);
+    --input-border-size: 1.5px;
+
+    //Tooltip
+    --tooltip-background: var(--blue-900);
+    --tooltip-border-color: var(--cp-dark-hover-overlay);
+    --tooltip-divider: var(--neutral-50-a15);
+    --tooltip-description-color: var(--neutral-250);
+    --tooltip-text-color: var(--neutral-50);
+    --tooltip-border-size: 1.5px;
+
+    // Dropdown (used for Popover)
+    --dropdown-background: var(--cp-light-100);
+    --dropdown-focus-background: var(--neutral-75);
+    --dropdown-border-color: var(--neutral-250);
+    --dropdown-focus-border-color: var(--blue-accent);
+    --dropdown-border-size: 1.5px;
+
+    // Buttons custom colors
+    --button-secondary-color: var(--primary);
+    --button-card-focus-color: var(--primary);
+    --button-card-focus-background: var(--cp-light-100);
+    --button-disable-background: var(--neutral-250);
+    --button-disable-color: var(--disable-contrast);
+
+    --light-opacity: 0.6;
+    --very-light-opacity: 0.4;
+
+    // Text color
+    --value-color: var(--blue-900);
+    --label-color: var(--text-color);
+    --description-color: var(--blue-600);
+
+    // Overlays - based on dark card background rgb color
+    --backdrop: var(--neutral-blue-1000-a65);
+    --backdrop-contrast: var(--cp-light-100);
+    --backdrop-filter: blur(4px);
+
+    // Disable
+    /* Light/Bg/Background-03 */
+    --disable: var(--neutral-100);
+    --disable-contrast: var(--blue-250);
+    // TODO-colors: Remove application of rgbs
+    // --blue-250 to RGB, uses in merge neurons icp number
+    --disable-contrast-rgb: var(--blue-250-rgb);
+
+    // Line
+    --line: var(--neutral-250);
+
+    // Scrollbar
+    --scrollbar-thumb-color: var(--neutral-250);
+    --scrollbar-thumb-background: transparent;
+
+    // Progress
+    --progress-color: var(--primary);
+    --progress-color-contrast: var(--primary-contrast);
+    --progress-color-rgb: var(--primary-rgb);
+
+    // Custom backgrounds
+    --body-background: radial-gradient(
+      farthest-corner circle at 0% 100%,
+      var(--pink-25),
+      var(--blue-50)
+    );
+    --body-color: var(--neutral-50);
+
+    --content-background: var(--cp-light-opaque);
+    --content-color: var(--text-color);
+    --content-start-background: var(--neutral-75);
+    --content-start-color: var(--text-color);
+
+    --overlay-background: var(--background);
+    --overlay-content-background: var(--neutral-75);
+    --overlay-background-contrast: var(--background-contrast);
+    --overlay-content-background-contrast: var(--focus-background-contrast);
+
+    // Overlay inverted colors - i.e. light mode colors
+    --toast-inverted-background: var(--blue-900);
+    --toast-inverted-background-contrast: var(--neutral-50);
+
+    // Menu
+    --menu-color: var(--blue-900);
+    --menu-select-color: var(--blue-900);
+    --menu-selected-background: var(--neutral-75);
+
+    --toolbar-color: var(--menu-color);
+
+    // Tab and segment
+    --segment-selected-background: var(--focus-background);
+
+    // Sidebar
+    --sidebar-button-background: var(--cp-light-50-45);
+    --sidebar-button-background-hover: var(--neutral-50);
+    --sidebar-icon: var(--text-color);
+
+    // Theme color
+    --theme-color: var(--blue-accent);
+
+    // Palette
+
+    /* Light/Text/Text */
+    --text-color: var(--blue-900);
+    // TODO-colors: Remove application of rgbs
+    --text-color-rgb: 56, 45, 80;
+
+    /* Design: Extracted from Light/7969C0 (8%)-light */
+    --input-background: var(--cp-light-100);
+    --input-background-contrast: var(--text-color);
+
+    /* Design: Light/Bg/Background */
+    --focus-background: var(--neutral-50);
+    // TODO-colors: Remove application of rgbs
+    --focus-background-rgb: 248, 246, 252;
+    --focus-background-contrast: var(--text-color);
+    --focus-background-tint: var(--neutral-50);
+
+    /* Design: Dark/Bg/Background-04 */
+    --card-background: var(--neutral-75);
+    // TODO-colors: Remove application of rgbs
+    --card-background-rgb: 248, 246, 252;
+    --card-background-contrast: var(--text-color);
+    --card-background-contrast-rgb: var(--text-color-rgb);
+    --card-background-shade: var(--cp-light-100);
+    --card-background-tint: var(--neutral-50);
+    --card-background-disabled: var(--cp-light-opaque);
+
+    /* Design: Light/Bg/Background-01 */
+    --background: var(--neutral-250);
+    --background-contrast: var(--text-color);
+    --background-contrast-rgb: var(--text-color-rgb);
+    --background-shade: var(--neutral-250);
+
+    /* Design: Light/Bg/Background-03 */
+    --background-disable: var(--neutral-250);
+    --background-disable-rgb: 225, 217, 243;
+    --background-disable-contrast: var(--disable-contrast);
+
+    --primary: var(--blue-accent);
+    // TODO-colors: Remove application of rgbs, then remove x-rgb.
+    --primary-rgb: 121, 78, 231;
+    --primary-contrast: var(--neutral-50);
+    --primary-shade: var(--cp-dark-350);
+    --primary-tint: var(--cp-light-500);
+
+    --secondary: var(--cp-light-500);
+    --secondary-rgb: 124, 92, 194;
+    --secondary-contrast: var(--blue-900);
+
+    --tertiary: var(--blue-250);
+
+    --warning-emphasis: var(--orange-mid);
+    --warning-emphasis-contrast: var(--blue-900);
+    --warning-emphasis-light: var(--orange-200-a25);
+    --warning-emphasis-shade: var(--orange-200);
+
+    --positive-emphasis: var(--green-200);
+    --positive-emphasis-rgb: 48, 175, 145;
+    --positive-emphasis-contrast: var(--neutral-50);
+    --positive-emphasis-light: var(--green-200-a25);
+    --negative-emphasis: var(--pink-200);
+    --negative-emphasis-contrast: var(--neutral-50);
+    --negative-emphasis-light: var(--pink-200-a25);
+
+    // Proposal status colors
+    --tag-adopted-text: var(--green-200);
+    --tag-adopted-background: var(--green-200-a25);
+    --tag-rejected-text: var(--pink-200);
+    --tag-rejected-background: var(--pink-200-a25);
+    --tag-open-text: var(--blue-accent);
+    --tag-open-background: var(--blue-accent-tint);
+    --tag-executed-text: var(--orchid-200);
+    --tag-executed-background: var(--orchid-200-a25);
+    --tag-failed-text: var(--orange-200);
+    --tag-failed-background: var(--orange-200-a25);
+
+    --banner-background: var(--card-background-tint);
+  }
+}

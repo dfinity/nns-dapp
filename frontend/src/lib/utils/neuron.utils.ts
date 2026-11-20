@@ -23,6 +23,13 @@ import {
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
+import type { WizardStep } from "$lib/gix";
+import {
+  IconDissolving,
+  IconHistoryToggleOff,
+  IconLockClosed,
+  IconLockOpen,
+} from "$lib/gix";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -47,13 +54,6 @@ import {
 } from "$lib/utils/sort.utils";
 import { formatTokenE8s, numberToUlps } from "$lib/utils/token.utils";
 import { isDefined } from "$lib/utils/utils";
-import type { WizardStep } from "@dfinity/gix-components";
-import {
-  IconDissolving,
-  IconHistoryToggleOff,
-  IconLockClosed,
-  IconLockOpen,
-} from "@dfinity/gix-components";
 import {
   ICPToken,
   TokenAmountV2,

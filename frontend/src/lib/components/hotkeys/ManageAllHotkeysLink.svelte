@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { IconEast } from "@dfinity/gix-components";
+  import { IconEast } from "$lib/gix";
 </script>
 
 <a data-tid="manage-all-hotkeys-link" href={AppPath.Hotkeys}>

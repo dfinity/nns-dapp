@@ -38,8 +38,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/card";
+  @use "../../gix/styles/mixins/fonts";
 
   .neuron-id {
     display: flex;

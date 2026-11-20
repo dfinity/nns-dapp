@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import { invalidAddress } from "$lib/utils/accounts.utils";
-  import { IconQRCodeScanner } from "@dfinity/gix-components";
+  import { IconQRCodeScanner } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher } from "svelte";
 

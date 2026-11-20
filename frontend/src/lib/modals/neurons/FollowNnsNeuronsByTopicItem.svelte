@@ -8,7 +8,7 @@
     IconCheckCircleFill,
     IconErrorOutline,
     IconExpandMore,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import {
     Topic,
     type FolloweesForTopic,
@@ -134,7 +134,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .header {
     display: grid;

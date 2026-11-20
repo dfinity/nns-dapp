@@ -15,11 +15,7 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { QrResponse } from "$lib/types/qr-wizard-modal";
   import { neuronStake } from "$lib/utils/neuron.utils";
-  import type {
-    WizardModal,
-    WizardStep,
-    WizardSteps,
-  } from "@dfinity/gix-components";
+  import type { WizardModal, WizardStep, WizardSteps } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import {
     ICPToken,

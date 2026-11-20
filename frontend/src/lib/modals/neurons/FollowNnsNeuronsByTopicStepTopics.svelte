@@ -12,7 +12,7 @@
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
-  import { Collapsible, IconExpandMore } from "@dfinity/gix-components";
+  import { Collapsible, IconExpandMore } from "$lib/gix";
   import {
     Topic,
     type FolloweesForTopic,

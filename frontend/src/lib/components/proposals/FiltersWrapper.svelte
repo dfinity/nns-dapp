@@ -7,7 +7,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .filters {
     // compensate for the negative margin of the filter buttons

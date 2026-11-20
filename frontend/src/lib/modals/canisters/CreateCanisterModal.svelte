@@ -27,7 +27,7 @@
     WizardModal,
     type WizardStep,
     type WizardSteps,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import { ICPToken, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onMount } from "svelte";
 

@@ -4,7 +4,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo } from "$lib/gix";
   import type { NeuronId } from "@icp-sdk/canisters/nns";
 
   export let proposer: NeuronId | undefined;

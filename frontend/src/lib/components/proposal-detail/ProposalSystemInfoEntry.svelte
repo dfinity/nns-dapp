@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo } from "$lib/gix";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   type Props = {

@@ -14,7 +14,7 @@
     isNeuronControllable,
     type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
-  import { IconRight, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { IconRight, KeyValuePairInfo } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";

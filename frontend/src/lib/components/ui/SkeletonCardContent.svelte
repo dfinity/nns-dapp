@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 
   export let size: "small" | "medium" | "large" = "small";
 </script>

@@ -1,5 +1,6 @@
 import * as api from "$lib/api/governance.api";
 import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
+import { busyStore } from "$lib/gix";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -7,7 +8,6 @@ import { ConfirmFollowingButtonPo } from "$tests/page-objects/ConfirmFollowingBu
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { busyStore } from "@dfinity/gix-components";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 

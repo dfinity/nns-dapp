@@ -13,7 +13,7 @@
   import { login } from "$lib/services/auth.services";
   import { i18n } from "$lib/stores/i18n";
   import { layoutAuthReady } from "$lib/stores/layout.store";
-  import { IconLogin, IconUser, Popover } from "@dfinity/gix-components";
+  import { IconLogin, IconUser, Popover } from "$lib/gix";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
@@ -69,7 +69,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/header";
+  @use "../../gix/styles/mixins/header";
 
   .info {
     flex-direction: column;

@@ -1,0 +1,42 @@
+@use "../mixins/media";
+@use "../mixins/display";
+@use "../mixins/layout";
+
+main {
+  @include layout.main;
+
+  margin: 0 auto;
+
+  max-width: var(--max-main-content-width);
+  min-height: 100%;
+
+  padding: var(--padding-2x) var(--padding);
+
+  @include media.min-width(medium) {
+    padding: var(--padding-2x);
+  }
+
+  @include media.min-width(large) {
+    padding: var(--padding-2x) var(--padding-4x);
+  }
+}
+
+header {
+  position: absolute;
+  top: var(--header-offset, 0);
+  left: 0;
+  right: 0;
+
+  height: var(--header-height);
+
+  display: block;
+
+  --toolbar-pointer-events: all;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

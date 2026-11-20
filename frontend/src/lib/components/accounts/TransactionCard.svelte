@@ -10,7 +10,7 @@
     TransactionIconType,
     UiTransaction,
   } from "$lib/types/transaction";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import {
     nonNullish,
     type TokenAmount,
@@ -102,8 +102,8 @@
 </article>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/card";
+  @use "../../gix/styles/mixins/media";
 
   article {
     padding-bottom: var(--padding-2x);

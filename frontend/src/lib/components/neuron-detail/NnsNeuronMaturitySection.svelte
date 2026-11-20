@@ -4,7 +4,7 @@
   import ViewActiveDisbursementsItemAction from "$lib/components/neuron-detail/ViewActiveDisbursementsItemAction.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTotalMaturity } from "$lib/utils/neuron.utils";
-  import { Section } from "@dfinity/gix-components";
+  import { Section } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   type Props = {

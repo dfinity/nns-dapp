@@ -69,7 +69,7 @@
     mapToSelfTransactions,
     sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
-  import { IconDots, Island, Spinner } from "@dfinity/gix-components";
+  import { IconDots, Island, Spinner } from "$lib/gix";
   import {
     ICPToken,
     TokenAmountV2,

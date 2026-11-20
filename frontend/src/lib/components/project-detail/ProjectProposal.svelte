@@ -4,7 +4,7 @@
   import { loadProposal } from "$lib/services/public/proposals.services";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummary } from "$lib/types/sns";
-  import { IconInfo } from "@dfinity/gix-components";
+  import { IconInfo } from "$lib/gix";
   import type { ProposalId, ProposalInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 

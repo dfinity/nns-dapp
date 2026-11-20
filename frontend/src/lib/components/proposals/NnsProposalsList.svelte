@@ -13,7 +13,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { filteredActionableProposals } from "$lib/derived/proposals.derived";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { InfiniteScroll } from "@dfinity/gix-components";
+  import { InfiniteScroll } from "$lib/gix";
   import { isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 

@@ -6,7 +6,7 @@
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
@@ -66,7 +66,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .header {
     display: flex;

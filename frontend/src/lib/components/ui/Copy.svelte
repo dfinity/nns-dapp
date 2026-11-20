@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconCheck, IconCopy, Tooltip } from "@dfinity/gix-components";
+  import { IconCheck, IconCopy, Tooltip } from "$lib/gix";
 
   type Props = {
     value: string;

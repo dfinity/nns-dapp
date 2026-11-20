@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { AddressBookTableRowData } from "$lib/types/address-book";
-  import { IconBin, IconSettings } from "@dfinity/gix-components";
+  import { IconBin, IconSettings } from "$lib/gix";
 
   type Props = {
     rowData: AddressBookTableRowData;

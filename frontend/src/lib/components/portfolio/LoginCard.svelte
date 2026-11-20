@@ -2,7 +2,7 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconUserLogin } from "@dfinity/gix-components";
+  import { IconUserLogin } from "$lib/gix";
 </script>
 
 <Card testId="portfolio-login-card">
@@ -21,7 +21,7 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
   .wrapper {
     display: grid;
     grid-template-columns: auto 1fr;

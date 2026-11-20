@@ -1,0 +1,238 @@
+/** Default theme: dark */
+
+:root {
+  // -------- NEW CSS VARIABLES ----------------
+  // We want to migrate to a new set of CSS variables for colors more adapted to our Figma.
+  --elements-divider: var(--night-200);
+  --elements-icons: var(--night-50);
+  --elements-badges: var(--blue-accent);
+  --elements-badges-inactive: var(--night-100);
+  --text-description: var(--night-50);
+  --text-description-tint: var(--night-100);
+
+  --tag-background: var(--night-400);
+  --tag-text: var(--night-50);
+  --tag-text-light: var(--night-900);
+  --tag-text-dark: var(--night-550);
+
+  --input-focus-background: var(--night-575);
+  --button-primary: var(--blue-accent);
+  --table-background: var(--night-500);
+  --table-header-background: var(--night-575);
+  --table-row-background: var(--night-500);
+  --table-row-background-hover: var(--night-575);
+
+  --alert: var(--pink-200);
+  --alert-tint: var(--pink-200-a25);
+  --check: var(--green-200);
+  --check-tint: var(--green-200-a25);
+  --pending-color: var(--orange-200);
+  --pending-background: var(--orange-200-a25);
+  --island-card-background: var(--night-575);
+
+  // -------- OLD CSS VARIABLES ----------------
+  // Shadows
+  // TODO-colors: Remove along the dark shadows.
+  --box-shadow-color: var(--night-500);
+  --box-shadow-color-rgb: 43, 51, 67;
+
+  --box-shadow: 0px 0px 6px var(--box-shadow-color);
+  --interaction-box-shadow:
+    0px 4px 4px rgba(var(--box-shadow-color-rgb), 0.25),
+    1px 1px 2px rgba(var(--box-shadow-color-rgb), 0.3);
+  --bottom-sheet-box-shadow: -1px -1px 10px
+    rgba(var(--box-shadow-color-rgb), 0.25);
+  --input-box-shadow: 1px 1px 3px rgba(var(--box-shadow-color-rgb), 0.4) inset;
+  --content-box-shadow: 0px 0px 10px rgba(var(--box-shadow-color-rgb), 0.05);
+  --overlay-box-shadow: 0px 0px 8px rgba(var(--box-shadow-color-rgb), 0.2);
+
+  // Footer
+  --footer-background: transparent;
+
+  // Gradient
+  --primary-gradient: var(--blue-accent);
+  --primary-gradient-fallback: var(--blue-accent);
+
+  // Json colors
+  --json-bracket-color: inherit;
+  --json-value-color: var(--description-color);
+  --json-string-color: var(--value-color);
+  --json-number-color: var(--value-color);
+  --json-null-color: var(--description-color);
+  --json-principal-color: var(--value-color);
+  --json-hash-color: var(--value-color);
+  --json-bigint-color: var(--value-color);
+  --json-boolean-color: var(--value-color);
+
+  // Inputs
+  --input-border-color: var(--night-200);
+  --input-border-size: 1.5px;
+
+  //Tooltip
+  --tooltip-background: var(--neutral-50);
+  --tooltip-border-color: var(--neutral-blue-a10);
+  --tooltip-divider: var(--neutral-1000-a20);
+  --tooltip-description-color: var(--night-400);
+  --tooltip-text-color: var(--night-900);
+  --tooltip-border-size: 1.5px;
+
+  // Dropdown (used for Popover)
+  --dropdown-background: var(--night-575);
+  --dropdown-focus-background: var(--night-575);
+  --dropdown-border-color: var(--night-200);
+  --dropdown-focus-border-color: var(--blue-accent);
+  --dropdown-border-size: 1.5px;
+
+  // Buttons custom colors
+  --button-secondary-color: var(--blue-accent);
+  --button-card-focus-color: var(--blue-accent);
+  --button-card-focus-background: var(--night-550);
+  --button-disable-background: var(--night-575);
+  --button-disable-color: var(--night-50);
+
+  --light-opacity: 0.6;
+  --very-light-opacity: 0.4;
+
+  // Text color
+  --value-color: var(--neutral-50);
+  --label-color: var(--text-color);
+  --description-color: var(--night-50);
+
+  // Overlays - based on dark card background rgb color
+  --backdrop: var(--neutral-blue-1000-a65);
+  --backdrop-contrast: var(--neutral-50);
+  --backdrop-filter: blur(6px);
+
+  // Disable
+  --disable: var(--night-400);
+  --disable-contrast: var(--night-50);
+  // TODO-colors: Remove application of rgbs
+  --disable-contrast-rgb: 155, 173, 209;
+
+  // Line
+  --line: var(--night-400);
+
+  // Scrollbar
+  --scrollbar-thumb-background: transparent;
+  --scrollbar-thumb-color: var(--night-200);
+
+  // Progress
+  --progress-color: var(--blue-accent);
+  --progress-color-contrast: var(--neutral-50);
+  --progress-color-rgb: 77, 121, 255;
+
+  // Custom backgrounds
+  --body-background: radial-gradient(
+    farthest-corner circle at 0% 100%,
+    var(--night-1000),
+    var(--night-550)
+  );
+  --body-color: var(--night-100);
+
+  --content-background: var(--neutral-1000-a30);
+  --content-color: var(--neutral-50);
+  --content-start-background: var(--night-550);
+  --content-start-color: var(--neutral-50);
+
+  --overlay-background: var(--night-575);
+  --overlay-background-contrast: var(--background-contrast);
+  --overlay-content-background: var(--background);
+  --overlay-content-background-contrast: var(--neutral-50);
+
+  // Overlay inverted colors - i.e. light mode colors
+  --toast-inverted-background: var(--neutral-50);
+  --toast-inverted-background-contrast: var(--night-550);
+
+  // Menu
+  --menu-color: var(--neutral-50);
+  --menu-select-color: var(--neutral-50);
+  --menu-selected-background: var(--night-550);
+
+  --toolbar-color: var(--neutral-50);
+
+  // Tab and segment
+  --segment-selected-background: var(--overlay-content-background);
+
+  // Sidebar
+  --sidebar-button-background: var(--neutral-blue-a10);
+  --sidebar-button-background-hover: var(--night-550);
+  --sidebar-icon: var(--neutral-50);
+
+  // Theme color
+  --theme-color: var(--card-background);
+
+  // Palette
+
+  /* Light/Text/Text-xx? */
+  --text-color: var(--neutral-50);
+  --text-color-rgb: 255, 255, 255;
+
+  /* Design: Dark/Bg/Background-03 */
+  --input-background: var(--night-500);
+  --input-background-contrast: var(--neutral-50);
+
+  /* Design: Dark/Bg/Background */
+  --focus-background: var(--night-575);
+  --focus-background-rgb: 33, 39, 51;
+  --focus-background-contrast: var(--neutral-50);
+  --focus-background-tint: var(--night-400);
+
+  /* Design: Dark/Bg/Background-01 */
+  --card-background: var(--night-500);
+  --card-background-rgb: 43, 51, 67;
+  --card-background-contrast: var(--neutral-50);
+  --card-background-contrast-rgb: 255, 255, 255;
+  --card-background-shade: var(--night-575);
+  --card-background-tint: var(--night-575);
+  --card-background-disabled: var(--neutral-blue-a10);
+
+  /* Design: Dark/Bg/Background-02 */
+  --background: var(--night-400);
+  --background-contrast: var(--neutral-50);
+  --background-contrast-rgb: 255, 255, 255;
+  --background-shade: var(--night-600);
+
+  /* Design: Dark/Bg/Background-01 */
+  --background-disable: var(--neutral-75);
+  --background-disable-rgb: 249, 247, 255;
+  --background-disable-contrast: var(--disable-contrast);
+
+  --primary: var(--blue-accent);
+  --primary-rgb: 77, 121, 255;
+  --primary-contrast: var(--neutral-50);
+  --primary-shade: var(--blue-accent-secondary);
+  --primary-tint: var(--blue-accent);
+
+  --secondary: var(--blue-accent);
+  --secondary-rgb: 77, 121, 255;
+  --secondary-contrast: var(--neutral-50);
+
+  --tertiary: var(--night-50);
+
+  --warning-emphasis: var(--orange-200);
+  --warning-emphasis-contrast: var(--neutral-50);
+  --warning-emphasis-light: var(--orange-200-a25);
+  --warning-emphasis-shade: var(--orange-200);
+
+  --positive-emphasis: var(--green-200);
+  --positive-emphasis-rgb: 45, 178, 134;
+  --positive-emphasis-contrast: var(--neutral-50);
+  --positive-emphasis-light: var(--green-200-a25);
+  --negative-emphasis: var(--pink-200);
+  --negative-emphasis-contrast: var(--neutral-50);
+  --negative-emphasis-light: var(--pink-200-a25);
+
+  // Proposal status colors
+  --tag-adopted-text: var(--green-200);
+  --tag-adopted-background: var(--green-200-a25);
+  --tag-rejected-text: var(--pink-200);
+  --tag-rejected-background: var(--pink-200-a25);
+  --tag-open-text: var(--blue-accent);
+  --tag-open-background: var(--blue-accent-tint);
+  --tag-executed-text: var(--orchid-200);
+  --tag-executed-background: var(--orchid-200-a25);
+  --tag-failed-text: var(--orange-200);
+  --tag-failed-background: var(--orange-200-a25);
+
+  --banner-background: var(--card-background-tint);
+}

@@ -1,8 +1,8 @@
-import { translate } from "$lib/utils/i18n.utils";
 import {
   startBusy as startBusyStore,
   stopBusy as stopBusyStore,
-} from "@dfinity/gix-components";
+} from "$lib/gix";
+import { translate } from "$lib/utils/i18n.utils";
 
 export type BusyStateInitiatorType =
   | "logout"

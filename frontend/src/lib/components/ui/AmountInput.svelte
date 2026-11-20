@@ -50,7 +50,7 @@
 </InputWithError>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .bottom {
     padding: var(--padding-2x);

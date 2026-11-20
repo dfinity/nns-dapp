@@ -7,12 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import { mapProposalInfoToCard } from "$lib/utils/portfolio.utils";
-  import {
-    IconClockNoFill,
-    IconRight,
-    IconVote,
-    Tag,
-  } from "@dfinity/gix-components";
+  import { IconClockNoFill, IconRight, IconVote, Tag } from "$lib/gix";
   import type { ProposalInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
@@ -89,9 +84,9 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/text";
   @use "../../themes/mixins/launchpad";
   @use "../../themes/mixins/portfolio";
 

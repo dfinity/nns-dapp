@@ -11,7 +11,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Html, busy } from "@dfinity/gix-components";
+  import { Html, busy } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
@@ -132,7 +132,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   h3 {
     margin: 0;

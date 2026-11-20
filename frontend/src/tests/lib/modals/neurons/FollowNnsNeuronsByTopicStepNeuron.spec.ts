@@ -1,4 +1,5 @@
 import * as api from "$lib/api/governance.api";
+import { toastsStore } from "$lib/gix";
 import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -8,7 +9,6 @@ import { FollowNnsNeuronsByTopicStepNeuronPo } from "$tests/page-objects/FollowN
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { Topic, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 

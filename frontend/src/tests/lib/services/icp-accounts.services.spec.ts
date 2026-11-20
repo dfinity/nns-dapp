@@ -8,6 +8,7 @@ import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+import { toastsStore } from "$lib/gix";
 import * as icpLedgerServicesProxy from "$lib/proxy/icp-ledger.services.proxy";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import * as authServices from "$lib/services/auth.services";
@@ -55,7 +56,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   AccountIdentifier,

@@ -3,7 +3,7 @@
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconBin, Popover } from "@dfinity/gix-components";
+  import { IconBin, Popover } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

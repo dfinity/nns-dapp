@@ -1,7 +1,7 @@
 <script lang="ts">
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import SkeletonLogo from "$lib/components/ui/SkeletonLogo.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 </script>
 
 <CardFrame testId="skeleton-project-card-component">

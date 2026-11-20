@@ -42,8 +42,8 @@ const config: UserConfig = {
           const lazy = ["html5-qrcode", "qr-creator", "@zondax", "marked"];
 
           if (
-            ["@sveltejs", "svelte", "@dfinity/gix-components", ...lazy].find(
-              (lib) => folder.includes(lib)
+            ["@sveltejs", "svelte", ...lazy].find((lib) =>
+              folder.includes(lib)
             ) === undefined &&
             folder.includes("node_modules")
           ) {

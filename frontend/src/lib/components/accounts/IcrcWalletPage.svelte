@@ -27,7 +27,7 @@
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
-  import { IconDots, Island, Spinner, Tag } from "@dfinity/gix-components";
+  import { IconDots, Island, Spinner, Tag } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { get, type Writable } from "svelte/store";

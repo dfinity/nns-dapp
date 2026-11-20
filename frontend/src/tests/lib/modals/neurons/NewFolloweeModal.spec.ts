@@ -1,3 +1,4 @@
+import { toastsStore } from "$lib/gix";
 import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
@@ -10,7 +11,6 @@ import {
 import { NewFolloweeModalPo } from "$tests/page-objects/NewFolloweeModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { Topic, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 import type { Mock } from "vitest";

@@ -5,7 +5,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokensModal from "$lib/components/ic/GetTokensModal.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { IconAccountBalance } from "@dfinity/gix-components";
+  import { IconAccountBalance } from "$lib/gix";
 
   let visible = false;
 
@@ -33,7 +33,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .open {
     display: flex;

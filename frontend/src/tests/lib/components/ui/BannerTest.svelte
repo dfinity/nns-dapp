@@ -1,7 +1,7 @@
 <script lang="ts">
   import Banner from "$lib/components/ui/Banner.svelte";
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
-  import { IconErrorOutline } from "@dfinity/gix-components";
+  import { IconErrorOutline } from "$lib/gix";
 
   export let isClosable: boolean = false;
   export let isCritical: boolean = false;

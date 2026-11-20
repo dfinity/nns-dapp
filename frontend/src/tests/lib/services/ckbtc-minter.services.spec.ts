@@ -6,6 +6,7 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { toastsStore } from "$lib/gix";
 import * as services from "$lib/services/ckbtc-minter.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
@@ -20,7 +21,6 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import type { RetrieveBtcStatusV2WithId } from "@icp-sdk/canisters/ckbtc";
 import {
   MinterAlreadyProcessingError,

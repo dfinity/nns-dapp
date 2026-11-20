@@ -4,7 +4,7 @@
   import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
   import { i18n } from "$lib/stores/i18n";
   import { getObjMaxDepth } from "$lib/utils/utils";
-  import { IconCollapseAll, IconExpandAll } from "@dfinity/gix-components";
+  import { IconCollapseAll, IconExpandAll } from "$lib/gix";
   import { fade } from "svelte/transition";
 
   const DEFAULT_EXPANDED_LEVEL = 1;
@@ -61,7 +61,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .container {
     // reset "content-cell-island" padding

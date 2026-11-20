@@ -33,7 +33,7 @@
     buildSwitchUniverseUrl,
   } from "$lib/utils/navigation.utils";
   import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
-  import { IconAdd, IconBin, Input, Spinner } from "@dfinity/gix-components";
+  import { IconAdd, IconBin, Input, Spinner } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import { Principal } from "@icp-sdk/core/principal";
   import { onMount, tick } from "svelte";
@@ -325,7 +325,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .util-form {
     padding: var(--padding-3x);

@@ -19,7 +19,7 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo, Section } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
@@ -119,7 +119,7 @@
 </Section>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   h3 {
     margin: 0;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 
   // svelte-ignore unused-export-let
   export let rowData: ResponsiveTableRowData;

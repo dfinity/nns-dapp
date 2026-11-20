@@ -1,7 +1,7 @@
 <!-- Source DFINITY Foundation -->
 <script lang="ts">
   // TODO: Replace with GIX icon
-  import { DEFAULT_ICON_SIZE } from "@dfinity/gix-components";
+  import { DEFAULT_ICON_SIZE } from "$lib/gix";
 
   interface Props {
     size?: string | number;

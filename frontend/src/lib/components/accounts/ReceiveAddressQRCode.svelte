@@ -1,7 +1,7 @@
 <script lang="ts">
   import Copy from "$lib/components/ui/Copy.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { QRCode } from "@dfinity/gix-components";
+  import { QRCode } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
@@ -73,7 +73,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .content {
     display: flex;

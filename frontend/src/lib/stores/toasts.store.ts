@@ -1,10 +1,10 @@
 import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
+import { toastsStore } from "$lib/gix";
 import type { ToastLabelKey, ToastMsg } from "$lib/types/toast";
 import { errorToString } from "$lib/utils/error.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
 import { stringifyJson } from "$lib/utils/utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
 const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>

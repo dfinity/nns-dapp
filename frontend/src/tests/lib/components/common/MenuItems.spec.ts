@@ -1,6 +1,7 @@
 import MenuItems from "$lib/components/common/MenuItems.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { layoutMenuOpen, menuCollapsed, menuStore } from "$lib/gix";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
@@ -15,11 +16,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import {
-  layoutMenuOpen,
-  menuCollapsed,
-  menuStore,
-} from "@dfinity/gix-components";
 import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";

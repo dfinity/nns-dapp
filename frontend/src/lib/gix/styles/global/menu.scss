@@ -1,0 +1,99 @@
+@use "../mixins/media";
+
+:root {
+  div.split-pane,
+  div.stretch-pane {
+    div[role="menu"]:first-child {
+      --menu-width: var(--menu-expanded-width);
+
+      button {
+        &.menu-collapse {
+          opacity: 0;
+          visibility: hidden;
+          transition:
+            opacity var(--animation-time-long),
+            transform var(--animation-time-normal);
+
+          padding: var(--padding-0_5x);
+          margin: 0 auto;
+
+          background: var(--card-background);
+          color: var(--tertiary);
+
+          width: var(--padding-4x);
+          height: var(--padding-4x);
+          min-height: var(--padding-4x);
+
+          transform: rotate(0deg);
+        }
+
+        &.menu-collapse {
+          position: absolute;
+          right: calc(-1 * var(--padding-2x));
+          bottom: var(--padding-8x);
+        }
+      }
+
+      [role="menuitem"] {
+        span,
+        div {
+          opacity: 1;
+          transition: opacity var(--animation-time-normal);
+        }
+      }
+
+      .menu-background {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity var(--animation-time-normal);
+      }
+    }
+  }
+
+  &[menu="collapsed"] {
+    div.split-pane,
+    div.stretch-pane {
+      div[role="menu"]:first-child:not(.open) {
+        --menu-width: var(--menu-collapsed-width);
+
+        .inner {
+          overflow-x: hidden;
+        }
+
+        button.menu-collapse {
+          transform: rotate(180deg);
+
+          @include media.min-width(large) {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+
+        [role="menuitem"] {
+          span,
+          div {
+            opacity: 0;
+          }
+        }
+
+        .menu-background *:not(.background) {
+          opacity: 0;
+        }
+      }
+    }
+  }
+
+  &:not([menu="collapsed"]) {
+    div.split-pane,
+    div.stretch-pane {
+      div[role="menu"]:first-child {
+        @include media.min-width(large) {
+          button.menu-collapse {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+      }
+    }
+  }
+}

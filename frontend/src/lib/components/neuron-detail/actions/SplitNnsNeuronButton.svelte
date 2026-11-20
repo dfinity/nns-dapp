@@ -8,7 +8,7 @@
     neuronCanBeSplit,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken } from "@dfinity/utils";
 

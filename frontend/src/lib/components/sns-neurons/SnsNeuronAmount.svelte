@@ -2,7 +2,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { TokenAmountV2 } from "@dfinity/utils";
 

@@ -1,5 +1,6 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import { toastsStore } from "$lib/gix";
 import * as services from "$lib/services/sns.services";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
@@ -18,7 +19,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";

@@ -1,0 +1,58 @@
+/** Similar behavior as button.text */
+@use "../mixins/button";
+
+a {
+  font-size: inherit;
+  font-family: inherit;
+
+  color: inherit;
+
+  text-decoration: underline;
+
+  &:active,
+  &:focus,
+  &:hover {
+    color: var(--value-color);
+  }
+
+  &.button {
+    // Default is `inline` and buttons are `inline-block` but they have a hidden flex implemented in the browser.
+    // https://stackoverflow.com/questions/15764600/what-makes-the-text-on-a-button-element-vertically-centered/34612505#34612505
+    // Therefore, to make sure the a.button behaves the same, we set it to `inline-flex`.
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    text-decoration: none;
+
+    &.primary,
+    &.secondary,
+    &.success,
+    &.danger,
+    &.warning {
+      @include button.base;
+    }
+
+    &.text {
+      @include button.text;
+    }
+
+    &.primary {
+      @include button.primary;
+    }
+
+    &.secondary {
+      @include button.secondary;
+    }
+
+    &.full-width {
+      @include button.full-width;
+    }
+
+    &.with-icon {
+      @include button.with-icon;
+    }
+  }
+}

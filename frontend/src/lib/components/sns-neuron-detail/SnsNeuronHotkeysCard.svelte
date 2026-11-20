@@ -22,7 +22,7 @@
     canIdentityManageHotkeys,
     getSnsNeuronHotkeys,
   } from "$lib/utils/sns-neuron.utils";
-  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
+  import { IconClose, IconWarning, Value } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
@@ -159,7 +159,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "../../gix/styles/mixins/card";
 
   .title {
     display: flex;

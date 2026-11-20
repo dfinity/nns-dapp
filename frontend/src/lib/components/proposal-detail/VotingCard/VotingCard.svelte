@@ -13,7 +13,7 @@
     CompactNeuronInfo,
     IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
-  import { BottomSheet } from "@dfinity/gix-components";
+  import { BottomSheet } from "$lib/gix";
 
   export let hasNeurons: boolean;
   export let visible: boolean;
@@ -58,7 +58,7 @@
 </BottomSheet>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../gix/styles/mixins/media";
 
   .container {
     display: flex;

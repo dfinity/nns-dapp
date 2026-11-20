@@ -1,5 +1,6 @@
 import * as indexApi from "$lib/api/icp-index.api";
 import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { toastsStore } from "$lib/gix";
 import {
   loadIcpAccountNextTransactions,
   loadIcpAccountTransactions,
@@ -10,7 +11,6 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icp-index.api");

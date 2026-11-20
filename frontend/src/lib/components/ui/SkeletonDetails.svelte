@@ -1,6 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 </script>
 
 <TestIdWrapper testId="skeleton-details-component">

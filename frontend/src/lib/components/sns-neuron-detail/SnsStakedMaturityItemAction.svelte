@@ -3,7 +3,7 @@
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formattedStakedMaturity } from "$lib/utils/sns-neuron.utils";
-  import { IconStakedMaturity } from "@dfinity/gix-components";
+  import { IconStakedMaturity } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
   export let neuron: SnsGovernanceDid.Neuron;

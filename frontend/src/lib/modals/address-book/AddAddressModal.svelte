@@ -11,7 +11,7 @@
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { getAddressString } from "$lib/utils/address-book.utils";
-  import { Modal, busy } from "@dfinity/gix-components";
+  import { Modal, busy } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   interface Props {

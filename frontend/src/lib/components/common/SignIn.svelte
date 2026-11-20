@@ -3,7 +3,7 @@
   import { login } from "$lib/services/auth.services";
   import { i18n } from "$lib/stores/i18n";
   import { layoutAuthReady } from "$lib/stores/layout.store";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
 
   let disabled = true;
   $: disabled = $authSignedInStore || !$layoutAuthReady;

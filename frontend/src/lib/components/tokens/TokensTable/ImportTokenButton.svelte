@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { IconAdd, Tooltip } from "@dfinity/gix-components";
+  import { IconAdd, Tooltip } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

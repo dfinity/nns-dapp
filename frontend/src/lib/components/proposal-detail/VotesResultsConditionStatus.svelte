@@ -4,7 +4,7 @@
     IconCheckCircleFill,
     IconCheckCircleV2,
     IconCloseCircleFill,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import type { Snippet } from "svelte";
 
   type Props = {

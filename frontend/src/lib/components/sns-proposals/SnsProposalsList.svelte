@@ -11,7 +11,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
-  import { InfiniteScroll } from "@dfinity/gix-components";
+  import { InfiniteScroll } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable, isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";

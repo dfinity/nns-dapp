@@ -1,5 +1,6 @@
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { toastsStore } from "$lib/gix";
 import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
 import SnsNeuronContextTest from "$tests/lib/components/sns-neuron-detail/SnsNeuronContextTest.svelte";
@@ -7,7 +8,6 @@ import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
-import { toastsStore } from "@dfinity/gix-components";
 import { SnsNeuronPermissionType } from "@icp-sdk/canisters/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

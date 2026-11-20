@@ -5,7 +5,7 @@
   import UsdValueHeadless from "$lib/components/ui/UsdValueHeadless.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
 
   type Props = {
     usdAmount: number | undefined;
@@ -72,7 +72,7 @@
 </UsdValueHeadless>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .wrapper {
     display: flex;

@@ -4,6 +4,7 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { toastsStore } from "$lib/gix";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import * as services from "$lib/services/ckbtc-convert.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
@@ -28,7 +29,6 @@ import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionMod
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setTickers } from "$tests/utils/tickers.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmountV2, nonNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

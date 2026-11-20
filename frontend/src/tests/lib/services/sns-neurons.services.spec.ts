@@ -2,6 +2,7 @@ import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { toastsStore } from "$lib/gix";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-neurons.services";
 import {
@@ -38,7 +39,6 @@ import {
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   arrayOfNumberToUint8Array,
   fromDefinedNullable,

@@ -12,7 +12,7 @@
     isNeuronControllable,
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
-  import { IconExpandCircleDown } from "@dfinity/gix-components";
+  import { IconExpandCircleDown } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   type Props = {

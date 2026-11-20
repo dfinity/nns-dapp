@@ -9,7 +9,7 @@
   } from "$lib/types/wallet.context";
   import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
   import { openWalletModal } from "$lib/utils/modals.utils";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { getContext } from "svelte";
 

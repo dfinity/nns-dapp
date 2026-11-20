@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight } from "$lib/gix";
 
   // svelte-ignore unused-export-let
   export let userToken: UserTokenData | UserTokenFailed;

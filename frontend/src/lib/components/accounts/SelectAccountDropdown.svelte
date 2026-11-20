@@ -7,7 +7,7 @@
     getAccountByRootCanister,
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
-  import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
+  import { Dropdown, DropdownItem, Spinner } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
 
@@ -72,7 +72,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/form";
+  @use "../../gix/styles/mixins/form";
   .select {
     @include form.input;
 

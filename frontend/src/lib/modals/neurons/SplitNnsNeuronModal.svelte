@@ -14,7 +14,7 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { ulpsToNumber } from "$lib/utils/token.utils";
-  import { busy, Modal } from "@dfinity/gix-components";
+  import { busy, Modal } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import {
     ICPToken,

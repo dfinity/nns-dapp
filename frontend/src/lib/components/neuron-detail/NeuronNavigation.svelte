@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconLeft, IconRight } from "@dfinity/gix-components";
+  import { IconLeft, IconRight } from "$lib/gix";
   import { nonNullish, isNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { pageStore } from "$lib/derived/page.derived";
@@ -54,7 +54,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .neuron-nav {
     display: flex;

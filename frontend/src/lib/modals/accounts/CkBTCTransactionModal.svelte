@@ -32,7 +32,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
-  import type { WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "$lib/gix";
   import { nonNullish, type Token, type TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

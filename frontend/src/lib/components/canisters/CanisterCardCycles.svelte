@@ -12,7 +12,7 @@
     formatCyclesToTCycles,
   } from "$lib/utils/canisters.utils";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { onDestroy } from "svelte";
 

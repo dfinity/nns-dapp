@@ -1,6 +1,6 @@
 <script lang="ts">
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
 
   export let loading = false;
 </script>

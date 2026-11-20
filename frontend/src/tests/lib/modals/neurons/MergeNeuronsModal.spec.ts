@@ -1,5 +1,6 @@
 import * as governanceApi from "$lib/api/governance.api";
 import { mergeNeurons } from "$lib/api/governance.api";
+import { toastsStore } from "$lib/gix";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
@@ -16,7 +17,6 @@ import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 

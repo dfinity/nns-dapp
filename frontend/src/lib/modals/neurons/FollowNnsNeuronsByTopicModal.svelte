@@ -8,7 +8,7 @@
     wizardStepIndex,
     type WizardStep,
     type WizardSteps,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import { Topic, type NeuronId } from "@icp-sdk/canisters/nns";
 
   type Props = {

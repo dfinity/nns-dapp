@@ -8,7 +8,7 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import { Value } from "@dfinity/gix-components";
+  import { Value } from "$lib/gix";
   import { getContext } from "svelte";
 
   const { store }: CanisterDetailsContext = getContext<CanisterDetailsContext>(
@@ -36,7 +36,7 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "../../gix/styles/mixins/card";
 
   .actions {
     display: flex;

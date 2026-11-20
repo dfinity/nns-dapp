@@ -2,7 +2,7 @@
   import { beforeNavigate } from "$app/navigation";
   import { canistersPathStore } from "$lib/derived/paths.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { IconExplore } from "@dfinity/gix-components";
+  import { IconExplore } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();

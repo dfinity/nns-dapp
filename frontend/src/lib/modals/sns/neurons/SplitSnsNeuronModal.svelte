@@ -9,7 +9,7 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
-  import { busy, Modal } from "@dfinity/gix-components";
+  import { busy, Modal } from "$lib/gix";
   import type { E8s } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";

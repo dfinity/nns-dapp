@@ -7,7 +7,7 @@
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import { Checkbox, KeyValuePair } from "@dfinity/gix-components";
+  import { Checkbox, KeyValuePair } from "$lib/gix";
   import { fade } from "svelte/transition";
 
   export let neuron: VotingNeuron;

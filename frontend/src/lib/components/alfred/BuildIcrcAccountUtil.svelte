@@ -1,7 +1,7 @@
 <script lang="ts">
   import Copy from "$lib/components/ui/Copy.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconKey, Input } from "@dfinity/gix-components";
+  import { IconKey, Input } from "$lib/gix";
   import { hexStringToUint8Array, isNullish, nonNullish } from "@dfinity/utils";
   import { SubAccount } from "@icp-sdk/canisters/ledger/icp";
   import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
@@ -138,7 +138,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .util-form {
     padding: var(--padding-3x);

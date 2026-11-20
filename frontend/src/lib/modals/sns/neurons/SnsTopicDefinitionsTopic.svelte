@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Collapsible, Tag, Tooltip } from "@dfinity/gix-components";
+  import { Collapsible, Tag, Tooltip } from "$lib/gix";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
   import { getAllSnsNSFunctions } from "$lib/utils/sns-topics.utils";

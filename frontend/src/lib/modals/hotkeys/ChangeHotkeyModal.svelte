@@ -14,7 +14,7 @@
   } from "$lib/types/hotkeys";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Checkbox, Modal } from "@dfinity/gix-components";
+  import { Checkbox, Modal } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Principal } from "@icp-sdk/core/principal";
   import { SvelteSet } from "svelte/reactivity";

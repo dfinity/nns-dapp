@@ -1,7 +1,7 @@
 <script lang="ts">
   import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
-  import { Toggle } from "@dfinity/gix-components";
+  import { Toggle } from "$lib/gix";
 
   const checked = $derived($hideZeroNeuronsStore === "hide");
 

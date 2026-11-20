@@ -14,7 +14,7 @@
     isNeuronControllableByUser,
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
-  import { Checkbox, Spinner } from "@dfinity/gix-components";
+  import { Checkbox, Spinner } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
@@ -195,7 +195,7 @@
 </form>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .visibility-form-component {
     row-gap: var(--padding-3x);

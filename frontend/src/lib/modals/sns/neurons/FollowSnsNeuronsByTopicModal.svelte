@@ -38,7 +38,7 @@
     wizardStepIndex,
     type WizardStep,
     type WizardSteps,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
@@ -355,7 +355,7 @@
 </WizardModal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../gix/styles/mixins/media";
 
   // Ensure all tag backgrounds in the modal are visible in dark mode.
   @include media.dark-theme {

@@ -5,7 +5,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 

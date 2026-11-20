@@ -15,11 +15,7 @@
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
   } from "$lib/utils/sns-neuron.utils";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { WizardModal, type WizardStep, type WizardSteps } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {

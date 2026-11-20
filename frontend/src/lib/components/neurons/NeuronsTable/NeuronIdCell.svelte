@@ -2,7 +2,7 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
+  import { IconPublicBadge, Tooltip } from "$lib/gix";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
 
   type Props = {

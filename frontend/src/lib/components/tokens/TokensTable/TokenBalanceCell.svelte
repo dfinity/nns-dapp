@@ -9,7 +9,7 @@
     isUserTokenData,
     isUserTokenLoading,
   } from "$lib/utils/user-token.utils";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner } from "$lib/gix";
 
   export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 </script>

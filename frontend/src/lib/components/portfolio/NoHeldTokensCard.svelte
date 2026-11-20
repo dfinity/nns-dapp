@@ -4,7 +4,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
+  import { IconAccountsPage, IconHeldTokens } from "$lib/gix";
 
   type Props = {
     icpOnlyTable?: boolean;
@@ -42,7 +42,7 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .wrapper {
     box-sizing: border-box;

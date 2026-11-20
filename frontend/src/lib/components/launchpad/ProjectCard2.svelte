@@ -26,7 +26,7 @@
     IconVote,
     IconWallet,
     Tooltip,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
 
@@ -160,9 +160,9 @@
 </CardFrame>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/text";
   @use "../../themes/mixins/launchpad";
 
   .card-content {

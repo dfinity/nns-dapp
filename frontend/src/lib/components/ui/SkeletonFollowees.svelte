@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 </script>
 
 <div data-tid="skeleton-followees">

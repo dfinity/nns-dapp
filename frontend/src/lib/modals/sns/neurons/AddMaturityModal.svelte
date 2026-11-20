@@ -4,7 +4,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { numberToE8s } from "$lib/utils/token.utils";
-  import { Modal, Spinner } from "@dfinity/gix-components";
+  import { Modal, Spinner } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";

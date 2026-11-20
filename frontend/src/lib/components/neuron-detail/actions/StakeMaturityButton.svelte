@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import { isNullish } from "@dfinity/utils";
 
   type Props = {

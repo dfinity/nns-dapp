@@ -8,6 +8,7 @@ import {
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { busyStore, toastsStore } from "$lib/gix";
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -19,7 +20,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { tick } from "svelte";
 import { get } from "svelte/store";

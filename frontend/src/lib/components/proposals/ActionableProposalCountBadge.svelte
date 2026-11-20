@@ -4,7 +4,7 @@
   import type { Universe } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import { Principal } from "@icp-sdk/core/principal";
   import { cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";

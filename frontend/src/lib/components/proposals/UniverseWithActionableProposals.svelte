@@ -2,7 +2,7 @@
   import FetchLimitWarning from "$lib/components/proposals/FetchLimitWarning.svelte";
   import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import type { Universe } from "$lib/types/universe";
-  import { InfiniteScroll } from "@dfinity/gix-components";
+  import { InfiniteScroll } from "$lib/gix";
   import type { Snippet } from "svelte";
 
   type Props = {

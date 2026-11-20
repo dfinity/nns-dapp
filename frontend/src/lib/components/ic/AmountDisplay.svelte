@@ -82,8 +82,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   div {
     display: inline-flex;

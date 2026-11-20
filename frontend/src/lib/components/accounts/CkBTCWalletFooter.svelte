@@ -6,7 +6,7 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { WalletStore } from "$lib/types/wallet.context";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Writable } from "svelte/store";
 

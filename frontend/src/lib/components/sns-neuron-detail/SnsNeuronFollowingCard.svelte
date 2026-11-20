@@ -20,7 +20,7 @@
     hasPermissionToVote,
     type SnsFolloweesByNeuron,
   } from "$lib/utils/sns-neuron.utils";
-  import { IconRight, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { IconRight, KeyValuePairInfo } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Principal } from "@icp-sdk/core/principal";
@@ -122,7 +122,7 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   h3 {
     line-height: var(--line-height-standard);

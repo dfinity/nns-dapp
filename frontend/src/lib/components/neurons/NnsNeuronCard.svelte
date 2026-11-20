@@ -44,7 +44,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "../../gix/styles/mixins/card";
   @use "../../themes/mixins/neuron";
 
   // TODO: avoid root global styling

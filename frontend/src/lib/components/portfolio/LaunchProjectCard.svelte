@@ -14,12 +14,7 @@
     type FullProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import { ulpsToNumber } from "$lib/utils/token.utils";
-  import {
-    IconClockNoFill,
-    IconRight,
-    IconRocketLaunch,
-    Tag,
-  } from "@dfinity/gix-components";
+  import { IconClockNoFill, IconRight, IconRocketLaunch, Tag } from "$lib/gix";
   import { ICPToken, nonNullish, secondsToDuration } from "@dfinity/utils";
 
   /**
@@ -178,9 +173,9 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/text";
   @use "../../themes/mixins/portfolio";
 
   .wrapper {

@@ -3,7 +3,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import SkeletonCardContent from "$lib/components/ui/SkeletonCardContent.svelte";
   import type { CardType } from "$lib/types/card";
-  import { Card, SkeletonText } from "@dfinity/gix-components";
+  import { Card, SkeletonText } from "$lib/gix";
 
   export let size: "small" | "medium" | "large" = "small";
   export let cardType: CardType = "card";

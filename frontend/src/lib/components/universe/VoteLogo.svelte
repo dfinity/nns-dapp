@@ -1,6 +1,6 @@
 <script lang="ts">
   import LogoWrapper from "$lib/components/ui/LogoWrapper.svelte";
-  import { IconVote } from "@dfinity/gix-components";
+  import { IconVote } from "$lib/gix";
 
   export let size: "huge" | "big" | "medium" | "small" = "small";
   export let framed = true;

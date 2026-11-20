@@ -3,7 +3,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { Modal, Spinner } from "@dfinity/gix-components";
+  import { Modal, Spinner } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";

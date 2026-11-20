@@ -8,7 +8,7 @@
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
-  import { Html } from "@dfinity/gix-components";
+  import { Html } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 

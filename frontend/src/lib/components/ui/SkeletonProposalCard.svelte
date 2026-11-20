@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, SkeletonText } from "@dfinity/gix-components";
+  import { Card, SkeletonText } from "$lib/gix";
 </script>
 
 <Card testId="skeleton-card">

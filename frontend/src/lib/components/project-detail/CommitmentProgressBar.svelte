@@ -1,7 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { ProgressBar } from "@dfinity/gix-components";
+  import { ProgressBar } from "$lib/gix";
   import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
 
   export let max: bigint;

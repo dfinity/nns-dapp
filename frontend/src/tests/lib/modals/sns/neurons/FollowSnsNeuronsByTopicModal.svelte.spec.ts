@@ -1,4 +1,5 @@
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import { busyStore, toastsStore } from "$lib/gix";
 import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicModal.svelte";
 import type { SnsTopicKey } from "$lib/types/sns";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -12,7 +13,6 @@ import { FollowSnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowSnsNeu
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
 import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";

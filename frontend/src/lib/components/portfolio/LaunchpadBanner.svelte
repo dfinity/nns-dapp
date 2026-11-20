@@ -9,7 +9,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { compactCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight } from "$lib/gix";
   import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { fade } from "svelte/transition";
 
@@ -142,8 +142,8 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   .launchpad-banner {
     background-color: var(--tag-background);

@@ -2,7 +2,7 @@
   import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-  import { Value } from "@dfinity/gix-components";
+  import { Value } from "$lib/gix";
   import type { TokenAmount } from "@dfinity/utils";
 
   export let feeOnly = false;

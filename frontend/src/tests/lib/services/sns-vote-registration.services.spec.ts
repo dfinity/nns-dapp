@@ -1,5 +1,6 @@
 import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import { toastsStore } from "$lib/gix";
 import * as actionableProposalsService from "$lib/services/actionable-proposals.services";
 import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -17,7 +18,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { NeuronState } from "@icp-sdk/canisters/nns";
 import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";

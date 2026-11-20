@@ -13,11 +13,7 @@
     TransactionSelectDestinationMethods,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import type {
-    WizardModal,
-    WizardStep,
-    WizardSteps,
-  } from "@dfinity/gix-components";
+  import type { WizardModal, WizardStep, WizardSteps } from "$lib/gix";
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@icp-sdk/core/principal";
   import {

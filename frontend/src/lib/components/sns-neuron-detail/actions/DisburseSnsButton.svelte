@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { getSnsNeuronStake, isVesting } from "$lib/utils/sns-neuron.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
   type Props = {

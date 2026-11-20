@@ -17,11 +17,7 @@
     isNeuronMissingRewardsSoon,
     secondsUntilMissingReward,
   } from "$lib/utils/neuron.utils";
-  import {
-    IconCheckCircleFill,
-    IconError,
-    IconWarning,
-  } from "@dfinity/gix-components";
+  import { IconCheckCircleFill, IconError, IconWarning } from "$lib/gix";
   import { type NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
 

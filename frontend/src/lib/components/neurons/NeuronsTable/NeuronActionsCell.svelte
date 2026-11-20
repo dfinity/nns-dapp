@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TableNeuron } from "$lib/types/neurons-table";
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

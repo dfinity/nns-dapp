@@ -2,7 +2,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import { TokenAmountV2, type Token } from "@dfinity/utils";
 
   type Props = {
@@ -36,7 +36,7 @@
 </KeyValuePair>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/text";
 
   .account-name {
     word-break: break-all;

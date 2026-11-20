@@ -1,5 +1,5 @@
 <script>
-  import { Card } from "@dfinity/gix-components";
+  import { Card } from "$lib/gix";
 </script>
 
 <div class="card-grid" data-tid="empty-cards-component">
@@ -21,7 +21,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .card-grid {
     // Only show one card for mobile

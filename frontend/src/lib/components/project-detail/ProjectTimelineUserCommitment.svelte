@@ -9,7 +9,7 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { KeyValuePair, Value } from "@dfinity/gix-components";
+  import { KeyValuePair, Value } from "$lib/gix";
   import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { TokenAmount, nonNullish, secondsToDuration } from "@dfinity/utils";
 

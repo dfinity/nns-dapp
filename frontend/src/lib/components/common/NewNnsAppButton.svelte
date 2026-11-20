@@ -1,7 +1,7 @@
 <script lang="ts">
   import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
-  import { IconOpenInNew } from "@dfinity/gix-components";
+  import { IconOpenInNew } from "$lib/gix";
 </script>
 
 <a
@@ -18,7 +18,7 @@
 </a>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
   .new-nns-app-button {
     @include fonts.small;
     display: flex;

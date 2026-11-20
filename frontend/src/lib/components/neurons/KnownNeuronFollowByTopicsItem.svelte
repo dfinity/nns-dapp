@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { busy, Tooltip } from "@dfinity/gix-components";
+  import { busy, Tooltip } from "$lib/gix";
   import type {
     FolloweesForTopic,
     KnownNeuron,

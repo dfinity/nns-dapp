@@ -6,7 +6,7 @@
     getAddressString,
     isIcrc1Address,
   } from "$lib/utils/address-book.utils";
-  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
+  import { Dropdown, DropdownItem } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   interface Props {
@@ -79,7 +79,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/form";
+  @use "../../gix/styles/mixins/form";
 
   .select {
     @include form.input;

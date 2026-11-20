@@ -1,6 +1,7 @@
 import * as api from "$lib/api/governance.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
+import { busyStore, toastsStore } from "$lib/gix";
 import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
@@ -14,7 +15,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { extractHrefFromText } from "$tests/utils/utils.test-utils";
-import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 

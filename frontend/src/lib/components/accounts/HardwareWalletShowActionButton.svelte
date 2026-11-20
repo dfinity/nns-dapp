@@ -1,7 +1,7 @@
 <script lang="ts">
   import { showAddressAndPubKeyOnHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
   import { i18n } from "$lib/stores/i18n";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
 
   const showInfo = async () =>
     await showAddressAndPubKeyOnHardwareWalletProxy();

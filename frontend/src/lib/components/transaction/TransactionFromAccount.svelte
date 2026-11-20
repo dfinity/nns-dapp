@@ -3,7 +3,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish, TokenAmountV2, type Token } from "@dfinity/utils";
 
@@ -65,8 +65,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/text";
+  @use "../../gix/styles/mixins/fonts";
 
   .select-account {
     display: flex;

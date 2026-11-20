@@ -6,11 +6,7 @@
   import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import {
-    Collapsible,
-    IconExpandCircleDown,
-    stopPropagation,
-  } from "@dfinity/gix-components";
+  import { Collapsible, IconExpandCircleDown, stopPropagation } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
   import type { Snippet } from "svelte";
@@ -105,7 +101,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../gix/styles/mixins/media";
 
   .container {
     margin-bottom: var(--padding);

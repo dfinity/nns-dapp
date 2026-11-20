@@ -4,7 +4,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { secondsToDateTime } from "$lib/utils/date.utils";
-  import { Modal, Spinner } from "@dfinity/gix-components";
+  import { Modal, Spinner } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";

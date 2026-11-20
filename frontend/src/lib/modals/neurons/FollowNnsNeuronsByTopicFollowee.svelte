@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconClose } from "@dfinity/gix-components";
+  import { IconClose } from "$lib/gix";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { sortedknownNeuronsStore } from "$lib/stores/known-neurons.store";
@@ -42,7 +42,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .container {
     @include fonts.small(true);

@@ -1,4 +1,5 @@
 import * as api from "$lib/api/governance.api";
+import { toastsStore } from "$lib/gix";
 import ChangeNeuronVisibilityModal from "$lib/modals/neurons/ChangeNeuronVisibilityModal.svelte";
 import * as neuronsService from "$lib/services/neurons.services";
 import * as busyServices from "$lib/stores/busy.store";
@@ -10,7 +11,6 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { ChangeNeuronVisibilityModalPo } from "$tests/page-objects/ChangeNeuronVisibilityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { NeuronVisibility } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 

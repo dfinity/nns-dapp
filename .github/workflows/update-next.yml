@@ -6,10 +6,6 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
-      gix_components:
-        description: "Update gix-components"
-        default: true
-        type: boolean
       ic_js:
         description: "Update ic-js"
         default: true
@@ -32,11 +28,6 @@ jobs:
         with:
           registry-url: "https://registry.npmjs.org"
           node-version: ${{ env.NODE_VERSION }}
-      - name: Update gix-components
-        if: ${{ inputs.gix_components }}
-        run: |
-          cd frontend
-          npm run update:gix
       - name: Update ic-js
         if: ${{ inputs.ic_js }}
         run: |
@@ -56,7 +47,7 @@ jobs:
           add-paths: |
             frontend
           delete-branch: true
-          title: "bot: Bump ${{ inputs.gix_components && 'gix-components' || '' }}${{ inputs.gix_components && inputs.ic_js && ' and ' || '' }}${{ inputs.ic_js && 'ic-js' || '' }}"
+          title: "bot: Bump ic-js"
           body: |
             # Motivation
 
@@ -65,7 +56,6 @@ jobs:
 
             # Changes
 
-            ${{ inputs.gix_components && '* Ran `npm run update:gix`' || '' }}
             ${{ inputs.ic_js && '* Ran `npm run upgrade:next`' || '' }}
 
             # Tests

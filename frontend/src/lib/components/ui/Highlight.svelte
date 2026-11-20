@@ -8,7 +8,7 @@
     IconClose,
     IconErrorOutline,
     IconEyeOpen,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import { type Component } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -94,8 +94,8 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   @include media.dark-theme() {
     .highlight {

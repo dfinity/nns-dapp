@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Html, IconClose } from "@dfinity/gix-components";
+  import { Html, IconClose } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   export let testId: string = "banner-component";
@@ -56,8 +56,8 @@
 </article>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   .banner {
     display: grid;

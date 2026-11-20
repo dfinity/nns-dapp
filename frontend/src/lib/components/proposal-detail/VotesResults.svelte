@@ -7,7 +7,7 @@
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
-  import { Html, IconExpandMore } from "@dfinity/gix-components";
+  import { Html, IconExpandMore } from "$lib/gix";
   import { ProposalStatus, type ProposalInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
@@ -294,8 +294,8 @@
 </ProposalContentCell>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
 
   .title {
     @include fonts.h3(true);

@@ -109,8 +109,8 @@
 </svelte:element>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/interaction";
+  @use "../../gix/styles/mixins/media";
   @use "../../themes/mixins/grid-table";
 
   [role="row"] {

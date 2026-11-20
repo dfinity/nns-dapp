@@ -14,11 +14,7 @@
   import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import {
-    IconAccountsPage,
-    IconHeldTokens,
-    IconRight,
-  } from "@dfinity/gix-components";
+  import { IconAccountsPage, IconHeldTokens, IconRight } from "$lib/gix";
   import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
@@ -212,7 +208,7 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .header {
     font-family: CircularXX;

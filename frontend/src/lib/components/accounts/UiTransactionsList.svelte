@@ -4,7 +4,7 @@
   import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import type { UiTransaction } from "$lib/types/transaction";
-  import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
+  import { InfiniteScroll, Spinner } from "$lib/gix";
   import { flip } from "svelte/animate";
 
   type Props = {

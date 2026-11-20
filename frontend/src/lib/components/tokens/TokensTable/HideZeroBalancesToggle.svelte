@@ -1,7 +1,7 @@
 <script lang="ts">
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
-  import { Toggle } from "@dfinity/gix-components";
+  import { Toggle } from "$lib/gix";
 
   let checked = false;
   $: checked = $hideZeroBalancesStore === "hide";

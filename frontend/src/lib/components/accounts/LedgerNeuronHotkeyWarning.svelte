@@ -4,7 +4,7 @@
   import Banner from "$lib/components/ui/Banner.svelte";
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconInfo } from "@dfinity/gix-components";
+  import { IconInfo } from "$lib/gix";
 
   const LOCAL_STORAGE_KEY = "isLedgerNeuronHotkeyWarningDisabled";
 

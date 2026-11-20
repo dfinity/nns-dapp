@@ -10,7 +10,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
   import { createEventDispatcher, getContext } from "svelte";
 
   let connectionState: LedgerConnectionState =

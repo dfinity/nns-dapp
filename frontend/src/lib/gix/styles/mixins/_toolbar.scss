@@ -1,0 +1,28 @@
+@use "./media";
+
+// A mixin to align buttons (also wrapped).
+// The buttons align using all available space on mobile. They should not be resized or aligned on desktop.
+// Resolves the alignment issue when a button is wrapped with a tooltip.
+@mixin base {
+  display: grid;
+  gap: var(--padding-2x);
+
+  grid-template-columns: 1fr;
+
+  .primary {
+    order: -1;
+  }
+
+  @include media.min-width(medium) {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+
+    .primary {
+      order: 1;
+    }
+
+    &:has(> *:only-child) {
+      grid-template-columns: max-content;
+      justify-content: end;
+    }
+  }
+}

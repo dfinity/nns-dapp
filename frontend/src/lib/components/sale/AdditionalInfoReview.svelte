@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Checkbox } from "@dfinity/gix-components";
+  import { Checkbox } from "$lib/gix";
 
   export let accepted = false;
   const toggleAccept = () => (accepted = !accepted);

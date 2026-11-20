@@ -25,7 +25,7 @@
     HotkeysTableRowData,
   } from "$lib/types/hotkeys";
   import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
-  import { IconErrorOutline, IconKey } from "@dfinity/gix-components";
+  import { IconErrorOutline, IconKey } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { Principal } from "@icp-sdk/core/principal";
   import { onMount, untrack } from "svelte";

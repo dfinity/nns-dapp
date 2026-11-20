@@ -14,7 +14,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { WalletStore } from "$lib/types/wallet.context";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
-  import { Html, IconCanistersPage, IconPlus } from "@dfinity/gix-components";
+  import { Html, IconCanistersPage, IconPlus } from "$lib/gix";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { writable } from "svelte/store";
 

@@ -5,7 +5,7 @@
   import type { Universe } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { ItemAction } from "@dfinity/gix-components";
+  import { ItemAction } from "$lib/gix";
   import type { Token } from "@dfinity/utils";
 
   export let universe: Universe;

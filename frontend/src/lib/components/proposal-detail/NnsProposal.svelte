@@ -25,7 +25,7 @@
     mapProposalInfo,
     navigateToProposal,
   } from "$lib/utils/proposals.utils";
-  import { SplitBlock } from "@dfinity/gix-components";
+  import { SplitBlock } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 

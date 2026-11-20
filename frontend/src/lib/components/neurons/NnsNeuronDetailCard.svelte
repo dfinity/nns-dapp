@@ -10,7 +10,7 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { formatDissolveDelay } from "$lib/utils/date.utils";
-  import { Card, KeyValuePair } from "@dfinity/gix-components";
+  import { Card, KeyValuePair } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken, TokenAmountV2, secondsToDuration } from "@dfinity/utils";
 

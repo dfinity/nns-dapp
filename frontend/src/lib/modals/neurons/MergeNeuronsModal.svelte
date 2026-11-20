@@ -8,11 +8,7 @@
     checkInvalidState,
     type InvalidState,
   } from "$lib/utils/neuron.utils";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { WizardModal, type WizardStep, type WizardSteps } from "$lib/gix";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 

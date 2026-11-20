@@ -1,0 +1,85 @@
+@use "./fonts";
+
+@mixin base($hasDisabled: true) {
+  padding: var(--padding) var(--padding-2x);
+
+  border-radius: var(--border-radius);
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+
+  position: relative;
+  min-height: var(--button-min-height);
+
+  font-weight: var(--font-weight-bold);
+
+  @if $hasDisabled {
+    &[disabled],
+    &[disabled]:hover {
+      background: var(--button-disable-background);
+      color: var(--button-disable-color);
+      cursor: default;
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    filter: contrast(1.25);
+  }
+}
+
+@mixin primary {
+  background: var(--primary);
+  color: var(--primary-contrast);
+
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
+    background: var(--primary-shade);
+  }
+}
+
+@mixin text {
+  width: fit-content;
+
+  @include fonts.standard;
+
+  text-decoration: none;
+  color: inherit;
+
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: underline;
+    color: var(--value-color);
+  }
+
+  &[disabled] {
+    color: var(--disable-contrast);
+    text-decoration: none;
+  }
+}
+
+@mixin secondary {
+  background: transparent;
+  color: var(--button-secondary-color);
+  border: solid var(--button-border-size) var(--primary);
+
+  &[disabled] {
+    border: solid var(--button-border-size) transparent;
+  }
+
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
+    background: var(--button-card-focus-background);
+  }
+}
+
+@mixin with-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--padding-0_5x);
+}
+
+@mixin full-width {
+  width: 100%;
+}

@@ -9,7 +9,7 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
 
@@ -82,7 +82,7 @@
 </PageHeading>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   h2 {
     @include fonts.h1;

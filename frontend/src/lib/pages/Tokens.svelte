@@ -19,7 +19,7 @@
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { filterTokensByType } from "$lib/utils/tokens-table.utils";
-  import { IconHeldTokens } from "@dfinity/gix-components";
+  import { IconHeldTokens } from "$lib/gix";
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
@@ -200,7 +200,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../gix/styles/mixins/media";
 
   .wrapper {
     display: flex;

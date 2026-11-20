@@ -18,7 +18,7 @@
     IconRight,
     IconRocketLaunch,
     Tag,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
   type Props = {
@@ -130,9 +130,9 @@
 </CardFrame>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../gix/styles/mixins/media";
+  @use "../../gix/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/text";
   @use "../../themes/mixins/launchpad";
   @use "../../themes/mixins/portfolio";
 

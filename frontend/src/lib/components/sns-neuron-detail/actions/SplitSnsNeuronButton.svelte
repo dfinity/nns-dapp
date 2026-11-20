@@ -9,7 +9,7 @@
     minNeuronSplittable,
   } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Tooltip } from "$lib/gix";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,

@@ -7,7 +7,7 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import { Tag } from "@dfinity/gix-components";
+  import { Tag } from "$lib/gix";
   import {
     SnsNeuronPermissionType,
     type SnsGovernanceDid,

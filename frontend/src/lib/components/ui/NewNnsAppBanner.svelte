@@ -4,7 +4,7 @@
   import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
   import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
-  import { IconOpenInNew } from "@dfinity/gix-components";
+  import { IconOpenInNew } from "$lib/gix";
   import { fade } from "svelte/transition";
 
   const NEW_NNS_APP_URL = "https://nns.internetcomputer.org";
@@ -84,7 +84,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .backdrop {
     position: fixed;

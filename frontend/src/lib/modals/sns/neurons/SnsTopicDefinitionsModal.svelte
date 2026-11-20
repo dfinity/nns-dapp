@@ -5,7 +5,7 @@
   import SnsTopicDefinitionsTopic from "$lib/modals/sns/neurons/SnsTopicDefinitionsTopic.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import { fromDefinedNullable } from "@dfinity/utils";
 

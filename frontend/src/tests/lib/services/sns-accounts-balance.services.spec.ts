@@ -1,11 +1,11 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
+import { toastsStore } from "$lib/gix";
 import * as services from "$lib/services/sns-accounts-balance.services";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 

@@ -1,0 +1,152 @@
+// Source: NNS Frontned dapp Figma
+:root {
+  // color primitives
+  // naming structure: --cp-[themename]-[primitivename]
+
+  // light theme
+  --cp-light-accent: #4d79ff;
+  --cp-light-50: rgb(var(--cp-light-50-rgb));
+  --cp-light-50-rgb: 255, 255, 255;
+  --cp-light-75: #f9f7ff;
+  --cp-light-100: var(--cp-light-50);
+  --cp-light-125: #dadef2;
+  // @deprecated (same as --cp-light-125)
+  --cp-light-150: var(--cp-light-125);
+  --cp-light-200: #eef1fe;
+  --cp-light-250: #6f7fcd;
+  // @deprecated
+  --cp-light-400: #34407c;
+  // @deprecated (same as --cp-light-600)
+  --cp-light-500: var(--cp-light-600);
+  --cp-light-600: #3d4d99;
+  --cp-light-900: #151a33;
+  // @deprecated TODO: replace with Neutral-50A45
+  --cp-light-opaque: #ffffff40; // --cp-light-50 with 40% opacity
+  --cp-light-gradient-1: #d4e7fa;
+  --cp-light-gradient-2: #f2dae2;
+  // @deprecated (same as  --cp-light-50-45)
+  --cp-light-hover-overlay: var(--cp-light-50-45);
+  --cp-light-50-45: rgba(var(--cp-light-50-rgb), 0.45);
+
+  // dark theme
+  --cp-dark-accent: #906bff;
+  --cp-dark-50: #fff;
+  // @deprecated
+  --cp-dark-75: var(--cp-dark-50);
+  --cp-dark-100: #897dad;
+  --cp-dark-200: #b0a3d9;
+  // @deprecated
+  --cp-dark-250: #a688ff;
+  // @deprecated
+  --cp-dark-350: #4b3bf8;
+  --cp-dark-400: #3d3061;
+  --cp-dark-450: #2b1b4d;
+  --cp-dark-500: #342759;
+  --cp-dark-550: #56497a;
+  --cp-dark-600: #170c36;
+  --cp-dark-650: #150c31;
+  --cp-dark-900: #130a2c;
+  --cp-dark-1000: rgb(var(--cp-dark-1000-rgb));
+  --cp-dark-1000-rgb: 0, 0, 0;
+  // @deprecated (same as  --cp-dark-1000-20)
+  --cp-dark-opaque: #00000020;
+  --cp-dark-gradient-1: #0f0f4d;
+  --cp-dark-gradient-2: #4d1259;
+  // @deprecated (same as --cp-dark-1000-20)
+  --cp-dark-hover-overlay: rgba(0, 0, 0, 0.2);
+  --cp-dark-1000-20: rgba(var(--cp-dark-1000-rgb), 0.2);
+
+  // Accessory
+  --fade: #0e0b2660;
+  --fade-dark: #05070a80;
+  --orchid-tint: #bb5fea25;
+  --orchid: #bb5fea;
+  --indigo: #906bff;
+  --indigo-tint: #906bff25;
+  // @deprecated
+  --deep-violet: #603a68;
+  // @deprecated
+  --deep-violet-tint: #634a65;
+  // @deprecated
+  --blue-dark: #3d4c7a;
+  --blue: #4d79ff;
+  --blue-tint: #4d79ff25;
+  --orange: #faa123;
+  // @deprecated
+  --orange-mid: #fdc087;
+  --orange-tint: #faa12325;
+  // @deprecated
+  --green-dark: #3c586d;
+  --green: #2db286;
+  --green-tint: #2db28625;
+  --pink: #f2556f;
+  --pink-tint: #f2556f25;
+
+  // TODO: Remove all variables above this line once they are all replaced with new variables.
+  /* Primitives */
+  --blue-accent-tint: #4d79ff25;
+  --blue-accent: #4d79ff;
+  --blue-accent-secondary: #456de5;
+  --blue-50: #d4e7fa;
+  --blue-250: #6f7fcd;
+  --blue-250-rgb: 111, 127, 205;
+  --blue-600: #3d4d99;
+  --blue-800: #0f0f4d;
+  --blue-900: #151a33;
+
+  --neutral-50-a15: #ffffff26;
+  --neutral-50-a45: #ffffff73;
+  --neutral-50: #ffffff;
+  --neutral-75: #f9f7ff;
+  --neutral-100: #eef1fe;
+  --neutral-250: #dadef2;
+  --neutral-1000-a20: #00000033;
+  --neutral-1000-a30: #0000004d;
+
+  --neutral-blue-a10: #99bbff1a;
+  --neutral-blue-a45: #ccddff45;
+  --neutral-blue-800-a15: #33468026;
+  --neutral-blue-800-a20: #33468033;
+  --neutral-blue-1000-a65: #05070aa6;
+  --neutral-blue-1000-a80: #05070acc;
+
+  --violet-accent-tint: #906bff25;
+  --violet-accent: #906bff;
+  --violet-accent-secondary: #967bf8;
+  --violet-50: #b0a3d9;
+  --violet-100: #897dad;
+  --violet-250: #4d1259;
+  --violet-300: #56497a;
+  --violet-400: #3d3061;
+  --violet-450: #342759;
+  --violet-500: #2b1b4d;
+  --violet-600: #170c36;
+  --violet-650: #150c31;
+  --violet-900: #130a2c;
+
+  --night-50: #9badd1;
+  --night-100: #76839f;
+  --night-200: #475266;
+  --night-400: #323b4e;
+  --night-500: #2b3343;
+  --night-550: #272f3d;
+  --night-575: #212733;
+  --night-600: #1d222d;
+  --night-900: #181c25;
+  --night-1000: #090a0d;
+
+  --pink-25: #f2dae2;
+  --pink-200: #f2556f;
+  --pink-300: #da4d64;
+  --pink-200-a25: #f2556f40;
+
+  --orchid-200: #bb5fea;
+  --orchid-200-a25: #bb5fea40;
+
+  --green-200: #2db286;
+  --green-300: #29a079;
+  --green-200-a25: #2db28640;
+
+  --orange-200: #faa123;
+  --orange-200-a25: #faa12340;
+}

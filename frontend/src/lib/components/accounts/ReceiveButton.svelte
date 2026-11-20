@@ -4,7 +4,7 @@
   import type { AccountsModalType } from "$lib/types/accounts.modal";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { openAccountsModal } from "$lib/utils/modals.utils";
-  import { busy } from "@dfinity/gix-components";
+  import { busy } from "$lib/gix";
 
   export let testId = "receive-icp";
   export let type: AccountsModalType;

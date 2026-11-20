@@ -1,7 +1,7 @@
 <script lang="ts">
   import { logout } from "$lib/services/auth.services";
   import { i18n } from "$lib/stores/i18n";
-  import { IconLogout } from "@dfinity/gix-components";
+  import { IconLogout } from "$lib/gix";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();

@@ -6,7 +6,7 @@
     type TreeJsonValueType,
   } from "$lib/utils/json.utils";
   import { typeOfLikeANumber } from "$lib/utils/utils";
-  import { IconExpandMore } from "@dfinity/gix-components";
+  import { IconExpandMore } from "$lib/gix";
   import { fade } from "svelte/transition";
 
   export let json: unknown | undefined = undefined;
@@ -108,7 +108,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   ul {
     list-style: none;

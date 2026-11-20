@@ -8,7 +8,7 @@
     IconLedger,
     IconPublicBadge,
     Tooltip,
-  } from "@dfinity/gix-components";
+  } from "$lib/gix";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
 
   const typeToIcon: {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import PageHeading from "$lib/components/common/PageHeading.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "$lib/gix";
 </script>
 
 <PageHeading>
@@ -10,7 +10,7 @@
 </PageHeading>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   div {
     // This is a width for the skeleton that looks good on desktop and mobile.

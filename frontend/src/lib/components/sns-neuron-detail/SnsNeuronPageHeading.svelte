@@ -12,7 +12,7 @@
     isUserHotkey,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import { Tag } from "@dfinity/gix-components";
+  import { Tag } from "$lib/gix";
   import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";

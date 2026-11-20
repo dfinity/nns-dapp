@@ -6,7 +6,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
-  import { BREAKPOINT_LARGE } from "@dfinity/gix-components";
+  import { BREAKPOINT_LARGE } from "$lib/gix";
 
   let showProjectPicker = false;
 

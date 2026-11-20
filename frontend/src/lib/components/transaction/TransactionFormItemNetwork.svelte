@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { TransactionNetwork } from "$lib/types/transaction";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { Html } from "@dfinity/gix-components";
+  import { Html } from "$lib/gix";
   import { notEmptyString } from "@dfinity/utils";
 
   export let universeId: UniverseCanisterId;
@@ -38,7 +38,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "../../gix/styles/mixins/fonts";
 
   .placeholder {
     :global(select) {

@@ -7,7 +7,7 @@
     formatCurrencyNumber,
     formatPercentage,
   } from "$lib/utils/format.utils";
-  import { IconRight } from "@dfinity/gix-components";
+  import { IconRight } from "$lib/gix";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
@@ -129,7 +129,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../gix/styles/mixins/media";
 
   .content {
     display: flex;

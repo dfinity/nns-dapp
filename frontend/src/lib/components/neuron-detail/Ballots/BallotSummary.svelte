@@ -3,7 +3,7 @@
   import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
   import { loadProposal } from "$lib/services/public/proposals.services";
   import { getVoteDisplay } from "$lib/utils/proposals.utils";
-  import { KeyValuePairInfo, SkeletonText } from "@dfinity/gix-components";
+  import { KeyValuePairInfo, SkeletonText } from "$lib/gix";
   import type {
     BallotInfo,
     ProposalId,

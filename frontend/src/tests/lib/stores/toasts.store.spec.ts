@@ -1,5 +1,5 @@
+import { toastsStore } from "$lib/gix";
 import { toastsClean } from "$lib/stores/toasts.store";
-import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
 describe("toast store", () => {

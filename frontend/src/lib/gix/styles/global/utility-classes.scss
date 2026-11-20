@@ -1,0 +1,66 @@
+@use "../mixins/content";
+
+// text color helper classes
+.value {
+  color: var(--value-color);
+}
+.label {
+  color: var(--label-color);
+}
+.description {
+  color: var(--description-color);
+}
+
+// TODO: find a better solution.
+.card {
+  .value {
+    color: var(--card-background-contrast);
+  }
+  .label {
+    color: rgba(var(--card-background-contrast-rgb), var(--light-opacity));
+  }
+  .description {
+    color: rgba(var(--card-background-contrast-rgb), var(--very-light-opacity));
+  }
+}
+
+// Cells utilities
+.content-cell-title {
+  margin: 0;
+  line-height: var(--line-height-standard);
+  word-break: break-word;
+}
+
+.content-cell-details {
+  margin-top: var(--padding-2x);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding);
+}
+
+.content-cell-island {
+  @include content.island;
+
+  padding: var(--padding-2x);
+  border-radius: var(--border-radius);
+}
+
+.content-cell-island__card {
+  @extend .content-cell-island;
+
+  background: var(--island-card-background);
+  color: var(--description-color);
+}
+
+// Spacing
+
+.no-margin {
+  margin: 0 !important;
+}
+
+// Format numbers as monospaced figures
+
+.tabular-num {
+  font-feature-settings: "tnum";
+}

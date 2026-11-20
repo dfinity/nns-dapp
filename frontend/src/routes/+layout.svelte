@@ -113,7 +113,7 @@
 <slot />
 
 <style lang="scss" global>
-  @import "@dfinity/gix-components/dist/styles/global.scss";
+  @import "../lib/gix/styles/global.scss";
   @import "../lib/themes/legacy";
   @import "../lib/themes/global";
   @import "../lib/themes/variables";

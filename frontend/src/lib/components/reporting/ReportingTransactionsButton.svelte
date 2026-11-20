@@ -35,7 +35,7 @@
     type TransactionsCsvData,
   } from "$lib/utils/reporting.utils";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import { IconDown } from "@dfinity/gix-components";
+  import { IconDown } from "$lib/gix";
   import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
   import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import {

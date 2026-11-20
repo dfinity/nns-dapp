@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { CanisterDetailModalRemoveController } from "$lib/types/canister-detail.modal";
   import { emit } from "$lib/utils/events.utils";
-  import { IconClose } from "@dfinity/gix-components";
+  import { IconClose } from "$lib/gix";
 
   export let controller: string;
 
