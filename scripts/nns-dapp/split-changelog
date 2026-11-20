@@ -101,7 +101,7 @@ cat -s "$RELEASED_CHANGELOG" | sponge "$RELEASED_CHANGELOG"
 # The script does the following to create the new unrelease changelog:
 # 1. Take the old unrelease changelog.
 # 2. Apply the change that have been made since, but add an extra '+' at the
-#    start of new entries
+#    start of each line of the new entries, also the continuation lines.
 # 3. Remove the entries without the extra '+'.
 # 4. Remove the extra '+' from the new entries.
 
@@ -113,10 +113,10 @@ PATCH="$(mktemp)"
 diff -u "$OLD_UNRELEASED_CHANGELOG" "$UNRELEASED_CHANGELOG" >"$PATCH" || true
 
 # Apply the new entries with an extra '+'.
-sed -e 's@^+[-*]@+&@' <"$PATCH" | patch "$OLD_UNRELEASED_CHANGELOG"
+sed -E 's@^\+([-*] |  )@+&@' <"$PATCH" | patch "$OLD_UNRELEASED_CHANGELOG"
 
 # Remove the entries that don't have the extra '+'.
-grep -v '^[-* ] ' "$OLD_UNRELEASED_CHANGELOG" | sed -E 's@^\+([-* ] )@* @' >"$UNRELEASED_CHANGELOG"
+grep -v '^[-* ] ' "$OLD_UNRELEASED_CHANGELOG" | sed -E 's@^\+([-* ] )@\1@' >"$UNRELEASED_CHANGELOG"
 
 # Remove duplicate blank lines.
 cat -s "$UNRELEASED_CHANGELOG" | sponge "$UNRELEASED_CHANGELOG"

@@ -39,7 +39,8 @@ Introduction unreleased...
 * Simplify rust cache expiry with \`pop_first()\`.
 * Disable functionality buttons while SNS neuron is vesting.
 * Updated \`bitcoin-canister\` revision for proposal payload support.
-* Ignore sign-in "error" \`UserInterrupt\`.
+* Ignore sign-in "error" \`UserInterrupt\`. The entry wraps
+  onto a second line.
 
 #### Deprecated
 
@@ -75,6 +76,9 @@ Introduction unreleased...
 - Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
+- A new entry that wraps onto
+  a second line and
+  a third line.
 
 #### Deprecated
 #### Removed
@@ -115,7 +119,8 @@ Introduction unreleased...
 #### Changed
 
 * Disable functionality buttons while SNS neuron is vesting.
-* Ignore sign-in "error" \`UserInterrupt\`.
+* Ignore sign-in "error" \`UserInterrupt\`. The entry wraps
+  onto a second line.
 
 #### Deprecated
 
@@ -182,15 +187,18 @@ Introduction unreleased...
 ### Operations
 
 #### Added
-* CreateServiceNervousSystem proposal support.
-* Base64 image support for payload rendering.
-* \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
+- CreateServiceNervousSystem proposal support.
+- Base64 image support for payload rendering.
+- \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
 
 #### Changed
-* Consolidated the config tests.
-* Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
-* Improve Canister Detail tests by mocking the api layer instead of services.
-* Copied the newest version of clap.bash from snsdemo.
+- Consolidated the config tests.
+- Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
+- Improve Canister Detail tests by mocking the api layer instead of services.
+- Copied the newest version of clap.bash from snsdemo.
+- A new entry that wraps onto
+  a second line and
+  a third line.
 
 #### Deprecated
 #### Removed
@@ -218,7 +226,8 @@ Introduction released...
 #### Changed
 
 * Disable functionality buttons while SNS neuron is vesting.
-* Ignore sign-in "error" \`UserInterrupt\`.
+* Ignore sign-in "error" \`UserInterrupt\`. The entry wraps
+  onto a second line.
 
 #### Deprecated
 

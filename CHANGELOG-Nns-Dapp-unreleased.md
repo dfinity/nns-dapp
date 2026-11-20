@@ -43,4 +43,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- The changelog split after a release keeps all the lines of the entries
+  that are not released, and keeps their bullet style.
+
 #### Security
