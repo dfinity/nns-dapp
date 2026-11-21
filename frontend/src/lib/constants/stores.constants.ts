@@ -11,6 +11,7 @@ export enum StoreLocalStorageKey {
   BalancePrivacyOption = "nnsBalancePrivacyOption",
   NewNnsAppBanner = "nnsNewNnsAppBanner",
   ImportedSnses = "nnsImportedSnses",
+  TransferAttempts = "nnsTransferAttempts",
 }
 
 export const NOT_LOADED = Symbol("NOT_LOADED");

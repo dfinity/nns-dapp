@@ -363,6 +363,7 @@ describe("Accounts", () => {
         );
         expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
+          createdAt: expect.any(BigInt),
           identity: mockIdentity,
           to: destinationAddress,
           amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),
@@ -411,6 +412,7 @@ describe("Accounts", () => {
         );
         expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
+          createdAt: expect.any(BigInt),
           identity: mockIdentity,
           to: destinationAddress,
           amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),

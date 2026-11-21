@@ -25,6 +25,7 @@
   import { tickersStore } from "$lib/stores/tickers.store";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { logWithTimestamp } from "$lib/utils/dev.utils";
+  import { removeExpiredTransferAttempts } from "$lib/utils/transfer-attempts.utils";
   import { onMount } from "svelte";
 
   let ready = false;
@@ -59,6 +60,7 @@
 
   onMount(async () => {
     initAnalytics();
+    removeExpiredTransferAttempts();
 
     logWithTimestamp("#4124:s1:before worker");
     worker = await initAuthWorker();

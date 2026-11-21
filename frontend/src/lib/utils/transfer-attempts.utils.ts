@@ -1,0 +1,124 @@
+import { LEDGER_DEDUPLICATION_WINDOW_NANOS } from "$lib/constants/accounts.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { jsonReplacer, jsonReviver, nonNullish } from "@dfinity/utils";
+
+export interface TransferAttempt {
+  key: string;
+  createdAt: bigint;
+  isRetry: boolean;
+}
+
+/** Maps a transfer key to the timestamp of an attempt with no definite outcome. */
+type TransferAttempts = Record<string, bigint>;
+
+// All reads and writes use local storage directly, so that all tabs share the attempts.
+const readAttempts = (): TransferAttempts => {
+  try {
+    const stored = localStorage.getItem(StoreLocalStorageKey.TransferAttempts);
+    const parsed: unknown = nonNullish(stored)
+      ? JSON.parse(stored, jsonReviver)
+      : {};
+
+    if (typeof parsed !== "object" || parsed === null) {
+      return {};
+    }
+
+    // Local storage can hold any value, so keep only bigint timestamps.
+    return Object.fromEntries(
+      Object.entries(parsed).filter(
+        (entry): entry is [string, bigint] => typeof entry[1] === "bigint"
+      )
+    );
+  } catch (err: unknown) {
+    console.error(err);
+    return {};
+  }
+};
+
+const writeAttempts = (attempts: TransferAttempts) => {
+  try {
+    if (Object.keys(attempts).length === 0) {
+      localStorage.removeItem(StoreLocalStorageKey.TransferAttempts);
+      return;
+    }
+    localStorage.setItem(
+      StoreLocalStorageKey.TransferAttempts,
+      JSON.stringify(attempts, jsonReplacer)
+    );
+  } catch (err: unknown) {
+    console.error(err);
+  }
+};
+
+const filterAttempts = (
+  attempts: TransferAttempts,
+  predicate: (entry: [string, bigint]) => boolean
+): TransferAttempts =>
+  Object.fromEntries(Object.entries(attempts).filter(predicate));
+
+const filterValidAttempts = (attempts: TransferAttempts): TransferAttempts =>
+  filterAttempts(
+    attempts,
+    ([, createdAt]) =>
+      nowInBigIntNanoSeconds() - createdAt < LEDGER_DEDUPLICATION_WINDOW_NANOS
+  );
+
+/** Uses the fields that the ledger compares, except the timestamp, to detect a duplicate. */
+export const toTransferKey = ({
+  ledgerCanisterId,
+  source,
+  destination,
+  amount,
+  fee,
+  memo,
+}: {
+  ledgerCanisterId: string;
+  source: string;
+  destination: string;
+  amount: bigint;
+  fee: bigint;
+  memo?: string;
+}): string =>
+  JSON.stringify([
+    ledgerCanisterId,
+    source,
+    destination,
+    amount.toString(),
+    fee.toString(),
+    memo,
+  ]);
+
+/**
+ * Saves the attempt before the call, so that it survives a page reload during the call.
+ * A retry reuses the timestamp, so the ledger rejects it if an earlier attempt executed.
+ */
+export const startTransferAttempt = (key: string): TransferAttempt => {
+  const attempts = filterValidAttempts(readAttempts());
+  const savedCreatedAt = attempts[key];
+  const createdAt = savedCreatedAt ?? nowInBigIntNanoSeconds();
+
+  writeAttempts({ ...attempts, [key]: createdAt });
+
+  return { key, createdAt, isRetry: nonNullish(savedCreatedAt) };
+};
+
+/** Keeps a newer attempt with the same key, for example from another tab. */
+export const clearTransferAttempt = ({ key, createdAt }: TransferAttempt) =>
+  writeAttempts(
+    filterAttempts(
+      readAttempts(),
+      ([entryKey, entryCreatedAt]) =>
+        entryKey !== key || entryCreatedAt !== createdAt
+    )
+  );
+
+/** Removes the attempts that the ledger no longer deduplicates. */
+export const removeExpiredTransferAttempts = () => {
+  const attempts = readAttempts();
+  const validAttempts = filterValidAttempts(attempts);
+
+  if (Object.keys(validAttempts).length !== Object.keys(attempts).length) {
+    writeAttempts(validAttempts);
+  }
+};
