@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Warn the user to check the balance when a transaction outcome is unknown, instead of reporting a failure.
+
 #### Security
 
 #### Not Published

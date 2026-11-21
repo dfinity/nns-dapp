@@ -32,7 +32,9 @@ import {
 } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
+  CborDecodeErrorCode,
   CertifiedRejectErrorCode,
+  ErrorKindEnum,
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 
@@ -190,6 +192,21 @@ export const isPayloadSizeError = (err: unknown): boolean => {
   }
   return false;
 };
+
+/**
+ * True if the agent stopped without a definite answer from the IC.
+ * The canister may have executed the call, so a retry can repeat its effect.
+ */
+export const isUnknownOutcomeError = (err: unknown): boolean =>
+  err instanceof AgentError &&
+  ([
+    ErrorKindEnum.Protocol,
+    ErrorKindEnum.Transport,
+    ErrorKindEnum.Trust,
+    ErrorKindEnum.Unknown,
+  ].includes(err.kind) ||
+    // The agent decodes only responses, so the call can be already submitted.
+    err.hasCode(CborDecodeErrorCode));
 
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;

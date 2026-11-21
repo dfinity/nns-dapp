@@ -2998,6 +2998,31 @@ describe("neurons-services", () => {
       expect(spyGetNeuron).toBeCalledTimes(1);
     });
 
+    it("should reload the neuron after an unknown outcome of the transfer", async () => {
+      vi.mocked(transferICP).mockResolvedValueOnce({
+        success: false,
+        err: "error.transaction_unknown_outcome",
+        unknownOutcome: true,
+      });
+
+      const result = await topUpNeuron({
+        neuron: mockNeuron,
+        amount: 2,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(result).toEqual({ success: false, unknownOutcome: true });
+      expect(spyClaimOrRefresh).toBeCalledWith({
+        identity: mockIdentity,
+        neuronId: mockNeuron.neuronId,
+      });
+      expect(spyGetNeuron).toBeCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        neuronId: mockNeuron.neuronId,
+      });
+    });
+
     it("should fail if neuron has no account identifier", async () => {
       const { success } = await topUpNeuron({
         neuron: {
