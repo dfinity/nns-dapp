@@ -9,7 +9,7 @@
 | Bravo         | BRV    | Open      | `bravo.png`         |
 | Charlie       | CHR    | Open      | `charlie.png`       |
 
-Each project comes from a `CreateServiceNervousSystem` proposal of the large NNS neuron of the anonymous principal. The neuron has the majority, so the NNS adopts and executes the proposal at once. The local NNS governance is a test build, so a swap opens at once instead of a day later. An open swap closes after 14 days, the longest duration that the swap canister accepts. Stop and start the network to get new swaps.
+Each project comes from a `CreateServiceNervousSystem` proposal of the large NNS neuron of the anonymous principal. The neuron has the majority, so the NNS adopts and executes the proposal at once. The local NNS governance is a test build, so a swap opens in its next periodic task, within a minute, instead of a day later. The script submits all four proposals first, so the swaps open together. An open swap closes after 14 days, the longest duration that the swap canister accepts. Stop and start the network to get new swaps.
 
 The anonymous principal buys the whole swap of a committed project. The swap finalizes itself and gives the buyer two neurons. The script disburses the neuron without dissolve delay and sends the tokens to the test account of the "Get tokens" menu, see `frontend/src/lib/api/dev.api.ts`. The anonymous principal also has a developer neuron of 1 token in each project.
 

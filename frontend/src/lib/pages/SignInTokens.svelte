@@ -6,7 +6,6 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { ENABLE_NEW_TABLES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import {
@@ -38,44 +37,36 @@
       <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
       <SignIn slot="actions" />
     </PageBanner>
-    {#if $ENABLE_NEW_TABLES}
-      <TokensTable
-        on:nnsAction
-        userTokensData={filterTokensByType({
-          tokens: userTokensData,
-          type: "icp",
-        })}
-        firstColumnHeader={$i18n.tokens.projects_header_icp}
-        subtitle={$i18n.tokens.projects_header_icp_subtitle}
-      />
-      <TokensTable
-        on:nnsAction
-        userTokensData={filterTokensByType({
-          tokens: userTokensData,
-          type: "ck",
-        }).sort(compareCkTokensByDefault)}
-        firstColumnHeader={$i18n.tokens.projects_header_ck}
-        subtitle={$i18n.tokens.projects_header_ck_subtitle}
-      />
-      <TokensTable
-        on:nnsAction
-        userTokensData={filterTokensByType({
-          tokens: userTokensData,
-          type: "sns",
-        }).filter(
-          (token) =>
-            !abandonedProjectsCanisterId.includes(token.universeId.toText())
-        )}
-        firstColumnHeader={$i18n.tokens.projects_header_sns}
-        subtitle={$i18n.tokens.projects_header_sns_subtitle}
-      />
-    {:else}
-      <TokensTable
-        on:nnsAction
-        {userTokensData}
-        firstColumnHeader={$i18n.tokens.projects_header}
-      />
-    {/if}
+    <TokensTable
+      on:nnsAction
+      userTokensData={filterTokensByType({
+        tokens: userTokensData,
+        type: "icp",
+      })}
+      firstColumnHeader={$i18n.tokens.projects_header_icp}
+      subtitle={$i18n.tokens.projects_header_icp_subtitle}
+    />
+    <TokensTable
+      on:nnsAction
+      userTokensData={filterTokensByType({
+        tokens: userTokensData,
+        type: "ck",
+      }).sort(compareCkTokensByDefault)}
+      firstColumnHeader={$i18n.tokens.projects_header_ck}
+      subtitle={$i18n.tokens.projects_header_ck_subtitle}
+    />
+    <TokensTable
+      on:nnsAction
+      userTokensData={filterTokensByType({
+        tokens: userTokensData,
+        type: "sns",
+      }).filter(
+        (token) =>
+          !abandonedProjectsCanisterId.includes(token.universeId.toText())
+      )}
+      firstColumnHeader={$i18n.tokens.projects_header_sns}
+      subtitle={$i18n.tokens.projects_header_sns_subtitle}
+    />
   </div>
   {#if showImportTokenModal}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />

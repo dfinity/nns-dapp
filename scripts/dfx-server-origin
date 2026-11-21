@@ -22,7 +22,8 @@ if [[ "$DFX_NETWORK" == "local" ]]; then
   exit
 else
   TOP_DIR="$(git rev-parse --show-toplevel)"
-  ORIGIN="$(jq -er '.networks | .[env.DFX_NETWORK].providers[0] | select (.!=null)' "$TOP_DIR/dfx.json")"
+  ORIGIN="$(jq -er '.networks | .[env.DFX_NETWORK].providers[0] | select (.!=null)' "$TOP_DIR/dfx.json" ||
+    jq -er '.[env.DFX_NETWORK].providers[0] | select (.!=null)' "$HOME/.config/dfx/networks.json")"
   if [[ -n "$CANISTER_SUBDOMAIN" ]]; then
     # Replace '://' with '://<canister-id>.'
     ORIGIN="${ORIGIN//:\/\//:\/\/$CANISTER_SUBDOMAIN}"
