@@ -13,6 +13,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Deprecated
 ### Removed
 ### Fixed
+- Publish the correct Candid signature for `http_request`, which was exported as `(blob)` instead of `(HttpRequest)`.
 - Serve an empty list of the latest SNSs when no SNS exists, instead of a 404.
 ### Security
 

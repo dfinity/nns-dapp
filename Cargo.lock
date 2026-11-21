@@ -525,6 +525,28 @@ dependencies = [
 
 [[package]]
 name = "candid_parser"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "470a4cf0c110e217e54ab3d21c4a9c290736c4a70ab6263d65155522d4b93fb6"
+dependencies = [
+ "anyhow",
+ "candid",
+ "codespan-reporting",
+ "convert_case 0.6.0",
+ "handlebars",
+ "hex",
+ "lalrpop",
+ "lalrpop-util",
+ "logos 0.14.4",
+ "num-bigint 0.4.8",
+ "pretty",
+ "serde",
+ "thiserror 1.0.69",
+ "toml",
+]
+
+[[package]]
+name = "candid_parser"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4d1368a4edc90c239b652b675a99fb21e5ce600c7ef3da082a3fcdb07bd1e1f"
@@ -5777,6 +5799,7 @@ dependencies = [
  "anyhow",
  "base64 0.23.1",
  "candid",
+ "candid_parser 0.3.2",
  "dfn_candid",
  "ic-base-types",
  "ic-cdk",
