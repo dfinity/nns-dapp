@@ -409,12 +409,9 @@ describe("ImportTokenModal", () => {
         },
       ],
     });
-    expect(getImportedTokensSpy).toBeCalledTimes(2);
-    expect(getImportedTokensSpy).toHaveBeenNthCalledWith(1, {
-      identity: mockIdentity,
-      certified: false,
-    });
-    expect(getImportedTokensSpy).toHaveBeenNthCalledWith(2, {
+    // The reload after a write uses the `"update"` strategy.
+    expect(getImportedTokensSpy).toBeCalledTimes(1);
+    expect(getImportedTokensSpy).toHaveBeenCalledWith({
       identity: mockIdentity,
       certified: true,
     });
@@ -694,6 +691,19 @@ describe("ImportTokenModal", () => {
           text: "You have already imported this token, you can find it in the token list.",
         },
       ]);
+    });
+
+    it("should not treat an uncertified entry as a duplicate", async () => {
+      importedTokensStore.set({
+        importedTokens: [{ ledgerCanisterId, indexCanisterId: undefined }],
+        certified: false,
+      });
+
+      renderComponent();
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toEqual([]);
+      expect(get(pageStore).path).not.toEqual(AppPath.Wallet);
     });
 
     it("should navigate to tokens on close w/o query params", async () => {
