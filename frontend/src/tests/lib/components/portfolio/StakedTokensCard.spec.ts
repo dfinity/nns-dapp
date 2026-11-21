@@ -1,7 +1,6 @@
 import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
 import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
 import { APY_CALC_ERROR } from "$lib/utils/staking-rewards.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -37,10 +36,6 @@ describe("StakedTokensCard", () => {
       element: new JestPageObjectElement(container),
     });
   };
-
-  beforeEach(() => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-  });
 
   const icpProject: TableProject = {
     ...mockTableProject,
@@ -112,40 +107,6 @@ describe("StakedTokensCard", () => {
     });
 
     expect(await po.getAmount()).toBe("$•••");
-  });
-
-  it("should show all the projects with their maturity, staked in usd and staked in native currency", async () => {
-    const po = renderComponent({
-      topStakedTokens: mockStakedTokens,
-    });
-
-    const titles = await po.getStakedTokensTitle();
-    const maturities = await po.getStakedTokensMaturity();
-    const stakesInUsd = await po.getStakedTokensStakeInUsd();
-    const stakesInNativeCurrency =
-      await po.getStakedTokensStakeInNativeCurrency();
-
-    expect(titles.length).toBe(4);
-    expect(titles).toEqual([
-      "Internet Computer",
-      "Project 1",
-      "Project 2",
-      "Project 3",
-    ]);
-
-    expect(maturities.length).toBe(4);
-    expect(maturities).toEqual(["20.00", "0", "0", "0"]);
-
-    expect(stakesInUsd.length).toBe(4);
-    expect(stakesInUsd).toEqual(["$100.00", "$200.00", "$300.00", "$400.00"]);
-
-    expect(stakesInNativeCurrency.length).toBe(4);
-    expect(stakesInNativeCurrency).toEqual([
-      "0.01 ICP",
-      "0.01 TET",
-      "0.01 TET",
-      "0.01 TET",
-    ]);
   });
 
   it("should hide the balance for all the projects", async () => {
@@ -228,16 +189,12 @@ describe("StakedTokensCard", () => {
     });
 
     const titles = await po.getStakedTokensTitle();
-    const maturities = await po.getStakedTokensMaturity();
     const stakesInUsd = await po.getStakedTokensStakeInUsd();
     const stakesInNativeCurrency =
       await po.getStakedTokensStakeInNativeCurrency();
 
     expect(titles.length).toBe(3);
     expect(titles).toEqual(["Internet Computer", "Project 1", "Project 2"]);
-
-    expect(maturities.length).toBe(3);
-    expect(maturities).toEqual(["20.00", "0", "0"]);
 
     expect(stakesInUsd.length).toBe(3);
     expect(stakesInUsd).toEqual(["$100.00", "$200.00", "$300.00"]);
@@ -269,7 +226,7 @@ describe("StakedTokensCard", () => {
     ]);
   });
 
-  describe("APY feature flag", () => {
+  describe("APY", () => {
     const icpProject: TableProject = {
       ...mockTableProject,
       stakeInUsd: 100,
@@ -336,10 +293,6 @@ describe("StakedTokensCard", () => {
       tableProject2,
       tableProject3,
     ];
-
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-    });
 
     it("should show all the projects with their Apys, staked in usd and staked in native currency", async () => {
       const po = renderComponent({

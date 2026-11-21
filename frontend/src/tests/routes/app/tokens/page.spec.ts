@@ -271,11 +271,13 @@ describe("Tokens route", () => {
         expect(await po.hasTokensPage()).toBe(true);
       });
 
-      it("renders 'Projects' as tokens table first column", async () => {
+      it("renders the ICP tokens header as the first column", async () => {
         const po = await renderPage();
 
-        const tablePo = po.getTokensPagePo().getTokensTable();
-        expect(await tablePo.getFirstColumnHeader()).toEqual("Projects");
+        const tablePo = po.getTokensPagePo().getIcpTokensTable();
+        expect(await tablePo.getFirstColumnHeader()).toEqual(
+          "ICP Tokens Native utility token of the Internet Computer"
+        );
       });
 
       describe("when ckBTC is enabled", () => {
@@ -593,9 +595,7 @@ describe("Tokens route", () => {
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
         const tokensPagePo = po.getTokensPagePo();
-        const rowPo = await tokensPagePo
-          .getTokensTable()
-          .getRowByName("Internet Computer");
+        const rowPo = await tokensPagePo.getRowByName("Internet Computer");
 
         expect(await rowPo.getBalanceInUsd()).toEqual("$12.35");
       });
@@ -652,8 +652,8 @@ describe("Tokens route", () => {
               "Internet Computer",
               "ckBTC",
               "ckUSDC",
-              "Tetris",
               "ckETH",
+              "Tetris",
               "Pacman",
             ]);
           });
@@ -699,20 +699,21 @@ describe("Tokens route", () => {
             );
           });
 
-          it("should display imported tokens after important and before SNS", async () => {
+          it("should display imported tokens in their own table after SNS", async () => {
             const po = await renderPage();
             const tokensPagePo = po.getTokensPagePo();
             expect(await tokensPagePo.getTokenNames()).toEqual([
-              // With balance:
               "Internet Computer",
-              "ckBTC", // Important
-              "ckUSDC", // Important
-              "ZTOKEN1", // Imported
-              "Tetris", // SNS
-              // Zero balance
-              "ckETH", // Important
-              "ATOKEN2", // Imported
-              "Pacman", // SNS
+              // ck tokens
+              "ckBTC",
+              "ckUSDC",
+              "ckETH",
+              // SNS tokens
+              "Tetris",
+              "Pacman",
+              // Imported tokens
+              "ZTOKEN1",
+              "ATOKEN2",
             ]);
           });
         });
@@ -724,12 +725,12 @@ describe("Tokens route", () => {
 
           it("should display token in specific order", async () => {
             const po = await renderPage();
-            const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
-            expect(await tablePo.getTokenNames()).toEqual([
+            const signInPo = po.getSignInTokensPagePo();
+            expect(await signInPo.getTokenNames()).toEqual([
               "Internet Computer",
               "ckBTC",
-              "ckETH",
               "ckUSDC",
+              "ckETH",
               "Pacman",
               "Tetris",
             ]);
@@ -774,7 +775,7 @@ describe("Tokens route", () => {
         });
       });
 
-      it("should render failed token as the last in the table", async () => {
+      it("should render failed token as the last in its table", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
         const tokenNames = await tokensPagePo.getTokenNames();
@@ -783,19 +784,17 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ZTOKEN1",
           "ckETH",
           "Pacman",
           "Tetris",
+          "ZTOKEN1",
         ]);
       });
 
       it("should display failed token UI", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
-        const failedTokenRow = await tokensPagePo
-          .getTokensTable()
-          .getRowByName("Tetris");
+        const failedTokenRow = await tokensPagePo.getRowByName("Tetris");
 
         expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
         expect(
@@ -860,12 +859,12 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ZTOKEN1",
-          "Tetris",
           "ckETH",
+          "Tetris",
+          "Pacman",
+          "ZTOKEN1",
           "ATOKEN2",
           failedImportedTokenIdText, // failed imported token
-          "Pacman",
         ]);
       });
 
@@ -880,21 +879,21 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ZTOKEN1",
-          "Tetris",
           "ckETH",
+          "Tetris",
+          "Pacman",
+          "ZTOKEN1",
           failedImportedTokenIdText, // failed
           importedToken2Id.toText(), // failed
-          "Pacman",
         ]);
       });
 
       it("should display failed imported token UI", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
-        const failedTokenRow = await tokensPagePo
-          .getTokensTable()
-          .getRowByName(failedImportedTokenIdText);
+        const failedTokenRow = await tokensPagePo.getRowByName(
+          failedImportedTokenIdText
+        );
 
         expect(
           await failedTokenRow.getFailedLedgerCanisterHashPo().getFullText()
@@ -910,7 +909,7 @@ describe("Tokens route", () => {
       it("should not display failed token UI for not failed tokens", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
-        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+        const rowsPos = await tokensPagePo.getRows();
 
         const checkForFailedUI = async (rowPo: TokensTableRowPo) => {
           expect(
@@ -932,12 +931,8 @@ describe("Tokens route", () => {
       it("should not display failed token actions for not failed tokens", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
-        const ckBTCTokenRow = await tokensPagePo
-          .getTokensTable()
-          .getRowByName("ckBTC");
-        const notFailedTokenRow = await tokensPagePo
-          .getTokensTable()
-          .getRowByName("ZTOKEN1");
+        const ckBTCTokenRow = await tokensPagePo.getRowByName("ckBTC");
+        const notFailedTokenRow = await tokensPagePo.getRowByName("ZTOKEN1");
 
         expect(
           await ckBTCTokenRow.getGoToDashboardButton().isPresent()
@@ -956,9 +951,9 @@ describe("Tokens route", () => {
       it("should have view on dashboard action button", async () => {
         const po = await renderPage();
         const tokensPagePo = po.getTokensPagePo();
-        const failedTokenRow = await tokensPagePo
-          .getTokensTable()
-          .getRowByName(failedImportedTokenIdText);
+        const failedTokenRow = await tokensPagePo.getRowByName(
+          failedImportedTokenIdText
+        );
 
         expect(
           await failedTokenRow.getGoToDashboardButton().isPresent()
@@ -985,20 +980,20 @@ describe("Tokens route", () => {
         const po = await renderPage();
         const removeConfirmationPo = po.getImportTokenRemoveConfirmationPo();
         const tokensPagePo = po.getTokensPagePo();
-        const failedTokenRow = await tokensPagePo
-          .getTokensTable()
-          .getRowByName(failedImportedTokenIdText);
+        const failedTokenRow = await tokensPagePo.getRowByName(
+          failedImportedTokenIdText
+        );
 
         expect(await po.getTokensPagePo().getTokenNames()).toEqual([
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ZTOKEN1",
-          "Tetris",
           "ckETH",
+          "Tetris",
+          "Pacman",
+          "ZTOKEN1",
           "ATOKEN2",
           "aaaaa-aa", // failedTokenRow
-          "Pacman",
         ]);
 
         // Initiating the removal.
@@ -1032,17 +1027,17 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ZTOKEN1",
-          "Tetris",
           "ckETH",
-          "ATOKEN2",
+          "Tetris",
           "Pacman",
+          "ZTOKEN1",
+          "ATOKEN2",
         ]);
       });
 
       it("should not reload balances after an imported token becomes failed", async () => {
         const po = await renderPage();
-        const rows = await po.getTokensPagePo().getTokensTable().getRows();
+        const rows = await po.getTokensPagePo().getRows();
         const notFailedTokenCount = 8;
         expect(
           (
@@ -1087,11 +1082,13 @@ describe("Tokens route", () => {
         expect(await po.hasTokensPage()).toBe(false);
       });
 
-      it("renders 'Projects' as tokens table first column", async () => {
+      it("renders the ICP tokens header as the first column", async () => {
         const po = await renderPage();
 
-        const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
-        expect(await tablePo.getFirstColumnHeader()).toEqual("Projects");
+        const [tablePo] = await po.getSignInTokensPagePo().getTokensTablePos();
+        expect(await tablePo.getFirstColumnHeader()).toEqual(
+          "ICP Tokens Native utility token of the Internet Computer"
+        );
       });
 
       describe("when ckBTC is enabled", () => {
@@ -1106,8 +1103,8 @@ describe("Tokens route", () => {
           expect(await signInPo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckBTC",
-            "ckETH",
             "ckUSDC",
+            "ckETH",
             "Pacman",
             "Tetris",
           ]);
@@ -1117,7 +1114,7 @@ describe("Tokens route", () => {
       it("should render an anchor tag with href", async () => {
         const po = await renderPage();
 
-        const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
+        const tablePo = po.getSignInTokensPagePo();
 
         const icpRow = await tablePo.getRowByName("Internet Computer");
         expect(await icpRow.getHref()).toEqual(

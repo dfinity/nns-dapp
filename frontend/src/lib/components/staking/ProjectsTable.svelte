@@ -27,10 +27,6 @@
   } from "$lib/services/accounts-balances.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import {
-    ENABLE_APY_PORTFOLIO,
-    ENABLE_NEW_TABLES,
-  } from "$lib/stores/feature-flags.store";
   import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -75,20 +71,14 @@
         ? compareByStake(universeOrder)
         : undefined,
     },
-    ...($ENABLE_APY_PORTFOLIO
-      ? [
-          {
-            id: "apy",
-            title: $i18n.neuron_detail.apy_and_max,
-            cellComponent: ProjectApyCell,
-            alignment: "right",
-            templateColumns: ["1fr"],
-            comparator: $authSignedInStore
-              ? compareByApy(universeOrder)
-              : undefined,
-          } as ProjectsTableColumn,
-        ]
-      : []),
+    {
+      id: "apy",
+      title: $i18n.neuron_detail.apy_and_max,
+      cellComponent: ProjectApyCell,
+      alignment: "right",
+      templateColumns: ["1fr"],
+      comparator: $authSignedInStore ? compareByApy(universeOrder) : undefined,
+    },
     {
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: ProjectMaturityCell,
@@ -111,20 +101,6 @@
       alignment: "right",
       templateColumns: ["1fr"],
     },
-  ]);
-
-  const columns: ProjectsTableColumn[] = $derived([
-    {
-      id: "title",
-      title: $i18n.staking.nervous_systems,
-      cellComponent: ProjectTitleCell,
-      alignment: "left",
-      templateColumns: ["2fr"],
-      comparator: $authSignedInStore
-        ? compareByProject(universeOrder)
-        : undefined,
-    },
-    ...commonColumns,
   ]);
 
   const nnsColumns: ProjectsTableColumn[] = $derived([
@@ -167,9 +143,7 @@
       snsNeurons: $snsNeuronsStore,
       tickersStore: $tickersStore,
       failedActionableSnses: $failedActionableSnsesStore,
-      stakingRewardsResult: $ENABLE_APY_PORTFOLIO
-        ? $stakingRewardsStore
-        : undefined,
+      stakingRewardsResult: $stakingRewardsStore,
     })
   );
 
@@ -267,9 +241,7 @@
     }
   });
 
-  const apyCardVisible = $derived(
-    $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)
-  );
+  const apyCardVisible = $derived(nonNullish(totalUsdAmount));
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
@@ -303,82 +275,26 @@
     {/if}
   </div>
 
-  {#if $ENABLE_NEW_TABLES}
-    {#if !$authSignedInStore}
-      <ResponsiveTable
-        tableData={nnsNeurons}
-        columns={nnsColumns}
-        on:nnsAction={handleAction}
-      />
-
-      <ResponsiveTable
-        tableData={snsNeurons}
-        columns={snsColumns}
-        on:nnsAction={handleAction}
-      />
-    {:else}
-      <ResponsiveTable
-        tableData={nnsNeurons}
-        columns={nnsColumns}
-        on:nnsAction={handleAction}
-        bind:order={$projectsTableOrderStore}
-        displayTableSettings
-        testId="nns-projects-table-component"
-      >
-        <svelte:fragment slot="settings-popover">
-          <HideZeroNeuronsToggle />
-          <Separator spacing="none" />
-        </svelte:fragment>
-
-        <div
-          slot="last-row"
-          class="last-row"
-          class:hidden={!shouldHideProjectsWithoutNeurons}
-        >
-          {#if shouldHideProjectsWithoutNeurons}
-            <div class="show-all-button-container">
-              {$i18n.staking.hide_no_neurons_table_hint}
-              <button
-                data-tid="show-all-button"
-                class="ghost show-all"
-                onclick={showAll}
-              >
-                {$i18n.staking.show_all}</button
-              >
-            </div>
-          {/if}
-        </div>
-      </ResponsiveTable>
-
-      {#if snsNeurons.length > 0}
-        <ResponsiveTable
-          tableData={snsNeurons}
-          columns={snsColumns}
-          on:nnsAction={handleAction}
-          bind:order={$projectsTableOrderStore}
-          displayTableSettings
-          testId="sns-projects-table-component"
-        >
-          <svelte:fragment slot="settings-popover">
-            <HideZeroNeuronsToggle />
-            <Separator spacing="none" />
-          </svelte:fragment>
-        </ResponsiveTable>
-      {/if}
-    {/if}
-  {:else if !$authSignedInStore}
+  {#if !$authSignedInStore}
     <ResponsiveTable
-      tableData={sortedTableProjects}
-      {columns}
+      tableData={nnsNeurons}
+      columns={nnsColumns}
+      on:nnsAction={handleAction}
+    />
+
+    <ResponsiveTable
+      tableData={snsNeurons}
+      columns={snsColumns}
       on:nnsAction={handleAction}
     />
   {:else}
     <ResponsiveTable
-      tableData={sortedTableProjects}
-      {columns}
+      tableData={nnsNeurons}
+      columns={nnsColumns}
       on:nnsAction={handleAction}
       bind:order={$projectsTableOrderStore}
       displayTableSettings
+      testId="nns-projects-table-component"
     >
       <svelte:fragment slot="settings-popover">
         <HideZeroNeuronsToggle />
@@ -404,6 +320,22 @@
         {/if}
       </div>
     </ResponsiveTable>
+
+    {#if snsNeurons.length > 0}
+      <ResponsiveTable
+        tableData={snsNeurons}
+        columns={snsColumns}
+        on:nnsAction={handleAction}
+        bind:order={$projectsTableOrderStore}
+        displayTableSettings
+        testId="sns-projects-table-component"
+      >
+        <svelte:fragment slot="settings-popover">
+          <HideZeroNeuronsToggle />
+          <Separator spacing="none" />
+        </svelte:fragment>
+      </ResponsiveTable>
+    {/if}
   {/if}
 </div>
 

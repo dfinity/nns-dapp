@@ -440,7 +440,6 @@
   "staking": {
     "title": "Stake and earn voting rewards",
     "text": "Earn voting rewards by staking your tokens in neurons. Neurons allow you to participate in governance of the Internet Computer, and DAOs deployed on the Internet Computer.",
-    "nervous_systems": "Nervous Systems",
     "nervous_systems_nns": "Staked ICP",
     "nervous_systems_nns_subtitle": "Native utility token of the Internet Computer",
     "nervous_systems_sns": "Staked SNS Tokens",
@@ -1381,7 +1380,6 @@
   },
   "tokens": {
     "token_name": "Token Name",
-    "projects_header": "Projects",
     "projects_header_icp": "ICP Tokens",
     "projects_header_icp_subtitle": "Native utility token of the Internet Computer",
     "projects_header_ck": "Chain-key Tokens",

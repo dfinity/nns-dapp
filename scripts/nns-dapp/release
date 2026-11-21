@@ -42,9 +42,9 @@ if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
     }
   fi
 else
-  # If not specified, check whether it has been provided by snsdemo:
+  # If not specified, use the first neuron of the identity that can propose:
   [[ "${DFX_NEURON_ID:-}" != "" ]] || {
-    DFX_NEURON_ID="$(dfx-neuron-id --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" 2>/dev/null || true)"
+    DFX_NEURON_ID="$(get-neurons --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" --can-propose 2>/dev/null | head -n 1 || true)"
   }
 fi
 [[ "${DFX_NEURON_ID:-}" != "" ]] || {
@@ -102,8 +102,8 @@ fi
   if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
     DFX_NNS_URL="https://ic0.app"
   else
-    # Try to use the snsdemo script for getting the provider for testnets and local replicas.
-    DFX_NNS_URL="$(dfx-network-provider --network "$DFX_NETWORK")"
+    # Get the provider for testnets and local replicas.
+    DFX_NNS_URL="$(dfx-server-origin --network "$DFX_NETWORK" 2>/dev/null || true)"
   fi
 }
 [[ "${DFX_NNS_URL:-}" != "" ]] || {
@@ -139,8 +139,11 @@ test -e "${SUMMARY_FILE:-}" || {
   exit 1
 } >&2
 
+# Gets the proposal title
+PROPOSAL_TITLE="Upgrade NNS Dapp Canister to $(git rev-parse --short tags/release-candidate)"
+
 # Prepares the command
-set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH" --arg-sha256 "$ARG_PATH_HASH"
+set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --proposal-title "$PROPOSAL_TITLE" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH" --arg-sha256 "$ARG_PATH_HASH"
 
 # ... just checking...
 echo
