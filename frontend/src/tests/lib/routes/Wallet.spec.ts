@@ -155,6 +155,12 @@ describe("Wallet", () => {
         if (canisterId.toText() === importedTokenId.toText()) {
           return mockToken;
         }
+        if (
+          canisterId.toText() ===
+          mockSnsFullProject.summary.ledgerCanisterId.toText()
+        ) {
+          return mockSnsFullProject.summary.token;
+        }
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
     );
