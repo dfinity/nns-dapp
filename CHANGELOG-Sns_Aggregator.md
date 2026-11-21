@@ -15,6 +15,10 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Fixed
 - Serve an empty list of the latest SNSs when no SNS exists, instead of a 404.
 ### Security
+- Only a controller can call the `reconfigure` method. The method exists in the
+  development build. Before, any principal could replace the configuration.
+- Raise an update interval below 100 ms to 100 ms. A shorter interval makes the
+  canister collect data continuously and burn cycles.
 
 - Pin the home page's Prism script and stylesheet with Subresource Integrity and load them from the certified gateway.
 
