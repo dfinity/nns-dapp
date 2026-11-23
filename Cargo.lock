@@ -462,9 +462,9 @@ checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
 name = "candid"
-version = "0.10.40"
+version = "0.10.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eabf7c87ac020b0d9e07b02b63e6a109224044a524ce5b7ce98307bc5ea4d7e1"
+checksum = "a253dd9596f4b17d3fab70379d4a6b421a996b2e556f2389fdd18d1d988ff733"
 dependencies = [
  "anyhow",
  "binrw",
@@ -494,9 +494,9 @@ dependencies = [
 
 [[package]]
 name = "candid_derive"
-version = "0.10.40"
+version = "0.10.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6d61cd9491fc0ef12a5d2106b742e0e166026afc9e20cadd82d3f1e695cf7fc"
+checksum = "48fb0884cb905b01bc3e7566e3d01f33cace6779b76384f70aea8552cef6a942"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -525,9 +525,9 @@ dependencies = [
 
 [[package]]
 name = "candid_parser"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4d1368a4edc90c239b652b675a99fb21e5ce600c7ef3da082a3fcdb07bd1e1f"
+checksum = "0869423fd06018874025dcde34b6c094cf679faa9d552ba2cbbb1d7b62177aa4"
 dependencies = [
  "anyhow",
  "candid",
@@ -4315,7 +4315,7 @@ dependencies = [
  "anyhow",
  "base64 0.23.1",
  "candid",
- "candid_parser 0.4.1",
+ "candid_parser 0.4.2",
  "cycles-minting-canister",
  "dfn_candid",
  "dfn_protobuf",
