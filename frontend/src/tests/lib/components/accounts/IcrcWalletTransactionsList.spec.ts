@@ -15,6 +15,7 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import {
+  createIcrcTransactionWithId,
   mockIcrcTransactionWithId,
   mockIcrcTransactionWithIdToSelf,
   mockIcrcTransactionsStoreSubscribe,
@@ -27,6 +28,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
@@ -102,7 +104,7 @@ describe("IcrcWalletTransactionList", () => {
     let resolveLoadNext;
     spy.mockImplementation(
       () =>
-        new Promise<void>((resolve) => {
+        new Promise<boolean>((resolve) => {
           resolveLoadNext = resolve;
         })
     );
@@ -111,7 +113,7 @@ describe("IcrcWalletTransactionList", () => {
 
     await runResolvedPromises();
     expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
-    resolveLoadNext();
+    resolveLoadNext(true);
     await runResolvedPromises();
     await po.getSkeletonCardPo().waitForAbsent();
 
@@ -124,6 +126,82 @@ describe("IcrcWalletTransactionList", () => {
 
     expect(spy).toBeCalledTimes(1);
     expect(spyReload).toBeCalledTimes(1);
+  });
+
+  describe("when the reload fails", () => {
+    const cachedTransactions = {
+      transactions: [mockIcrcTransactionWithId],
+      completed: false,
+      oldestTxId: 0n,
+    };
+
+    beforeEach(() => {
+      icrcTransactionsStore.reset();
+      icrcTransactionsStore.mergeAccount({
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
+        accountIdentifier: mockCkBTCMainAccount.identifier,
+        data: cachedTransactions,
+      });
+    });
+
+    const reloadWith = async ({
+      loaded,
+      onReset,
+    }: {
+      loaded: boolean;
+      onReset?: () => void;
+    }) => {
+      vi.spyOn(services, "loadIcrcAccountNextTransactions").mockResolvedValue(
+        true
+      );
+      const spyReload = vi
+        .spyOn(services, "loadIcrcAccountTransactions")
+        .mockResolvedValue(loaded);
+      // No rows, so the list does not start transitions that jsdom lacks.
+      const { reload } = renderComponent(() => []);
+      await runResolvedPromises();
+
+      reload();
+      onReset?.();
+      await advanceTime(5000);
+
+      expect(spyReload).toBeCalledTimes(1);
+
+      return get(icrcTransactionsStore)[CKBTC_LEDGER_CANISTER_ID.toText()]?.[
+        mockCkBTCMainAccount.identifier
+      ];
+    };
+
+    it("should keep the cached transactions", async () => {
+      expect(await reloadWith({ loaded: false })).toEqual(cachedTransactions);
+    });
+
+    it("should keep the transactions from the observer", async () => {
+      const observedTransaction = createIcrcTransactionWithId({ id: 20n });
+
+      expect(
+        await reloadWith({
+          loaded: false,
+          onReset: () =>
+            icrcTransactionsStore.addTransactions({
+              canisterId: CKBTC_LEDGER_CANISTER_ID,
+              accountIdentifier: mockCkBTCMainAccount.identifier,
+              transactions: [observedTransaction],
+              oldestTxId: 20n,
+              completed: false,
+              balance: 0n,
+            }),
+        })
+      ).toEqual({
+        transactions: [observedTransaction, mockIcrcTransactionWithId],
+        oldestTxId: 0n,
+        completed: false,
+      });
+    });
+
+    it("should not restore the cached transactions after a successful reload", async () => {
+      expect(await reloadWith({ loaded: true })).toBeUndefined();
+    });
   });
 
   it("should render transactions from store", async () => {
@@ -210,7 +288,7 @@ describe("IcrcWalletTransactionList", () => {
     let resolveLoadNext;
     spyLoadNext.mockImplementation(
       () =>
-        new Promise<void>((resolve) => {
+        new Promise<boolean>((resolve) => {
           resolveLoadNext = resolve;
         })
     );
@@ -241,7 +319,7 @@ describe("IcrcWalletTransactionList", () => {
     expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
     expect(await po.getTransactionCardPos()).toHaveLength(0);
 
-    resolveLoadNext();
+    resolveLoadNext(true);
     await runResolvedPromises();
 
     expect(await po.getSkeletonCardPo().isPresent()).toBe(false);

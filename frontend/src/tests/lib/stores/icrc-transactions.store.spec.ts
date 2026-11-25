@@ -1,7 +1,10 @@
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
-import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import {
+  createIcrcTransactionWithId,
+  mockIcrcTransactionWithId,
+} from "$tests/mocks/icrc-transactions.mock";
 import { get } from "svelte/store";
 
 describe("icrc-transactions", () => {
@@ -55,6 +58,39 @@ describe("icrc-transactions", () => {
         mockCkBTCMainAccount.identifier
       ]
     ).toBeUndefined();
+  });
+
+  it("should merge transactions into an account", () => {
+    const newTransaction = createIcrcTransactionWithId({ id: 20n });
+
+    icrcTransactionsStore.mergeAccount({
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      accountIdentifier: mockCkBTCMainAccount.identifier,
+      data: {
+        transactions: [newTransaction],
+        oldestTxId: 20n,
+        completed: false,
+      },
+    });
+    icrcTransactionsStore.mergeAccount({
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      accountIdentifier: mockCkBTCMainAccount.identifier,
+      data: {
+        transactions: [mockIcrcTransactionWithId, newTransaction],
+        oldestTxId: 10n,
+        completed: true,
+      },
+    });
+
+    expect(
+      get(icrcTransactionsStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()][
+        mockCkBTCMainAccount.identifier
+      ]
+    ).toEqual({
+      transactions: [newTransaction, mockIcrcTransactionWithId],
+      oldestTxId: 10n,
+      completed: true,
+    });
   });
 
   it("should dedupe transactions", () => {

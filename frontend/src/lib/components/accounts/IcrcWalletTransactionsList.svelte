@@ -67,6 +67,9 @@
 
     loading = true;
 
+    const cachedTransactions =
+      $icrcTransactionsStore[ledgerCanisterId.toText()]?.[account.identifier];
+
     // We want to reload all transactions of the account from scratch.
     // That way the skeletons will be displayed again which provides the user a visual feedback about the fact that all transactions are realoded.
     // This is handy because the reload notably happens the "update balance" process - i.e. happens after the "busy spinner" has fade away.
@@ -78,11 +81,21 @@
     // We optimistically try to fetch the new transaction the user just transferred by delaying the reload of the transactions.
     await waitForMilliseconds(WALLET_TRANSACTIONS_RELOAD_DELAY);
 
-    await loadIcrcAccountTransactions({
+    const loaded = await loadIcrcAccountTransactions({
       account,
       ledgerCanisterId,
       indexCanisterId,
     });
+
+    // Keep the cached history if the index cannot answer, together with
+    // newer transactions from the observer.
+    if (!loaded && nonNullish(cachedTransactions)) {
+      icrcTransactionsStore.mergeAccount({
+        canisterId: ledgerCanisterId,
+        accountIdentifier: account.identifier,
+        data: cachedTransactions,
+      });
+    }
 
     loading = false;
   };

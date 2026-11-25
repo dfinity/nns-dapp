@@ -154,6 +154,24 @@ describe("CkBTCTransactionModal", () => {
     });
   });
 
+  it("should end the flow without a success toast if the outcome is unknown", async () => {
+    vi.mocked(transferTokens).mockResolvedValue({
+      blockIndex: undefined,
+      unknownOutcome: true,
+    });
+
+    const nnsTransfer = vi.fn();
+    const po = await renderModalToPo({ nnsTransfer });
+
+    await po.transferToAddress({
+      destinationAddress: mockCkBTCMainAccount.identifier,
+      amount: 10,
+    });
+
+    await waitFor(() => expect(nnsTransfer).toBeCalledTimes(1));
+    expect(get(toastsStore)).toEqual([]);
+  });
+
   const testConvertCkBTCToBTCWithIcrc2 = async ({
     success,
     eventName,

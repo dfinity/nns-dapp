@@ -7,17 +7,33 @@ import {
   isMethodNotFoundError,
   isMethodNotSupportedError,
   isPayloadSizeError,
+  isUnknownOutcomeError,
   toToastError,
 } from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
 import { UnsupportedMethodError } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
+  CborDecodeErrorCode,
+  CertificateVerificationErrorCode,
   CertifiedRejectErrorCode,
   ErrorKindEnum,
+  Expiry,
+  HttpErrorCode,
+  HttpFetchErrorCode,
+  IngressExpiryInvalidErrorCode,
+  InputError,
+  InvalidReadStateRequestErrorCode,
+  ProtocolError,
+  RejectError,
   ReplicaRejectCode,
   requestIdOf,
+  RequestStatusDoneNoReplyErrorCode,
+  TimeoutWaitingForResponseErrorCode,
+  TransportError,
+  TrustError,
   UncertifiedRejectErrorCode,
+  UnknownError,
 } from "@icp-sdk/core/agent";
 
 class TestError extends Error {
@@ -133,6 +149,101 @@ describe("error-utils", () => {
       expect(isMethodNotSupportedError(new Error("another error"))).toBe(false);
       expect(isMethodNotSupportedError(undefined)).toBe(false);
       expect(isMethodNotSupportedError({})).toBe(false);
+    });
+  });
+
+  describe("isUnknownOutcomeError", () => {
+    const httpError = (status: number) =>
+      ProtocolError.fromCode(new HttpErrorCode(status, "status", [], "body"));
+
+    it("should return true if the agent has no definite answer", () => {
+      expect(
+        isUnknownOutcomeError(
+          TransportError.fromCode(new HttpFetchErrorCode(new Error("fetch")))
+        )
+      ).toBe(true);
+      expect(
+        isUnknownOutcomeError(
+          ProtocolError.fromCode(
+            new TimeoutWaitingForResponseErrorCode("timeout")
+          )
+        )
+      ).toBe(true);
+      expect(
+        isUnknownOutcomeError(
+          TrustError.fromCode(new CertificateVerificationErrorCode("invalid"))
+        )
+      ).toBe(true);
+      expect(
+        isUnknownOutcomeError(
+          UnknownError.fromCode(
+            new RequestStatusDoneNoReplyErrorCode(requestIdOf({}))
+          )
+        )
+      ).toBe(true);
+    });
+
+    it("should return true for an HTTP error", () => {
+      expect(isUnknownOutcomeError(httpError(429))).toBe(true);
+      expect(isUnknownOutcomeError(httpError(503))).toBe(true);
+    });
+
+    it("should return false for a reject", () => {
+      expect(
+        isUnknownOutcomeError(
+          RejectError.fromCode(
+            new CertifiedRejectErrorCode(
+              requestIdOf({}),
+              ReplicaRejectCode.CanisterError,
+              "There was an error",
+              "IC0503"
+            )
+          )
+        )
+      ).toBe(false);
+    });
+
+    it("should return false for invalid agent options", () => {
+      expect(
+        isUnknownOutcomeError(
+          InputError.fromCode(new IngressExpiryInvalidErrorCode("expiry", 5))
+        )
+      ).toBe(false);
+    });
+
+    it("should return true for an expiry error from a request", () => {
+      const code = new IngressExpiryInvalidErrorCode("expiry", 5);
+      code.requestContext = {
+        requestId: requestIdOf({}),
+        senderPubKey: new Uint8Array(),
+        senderSignature: new Uint8Array(),
+        ingressExpiry: Expiry.fromDeltaInMilliseconds(60_000),
+      };
+
+      expect(isUnknownOutcomeError(InputError.fromCode(code))).toBe(true);
+    });
+
+    it("should return true for an invalid read state request", () => {
+      expect(
+        isUnknownOutcomeError(
+          InputError.fromCode(new InvalidReadStateRequestErrorCode({}))
+        )
+      ).toBe(true);
+    });
+
+    it("should return true if the agent cannot decode a response", () => {
+      expect(
+        isUnknownOutcomeError(
+          InputError.fromCode(
+            new CborDecodeErrorCode(new Error("cbor"), new Uint8Array([0xff]))
+          )
+        )
+      ).toBe(true);
+    });
+
+    it("should return false for an error outside the agent", () => {
+      expect(isUnknownOutcomeError(new Error("test"))).toBe(false);
+      expect(isUnknownOutcomeError(undefined)).toBe(false);
     });
   });
 

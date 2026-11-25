@@ -6,12 +6,14 @@ import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 
 describe("IcpTransactionModal", () => {
@@ -46,6 +48,51 @@ describe("IcpTransactionModal", () => {
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount])
     );
+  });
+
+  describe("with a hardware wallet", () => {
+    const transferWithHardwareWallet = async (
+      result: Awaited<ReturnType<typeof transferICP>>
+    ) => {
+      vi.mocked(transferICP).mockResolvedValue(result);
+      const nnsClose = vi.fn();
+      const { container } = await renderModal({
+        component: IcpTransactionModal,
+        props: { selectedAccount: mockHardwareWalletAccount },
+        events: { nnsClose },
+      });
+      const po = IcpTransactionModalPo.under(
+        new JestPageObjectElement(container)
+      );
+
+      await po.transferToAddress({
+        destinationAddress: mockMainAccount.identifier,
+        amount: 1,
+      });
+      await waitFor(() => expect(transferICP).toBeCalled());
+      await runResolvedPromises();
+
+      return nnsClose;
+    };
+
+    it("should close after an unknown outcome", async () => {
+      const nnsClose = await transferWithHardwareWallet({
+        success: false,
+        err: "error.transaction_unknown_outcome",
+        unknownOutcome: true,
+      });
+
+      expect(nnsClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should stay open after a definite failure", async () => {
+      const nnsClose = await transferWithHardwareWallet({
+        success: false,
+        err: "error.transaction_error",
+      });
+
+      expect(nnsClose).not.toHaveBeenCalled();
+    });
   });
 
   it("should render token in the modal title", async () => {

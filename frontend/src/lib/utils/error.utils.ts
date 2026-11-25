@@ -32,7 +32,11 @@ import {
 } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
+  CborDecodeErrorCode,
   CertifiedRejectErrorCode,
+  ErrorKindEnum,
+  IngressExpiryInvalidErrorCode,
+  InvalidReadStateRequestErrorCode,
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 
@@ -190,6 +194,28 @@ export const isPayloadSizeError = (err: unknown): boolean => {
   }
   return false;
 };
+
+/**
+ * True if the agent stopped without a definite answer from the IC.
+ * The canister may have executed the call, so a retry can repeat its effect.
+ */
+export const isUnknownOutcomeError = (err: unknown): boolean =>
+  err instanceof AgentError &&
+  ([
+    ErrorKindEnum.Protocol,
+    ErrorKindEnum.Transport,
+    ErrorKindEnum.Trust,
+    ErrorKindEnum.Unknown,
+  ].includes(err.kind) ||
+    // The agent decodes only responses, so the call can be already submitted.
+    err.hasCode(CborDecodeErrorCode) ||
+    // The agent adds the request context to an expiry error from `/call` and
+    // from the `/read_state` poll, so the call can be already submitted.
+    // Without it, the error comes from the agent options.
+    (err.hasCode(IngressExpiryInvalidErrorCode) &&
+      nonNullish(err.code.requestContext)) ||
+    // The agent creates read state requests only to poll a submitted call.
+    err.hasCode(InvalidReadStateRequestErrorCode));
 
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;

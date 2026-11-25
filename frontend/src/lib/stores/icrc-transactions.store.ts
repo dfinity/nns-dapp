@@ -44,6 +44,11 @@ export interface IcrcTransactionsStore
     canisterId: UniverseCanisterId;
     accountIdentifier: string;
   }) => void;
+  mergeAccount: (params: {
+    canisterId: UniverseCanisterId;
+    accountIdentifier: string;
+    data: IcrcTransactions[IcrcAccountIdentifierText];
+  }) => void;
 }
 
 /**
@@ -134,6 +139,41 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
               keysToRemove: [accountIdentifier],
             }),
           }),
+        };
+      });
+    },
+
+    mergeAccount({
+      canisterId,
+      accountIdentifier,
+      data,
+    }: {
+      canisterId: UniverseCanisterId;
+      accountIdentifier: string;
+      data: IcrcTransactions[IcrcAccountIdentifierText];
+    }) {
+      update((currentState: IcrcTransactionsStoreData) => {
+        const projectState = currentState[canisterId.toText()];
+        const accountState = projectState?.[accountIdentifier];
+        const oldestTxIds = [accountState?.oldestTxId, data.oldestTxId].filter(
+          nonNullish
+        );
+        return {
+          ...currentState,
+          [canisterId.toText()]: {
+            ...projectState,
+            [accountIdentifier]: {
+              transactions: getUniqueTransactions([
+                ...(accountState?.transactions ?? []),
+                ...data.transactions,
+              ]),
+              oldestTxId:
+                oldestTxIds.length > 0
+                  ? oldestTxIds.reduce((a, b) => (a < b ? a : b))
+                  : undefined,
+              completed: (accountState?.completed ?? false) || data.completed,
+            },
+          },
         };
       });
     },
