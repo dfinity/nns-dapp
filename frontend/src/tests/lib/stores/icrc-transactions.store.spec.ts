@@ -57,6 +57,38 @@ describe("icrc-transactions", () => {
     ).toBeUndefined();
   });
 
+  it("should set the transactions of an account", () => {
+    const otherAccountIdentifier = "otherAccountIdentifier";
+    const otherAccount = {
+      transactions: [],
+      oldestTxId: 5n,
+      completed: true,
+    };
+    const data = {
+      transactions: [mockIcrcTransactionWithId],
+      oldestTxId: 10n,
+      completed: false,
+    };
+
+    icrcTransactionsStore.setAccount({
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      accountIdentifier: otherAccountIdentifier,
+      data: otherAccount,
+    });
+    icrcTransactionsStore.setAccount({
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      accountIdentifier: mockCkBTCMainAccount.identifier,
+      data,
+    });
+
+    expect(
+      get(icrcTransactionsStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
+    ).toEqual({
+      [otherAccountIdentifier]: otherAccount,
+      [mockCkBTCMainAccount.identifier]: data,
+    });
+  });
+
   it("should dedupe transactions", () => {
     const canisterId = CKTESTBTC_UNIVERSE_CANISTER_ID;
     const identifier = mockCkBTCMainAccount.identifier;

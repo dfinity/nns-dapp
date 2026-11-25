@@ -25,7 +25,7 @@ export const loadIcrcAccountTransactions = async ({
   ledgerCanisterId,
   start,
   indexCanisterId,
-}: LoadIcrcAccountTransactionsParams) => {
+}: LoadIcrcAccountTransactionsParams): Promise<boolean> => {
   try {
     const identity = await getIcrcAccountIdentity(account);
     const snsAccount = decodeIcrcAccount(account.identifier);
@@ -49,15 +49,17 @@ export const loadIcrcAccountTransactions = async ({
       completed,
       balance,
     });
+    return true;
   } catch (err) {
     console.error(err);
 
     const isCanisterOutOfCycles = isCanisterOutOfCyclesError(err);
-    if (isCanisterOutOfCycles) return;
+    if (isCanisterOutOfCycles) return false;
 
     toastsError(
       toToastError({ fallbackErrorLabelKey: "error.fetch_transactions", err })
     );
+    return false;
   }
 };
 

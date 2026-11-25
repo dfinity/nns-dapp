@@ -27,6 +27,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
@@ -102,7 +103,7 @@ describe("IcrcWalletTransactionList", () => {
     let resolveLoadNext;
     spy.mockImplementation(
       () =>
-        new Promise<void>((resolve) => {
+        new Promise<boolean>((resolve) => {
           resolveLoadNext = resolve;
         })
     );
@@ -111,7 +112,7 @@ describe("IcrcWalletTransactionList", () => {
 
     await runResolvedPromises();
     expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
-    resolveLoadNext();
+    resolveLoadNext(true);
     await runResolvedPromises();
     await po.getSkeletonCardPo().waitForAbsent();
 
@@ -124,6 +125,51 @@ describe("IcrcWalletTransactionList", () => {
 
     expect(spy).toBeCalledTimes(1);
     expect(spyReload).toBeCalledTimes(1);
+  });
+
+  describe("when the reload fails", () => {
+    const cachedTransactions = {
+      transactions: [mockIcrcTransactionWithId],
+      completed: false,
+      oldestTxId: 0n,
+    };
+
+    beforeEach(() => {
+      icrcTransactionsStore.reset();
+      icrcTransactionsStore.setAccount({
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
+        accountIdentifier: mockCkBTCMainAccount.identifier,
+        data: cachedTransactions,
+      });
+    });
+
+    const reloadWith = async (loaded: boolean) => {
+      vi.spyOn(services, "loadIcrcAccountNextTransactions").mockResolvedValue(
+        true
+      );
+      const spyReload = vi
+        .spyOn(services, "loadIcrcAccountTransactions")
+        .mockResolvedValue(loaded);
+      const { reload } = renderComponent();
+      await runResolvedPromises();
+
+      reload();
+      await advanceTime(5000);
+
+      expect(spyReload).toBeCalledTimes(1);
+
+      return get(icrcTransactionsStore)[CKBTC_LEDGER_CANISTER_ID.toText()]?.[
+        mockCkBTCMainAccount.identifier
+      ];
+    };
+
+    it("should keep the cached transactions", async () => {
+      expect(await reloadWith(false)).toEqual(cachedTransactions);
+    });
+
+    it("should not restore the cached transactions after a successful reload", async () => {
+      expect(await reloadWith(true)).toBeUndefined();
+    });
   });
 
   it("should render transactions from store", async () => {
@@ -210,7 +256,7 @@ describe("IcrcWalletTransactionList", () => {
     let resolveLoadNext;
     spyLoadNext.mockImplementation(
       () =>
-        new Promise<void>((resolve) => {
+        new Promise<boolean>((resolve) => {
           resolveLoadNext = resolve;
         })
     );
@@ -241,7 +287,7 @@ describe("IcrcWalletTransactionList", () => {
     expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
     expect(await po.getTransactionCardPos()).toHaveLength(0);
 
-    resolveLoadNext();
+    resolveLoadNext(true);
     await runResolvedPromises();
 
     expect(await po.getSkeletonCardPo().isPresent()).toBe(false);

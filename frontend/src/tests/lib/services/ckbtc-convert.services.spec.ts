@@ -105,7 +105,7 @@ describe("ckbtc-convert-services", () => {
         );
       vi.mocked(loadIcrcAccountTransactions).mockImplementation(
         () =>
-          new Promise<void>((resolve) => {
+          new Promise<boolean>((resolve) => {
             resolveLoadWalletTransactions = resolve;
           })
       );
@@ -225,7 +225,7 @@ describe("ckbtc-convert-services", () => {
       await runResolvedPromises();
       resolveRetrieveBtc({ block_index: 125 });
       await runResolvedPromises();
-      resolveLoadWalletTransactions(undefined);
+      resolveLoadWalletTransactions(true);
       await runResolvedPromises();
 
       expectStepsPerformed({
@@ -262,7 +262,7 @@ describe("ckbtc-convert-services", () => {
       await runResolvedPromises();
       rejectRetrieveBtc(new MinterInsufficientFundsError());
       await runResolvedPromises();
-      resolveLoadWalletTransactions(undefined);
+      resolveLoadWalletTransactions(true);
       await runResolvedPromises();
 
       expectStepsPerformed({

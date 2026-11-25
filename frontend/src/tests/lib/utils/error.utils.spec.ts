@@ -18,10 +18,12 @@ import {
   CertificateVerificationErrorCode,
   CertifiedRejectErrorCode,
   ErrorKindEnum,
+  Expiry,
   HttpErrorCode,
   HttpFetchErrorCode,
   IngressExpiryInvalidErrorCode,
   InputError,
+  InvalidReadStateRequestErrorCode,
   ProtocolError,
   RejectError,
   ReplicaRejectCode,
@@ -201,12 +203,32 @@ describe("error-utils", () => {
       ).toBe(false);
     });
 
-    it("should return false for an invalid request", () => {
+    it("should return false for invalid agent options", () => {
       expect(
         isUnknownOutcomeError(
           InputError.fromCode(new IngressExpiryInvalidErrorCode("expiry", 5))
         )
       ).toBe(false);
+    });
+
+    it("should return true for an expiry error from a request", () => {
+      const code = new IngressExpiryInvalidErrorCode("expiry", 5);
+      code.requestContext = {
+        requestId: requestIdOf({}),
+        senderPubKey: new Uint8Array(),
+        senderSignature: new Uint8Array(),
+        ingressExpiry: Expiry.fromDeltaInMilliseconds(60_000),
+      };
+
+      expect(isUnknownOutcomeError(InputError.fromCode(code))).toBe(true);
+    });
+
+    it("should return true for an invalid read state request", () => {
+      expect(
+        isUnknownOutcomeError(
+          InputError.fromCode(new InvalidReadStateRequestErrorCode({}))
+        )
+      ).toBe(true);
     });
 
     it("should return true if the agent cannot decode a response", () => {
