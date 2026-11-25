@@ -87,9 +87,10 @@
       indexCanisterId,
     });
 
-    // Keep the cached history if the index cannot answer.
+    // Keep the cached history if the index cannot answer, together with
+    // newer transactions from the observer.
     if (!loaded && nonNullish(cachedTransactions)) {
-      icrcTransactionsStore.setAccount({
+      icrcTransactionsStore.mergeAccount({
         canisterId: ledgerCanisterId,
         accountIdentifier: account.identifier,
         data: cachedTransactions,

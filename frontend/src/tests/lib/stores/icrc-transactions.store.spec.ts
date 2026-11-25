@@ -1,7 +1,10 @@
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
-import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import {
+  createIcrcTransactionWithId,
+  mockIcrcTransactionWithId,
+} from "$tests/mocks/icrc-transactions.mock";
 import { get } from "svelte/store";
 
 describe("icrc-transactions", () => {
@@ -57,35 +60,36 @@ describe("icrc-transactions", () => {
     ).toBeUndefined();
   });
 
-  it("should set the transactions of an account", () => {
-    const otherAccountIdentifier = "otherAccountIdentifier";
-    const otherAccount = {
-      transactions: [],
-      oldestTxId: 5n,
-      completed: true,
-    };
-    const data = {
-      transactions: [mockIcrcTransactionWithId],
-      oldestTxId: 10n,
-      completed: false,
-    };
+  it("should merge transactions into an account", () => {
+    const newTransaction = createIcrcTransactionWithId({ id: 20n });
 
-    icrcTransactionsStore.setAccount({
-      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-      accountIdentifier: otherAccountIdentifier,
-      data: otherAccount,
-    });
-    icrcTransactionsStore.setAccount({
+    icrcTransactionsStore.mergeAccount({
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       accountIdentifier: mockCkBTCMainAccount.identifier,
-      data,
+      data: {
+        transactions: [newTransaction],
+        oldestTxId: 20n,
+        completed: false,
+      },
+    });
+    icrcTransactionsStore.mergeAccount({
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      accountIdentifier: mockCkBTCMainAccount.identifier,
+      data: {
+        transactions: [mockIcrcTransactionWithId, newTransaction],
+        oldestTxId: 10n,
+        completed: true,
+      },
     });
 
     expect(
-      get(icrcTransactionsStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
+      get(icrcTransactionsStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()][
+        mockCkBTCMainAccount.identifier
+      ]
     ).toEqual({
-      [otherAccountIdentifier]: otherAccount,
-      [mockCkBTCMainAccount.identifier]: data,
+      transactions: [newTransaction, mockIcrcTransactionWithId],
+      oldestTxId: 10n,
+      completed: true,
     });
   });
 
