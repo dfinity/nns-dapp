@@ -1,6 +1,7 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import * as analytics from "$lib/services/analytics.services";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
@@ -14,6 +15,7 @@ import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { jsonReplacer } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -45,6 +47,20 @@ describe("Layout", () => {
   beforeEach(() => {
     setNoIdentity();
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+  });
+
+  it("should remove expired transfer attempts", async () => {
+    localStorage.setItem(
+      StoreLocalStorageKey.TransferAttempts,
+      JSON.stringify({ expired: 1n }, jsonReplacer)
+    );
+
+    render(App);
+    await runResolvedPromises();
+
+    expect(
+      localStorage.getItem(StoreLocalStorageKey.TransferAttempts)
+    ).toBeNull();
   });
 
   it("should init the app after sign in", async () => {

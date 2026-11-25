@@ -1,6 +1,7 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
+import * as icrcAccountsServices from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
 import {
@@ -9,6 +10,7 @@ import {
   resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -175,7 +177,33 @@ describe("IcrcTokenTransactionModal", () => {
       amount: BigInt(amount) * 10n ** 18n,
       to: toAccount,
       fee: token.fee,
+      createdAt: expect.any(BigInt),
     });
+  });
+
+  it("should tell the user if the transaction was already sent", async () => {
+    vi.spyOn(icrcAccountsServices, "transferTokens").mockResolvedValue({
+      blockIndex: 10n,
+      alreadySent: true,
+    });
+    setupAccount();
+
+    const nnsClose = vi.fn();
+    const po = await renderModalComponent({ nnsClose });
+
+    await po.transferToAddress({
+      destinationAddress: encodeIcrcAccount({ owner: principal(2) }),
+      amount: 10,
+    });
+    await runResolvedPromises();
+
+    expect(nnsClose).toHaveBeenCalledTimes(1);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "success",
+        text: en.accounts.transaction_already_sent,
+      },
+    ]);
   });
 
   describe("when the transfer fails", () => {

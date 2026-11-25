@@ -3011,7 +3011,11 @@ describe("neurons-services", () => {
         sourceAccount: mockMainAccount,
       });
 
-      expect(result).toEqual({ success: false, unknownOutcome: true });
+      expect(result).toEqual({
+        success: false,
+        unknownOutcome: true,
+        alreadySent: undefined,
+      });
       expect(spyClaimOrRefresh).toBeCalledWith({
         identity: mockIdentity,
         neuronId: mockNeuron.neuronId,
@@ -3021,6 +3025,26 @@ describe("neurons-services", () => {
         identity: mockIdentity,
         neuronId: mockNeuron.neuronId,
       });
+    });
+
+    it("should report a top-up that was already sent", async () => {
+      vi.mocked(transferICP).mockResolvedValueOnce({
+        success: true,
+        alreadySent: true,
+      });
+
+      const result = await topUpNeuron({
+        neuron: mockNeuron,
+        amount: 2,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(result).toEqual({
+        success: true,
+        unknownOutcome: undefined,
+        alreadySent: true,
+      });
+      expect(spyClaimOrRefresh).toBeCalledTimes(1);
     });
 
     it("should fail if neuron has no account identifier", async () => {

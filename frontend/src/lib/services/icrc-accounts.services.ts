@@ -33,8 +33,15 @@ import {
 } from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
+import {
+  clearTransferAttempt,
+  startTransferAttempt,
+  toTransferKey,
+  type TransferAttempt,
+} from "$lib/utils/transfer-attempts.utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import {
+  IcrcTransferError,
   decodeIcrcAccount,
   encodeIcrcAccount,
   type IcrcLedgerDid,
@@ -303,7 +310,10 @@ export const transferTokens = async ({
 }: IcrcTransferTokensUserParams): Promise<{
   blockIndex: IcrcLedgerDid.BlockIndex | undefined;
   unknownOutcome?: boolean;
+  alreadySent?: boolean;
 }> => {
+  let attempt: TransferAttempt | undefined;
+
   try {
     if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
@@ -312,6 +322,16 @@ export const transferTokens = async ({
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
+    attempt = startTransferAttempt(
+      toTransferKey({
+        ledgerCanisterId: ledgerCanisterId.toText(),
+        source: source.identifier,
+        destination: encodeIcrcAccount(to),
+        amount: amountUlps,
+        fee,
+      })
+    );
+
     const blockIndex = await icrcTransfer({
       identity,
       to,
@@ -319,13 +339,41 @@ export const transferTokens = async ({
       amount: amountUlps,
       fee,
       canisterId: ledgerCanisterId,
+      createdAt: attempt.createdAt,
     });
+
+    clearTransferAttempt(attempt);
 
     await loadAccounts({ ledgerCanisterId });
 
     return { blockIndex };
   } catch (err) {
+    // Only a call with the same timestamp, from this tab or another tab, can be the duplicate.
+    if (
+      nonNullish(attempt) &&
+      err instanceof IcrcTransferError &&
+      "Duplicate" in err.errorType
+    ) {
+      clearTransferAttempt(attempt);
+      await loadAccounts({ ledgerCanisterId });
+
+      return {
+        blockIndex: err.errorType.Duplicate.duplicate_of,
+        alreadySent: true,
+      };
+    }
+
     const unknownOutcome = isUnknownOutcomeError(err);
+
+    // The ledger rejects the timestamp itself, so the next attempt needs a new one.
+    // After other errors, a call with the same timestamp, for example in another tab, can still execute.
+    if (
+      nonNullish(attempt) &&
+      err instanceof IcrcTransferError &&
+      ("TooOld" in err.errorType || "CreatedInFuture" in err.errorType)
+    ) {
+      clearTransferAttempt(attempt);
+    }
 
     toastsError(
       ledgerErrorToToastError({
