@@ -48,12 +48,14 @@ describe("icrc-transactions services", () => {
       const start = 1_234n;
 
       expect(spyGetTransactions).not.toBeCalled();
-      await loadIcrcAccountTransactions({
+      const loaded = await loadIcrcAccountTransactions({
         account: mockCkBTCMainAccount,
         start,
         indexCanisterId,
         ledgerCanisterId,
       });
+
+      expect(loaded).toBe(true);
 
       const account = {
         owner: mockCkBTCMainAccount.principal,
@@ -84,13 +86,14 @@ describe("icrc-transactions services", () => {
 
       expect(get(toastsStore)).toHaveLength(0);
 
-      await loadIcrcAccountTransactions({
+      const loaded = await loadIcrcAccountTransactions({
         account: mockCkBTCMainAccount,
         start,
         indexCanisterId,
         ledgerCanisterId,
       });
 
+      expect(loaded).toBe(false);
       expect(get(toastsStore)).toHaveLength(1);
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",

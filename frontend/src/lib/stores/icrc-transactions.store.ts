@@ -44,6 +44,11 @@ export interface IcrcTransactionsStore
     canisterId: UniverseCanisterId;
     accountIdentifier: string;
   }) => void;
+  setAccount: (params: {
+    canisterId: UniverseCanisterId;
+    accountIdentifier: string;
+    data: IcrcTransactions[IcrcAccountIdentifierText];
+  }) => void;
 }
 
 /**
@@ -136,6 +141,24 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
           }),
         };
       });
+    },
+
+    setAccount({
+      canisterId,
+      accountIdentifier,
+      data,
+    }: {
+      canisterId: UniverseCanisterId;
+      accountIdentifier: string;
+      data: IcrcTransactions[IcrcAccountIdentifierText];
+    }) {
+      update((currentState: IcrcTransactionsStoreData) => ({
+        ...currentState,
+        [canisterId.toText()]: {
+          ...currentState[canisterId.toText()],
+          [accountIdentifier]: data,
+        },
+      }));
     },
   };
 };

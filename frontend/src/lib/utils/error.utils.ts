@@ -35,6 +35,8 @@ import {
   CborDecodeErrorCode,
   CertifiedRejectErrorCode,
   ErrorKindEnum,
+  IngressExpiryInvalidErrorCode,
+  InvalidReadStateRequestErrorCode,
   UncertifiedRejectErrorCode,
 } from "@icp-sdk/core/agent";
 
@@ -206,7 +208,14 @@ export const isUnknownOutcomeError = (err: unknown): boolean =>
     ErrorKindEnum.Unknown,
   ].includes(err.kind) ||
     // The agent decodes only responses, so the call can be already submitted.
-    err.hasCode(CborDecodeErrorCode));
+    err.hasCode(CborDecodeErrorCode) ||
+    // The agent adds the request context to an expiry error from `/call` and
+    // from the `/read_state` poll, so the call can be already submitted.
+    // Without it, the error comes from the agent options.
+    (err.hasCode(IngressExpiryInvalidErrorCode) &&
+      nonNullish(err.code.requestContext)) ||
+    // The agent creates read state requests only to poll a submitted call.
+    err.hasCode(InvalidReadStateRequestErrorCode));
 
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;
