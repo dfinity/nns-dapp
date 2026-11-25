@@ -15,6 +15,7 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import {
+  createIcrcTransactionWithId,
   mockIcrcTransactionWithId,
   mockIcrcTransactionWithIdToSelf,
   mockIcrcTransactionsStoreSubscribe,
@@ -136,24 +137,32 @@ describe("IcrcWalletTransactionList", () => {
 
     beforeEach(() => {
       icrcTransactionsStore.reset();
-      icrcTransactionsStore.setAccount({
+      icrcTransactionsStore.mergeAccount({
         canisterId: CKBTC_LEDGER_CANISTER_ID,
         accountIdentifier: mockCkBTCMainAccount.identifier,
         data: cachedTransactions,
       });
     });
 
-    const reloadWith = async (loaded: boolean) => {
+    const reloadWith = async ({
+      loaded,
+      onReset,
+    }: {
+      loaded: boolean;
+      onReset?: () => void;
+    }) => {
       vi.spyOn(services, "loadIcrcAccountNextTransactions").mockResolvedValue(
         true
       );
       const spyReload = vi
         .spyOn(services, "loadIcrcAccountTransactions")
         .mockResolvedValue(loaded);
-      const { reload } = renderComponent();
+      // No rows, so the list does not start transitions that jsdom lacks.
+      const { reload } = renderComponent(() => []);
       await runResolvedPromises();
 
       reload();
+      onReset?.();
       await advanceTime(5000);
 
       expect(spyReload).toBeCalledTimes(1);
@@ -164,11 +173,34 @@ describe("IcrcWalletTransactionList", () => {
     };
 
     it("should keep the cached transactions", async () => {
-      expect(await reloadWith(false)).toEqual(cachedTransactions);
+      expect(await reloadWith({ loaded: false })).toEqual(cachedTransactions);
+    });
+
+    it("should keep the transactions from the observer", async () => {
+      const observedTransaction = createIcrcTransactionWithId({ id: 20n });
+
+      expect(
+        await reloadWith({
+          loaded: false,
+          onReset: () =>
+            icrcTransactionsStore.addTransactions({
+              canisterId: CKBTC_LEDGER_CANISTER_ID,
+              accountIdentifier: mockCkBTCMainAccount.identifier,
+              transactions: [observedTransaction],
+              oldestTxId: 20n,
+              completed: false,
+              balance: 0n,
+            }),
+        })
+      ).toEqual({
+        transactions: [observedTransaction, mockIcrcTransactionWithId],
+        oldestTxId: 0n,
+        completed: false,
+      });
     });
 
     it("should not restore the cached transactions after a successful reload", async () => {
-      expect(await reloadWith(true)).toBeUndefined();
+      expect(await reloadWith({ loaded: true })).toBeUndefined();
     });
   });
 
